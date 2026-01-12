@@ -40,9 +40,9 @@ const dialog_edit = ref(false)
 const elem_in_edition = ref(null)
 
 function editItem(item) {
-  // console.log("editItem", item)
   if (props.indirect_get || props.is_select){
-    getElement(props.collection_data, item.id).then(response => {
+    const elem_id = props.collection_data.pk
+    getElement(props.collection_data, item[elem_id]).then(response => {
       elem_in_edition.value = response
       dialog_edit.value = true
     })

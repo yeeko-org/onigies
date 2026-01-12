@@ -6,7 +6,6 @@ import TripleBooleanFilter from "~/components/dashboard/custom_filters/TripleBoo
 import RangeDates from "~/components/dashboard/custom_filters/RangeDates.vue";
 import UserSelect from "~/components/dashboard/custom_filters/UserSelect.vue";
 import OnlyByFilter from "~/components/dashboard/custom_filters/OnlyByFilter.vue";
-import LocationType from "~/components/dashboard/custom_filters/LocationType.vue";
 
 const props = defineProps({
   final_filters: Object,
@@ -90,11 +89,6 @@ const applyFilters = () => {
         :label="filter_box.title"
         :filter_box="filter_box"
         class="pr-3 pl-0 py-1"
-      />
-      <LocationType
-        v-else-if="filter_box.component === 'LocationType'"
-        :full_main="final_filters"
-        is_filter
       />
       <h5 v-else>{{filter_box.title || filter_box.name}}</h5>
     </template>

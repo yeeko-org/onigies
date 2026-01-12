@@ -35,7 +35,11 @@ const build_positions = () => {
 
 const calculateSchemas = (data) => {
   let filter_groups = data.filter_groups.map(fg => {
-    return {...fg, ...fg.addl_config}
+    let new_fg =  {...fg, ...fg.addl_config}
+    const cat_group = new_fg.category_group || new_fg.special_group
+    if (cat_group)
+      new_fg.category_groups = data[cat_group] || []
+    return new_fg
   })
   const filters_dict = filter_groups.reduce((obj, fg) => {
     obj[fg.key_name] = fg
@@ -45,15 +49,16 @@ const calculateSchemas = (data) => {
     "comments", "description", "help_text", "order", "color", "icon"]
   // const name_fields = ["name", "title", "description"]
   const name_fields = ["name", "title"]
+
   let collections = data.collections.map(coll => {
-    coll.catalog_groups = filter_groups.reduce((arr, new_fg) => {
-      if (new_fg.main_collection !== coll.snake_name)
-        return arr
-      const cat_group = new_fg.category_group || new_fg.special_group
-      if (cat_group)
-        new_fg.category_groups = data[cat_group] || []
-      return [...arr, new_fg]
-    }, [])
+    // coll.catalog_groups = filter_groups.reduce((arr, new_fg) => {
+    //   if (new_fg.main_collection !== coll.snake_name)
+    //     return arr
+    //   const cat_group = new_fg.category_group || new_fg.special_group
+    //   if (cat_group)
+    //     new_fg.category_groups = data[cat_group] || []
+    //   return [...arr, new_fg]
+    // }, [])
     const valid_relations = ['one_to_many', 'many_to_many']
     coll.child_relation_fields = coll.fields.filter(field => {
       return valid_relations.includes(field.relation_type)
@@ -186,135 +191,136 @@ const calculateSchemas = (data) => {
 }
 
 const hydrateFilterGroup = (fg, data, collections_dict) => {
-    const group_key = fg.category_group
-    const type_key = fg.category_type
-    const subtype_key = fg.category_subtype
-    let subtypes = data[subtype_key] || []
-    let types = data[type_key] || []
-    let groups = data[group_key] || []
+  const group_key = fg.category_group
+  const type_key = fg.category_type
+  const subtype_key = fg.category_subtype
+  let subtypes = data[subtype_key] || []
+  let types = data[type_key] || []
+  let groups = data[group_key] || []
 
-    const subtype_collection = collections_dict[subtype_key]
-    let type_field = subtype_collection.fields.find(field =>
-      field.related_snake_name === fg.category_type)
-    if (type_field)
-      type_field.is_multiple = type_field.relation_type === 'many_to_many'
+  const subtype_collection = collections_dict[subtype_key]
 
-    let root = {
-      new_id: "root",
-      parent: null,
-      name: "root",
+  let type_field = subtype_collection.fields.find(field =>
+    field.related_snake_name === fg.category_type)
+  if (type_field)
+    type_field.is_multiple = type_field.relation_type === 'many_to_many'
+
+  let root = {
+    new_id: "root",
+    parent: null,
+    name: "root",
+  }
+  root = {...root, ...fg}
+  let new_types = []
+  let types_dict = {}
+  const first_group = groups[0]
+  if (type_key){
+    const some_is_empty = subtypes.some(st => {
+      const type_value = st[type_field.name]
+      if (Array.isArray(type_value))
+        return !type_value.length
+      return !type_value
+    })
+    if (some_is_empty){
+      let new_type ={
+        id: 0,
+        new_id: "type_0",
+        name: 'Desconocido ⚠️',
+        original_types: null,
+        color: "red",
+        icon: "error_outline",
+        is_mix: true,
+      }
+      if (group_key)
+        new_type[group_key] = first_group.id
+      new_types.push(new_type)
     }
-    root = {...root, ...fg}
-    let new_types = []
-    let types_dict = {}
-    const first_group = groups[0]
-    if (type_key){
-      const some_is_empty = subtypes.some(st => {
-        const type_value = st[type_field.name]
-        if (Array.isArray(type_value))
-          return !type_value.length
-        return !type_value
+  }
+
+  subtypes = subtypes.map(st => {
+    if (type_field && type_field.is_multiple){
+      let all_types = st[type_field.name]
+      all_types.forEach(t => {
+        if (!types_dict[t])
+          types_dict[t] = []
+        types_dict[t].push(st)
       })
-      if (some_is_empty){
-        let new_type ={
-          id: 0,
-          new_id: "type_0",
-          name: 'Desconocido ⚠️',
-          original_types: null,
-          color: "red",
-          icon: "error_outline",
-          is_mix: true,
-        }
-        if (group_key)
-          new_type[group_key] = first_group.id
-        new_types.push(new_type)
+      if (all_types.length === 1)
+        st.parent_id = `type_${all_types[0]}`
+      else if (!all_types.length){
+        st.parent_id = "type_0"
+        // console.log("No first type", st)
       }
-    }
-
-    subtypes = subtypes.map(st => {
-      if (type_field && type_field.is_multiple){
-        let all_types = st[type_field.name]
-        all_types.forEach(t => {
-          if (!types_dict[t])
-            types_dict[t] = []
-          types_dict[t].push(st)
-        })
-        if (all_types.length === 1)
-          st.parent_id = `type_${all_types[0]}`
-        else if (!all_types.length){
-          st.parent_id = "type_0"
-          // console.log("No first type", st)
+      else{
+        let new_type_key = ''
+        const join_id = all_types.join('_')
+        const names = all_types.map(t =>
+          types.find(tt => tt.id === t).name)
+        if (group_key){
+          const first_type = types.find(t => t.id === all_types[0])
+          new_type_key = first_type[group_key]
         }
-        else{
-          let new_type_key = ''
-          const join_id = all_types.join('_')
-          const names = all_types.map(t =>
-            types.find(tt => tt.id === t).name)
-          if (group_key){
-            const first_type = types.find(t => t.id === all_types[0])
-            new_type_key = first_type[group_key]
+        st.parent_id = `type_${join_id}`
+        if (!new_types.find(t => t.id === join_id)){
+          let new_type = {
+            id: join_id,
+            name: `Mixto: ${names.join(', ')}`,
+            original_types: all_types.map(t =>
+              types.find(tt => tt.id === t)),
+            new_id: `type_${join_id}`,
+            color: "black",
+            icon: "group_work",
+            is_mix: true,
           }
-          st.parent_id = `type_${join_id}`
-          if (!new_types.find(t => t.id === join_id)){
-            let new_type = {
-              id: join_id,
-              name: `Mixto: ${names.join(', ')}`,
-              original_types: all_types.map(t =>
-                types.find(tt => tt.id === t)),
-              new_id: `type_${join_id}`,
-              color: "black",
-              icon: "group_work",
-              is_mix: true,
-            }
-            if (group_key)
-              new_type[group_key] = new_type_key
-            new_types.push(new_type)
-          }
+          if (group_key)
+            new_type[group_key] = new_type_key
+          new_types.push(new_type)
         }
       }
-      else if (type_key)
-        st.parent_id = `type_${st[type_field.name]}`
-      else
-        st.parent_id = "root"
-      st.new_id = `subtype_${st.id}`
-      return st
-    })
-    types = [...types, ...new_types]
-    types = types.map(type => {
-      if (group_key && !type[group_key]) {
-        console.log("No group key", type)
-      }
-      type.parent_id = group_key ? `group_${type[group_key]}` : "root"
-      type.new_id = `type_${type.id}`
-      if (type_field.is_multiple)
-        type.all_childs = types_dict[type.id]
-      return type
-    })
-    groups = groups.map(g => {
-      g.parent_id = "root"
-      g.new_id = `group_${g.id}`
-      return g
-    })
-    const all_data = [...subtypes, ...types, ...groups, root]
-
-    try{
-      return d3.stratify()
-        .id(d => d.new_id)
-        .parentId(d => d.parent_id)
-        (all_data)
     }
-    catch (e){
-      console.log("Error", e)
-      console.log("all_data", all_data)
-      console.log("subtype_key", subtype_key)
-      console.log("type_key", type_key)
-      console.log("group_key", group_key)
-
-      console.log("subtypes", subtypes)
-      console.log("types", types)
-      console.log("groups", groups)
-      return null
+    else if (type_key)
+      st.parent_id = `type_${st[type_field.name]}`
+    else
+      st.parent_id = "root"
+    st.new_id = `subtype_${st.id}`
+    return st
+  })
+  types = [...types, ...new_types]
+  types = types.map(type => {
+    if (group_key && !type[group_key]) {
+      console.log("No group key", type)
     }
+    type.parent_id = group_key ? `group_${type[group_key]}` : "root"
+    type.new_id = `type_${type.id}`
+    if (type_field.is_multiple)
+      type.all_childs = types_dict[type.id]
+    return type
+  })
+  groups = groups.map(g => {
+    g.parent_id = "root"
+    g.new_id = `group_${g.id}`
+    return g
+  })
+  const all_data = [...subtypes, ...types, ...groups, root]
+
+  try{
+    return d3.stratify()
+      .id(d => d.new_id)
+      .parentId(d => d.parent_id)
+      (all_data)
+  }
+  catch (e){
+    console.log("Error", e)
+    console.log("all_data", all_data)
+    console.log("subtype_key", subtype_key)
+    console.log("type_key", type_key)
+    console.log("group_key", group_key)
+
+    console.log("subtypes", subtypes)
+    console.log("types", types)
+    console.log("groups", groups)
+    return null
+  }
 }
 
 const calculateNewCats = (data, schemas) => {
@@ -403,7 +409,9 @@ export const useMainStore = defineStore('main', {
         this.current_filter_group]
     },
     setCollection(group) {
+      // console.log("setCollection to", group)
       this.current_collection = group
+      // console.log("cats_ready", this.cats_ready)
       if (this.cats_ready)
         this.setCollectionData()
     },
@@ -423,6 +431,7 @@ export const useMainStore = defineStore('main', {
             // console.log("schemas", this.schemas)
             this.all_nodes = calculateNewCats(data, this.schemas)
             this.status = calculate_status(data.status_control)
+            console.log("previous to setCollectionData")
             this.setCollectionData()
             this.setFilterGroupData()
             this.cats_ready = true
@@ -766,52 +775,7 @@ export const useMainStore = defineStore('main', {
       })
       return status_dict
     },
-    megaproject_types_dict(state) {
-      if (!state.cats)
-        return {}
-      let extractivism_dict = {}
-      state.cats.extractivism_type.forEach(et => {
-        extractivism_dict[et.id] = {
-          id: et.id,
-          name: et.name,
-          short_name: et.short_name || et.name,
-          icon: et.icon,
-          color: et.color || '#5d5d5d',
-        }
-      })
-      let other_type = state.cats.extractivism_type.find(et =>
-        et.name.toLowerCase() === 'otro')
-      other_type = other_type ? {
-        id: other_type.id,
-        name: other_type.name,
-        short_name: other_type.short_name || other_type.name,
-        icon: other_type.icon,
-        color: other_type.color || '#753E08',
-        extractivism_types: [],
-      } : {
-        id: 'other',
-        name: 'Otro',
-        short_name: 'Otro',
-        icon: 'help',
-        color: '#ff0000',
-        extractivism_types: [],
-      }
 
-      let mp_types_dict = {}
-      // console.log("extractivism_dict", extractivism_dict)
-      // console.log("megaproject_type", state.cats.megaproject_type)
-      state.cats.megaproject_type.forEach(mp_t => {
-        const first_extractivism = mp_t.extractivism_types[0]
-        mp_types_dict[mp_t.id] = mp_t
-        if (!first_extractivism)
-          mp_types_dict[mp_t.id]["first_extractivism_type"] = other_type
-        else{
-          mp_types_dict[mp_t.id]["first_extractivism_type"] = extractivism_dict[first_extractivism]
-        }
-      })
-      // console.log("mp_types_dict", mp_types_dict)
-      return mp_types_dict
-    },
     collections_summary(state) {
       return state.schemas.collections.reduce((obj, coll) => {
         obj[coll.snake_name] = {
@@ -825,44 +789,6 @@ export const useMainStore = defineStore('main', {
         return obj
       })
     },
-    event_group_violence(state) {
-      if (!state.cats)
-        return {}
-      return state.cats.event_group.find(eg => eg.name === 'Violencia')
-    },
-    event_group_legal(state) {
-      if (!state.cats)
-        return {}
-      return state.cats.event_group.find(eg => eg.name === 'Mecanismos legales')
-    },
-    displacement_event_types(state) {
-      if (!state.cats)
-        return []
-      const has_dis = state.cats.event_type.filter(et => et.has_displacement)
-      return has_dis.map(et => et.id)
-    },
-    displacement_impact_types(state) {
-      if (!state.cats)
-        return []
-      const has_dis = state.cats.impact_type.filter(et => et.has_displacement)
-      return has_dis.map(et => et.id)
-    },
-    internal_displacement(state) {
-      if (!state.cats)
-        return {}
-      return state.cats.dimension.find(d => d.name.includes('nterno'))
-    },
-    other_discarded_reason(state) {
-      if (!state.cats)
-        return null
-      return state.cats.discarded_reason.find(dr => dr.is_other)
-    },
-    event_group_show_position(state) {
-      if (!state.cats)
-        return []
-      let event_groups = state.cats.event_group.filter(eg => eg.show_position)
-      return event_groups.map(eg => eg.id)
-    },
     all_users(state) {
       if (!state.cats)
         return []
@@ -873,69 +799,6 @@ export const useMainStore = defineStore('main', {
         return []
       return state.cats.user.filter(user => user.full_editor || user.is_superuser)
     },
-    ai_extractivism_types(state) {
-      if (!state.cats)
-        return {}
-      let ai_types = {}
-      state.cats.extractivism_type.forEach(et => {
-        if (!et.ai_name)
-          return
-        const { id, name, icon, color, ai_name } = et;
-        ai_types[ai_name] = { id, name, icon, color };
-      })
-      return ai_types
-    },
-    criteria(state) {
-      if (!state.cats)
-        return {}
-      // opponents: list[int] = []
-      // social_impacts: list[int] = []
-      // ecological_impacts: list[int] = []
-      // acts_of_violence: list[int] = []
-      // collective_actions: list[int] = []
-      // is_foreign: bool | None = None
-      const values = {
-        opponents: state.cats.participant_group[0],
-        social_impacts: state.cats.impact_group.find(ig => ig.is_social),
-        ecological_impacts: state.cats.impact_group.find(ig => !ig.is_social),
-        acts_of_violence: state.cats.event_group.find(
-          eg => eg.model_origin === 'HechosViolencia'),
-        collective_actions: state.cats.event_group.find(
-          eg => eg.model_origin === 'FormaAC'),
-      }
-      const fields = ["id", "name", "icon", "color"]
-      return Object.entries(values).reduce((obj, [key, value]) => {
-        // console.log("criteria key", key, value)
-        // const { id, name, icon, color } = value
-        // obj[key] = { id, name, icon, color }
-        let new_value = {}
-        fields.forEach(field => {
-          if (value[field] !== undefined)
-            new_value[field] = value[field]
-        })
-        obj[key] = new_value
-        return obj
-      }, {})
-    },
-    valid_options(){
-      return [
-        {
-          "id": 1,
-          "name": "No cumple",
-          "order": 1,
-          "icon": "close",
-          "color": "red-lighten-3",
-          "value": false,
-        },
-        {
-          "id": 2,
-          "name": "Sí cumple",
-          "order": 2,
-          "icon": "verified",
-          "color": "success",
-          "value": true,
-        },
-      ]
-    },
+
   },
 })

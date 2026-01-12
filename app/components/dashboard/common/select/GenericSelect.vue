@@ -2,8 +2,6 @@
 
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import { VSelect, VAutocomplete } from "vuetify/components"
-import {shallowRef} from "vue";
-
 
 const props = defineProps({
   main_object: {

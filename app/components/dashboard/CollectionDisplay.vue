@@ -12,10 +12,7 @@ import _debounce from "lodash/debounce.js";
 import QuestionMark from "~/components/dashboard/generic/QuestionMark.vue";
 
 
-const {
-  schemas,
-  current_collection_data,
-} = storeToRefs(mainStore)
+const { current_collection_data } = storeToRefs(mainStore)
 const { fetchElements, cancelFetch, exportData } = mainStore
 
 const props = defineProps({
@@ -40,16 +37,6 @@ const q_value = ref("")
 const loading_fetch = ref(false)
 const show_details = ref(false)
 const total_count = ref(0)
-const available_sorts = ref([
-  {
-    title: "Más recientes",
-    value: "-id"
-  },
-  {
-    title: "Más antiguos",
-    value: "id"
-  },
-])
 const final_filters = ref({
   ordering: null,  // '-id',
   page_size: 40,
@@ -108,8 +95,6 @@ watch(
     debounceApplyFilters()
   }
 )
-// const is_category = computed(() =>
-//   collection_data.value.level.includes('category'))
 
 const debounceApplyFilters = _debounce(() => {
   applyFilters()
@@ -181,7 +166,7 @@ function changeShowDetails() {
 
 function resetFilters() {
   const coll_data = collection_data.value
-  // console.log("resetFilters", coll_data)
+  console.log("resetFilters", coll_data)
   if (!coll_data.is_category && !coll_data.cat_params?.init_display)
     temp_reset.value = true
   if (props.direct_sheet)

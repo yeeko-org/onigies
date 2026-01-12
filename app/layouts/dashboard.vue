@@ -34,44 +34,57 @@ const main_items = [
   },
   {
     plural_name: 'Instituciones',
-    snake_name: 'ies',
+    snake_name: 'institution',
     icon: 'apartment',
     color: 'indigo',
   },
   {
     plural_name: 'Años de registro',
-    snake_name: 'years',
+    snake_name: 'period',
     icon: 'event',
     color: 'brown',
   },
   {
     plural_name: 'Buenas Prácticas',
-    snake_name: 'examples',
+    snake_name: 'good_practice',
     icon: 'lightbulb',
     color: 'pink',
-  }
+  },
+  {
+    plural_name: 'Ejemplo de registro',
+    snake_name: 'surveys',
+    icon: 'ballot',
+    color: 'deep-purple',
+  },
 ]
 
-const catalogs = [
+const main_collections = [
   {
-    plural_name: 'Aspectos Buenas Prácticas',
-    snake_name: 'features',
-  },
-  {
-    plural_name: 'Sectores poblacionales',
-    snake_name: 'sectors',
-  },
-  {
-    plural_name: 'Ejes y Componentes',
-    snake_name: 'indicators',
-  },
-  {
-    plural_name: 'Grupos de preguntas',
-    snake_name: 'question_groups',
-  },
-  {
-    plural_name: 'Opciones de respuesta',
-    snake_name: 'a_options',
+    title: 'Gestión Catálogos',
+    icon: 'category',
+    color: 'purple',
+    catalogs: [
+      {
+        plural_name: 'Aspectos Buenas Prácticas',
+        snake_name: 'features',
+      },
+      {
+        plural_name: 'Sectores poblacionales',
+        snake_name: 'sectors',
+      },
+      {
+        plural_name: 'Ejes y Componentes',
+        snake_name: 'axes',
+      },
+      {
+        plural_name: 'Grupos de preguntas',
+        snake_name: 'question_groups',
+      },
+      {
+        plural_name: 'Opciones de respuesta',
+        snake_name: 'a_options',
+      },
+    ],
   },
 ]
 
@@ -196,33 +209,38 @@ watch(
             ></v-list-item>
             <v-divider></v-divider>
           </template>
-          <v-list-group soubgroup>
-            <template v-slot:activator="{ props, isOpen }">
+          <template
+            v-for="collection in main_collections"
+            :key="collection.snake_name"
+          >
+            <v-list-group soubgroup>
+              <template v-slot:activator="{ props, isOpen }">
+                <v-list-item
+                  v-bind="props"
+                  exact
+                  :title="collection.title"
+                  :prepend-icon="collection.icon"
+                  :base-color="collection.color || 'grey-darken-1'"
+                >
+                  <template v-slot:append="{ isActive, select }">
+                    <v-icon
+                      @click="openIcon"
+                    >
+                      {{ isActive ? 'expand_less' : 'expand_more' }}
+                    </v-icon>
+                  </template>
+                </v-list-item>
+              </template>
               <v-list-item
-                v-bind="props"
+                v-for="cat in collection.catalogs"
+                :key="cat.snake_name"
                 exact
-                title="Catálogos"
-                prepend-icon="category"
-                base-color="purple"
-              >
-                <template v-slot:append="{ isActive, select }">
-                  <v-icon
-                    @click="openIcon"
-                  >
-                    {{ isActive ? 'expand_less' : 'expand_more' }}
-                  </v-icon>
-                </template>
-              </v-list-item>
-            </template>
-            <v-list-item
-              v-for="cat in catalogs"
-              :key="cat.snake_name"
-              exact
-              :title="cat.plural_name"
-              :value="cat.snake_name"
-              :to="`/dashboard/catalog/${cat.snake_name}`"
-            ></v-list-item>
-          </v-list-group>
+                :title="cat.plural_name"
+                :value="cat.snake_name"
+                :to="`/dashboard/catalog/${cat.snake_name}`"
+              ></v-list-item>
+            </v-list-group>
+          </template>
 
         </client-only>
         <v-divider></v-divider>

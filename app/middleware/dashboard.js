@@ -3,7 +3,7 @@ import {useAuthStore} from "~/stores/auth.js";
 // import Cookie from "js-cookie";
 
 export default defineNuxtRouteMiddleware((to, from, next) => {
-  // console.log('TO', to)
+  console.log('TO', to)
   if (to.path === '/') {
     // console.log('redirecting to dashboard')
     return navigateTo('/dashboard')
@@ -37,8 +37,9 @@ export default defineNuxtRouteMiddleware((to, from, next) => {
     checkAuthSimple()
   }
 
-  if (to.params.group)
+  if (to.params.group){
     setCollection(to.params.group)
+  }
   else if (to.params.model)
     setFilterGroup(to.params.model)
   if (cats_ready) {

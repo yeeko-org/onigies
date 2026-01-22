@@ -1,15 +1,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useGoodPractice } from '~/composables/useGoodPractice.js'
+import FeatureItem from "~/components/dashboard/example/goodpractice/FeatureItem.vue";
+
+import { useMainStore } from '~/stores/index.js'
+const mainStore = useMainStore()
+const { cats, cats_ready } = mainStore
 
 const props = defineProps({
   goodPracticeId: { type: Number, required: true },
-  features: { type: Array, default: () => [] },
   featureValues: { type: Array, default: () => [] },
   isStaff: { type: Boolean, default: false }
 })
 
-const { saveFeatureGoodPractice } = useGoodPractice()
+// const { saveFeatureGoodPractice } = useGoodPractice()
 const localValues = ref([])
 
 const getFeatureValue = (featureId) => {
@@ -20,7 +23,7 @@ const getFeatureValue = (featureId) => {
 }
 
 const initializeValues = () => {
-  localValues.value = props.features.map(feature => {
+  localValues.value = cats.feature.map(feature => {
     const existing = props.featureValues.find(fv => {
       const fvFeatureId = fv.feature?.id || fv.feature
       return fvFeatureId === feature.id
@@ -36,13 +39,14 @@ const initializeValues = () => {
 }
 
 const activeFeatures = computed(() => {
-  return props.features.filter(f => {
+  return cats.feature.filter(f => {
     const value = getFeatureValue(f.id)
     return value?.has_attribute
   })
 })
 
 const handleUpdate = async (featureId, data) => {
+  // console.log("Updating feature:", featureId, data)
   const idx = localValues.value.findIndex(v => {
     const vFeatureId = v.feature?.id || v.feature
     return vFeatureId === featureId
@@ -50,8 +54,8 @@ const handleUpdate = async (featureId, data) => {
   if (idx !== -1) {
     const updated = { ...localValues.value[idx], ...data }
     try {
-      const result = await saveFeatureGoodPractice(updated)
-      localValues.value[idx] = result
+      localValues.value[idx] = await mainStore.saveSimple(
+        ['feature_good_practice', updated])
     } catch (e) {
       console.error('Error al guardar característica:', e)
     }
@@ -59,10 +63,11 @@ const handleUpdate = async (featureId, data) => {
 }
 
 onMounted(initializeValues)
+
 </script>
 
 <template>
-  <div>
+  <div v-if="cats_ready">
     <v-alert
       v-if="isStaff && !activeFeatures.length"
       type="info"
@@ -71,26 +76,23 @@ onMounted(initializeValues)
     >
       La IES no ha marcado ninguna característica como cumplida.
     </v-alert>
-
-    <v-expansion-panels variant="accordion">
-      <template v-for="feature in features" :key="feature.id">
-        <FeatureItem
-          v-if="!isStaff || getFeatureValue(feature.id)?.has_attribute"
-          :feature="feature"
-          :value="getFeatureValue(feature.id)"
-          :is-staff="isStaff"
-          @update="(data) => handleUpdate(feature.id, data)"
-        />
-      </template>
-    </v-expansion-panels>
-
     <v-alert
-      v-if="!features.length"
-      type="warning"
+      v-if="!isStaff"
+      type="info"
       variant="tonal"
-      class="mt-4"
+      class="mb-4"
     >
-      No hay características configuradas.
+      Marca las características que crees que cumple tu buena práctica.
     </v-alert>
+
+    <template v-for="feature in cats.feature" :key="feature.id">
+      <FeatureItem
+        v-if="!isStaff || getFeatureValue(feature.id)?.has_attribute"
+        :feature="feature"
+        :value="getFeatureValue(feature.id)"
+        :is-staff="isStaff"
+        @update="(data) => handleUpdate(feature.id, data)"
+      />
+    </template>
   </div>
 </template>

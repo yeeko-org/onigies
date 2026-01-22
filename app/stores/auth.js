@@ -157,9 +157,9 @@ export const useAuthStore = defineStore("auth", {
       // return true
     },
     is_staff(state) {
-      if (state.user_details_ocsa)
-        return state.user_details_ocsa.is_staff || false
       return false
+      // if (state.user_details_ocsa)
+      //   return state.user_details_ocsa.is_staff || false
     },
     is_full_editor(state) {
       if (state.user_details_ocsa)

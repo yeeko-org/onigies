@@ -48,7 +48,7 @@ function addGoodPractice() {
           :key="index"
           class="mb-4"
         >
-
+          {{practice}}
         </v-row>
       </v-card-text>
     </v-col>

@@ -2,6 +2,12 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useGoodPractice } from '~/composables/useGoodPractice.js'
 import FeatureList from "~/components/dashboard/example/goodpractice/FeatureList.vue";
+import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
+import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
+
+import { useMainStore } from '~/stores/index.js'
+import Evidences from "~/components/dashboard/utils/Evidences.vue";
+const mainStore = useMainStore()
 
 const props = defineProps({
   practice: { type: Object, default: null },
@@ -11,10 +17,9 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'saved', 'deleted'])
 
-const { loading, saveGoodPractice, deleteGoodPractice, fetchFeatures } =
+const { loading, deleteGoodPractice } =
   useGoodPractice()
 
-const features = ref([])
 const tab = ref('info')
 const confirmDelete = ref(false)
 
@@ -25,22 +30,16 @@ const form = ref({
   component: null,
   name: '',
   description: '',
-  results: ''
+  results: '',
+  status_register: null
 })
 
 const isEditing = computed(() => !!props.practice?.id)
-const title = computed(() => {
-  if (props.isStaff) return 'Evaluar Buena Práctica'
-  return isEditing.value ? 'Editar Buena Práctica' : 'Nueva Buena Práctica'
-})
 
 const canSave = computed(() => {
   return form.value.name && form.value.axis && form.value.component
 })
 
-const loadFeatures = async () => {
-  features.value = await fetchFeatures()
-}
 
 const populateForm = () => {
   if (props.practice) {
@@ -51,7 +50,8 @@ const populateForm = () => {
       component: props.practice.component?.id || props.practice.component,
       name: props.practice.name,
       description: props.practice.description,
-      results: props.practice.results
+      results: props.practice.results,
+      status_register: props.practice.status_register
     }
   }
 }
@@ -59,8 +59,9 @@ const populateForm = () => {
 const save = async () => {
   if (!canSave.value) return
   try {
-    await saveGoodPractice(form.value)
-    emit('saved')
+    const res = await mainStore.saveSimple(['good_practice', form.value])
+
+    emit('saved', res)
   } catch (e) {
     console.error('Error al guardar:', e)
   }
@@ -76,117 +77,85 @@ const remove = async () => {
 }
 
 watch(() => props.practice, populateForm, { immediate: true })
-onMounted(loadFeatures)
+
 </script>
 
 <template>
-  <v-card>
-    <v-toolbar color="primary" density="compact">
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
-      <v-spacer />
-      <v-btn icon @click="emit('close')">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-toolbar>
+  <v-card
+    tile
+    variant="text"
+  >
 
-    <v-tabs v-model="tab" bg-color="grey-lighten-4">
-      <v-tab value="info">
-        <v-icon start>mdi-information</v-icon>
-        Información
-      </v-tab>
-      <v-tab value="features" :disabled="!isEditing">
-        <v-icon start>mdi-format-list-checks</v-icon>
-        Características
-      </v-tab>
-      <v-tab value="evidence" :disabled="!isEditing">
-        <v-icon start>mdi-file-document</v-icon>
-        Evidencias
-      </v-tab>
-      <v-tab value="comments" :disabled="!isEditing">
-        <v-icon start>mdi-comment-multiple</v-icon>
-        Comentarios
-      </v-tab>
-    </v-tabs>
+    <v-card-text
+      class="pa-4"
+    >
+      <v-form :disabled="isStaff">
+        <div class="d-flex">
 
-    <v-card-text class="pa-4" style="max-height: 60vh; overflow-y: auto;">
-      <v-tabs-window v-model="tab">
-        <!-- TAB: Información -->
-        <v-tabs-window-item value="info">
-          <v-form :disabled="isStaff">
-<!--            <SelectGroup-->
-<!--              v-model:axis="form.axis"-->
-<!--              v-model:component="form.component"-->
-<!--            />-->
-
-            <v-text-field
-              v-model="form.name"
-              label="Nombre de la buena práctica *"
-              variant="outlined"
-              density="compact"
-              class="mt-4"
-              :readonly="isStaff"
-            />
-
-            <v-textarea
-              v-model="form.description"
-              label="Descripción"
-              variant="outlined"
-              density="compact"
-              rows="3"
-              :readonly="isStaff"
-            />
-
-            <v-textarea
-              v-model="form.results"
-              label="Resultados obtenidos"
-              variant="outlined"
-              density="compact"
-              rows="3"
-              :readonly="isStaff"
-            />
-          </v-form>
-
-<!--          <StatusDetail-->
-<!--            v-if="isEditing"-->
-<!--            model="goodpractice"-->
-<!--            field="status_validation"-->
-<!--            :item-id="form.id"-->
-<!--            class="mt-4"-->
-<!--          />-->
-        </v-tabs-window-item>
-
-        <!-- TAB: Características -->
-        <v-tabs-window-item value="features">
-          <FeatureList
-            v-if="isEditing"
-            :good-practice-id="form.id"
-            :features="features"
-            :feature-values="practice?.feature_values || []"
-            :is-staff="isStaff"
+          <v-text-field
+            v-model="form.name"
+            label="Nombre de la buena práctica *"
+            variant="outlined"
+            class="mr-6"
+            :readonly="isStaff"
           />
-        </v-tabs-window-item>
+          <StatusDetail
+            :final_filters="form"
+            collection="register"
+          />
+        </div>
+        <div class="d-flex">
 
-        <!-- TAB: Evidencias -->
-        <v-tabs-window-item value="evidence">
+          <SelectGroup
+            :main_object="form"
+            filter_group_name="axes"
+            forced_level="subtype"
+            :width="360"
+          />
+        </div>
+
+        <v-textarea
+          v-model="form.description"
+          label="Descripción"
+          variant="outlined"
+          rows="3"
+          :readonly="isStaff"
+        />
+
+        <v-textarea
+          v-model="form.results"
+          label="Resultados obtenidos"
+          variant="outlined"
+          rows="3"
+          :readonly="isStaff"
+        />
+      </v-form>
+      Archivos adjuntos:
+      <Evidences
+        :full_main="practice"
+        main_collection_name="good_practice"
+      />
+
+      <FeatureList
+        v-if="isEditing"
+        :good-practice-id="form.id"
+        :feature-values="practice?.feature_values || []"
+        :is-staff="isStaff"
+        class="mt-4"
+      />
+
 <!--          <Evidences-->
 <!--            v-if="isEditing"-->
 <!--            model="goodpractice"-->
 <!--            :parent-id="form.id"-->
 <!--          />-->
-        </v-tabs-window-item>
-
-        <!-- TAB: Comentarios -->
-        <v-tabs-window-item value="comments">
 <!--          <Comments-->
 <!--            v-if="isEditing"-->
 <!--            model="goodpractice"-->
 <!--            :parent-id="form.id"-->
 <!--          />-->
-        </v-tabs-window-item>
-      </v-tabs-window>
     </v-card-text>
 
-    <v-divider />
 
     <v-card-actions>
       <v-btn
@@ -195,22 +164,25 @@ onMounted(loadFeatures)
         variant="text"
         @click="confirmDelete = true"
       >
-        <v-icon start>mdi-delete</v-icon>
+        <v-icon start>delete</v-icon>
         Eliminar
       </v-btn>
       <v-spacer />
-      <v-btn variant="text" @click="emit('close')">
+      <v-btn
+        variant="text"
+        @click="practice.in_edition = false"
+      >
         Cerrar
       </v-btn>
       <v-btn
         v-if="!isStaff"
-        color="primary"
+        color="accent"
         variant="flat"
         :loading="loading"
         :disabled="!canSave"
+        prepend-icon="save"
         @click="save"
       >
-        <v-icon start>mdi-content-save</v-icon>
         Guardar
       </v-btn>
     </v-card-actions>

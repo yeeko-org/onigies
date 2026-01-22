@@ -1,5 +1,4 @@
 <script setup>
-import {defineComponent, ref, computed} from 'vue'
 import { useMainStore } from '~/stores'
 import { storeToRefs } from 'pinia'
 import {useAuthStore} from "~/stores/auth.js";
@@ -11,7 +10,7 @@ import {status_filters} from "~/composables/filters.js";
 // })
 // const final_filters = ref({})
 // const collection = ref("status_location")
-const { is_staff } = storeToRefs(authStore);
+// const { is_staff } = storeToRefs(authStore);
 
 const props = defineProps({
   final_filters: Object,
@@ -86,7 +85,7 @@ const emits = defineEmits(['change-status'])
     min-width="260"
     :hide-details="hide_details"
     density="compact"
-    :readonly="!is_staff && !status_selected.open_editor"
+    xreadonly="!is_staff && !status_selected.open_editor"
     :loading="loading"
     @update:modelValue="emits('change-status', $event)"
   >
@@ -96,7 +95,7 @@ const emits = defineEmits(['change-status'])
         :title="title"
         :subtitle="item.raw.description"
         :value="value"
-        :disabled="!is_filter && !is_staff && !item.raw.open_editor"
+        xdisabled="!is_filter && !is_staff && !item.raw.open_editor"
       >
         <template v-slot:prepend>
           <v-icon

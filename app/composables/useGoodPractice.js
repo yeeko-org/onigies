@@ -36,18 +36,6 @@ export function useGoodPractice() {
     }
   }
 
-  const saveGoodPractice = async (data) => {
-    loading.value = true
-    try {
-      if (data.id) {
-        return await mainStore.updateItem('goodpractice', data.id, data)
-      }
-      return await mainStore.createItem('goodpractice', data)
-    } finally {
-      loading.value = false
-    }
-  }
-
   const deleteGoodPractice = async (id) => {
     loading.value = true
     try {
@@ -77,7 +65,6 @@ export function useGoodPractice() {
     fetchFeatures,
     fetchGoodPractices,
     fetchGoodPractice,
-    saveGoodPractice,
     deleteGoodPractice,
     saveFeatureGoodPractice
   }

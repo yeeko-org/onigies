@@ -14,6 +14,8 @@ definePageMeta({
 
 const tab = ref(null)
 
+const all_axis = computed(() => mainStore.cats?.axis || [])
+
 </script>
 
 <template>
@@ -30,7 +32,7 @@ const tab = ref(null)
       <v-tab :value="0">Datos iniciales</v-tab>
 <!--      <v-tab :value="1">City</v-tab>-->
       <v-tab
-        v-for="axis in mainStore.cats.axis"
+        v-for="axis in all_axis"
         :key="axis.id"
         :value="axis.id"
         :color="axis.color"
@@ -41,7 +43,14 @@ const tab = ref(null)
         </v-icon>
         {{ axis.short_name }}
       </v-tab>
-      <v-tab :value="8">
+      <v-tab
+        :value="8"
+        color="pink"
+        base-color="pink"
+      >
+        <v-icon left color="pink">
+          lightbulb
+        </v-icon>
         Buenas prácticas
       </v-tab>
     </v-tabs>
@@ -74,11 +83,9 @@ const tab = ref(null)
         :value="8"
       >
         <v-container fluid>
-          <v-card>
-            <GoodPracticeList
-              :good-practice-package="{id: 1}"
-            />
-          </v-card>
+          <GoodPracticeList
+            :good-practice-package="{id: 5}"
+          />
         </v-container>
 
       </v-tabs-window-item>

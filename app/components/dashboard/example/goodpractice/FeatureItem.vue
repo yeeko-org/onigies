@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
+import Evidences from "~/components/dashboard/utils/Evidences.vue";
 
 const props = defineProps({
   feature: { type: Object, required: true },
@@ -13,10 +14,10 @@ const emit = defineEmits(['update'])
 const localValue = ref({
   has_attribute: false,
   justification: '',
-  final_option: null
+  final_option: null,
+  evidences: []
 })
 
-const expanded = ref(false)
 const saving = ref(false)
 
 const hasAttribute = computed({
@@ -26,6 +27,7 @@ const hasAttribute = computed({
     if (!val) {
       localValue.value.justification = ''
       localValue.value.final_option = null
+      localValue.value.evidences = []
     }
     saveChanges()
   }
@@ -47,7 +49,8 @@ const initValue = () => {
       id: props.value.id,
       has_attribute: props.value.has_attribute || false,
       justification: props.value.justification || '',
-      final_option: props.value.final_option?.id || props.value.final_option
+      final_option: props.value.final_option?.id || props.value.final_option,
+      evidences: props.value.evidences || []
     }
   }
 }
@@ -78,8 +81,13 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 </script>
 
 <template>
-  <v-expansion-panel :bg-color="panelColor">
-    <v-expansion-panel-title>
+  <v-card
+
+    class="my-2"
+    variant="tonal"
+    color="indigo"
+  >
+    <v-card-title>
       <div class="d-flex align-center w-100">
         <v-checkbox
           v-if="!isStaff"
@@ -98,13 +106,13 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         </v-icon>
 
         <div class="flex-grow-1">
-          <span class="font-weight-medium">{{ feature.name }}</span>
-          <span
-            v-if="feature.complement"
-            class="text-medium-emphasis ml-1"
-          >
-            - {{ feature.complement }}
-          </span>
+          <span class="font-weight-medium">{{ feature.description }}</span>
+<!--          <span-->
+<!--            v-if="feature.complement"-->
+<!--            class="text-medium-emphasis ml-1"-->
+<!--          >-->
+<!--            - {{ feature.complement }}-->
+<!--          </span>-->
         </div>
 
         <v-chip
@@ -116,30 +124,30 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           Evaluado
         </v-chip>
       </div>
-    </v-expansion-panel-title>
+    </v-card-title>
 
-    <v-expansion-panel-text>
-      <v-alert
-        v-if="feature.description"
-        density="compact"
-        type="info"
-        variant="tonal"
-        class="mb-4"
-      >
-        {{ feature.description }}
-      </v-alert>
+    <v-card-text v-if="localValue.has_attribute">
+<!--      <v-alert-->
+<!--        v-if="feature.description"-->
+<!--        density="compact"-->
+<!--        type="info"-->
+<!--        variant="tonal"-->
+<!--        class="mb-4"-->
+<!--      >-->
+<!--        {{ feature.description }}-->
+<!--      </v-alert>-->
 
       <!-- Para IES: Justificación -->
       <template v-if="localValue.has_attribute && !isStaff">
         <p
-          v-if="feature.reason_text"
-          class="text-caption text-medium-emphasis mb-2"
+          v-if="feature.reason_text && false"
+          class="text-subtitle-1 mb-2"
         >
           {{ feature.reason_text }}
         </p>
         <v-textarea
           v-model="localValue.justification"
-          label="Justificación (opcional)"
+          :label="`${feature.reason_text} (Opcional)`"
           variant="outlined"
           density="compact"
           rows="2"
@@ -147,15 +155,16 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           @blur="saveJustification"
         />
 
-        <div class="mt-4">
-          <p class="text-subtitle-2 mb-2">
-            Evidencias de esta característica
+        <div class="mt-4 d-flex flex-wrap">
+          <p
+            class="text-subtitle-2 mt-2"
+          >
+            Documentos de apoyo (Opcional):
           </p>
-<!--          <Evidences-->
-<!--            v-if="value?.id"-->
-<!--            model="featuregoodpractice"-->
-<!--            :parent-id="value.id"-->
-<!--          />-->
+          <Evidences
+            :full_main="localValue"
+            main_collection_name="feature_good_practice"
+          />
         </div>
       </template>
 
@@ -203,14 +212,6 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         </div>
 
         <v-divider class="my-4" />
-
-<!--        <StatusDetail-->
-<!--          v-if="value?.id"-->
-<!--          model="featuregoodpractice"-->
-<!--          field="status_validation"-->
-<!--          :item-id="value.id"-->
-<!--        />-->
-
 <!--        <Comments-->
 <!--          v-if="value?.id"-->
 <!--          model="featuregoodpractice"-->
@@ -219,17 +220,8 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 <!--        />-->
       </template>
 
-      <!-- Mensaje cuando no está activo -->
-      <v-alert
-        v-if="!localValue.has_attribute && !isStaff"
-        type="info"
-        variant="tonal"
-        density="compact"
-      >
-        Marca la casilla si tu buena práctica cumple con esta característica.
-      </v-alert>
-    </v-expansion-panel-text>
-  </v-expansion-panel>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped>

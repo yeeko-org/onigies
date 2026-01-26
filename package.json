@@ -31,11 +31,5 @@
     "material-design-icons-iconfont": "^6.7.0",
     "unplugin-fonts": "^1.4.0",
     "vite-plugin-vuetify": "^2.1.0"
-  },
-  "pnpm": {
-    "supportedArchitectures": {
-      "os": ["linux", "darwin", "win32"],
-      "cpu": ["x64", "arm64"]
-    }
   }
 }

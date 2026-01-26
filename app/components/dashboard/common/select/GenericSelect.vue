@@ -291,17 +291,9 @@ function openDialog(is_add=true){
         </template>
         <template
           v-slot:title
-          v-if="item.raw.status_validation !== undefined"
         >
           <div class="d-flex align-start">
             {{ item.title }}
-            <StatusChip
-              collection="validation"
-              :main="item.raw"
-              x_small
-              disabled
-              hide_details
-            />
           </div>
         </template>
         <template
@@ -310,17 +302,17 @@ function openDialog(is_add=true){
         >
           <div class="d-flex align-start">
             {{ item.raw.description.substring(0, 120) }}{{ item.raw.description.length > 120 ? '...' : '' }}
-        <v-tooltip
-          v-if="item.raw.description"
-          activator="parent"
-          :open-on-hover="true"
-          :close-delay="0"
-          :open-delay="0"
-          location="right"
-          :max-width="400"
-        >
-          {{ item.raw.description }}
-        </v-tooltip>
+            <v-tooltip
+              v-if="item.raw.description"
+              activator="parent"
+              :open-on-hover="true"
+              :close-delay="0"
+              :open-delay="0"
+              location="right"
+              :max-width="400"
+            >
+              {{ item.raw.description }}
+            </v-tooltip>
 
           </div>
 
@@ -336,14 +328,6 @@ function openDialog(is_add=true){
         class="mr-2"
       ></v-icon>
       {{ item.title }}
-      <StatusChip
-        v-if="item.raw.status_validation !== undefined"
-        collection="validation"
-        :main="item.raw"
-        x_small
-        disabled
-        hide_details
-      />
     </template>
   </component>
 </template>

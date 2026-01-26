@@ -394,7 +394,7 @@ export const useMainStore = defineStore('main', {
   }),
   actions: {
     // setHeader() {
-    //   const cookie_auth = useCookie('auth_ocsa')
+    //   const cookie_auth = useCookie('auth_onigies')
     //   if (cookie_auth.value) {
     //     $api.defaults.headers.common['Authorization'] = `Token ${cookie_auth.value}`
     //   }
@@ -479,6 +479,19 @@ export const useMainStore = defineStore('main', {
         let response = await $api[method](
           `/${collection}/${last_id}`, data,
           { timeout: 300000 }
+        );
+        return response.data
+      } catch (error) {
+        console.error(error);
+        return {errors: error.response.data}
+      }
+    },
+    async saveAction([collection, id, action_name]) {
+      // this.setHeader()
+      const { $api } = useNuxtApp()
+      try {
+        let response = await $api.post(
+          `/${collection}/${id}/${action_name}/`
         );
         return response.data
       } catch (error) {
@@ -764,7 +777,7 @@ export const useMainStore = defineStore('main', {
   },
   getters: {
     status_dict(state) {
-      if (!state.cats.status_control)
+      if (!state.cats?.status_control)
         return {}
       let status_dict = {}
       Object.keys(state.status).forEach(group_key=>{

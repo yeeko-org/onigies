@@ -8,11 +8,6 @@ import CollectionDisplay from "~/components/dashboard/CollectionDisplay.vue";
 import PanelList from "~/components/dashboard/common/PanelList.vue";
 import PanelsResult from "~/components/dashboard/common/PanelsResult.vue";
 
-definePageMeta({
-  middleware: 'dashboard',
-  layout: 'dashboard',
-})
-
 const mainStore = useMainStore()
 const {
   cats_ready,

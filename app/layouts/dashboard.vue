@@ -45,17 +45,23 @@ const main_items = [
     color: 'brown',
   },
   {
+    plural_name: 'Envíos de Buenas Prácticas',
+    snake_name: 'good_practice_package',
+    icon: 'batch_prediction',
+    color: 'pink',
+  },
+  {
     plural_name: 'Buenas Prácticas',
     snake_name: 'good_practice',
     icon: 'lightbulb',
     color: 'pink',
   },
-  {
-    plural_name: 'Ejemplo de registro',
-    snake_name: 'surveys',
-    icon: 'ballot',
-    color: 'deep-purple',
-  },
+  // {
+  //   plural_name: 'Ejemplo de registro',
+  //   snake_name: 'surveys',
+  //   icon: 'ballot',
+  //   color: 'deep-purple',
+  // },
 ]
 
 const main_collections = [

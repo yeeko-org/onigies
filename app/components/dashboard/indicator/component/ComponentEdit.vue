@@ -1,5 +1,7 @@
 <script setup >
 
+import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
+
 const props = defineProps({
   is_massive_edit: Boolean,
   is_edit: Boolean,
@@ -13,15 +15,12 @@ const props = defineProps({
 <template>
   <v-col cols="12" class="d-flex pa-0">
 
-    <v-text-field
-      v-model="full_main.year"
-      label="Año (YYYY)"
-      type="number"
-      class="mr-2"
-      variant="outlined"
-      style="max-width: 300px;"
-      readonly
-    ></v-text-field>
+    <SelectGroup
+      filter_group_name="axes"
+      :main_object="full_main"
+      forced_level="type"
+      :width="400"
+    />
 
 
   </v-col>

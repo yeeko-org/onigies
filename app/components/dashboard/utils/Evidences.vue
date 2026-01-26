@@ -1,6 +1,9 @@
 <script setup>
 import {useMainStore} from "~/stores/index.js";
+import {useAuthStore} from "~/stores/auth.js";
 const mainStore = useMainStore()
+const authStore = useAuthStore()
+const isStaff = computed(() => authStore.is_staff)
 
 const props = defineProps({
   full_main: {
@@ -42,7 +45,7 @@ function sendFile(){
 }
 
 function trashFile(file){
-  console.log("trashFile", file)
+  // console.log("trashFile", file)
   main_file.value = file
   dialog_file_trash.value = true
 }
@@ -50,6 +53,7 @@ function trashFile(file){
 function deleteFile(){
   saving.value = true
   // const elem_id = props.full_main.id
+  console.log("main_file", main_file.value)
   const params = ['evidence', main_file.value.id]
   mainStore.deleteSimple(params).then(res=>{
     saving.value = false
@@ -64,7 +68,10 @@ function deleteFile(){
 //   return props.full_main.evidences.map(ev)
 // })
 
-
+function downloadFile(item){
+  console.log("downloadFile", item)
+  window.open(item.file, '_blank');
+}
 
 </script>
 
@@ -72,24 +79,32 @@ function deleteFile(){
   <v-chip
     v-for="item in full_main.evidences"
     :key="item.id"
-    :href="item.url ? item.url : item.file_url"
+    xhref="item.url ? item.url : item.file_url"
+    @click="downloadFile(item)"
     target="_blank"
-    class="ml-6 px-6 my-1"
+    class="ml-3 pl-5 pr-3 my-1"
     color="accent lighten-1"
     text-color="red"
+    xclose-label="Eliminar archivo"
+    xclick:close="trashFile(item)"
+    xclose-icon="delete"
+    xclosable
     prepend-icon="picture_as_pdf"
   >
     <span class="white--text" v-if="item.url">
-      {{item.name}}
+      {{item.name.replace('evidences/','')}}
     </span>
     <span class="white--text" v-else>
       {{item.file.name}}
     </span>
-    <template v-slot:append>
+    <template
+      v-if="!isStaff"
+      v-slot:close
+    >
       <v-icon
         small
-        class="white--text ml-2"
-        @click.stop="trashFile(item.file)"
+        class="white--text"
+        @click.stop="trashFile(item)"
         color="error"
       >
         delete
@@ -118,6 +133,7 @@ function deleteFile(){
 <!--      style="max-width: 200px;"-->
 <!--    ></v-file-input>-->
   <v-btn
+    v-if="!isStaff"
     @click="indirectAdd"
     variant="outlined"
     color="accent"

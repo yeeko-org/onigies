@@ -3,16 +3,18 @@ import { computed } from 'vue'
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import {useMainStore} from "~/stores/index.js";
 import TitleCommon from "~/components/dashboard/generic/TitleCommon.vue";
-import GoodPracticeForm from "~/components/dashboard/example/goodpractice/GoodPracticeForm.vue";
+import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 const mainStore = useMainStore()
 
 const props = defineProps({
   practice: { type: Object, required: true },
-  isStaff: { type: Boolean, default: false }
+  isStaff: { type: Boolean, default: false },
+  sentAt: String,
+  editionAvailable: Boolean,
 })
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit', 'deleted'])
 
 const active_features = computed(() => {
   return (props.practice.feature_values || []).filter(f => f.has_attribute)
@@ -32,6 +34,16 @@ const features_dict = computed(() => {
   }, {})
 })
 
+function deletePractice(practice){
+  props.practice.in_edition = false
+  emit('deleted')
+}
+
+function openEdit(){
+  if (!props.editionAvailable) return
+  props.practice.in_edition = true
+}
+
 </script>
 
 <template>
@@ -41,10 +53,11 @@ const features_dict = computed(() => {
     rounded="lg"
   >
     <v-card
-      :hover="!practice.in_edition"
-      :class="{'cursor-pointer': !practice.in_edition}"
+      :hover="editionAvailable"
+      :class="{'cursor-pointer': editionAvailable}"
       variant="tonal"
       color="blue"
+      @click="openEdit"
     >
       <v-card-title
         class="text-subtitle-1 font-weight-bold d-flex align-center ga-2"
@@ -65,7 +78,8 @@ const features_dict = computed(() => {
   <!--      />-->
           <v-chip variant="tonal" color="success" class="ml-3">
             <v-icon start size="small">check_circle</v-icon>
-            {{ active_features.length }} características
+            {{ active_features.length }}
+            característica{{active_features.length === 1 ? '' : 's'}}
             <v-tooltip
               activator="parent"
               location="top"
@@ -79,6 +93,15 @@ const features_dict = computed(() => {
             </v-tooltip>
           </v-chip>
           <v-chip
+            v-if="practice.evidences.length > 0"
+            variant="tonal"
+            color="blue-grey"
+            class="ml-3"
+            prepend-icon="attach_file"
+          >
+            {{practice.evidences.length}} archivos de evidencia
+          </v-chip>
+          <v-chip
             v-if="isStaff"
             size="small"
             variant="tonal"
@@ -90,12 +113,11 @@ const features_dict = computed(() => {
           </v-chip>
         <v-spacer></v-spacer>
         <StatusChip
+          v-if="sentAt"
           collection="register"
           :main="practice"
           class="ml-4"
         />
-
-
       </v-card-title>
 
       <v-card-text>
@@ -127,8 +149,9 @@ const features_dict = computed(() => {
 
 
       </v-card-text>
-
-      <v-card-actions v-if="!practice.in_edition">
+      <v-card-actions
+        v-if="!practice.in_edition && editionAvailable"
+      >
         <v-spacer/>
         <v-btn
           color="primary"
@@ -140,13 +163,37 @@ const features_dict = computed(() => {
         <v-spacer/>
       </v-card-actions>
     </v-card>
-    <GoodPracticeForm
-      v-if="practice.in_edition"
-      :practice="practice"
-      :package-id="practice.package"
-      class="mt-3"
-      @saved="emit('edit', $event)"
-    />
+    <v-dialog v-model="practice.in_edition">
+      <GoodPracticeEditSimple
+        v-if="practice.in_edition"
+        :full_main="practice"
+        :package-id="practice.package"
+        :sentAt="sentAt"
+        :is-staff="isStaff"
+        :edition-available="editionAvailable"
+        class="mt-3"
+        @saved="emit('edit', $event)"
+        @deleted="deletePractice"
+      >
+        <template v-slot:header>
+          <v-toolbar
+            color="primary"
+            density="compact"
+          >
+            <v-toolbar-title>
+              Editar Buena Práctica
+            </v-toolbar-title>
+            <v-spacer />
+            <v-btn
+              icon
+              @click="practice.in_edition = false"
+            >
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </template>
+      </GoodPracticeEditSimple>
+    </v-dialog>
 
   </v-sheet>
 </template>

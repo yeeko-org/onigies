@@ -1,4 +1,19 @@
 <script setup>
+import {el} from "vuetify/locale";
+
+const route = useRoute()
+console.log("route", route)
+
+const title = computed(() => {
+  if (route.name === 'login')
+    return 'Inicio de sesión'
+  else if (route.name === 'register')
+    return 'Registro de usuario'
+  else if (route.name === 'forgot-password')
+    return 'Recuperar contraseña'
+
+  return 'Página'
+})
 
 </script>
 
@@ -18,7 +33,7 @@
           dashboard
         </v-icon>
         <span class="text-white">
-          Inicio de sesión
+          ONIGIES - {{ title }}
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>

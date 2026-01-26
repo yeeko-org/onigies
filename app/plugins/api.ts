@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   api.interceptors.request.use((config) => {
-    const cookie_auth = useCookie('auth_ocsa')
+    const cookie_auth = useCookie('auth_onigies')
 
     if (cookie_auth.value) {
       config.headers.Authorization = `Token ${cookie_auth.value}`

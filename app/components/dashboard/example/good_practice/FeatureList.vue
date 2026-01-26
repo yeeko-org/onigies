@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import FeatureItem from "~/components/dashboard/example/goodpractice/FeatureItem.vue";
+import FeatureItem from "~/components/dashboard/example/good_practice/FeatureItem.vue";
 
 import { useMainStore } from '~/stores/index.js'
 const mainStore = useMainStore()
-const { cats, cats_ready } = mainStore
+const { cats, cats_ready, all_nodes } = mainStore
 
 const props = defineProps({
   goodPracticeId: { type: Number, required: true },
@@ -12,8 +12,9 @@ const props = defineProps({
   isStaff: { type: Boolean, default: false }
 })
 
-// const { saveFeatureGoodPractice } = useGoodPractice()
 const localValues = ref([])
+
+// console.log("all_nodes.feature", all_nodes)
 
 const getFeatureValue = (featureId) => {
   return localValues.value.find(fv => {
@@ -76,22 +77,24 @@ onMounted(initializeValues)
     >
       La IES no ha marcado ninguna característica como cumplida.
     </v-alert>
-    <v-alert
+    <div
       v-if="!isStaff"
-      type="info"
-      variant="tonal"
-      class="mb-4"
+      class="mb-4 mt-4 text-h6"
     >
       Marca las características que crees que cumple tu buena práctica.
-    </v-alert>
 
-    <template v-for="feature in cats.feature" :key="feature.id">
+    </div>
+
+    <template
+      v-for="feature in all_nodes.features.children"
+      :key="feature.id"
+    >
       <FeatureItem
-        v-if="!isStaff || getFeatureValue(feature.id)?.has_attribute"
+        v-if="!isStaff || getFeatureValue(feature.data.id)?.has_attribute"
         :feature="feature"
-        :value="getFeatureValue(feature.id)"
+        :value="getFeatureValue(feature.data.id)"
         :is-staff="isStaff"
-        @update="(data) => handleUpdate(feature.id, data)"
+        @update="(data) => handleUpdate(feature.data.id, data)"
       />
     </template>
   </div>

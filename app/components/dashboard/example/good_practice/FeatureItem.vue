@@ -1,7 +1,6 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import Evidences from "~/components/dashboard/utils/Evidences.vue";
+import Comments from "~/components/dashboard/utils/Comments.vue";
 
 const props = defineProps({
   feature: { type: Object, required: true },
@@ -15,7 +14,8 @@ const localValue = ref({
   has_attribute: false,
   justification: '',
   final_option: null,
-  evidences: []
+  evidences: [],
+  comments: '',
 })
 
 const saving = ref(false)
@@ -33,7 +33,9 @@ const hasAttribute = computed({
   }
 })
 
-const featureOptions = computed(() => props.feature.options || [])
+const feature_options = computed(() => {
+  return props.feature.children.map(feature => feature.data) || []
+})
 
 const panelColor = computed(() => {
   if (!localValue.value.has_attribute) return ''
@@ -50,7 +52,8 @@ const initValue = () => {
       has_attribute: props.value.has_attribute || false,
       justification: props.value.justification || '',
       final_option: props.value.final_option?.id || props.value.final_option,
-      evidences: props.value.evidences || []
+      evidences: props.value.evidences || [],
+      comments: props.value.comments || '',
     }
   }
 }
@@ -61,7 +64,7 @@ const saveChanges = async () => {
     emit('update', {
       ...localValue.value,
       good_practice: props.value?.good_practice,
-      feature: props.feature.id
+      feature: props.feature.data.id
     })
   } finally {
     saving.value = false
@@ -87,7 +90,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
     variant="tonal"
     color="indigo"
   >
-    <v-card-title>
+    <v-card-title style="min-height: 76px">
       <div class="d-flex align-center w-100">
         <v-checkbox
           v-if="!isStaff"
@@ -102,27 +105,34 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           :color="localValue.has_attribute ? 'success' : 'grey'"
           class="mr-2"
         >
-          {{ localValue.has_attribute ? 'mdi-check-circle' : 'mdi-circle-outline' }}
+          {{ localValue.has_attribute ? 'check_circle' : 'circle_outline' }}
         </v-icon>
 
         <div class="flex-grow-1">
-          <span class="font-weight-medium">{{ feature.description }}</span>
-<!--          <span-->
-<!--            v-if="feature.complement"-->
-<!--            class="text-medium-emphasis ml-1"-->
-<!--          >-->
-<!--            - {{ feature.complement }}-->
-<!--          </span>-->
+          <span class="font-weight-bold">
+            {{ feature.data.name }}
+          </span>
+          <span
+            v-if="feature.data.description && !isStaff"
+            class="text-medium-emphasis ml-1 text-subtitle-1"
+          >
+            ({{ feature.data.description }})
+          </span>
         </div>
-
-        <v-chip
-          v-if="isStaff && localValue.final_option"
-          size="small"
-          color="success"
-          class="ml-2"
-        >
-          Evaluado
-        </v-chip>
+        <template v-if="isStaff">
+          <v-chip
+            v-if="localValue.final_option"
+            size="small"
+            color="success"
+            class="ml-2"
+          >
+            Evaluado
+          </v-chip>
+          <Comments
+            :main="localValue"
+            collection_name="feature_good_practice"
+          />
+        </template>
       </div>
     </v-card-title>
 
@@ -140,14 +150,14 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
       <!-- Para IES: Justificación -->
       <template v-if="localValue.has_attribute && !isStaff">
         <p
-          v-if="feature.reason_text && false"
+          v-if="feature.data.reason_text && false"
           class="text-subtitle-1 mb-2"
         >
-          {{ feature.reason_text }}
+          {{ feature.data.reason_text }}
         </p>
         <v-textarea
           v-model="localValue.justification"
-          :label="`${feature.reason_text} (Opcional)`"
+          :label="`${feature.data.reason_text} (Opcional)`"
           variant="outlined"
           density="compact"
           rows="2"
@@ -159,7 +169,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           <p
             class="text-subtitle-2 mt-2"
           >
-            Documentos de apoyo (Opcional):
+            Evidencias (Opcional):
           </p>
           <Evidences
             :full_main="localValue"
@@ -181,34 +191,36 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           {{ localValue.justification }}
         </v-alert>
 
-        <p class="text-subtitle-2 mb-2">Seleccione su evaluación:</p>
-        <v-btn-toggle
-          :model-value="localValue.final_option"
-          mandatory
-          divided
-          variant="outlined"
+        <span class="text-subtitle-2 mb-2">Evalúa la característica</span>
+        <span class="text-caption text-grey-darken-1">
+          ({{ feature.data.description }})
+        </span>
+        <v-slider
+          v-model="localValue.final_option"
+          :ticks="feature_options.reduce((acc, opt) => ({ ...acc, [opt.id]: opt.name }), {})"
+          :min="feature_options[0]?.id"
+          :max="feature_options[feature_options.length - 1]?.id"
+          :step="1"
+          show-ticks="always"
+          tick-size="4"
           color="primary"
-          class="flex-wrap"
+          track-color="grey-lighten-2"
           @update:model-value="saveFinalOption"
         >
-          <v-btn
-            v-for="opt in featureOptions"
-            :key="opt.id"
-            :value="opt.id"
-            size="small"
-          >
-            {{ opt.name }} ({{ opt.value }})
-          </v-btn>
-        </v-btn-toggle>
-
-        <div class="mt-4">
+          <template #tick-label="{ tick }">
+            <span>{{ tick.label }}</span>
+          </template>
+        </v-slider>
+        <div
+          v-if="localValue.evidences.length > 0"
+          class="mt-4"
+        >
           <p class="text-subtitle-2 mb-2">Evidencias adjuntas:</p>
-<!--          <Evidences-->
-<!--            v-if="value?.id"-->
-<!--            model="featuregoodpractice"-->
-<!--            :parent-id="value.id"-->
-<!--            readonly-->
-<!--          />-->
+          <Evidences
+            :full_main="localValue"
+            main_collection_name="feature_good_practice"
+          />
+
         </div>
 
         <v-divider class="my-4" />

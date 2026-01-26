@@ -4,11 +4,6 @@ import {useMainStore} from '~/stores/index'
 import {storeToRefs} from "pinia";
 import CollectionDisplay from "~/components/dashboard/CollectionDisplay.vue";
 
-definePageMeta({
-  middleware: 'dashboard',
-  layout: 'dashboard',
-})
-
 const mainStore = useMainStore()
 const {
   cats_ready,

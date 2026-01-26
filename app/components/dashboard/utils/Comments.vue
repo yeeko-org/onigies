@@ -9,7 +9,7 @@ const mainStore = useMainStore()
 const authStore = useAuthStore()
 
 const {schemas} = storeToRefs(mainStore)
-const { user_details_ocsa } = authStore
+const { user_onigies } = authStore
 
 const props = defineProps({
   main: Object,
@@ -30,7 +30,7 @@ function addComment() {
   props.main.comments = props.main.comments
     ? `${props.main.comments}\n\n` : ''
   const today = dayjs().format('DD/MM/YYYY')
-  const user = user_details_ocsa.first_name
+  const user = user_onigies.first_name
   props.main.comments += `${today} - ${user}: `
 }
 

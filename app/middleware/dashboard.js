@@ -3,11 +3,10 @@ import {useAuthStore} from "~/stores/auth.js";
 // import Cookie from "js-cookie";
 
 export default defineNuxtRouteMiddleware((to, from, next) => {
-  console.log('TO', to)
-  if (to.path === '/') {
-    // console.log('redirecting to dashboard')
-    return navigateTo('/dashboard')
-  }
+  // if (to.path === '/') {
+  //   // console.log('redirecting to dashboard')
+  //   return navigateTo('/dashboard')
+  // }
 
   const mainStore = useMainStore()
   const authStore = useAuthStore()
@@ -47,9 +46,8 @@ export default defineNuxtRouteMiddleware((to, from, next) => {
     return
   }
   fetchCatalogs()
-  console.log('after cats')
-
-  console.log('after_check_auth')
+  // console.log('after cats')
+  // console.log('after_check_auth')
 
   //   .then(() => {
   //   next()

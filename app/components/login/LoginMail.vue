@@ -89,21 +89,6 @@ async function sendLogin(){
       error_login.value = false
     }
   })
-  // stores.dispatch("auth/LOGIN_MAIL", data)
-  //   .then(res => {
-  //     console.log("res", res)
-  //     loading_login.value = false
-  //     if (res.error){
-  //       // this.$emit('set-alert', JSON.stringify(res.error.response.data))
-  //       emit('set-alert', res.error.response.data)
-  //       error_login.value = true
-  //       login_data.value.password = "";
-  //     }
-  //     else{
-  //       emit('set-alert', false)
-  //       error_login.value = false
-  //     }
-  //   })
 }
 
 </script>

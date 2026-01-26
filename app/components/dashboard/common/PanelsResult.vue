@@ -76,6 +76,10 @@ const results_showed = computed(() => {
   return props.results
 })
 
+const insertion_forbidden = computed(() => {
+  return props.collection_data.open_insertion === false
+})
+
 function selectAll() {
   if (sel.value.selected_elems.length === props.results.length)
     sel.value.selected_elems = []
@@ -197,7 +201,7 @@ function selectItem(item) {
     color="secondary"
   >
     <v-btn
-      v-if="collection_data.level !== 'secondary'"
+      v-if="collection_data.level !== 'secondary' && !insertion_forbidden"
       color="accent"
       @click="addItem"
       class="mr-3"

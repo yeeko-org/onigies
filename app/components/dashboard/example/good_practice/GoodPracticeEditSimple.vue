@@ -1,7 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useGoodPractice } from '~/composables/useGoodPractice.js'
-import FeatureList from "~/components/dashboard/example/goodpractice/FeatureList.vue";
+import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
 import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
@@ -10,154 +8,191 @@ import Evidences from "~/components/dashboard/utils/Evidences.vue";
 const mainStore = useMainStore()
 
 const props = defineProps({
-  practice: { type: Object, default: null },
-  packageId: { type: Number, required: true },
-  isStaff: { type: Boolean, default: false }
+  full_main: { type: Object, default: null },
+  isStaff: { type: Boolean, default: true },
+  sentAt: String,
+  editionAvailable: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const emit = defineEmits(['close', 'saved', 'deleted'])
 
-const { loading, deleteGoodPractice } =
-  useGoodPractice()
-
 const tab = ref('info')
 const confirmDelete = ref(false)
+const loading = ref(false)
 
 const form = ref({
   id: null,
-  package: props.packageId,
+  package: null,
   axis: null,
   component: null,
   name: '',
   description: '',
   results: '',
-  status_register: null
+  status_register: null,
+
 })
 
-const isEditing = computed(() => !!props.practice?.id)
+const isEditing = computed(() => !!props.full_main?.id)
 
 const canSave = computed(() => {
+  if (props.isStaff) return true
   return form.value.name && form.value.axis && form.value.component
 })
 
 
 const populateForm = () => {
-  if (props.practice) {
+  if (props.full_main) {
     form.value = {
-      id: props.practice.id,
-      package: props.practice.package,
-      axis: props.practice.axis?.id || props.practice.axis,
-      component: props.practice.component?.id || props.practice.component,
-      name: props.practice.name,
-      description: props.practice.description,
-      results: props.practice.results,
-      status_register: props.practice.status_register
+      id: props.full_main.id,
+      package: props.full_main.package,
+      axis: props.full_main.axis?.id || props.full_main.axis,
+      component: props.full_main.component?.id || props.full_main.component,
+      name: props.full_main.name,
+      description: props.full_main.description,
+      results: props.full_main.results,
+      status_register: props.full_main.status_register,
+      start_year: props.full_main.start_year,
+      end_year: props.full_main.end_year
     }
   }
 }
 
-const save = async () => {
+const savePractice = async () => {
   if (!canSave.value) return
+  loading.value = true
   try {
     const res = await mainStore.saveSimple(['good_practice', form.value])
-
     emit('saved', res)
   } catch (e) {
     console.error('Error al guardar:', e)
   }
+  loading.value = true
 }
 
 const remove = async () => {
   try {
-    await deleteGoodPractice(form.value.id)
+    await mainStore.deleteSimple(['good_practice', form.value.id])
     emit('deleted')
   } catch (e) {
     console.error('Error al eliminar:', e)
   }
 }
 
-watch(() => props.practice, populateForm, { immediate: true })
+watch(() => props.full_main, populateForm, { immediate: true })
 
 </script>
 
 <template>
-  <v-card
-    tile
-    variant="text"
-  >
-
+  <v-card>
+    <slot name="header">
+    </slot>
     <v-card-text
       class="pa-4"
     >
-      <v-form :disabled="isStaff">
+      <v-form>
         <div class="d-flex">
-
           <v-text-field
             v-model="form.name"
             label="Nombre de la buena práctica *"
-            variant="outlined"
+            :variant="isStaff ? 'solo' : 'outlined'"
             class="mr-6"
             :readonly="isStaff"
           />
           <StatusDetail
+            v-if="full_main.status_register !== 'draft'"
             :final_filters="form"
             collection="register"
           />
         </div>
-        <div class="d-flex">
+        <div class="d-flex align-center">
 
           <SelectGroup
             :main_object="form"
             filter_group_name="axes"
             forced_level="subtype"
-            :width="360"
+            :width="380"
           />
+          <div v-if="!isStaff" class="ml-4">
+            <div class="text-subtitle-1">
+              Periodo de vigencia
+            </div>
+            <div class="d-flex">
+              <v-text-field
+                type="number"
+                label="Año de inicio"
+                variant="outlined"
+                v-model="form.start_year"
+                :readonly="isStaff"
+                class="mr-4"
+                width="160"
+                density="compact"
+              />
+              <v-text-field
+                type="number"
+                label="Año de fin"
+                variant="outlined"
+                v-model="form.end_year"
+                :readonly="isStaff"
+                width="160"
+                density="compact"
+              />
+            </div>
+          </div>
+          <div v-else class="mb-4 ml-4 text-subtitle-1">
+            <b>Vigencia:</b> Del {{ form.start_year || '----'}}
+            al {{ form.end_year || '----'}}
+          </div>
         </div>
 
         <v-textarea
           v-model="form.description"
           label="Descripción"
-          variant="outlined"
+          :variant="isStaff ? 'solo' : 'outlined'"
           rows="3"
           :readonly="isStaff"
+          :counter="5000"
         />
 
         <v-textarea
           v-model="form.results"
           label="Resultados obtenidos"
-          variant="outlined"
+          :variant="isStaff ? 'solo' : 'outlined'"
           rows="3"
           :readonly="isStaff"
+          :counter="5000"
         />
       </v-form>
-      Archivos adjuntos:
+      Evidencias:
       <Evidences
-        :full_main="practice"
+        :full_main="full_main"
         main_collection_name="good_practice"
       />
-
+      <v-divider class="mt-4"></v-divider>
       <FeatureList
         v-if="isEditing"
         :good-practice-id="form.id"
-        :feature-values="practice?.feature_values || []"
+        :feature-values="full_main?.feature_values || []"
         :is-staff="isStaff"
-        class="mt-4"
+        class="mt-4 mb-4"
       />
 
 <!--          <Evidences-->
 <!--            v-if="isEditing"-->
-<!--            model="goodpractice"-->
+<!--            model="good_practice"-->
 <!--            :parent-id="form.id"-->
 <!--          />-->
 <!--          <Comments-->
 <!--            v-if="isEditing"-->
-<!--            model="goodpractice"-->
+<!--            model="good_practice"-->
 <!--            :parent-id="form.id"-->
 <!--          />-->
     </v-card-text>
 
 
-    <v-card-actions>
+    <v-card-actions class="mb-3 mx-3">
       <v-btn
         v-if="isEditing && !isStaff"
         color="error"
@@ -169,19 +204,20 @@ watch(() => props.practice, populateForm, { immediate: true })
       </v-btn>
       <v-spacer />
       <v-btn
+        v-if="!isStaff"
         variant="text"
-        @click="practice.in_edition = false"
+        @click="full_main.in_edition = false"
       >
         Cerrar
       </v-btn>
       <v-btn
-        v-if="!isStaff"
+        v-if="editionAvailable"
         color="accent"
         variant="flat"
         :loading="loading"
         :disabled="!canSave"
         prepend-icon="save"
-        @click="save"
+        @click="savePractice"
       >
         Guardar
       </v-btn>

@@ -1,6 +1,4 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useGoodPractice } from '~/composables/useGoodPractice.js'
 import {useMainStore} from "~/stores/index.js";
 const mainStore = useMainStore()
 // const { saveSimple, deleteSimple } = mainStore

@@ -30,5 +30,10 @@
     "material-design-icons-iconfont": "^6.7.0",
     "unplugin-fonts": "^1.4.0",
     "vite-plugin-vuetify": "^2.1.0"
+  },
+  "config": {
+    "nuxt": {
+      "port": 3018
+    }
   }
 }

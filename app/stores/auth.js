@@ -58,7 +58,7 @@ export const useAuthStore = defineStore("auth", {
           })
       })
     },
-    checkAuthSimple() {
+    async checkAuthSimple() {
       // const cookie_auth = Cookie.get('auth_onigies')
       const cookie_auth = useCookie('auth_onigies')
 
@@ -80,7 +80,10 @@ export const useAuthStore = defineStore("auth", {
           // console.log("hay cookie", this.auth_onigies)
           this.auth_onigies = cookie_auth.value
           // this.setHeader()
-          this.getLogin()
+          // this.getLogin().then((userData) => {
+          //   return resolve(userData)
+          // })
+          return this.getLogin()
         }
         else {
           // console.log("NO ESTÁ LOGUEADO")
@@ -90,6 +93,7 @@ export const useAuthStore = defineStore("auth", {
       })
     },
     getCurrentUser() {
+      console.log("getCurrentUser", this.user_onigies)
       if (this.user_onigies){
         return this.user_onigies
       }
@@ -99,22 +103,28 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     getLogin() {
-      // console.log("getLogin")
-      // return new Promise((resolve) => {
+      return new Promise((resolve) => {
       // this.setHeader()
-      const { $api } = useNuxtApp()
-      $api.get('/login/')
-        .then(({data, status}) => {
-          if (status !== 204)
-            return this.hasLogged(data)
-          else
-            return this.hasNotLogged('Not Content (204)')
-        })
-        .catch(err =>{
-          console.log("LOGIN_ERROR", err)
-          return this.hasNotLogged(`Server error: ${err}`)
-        })
-      // })
+        const { $api } = useNuxtApp()
+        $api.get('/login/')
+          .then(({data, status}) => {
+            if (status !== 204){
+              console.log("LOGIN_DATA", data)
+              this.hasLogged(data)
+              return resolve(data)
+            }
+            else{
+
+              this.hasNotLogged('Not Content (204)')
+              return resolve(null)
+            }
+          })
+          .catch(err =>{
+            console.log("LOGIN_ERROR", err)
+            this.hasNotLogged(`Server error: ${err}`)
+            return resolve(null)
+          })
+      })
     },
     loginMail(params) {
       const { $api } = useNuxtApp()

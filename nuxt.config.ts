@@ -6,9 +6,6 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   runtimeConfig: {
     // Las claves aquí solo están disponibles en el lado del servidor
-    // Ejemplo: apiSecret: '123'
-    mapboxToken: process.env.NUXT_MAPBOX_TOKEN,
-
     // Las claves dentro de `public` están disponibles también en el lado del cliente
     public: {
       apiUrl: process.env.NUXT_API_URL,
@@ -29,7 +26,16 @@ export default defineNuxtConfig({
       })
     },
   ],
-
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0'
+        }
+      ]
+    }
+  },
   // set .pem and .key files to be served by vite and build https
   devServer: {
     https: {
@@ -38,6 +44,7 @@ export default defineNuxtConfig({
       key: 'localhost-key.pem',
       cert: 'localhost.pem',
     },
+    port: 3018,
   },
   nitro: {
     devServer: {

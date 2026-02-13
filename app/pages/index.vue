@@ -1,9 +1,9 @@
 <script setup>
 
-// definePageMeta({
-//   middleware: 'dashboard',
-//   layout: 'dashboard',
-// })
+definePageMeta({
+  middleware: 'simple-redirect',
+  // layout: 'dashboard',
+})
 
 </script>
 

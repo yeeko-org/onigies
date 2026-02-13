@@ -8,9 +8,10 @@
 </script>
 
 <template>
-  <v-card class="px-3 mt-3" >
+  <v-card v-if="false" class="px-3 mt-3" >
     <v-card-title>
       Interactúa mediante el menú.
     </v-card-title>
   </v-card>
+
 </template>

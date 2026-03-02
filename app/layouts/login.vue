@@ -40,9 +40,8 @@ const title = computed(() => {
     </v-app-bar>
     <v-main>
       <v-container
-        _style="width: 100%;"
         class="pt-0"
-        width="600"
+        width="640"
       >
         <v-layout align-center justify-center >
 

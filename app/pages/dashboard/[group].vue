@@ -1,5 +1,5 @@
 <script setup>
-import {useMainStore} from '~/stores/index'
+import {useMainStore} from '~/store/index'
 
 import {storeToRefs} from "pinia";
 import CollectionDisplay from "~/components/dashboard/CollectionDisplay.vue";

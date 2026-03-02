@@ -4,15 +4,12 @@ import dayjs from "dayjs";
 const props = defineProps({
   is_massive_edit: Boolean,
   is_edit: Boolean,
-  full_main: {
-    type: Object,
-    required: true,
-  },
 })
+const full_main = defineModel({type: Object, required: true})
 
 const sent_at = computed(() => {
-  return props.full_main.sent_at
-    ? dayjs(props.full_main.sent_at).format('DD/MM/YYYY')
+  return full_main.value.sent_at
+    ? dayjs(full_main.value.sent_at).format('DD/MM/YYYY')
     : null
 })
 

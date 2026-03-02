@@ -2,11 +2,12 @@
 import {computed, onMounted, ref, watch} from 'vue'
 
 const menu_drawer = ref(false)
-import {useMainStore} from "~/stores/index.js";
-import {useAuthStore} from "~/stores/auth.js";
-import {useIesStore} from "~/stores/ies.js";
+import {useMainStore} from "~/store/index.js";
+import {useAuthStore} from "~/store/auth.js";
+import {useIesStore} from "~/store/ies.js";
 import {storeToRefs} from "pinia";
 const router = useRouter()
+const route = useRoute()
 const config = useRuntimeConfig();
 
 const mainStore = useMainStore()
@@ -32,14 +33,15 @@ const main_items = [
   {
     plural_name: 'Inicio',
     snake_name: '',
-    icon: 'ballot',
+    icon: 'home',
     color: 'teal',
   },
   {
     plural_name: 'Personas usuarias',
     snake_name: 'surveys',
-    icon: 'ballot',
+    icon: 'account_box',
     color: 'deep-purple',
+    disabled: true,
   },
 ]
 
@@ -78,6 +80,20 @@ const current_year = computed({
   }
 })
 
+onMounted(() => {
+  console.log("router", router)
+  console.log("route", route)
+})
+
+const current_page = computed(() => {
+  // const fullPath = `respuestas/${route.fullPath}`
+  const item = main_items.find(i =>
+    route.fullPath === `/respuestas/${i.snake_name}`
+  )
+  console.log("current_page", item)
+  return item || {plural_name: 'Respuestas', icon: 'ballot'}
+})
+
 </script>
 
 <template>
@@ -99,10 +115,12 @@ const current_year = computed({
       <client-only>
         <v-toolbar-title class="d-flex align-center mt-1">
           <v-icon class="mr-3" color="white">
-            home
+            {{ current_page?.icon || 'ballot' }}
           </v-icon>
           <span>
-            Inicio {{ies_data && ies_data.acronym}}
+            {{current_page.plural_name || 'Respuestas'}}
+            {{ies_data && ies_data.acronym}}
+
           </span>
         </v-toolbar-title>
         <v-select
@@ -133,7 +151,7 @@ const current_year = computed({
     <v-navigation-drawer
       v-model="menu_drawer"
       app
-      temporary
+
       mobile-breakpoint="960"
       width="280"
     >
@@ -159,6 +177,7 @@ const current_year = computed({
               :value="collection.snake_name"
               exact
               _active-class="text-accent"
+              :disabled="collection.disabled"
               :to="`/respuestas/${collection.snake_name}`"
               :prepend-icon="collection.icon"
               :base-color="collection.color || 'grey-darken-1'"
@@ -167,15 +186,15 @@ const current_year = computed({
             <v-divider></v-divider>
           </template>
           <template
-            v-for="year in iesStore.available_years"
-            :key="year"
+            v-for="period in iesStore.available_years"
+            :key="period.year"
           >
             <v-list-item
-              :value="year"
+              :value="period.year"
               exact
-              :to="`/respuestas/${year}`"
+              :to="`/respuestas/${period.year}`"
               base-color="primary"
-              :title="`Respuestas ${year}`"
+              :title="`Respuestas ${period.year}`"
             ></v-list-item>
             <v-divider></v-divider>
           </template>

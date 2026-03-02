@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import FeatureItem from "~/components/dashboard/example/good_practice/FeatureItem.vue";
 
-import { useMainStore } from '~/stores/index.js'
+import { useMainStore } from '~/store/index.js'
 const mainStore = useMainStore()
 const { cats, cats_ready, all_nodes } = mainStore
 

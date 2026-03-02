@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useMainStore } from "~/stores/index.js";
+import { useMainStore } from "~/store/index.js";
 
 const mainStore = useMainStore()
 const { saveSimple, deleteSimple } = mainStore

@@ -7,6 +7,7 @@ import '@fontsource/roboto/700.css'
 import { h } from 'vue'
 // import { aliases, md } from 'vuetify/iconsets/md'
 import { aliases as mdAliases } from 'vuetify/iconsets/md'
+import colors from 'vuetify/lib/util/colors'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { VDateInput } from "vuetify/labs/VDateInput"
@@ -17,7 +18,7 @@ const materialSymbols = {
     h(props.tag, { class: 'material-symbols-outlined' }, props.icon),
 }
 
-export default defineNuxtPlugin((app) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components: {
       VDateInput
@@ -31,7 +32,7 @@ export default defineNuxtPlugin((app) => {
             // secondary: '#424242',
             // accent: colors.teal.accent4,
             primary: "#8a221f",
-            secondary: "purple",
+            secondary: colors.purple.darken1,
             accent: "#f59322",
           }
         }
@@ -58,5 +59,5 @@ export default defineNuxtPlugin((app) => {
       },
     }
   })
-  app.vueApp.use(vuetify)
+  nuxtApp.vueApp.use(vuetify)
 })

@@ -2,8 +2,8 @@
 import {computed, onMounted, ref, watch} from 'vue'
 
 const menu_drawer = ref(false)
-import {useMainStore} from "~/stores/index.js";
-import {useAuthStore} from "~/stores/auth.js";
+import {useMainStore} from "~/store/index.js";
+import {useAuthStore} from "~/store/auth.js";
 import {storeToRefs} from "pinia";
 const router = useRouter()
 const config = useRuntimeConfig();

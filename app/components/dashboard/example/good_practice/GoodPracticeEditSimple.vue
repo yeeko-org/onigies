@@ -3,12 +3,11 @@ import FeatureList from "~/components/dashboard/example/good_practice/FeatureLis
 import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
-import { useMainStore } from '~/stores/index.js'
-import Evidences from "~/components/dashboard/utils/Evidences.vue";
+import { useMainStore } from '~/store/index.js'
+import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
 const mainStore = useMainStore()
 
 const props = defineProps({
-  full_main: { type: Object, default: null },
   isStaff: { type: Boolean, default: true },
   sentAt: String,
   editionAvailable: {
@@ -16,6 +15,8 @@ const props = defineProps({
     default: true
   }
 })
+
+const full_main = defineModel({type: Object, required: true})
 
 const emit = defineEmits(['close', 'saved', 'deleted'])
 
@@ -31,11 +32,11 @@ const form = ref({
   name: '',
   description: '',
   results: '',
-  status_register: null,
+  status_sending: null,
 
 })
 
-const isEditing = computed(() => !!props.full_main?.id)
+const isEditing = computed(() => !!full_main.value?.id)
 
 const canSave = computed(() => {
   if (props.isStaff) return true
@@ -44,18 +45,18 @@ const canSave = computed(() => {
 
 
 const populateForm = () => {
-  if (props.full_main) {
+  if (full_main.value) {
     form.value = {
-      id: props.full_main.id,
-      package: props.full_main.package,
-      axis: props.full_main.axis?.id || props.full_main.axis,
-      component: props.full_main.component?.id || props.full_main.component,
-      name: props.full_main.name,
-      description: props.full_main.description,
-      results: props.full_main.results,
-      status_register: props.full_main.status_register,
-      start_year: props.full_main.start_year,
-      end_year: props.full_main.end_year
+      id: full_main.value.id,
+      package: full_main.value.package,
+      axis: full_main.value.axis?.id || full_main.value.axis,
+      component: full_main.value.component?.id || full_main.value.component,
+      name: full_main.value.name,
+      description: full_main.value.description,
+      results: full_main.value.results,
+      status_sending: full_main.value.status_sending,
+      start_year: full_main.value.start_year,
+      end_year: full_main.value.end_year
     }
   }
 }
@@ -81,7 +82,7 @@ const remove = async () => {
   }
 }
 
-watch(() => props.full_main, populateForm, { immediate: true })
+watch(() => full_main.value, populateForm, { immediate: true })
 
 </script>
 
@@ -102,16 +103,17 @@ watch(() => props.full_main, populateForm, { immediate: true })
             :readonly="isStaff"
           />
           <StatusDetail
-            v-if="full_main.status_register !== 'draft'"
-            :final_filters="form"
-            collection="register"
+            v-if="form.status_sending !== 'draft'"
+            v-model="form"
+            collection="sending"
           />
         </div>
         <div class="d-flex align-center">
 
           <SelectGroup
-            :main_object="form"
+            v-model="form"
             filter_group_name="axes"
+            main_collection_name="good_practice"
             forced_level="subtype"
             :width="380"
           />

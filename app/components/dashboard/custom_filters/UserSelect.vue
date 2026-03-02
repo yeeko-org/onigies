@@ -1,5 +1,5 @@
 <script setup>
-import {useMainStore} from "~/stores/index.js";
+import {useMainStore} from "~/store/index.js";
 const mainStore = useMainStore()
 const { cats, all_users, full_editors } = mainStore
 const props = defineProps({

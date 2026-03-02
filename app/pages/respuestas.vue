@@ -1,6 +1,6 @@
 <script setup>
 
-import { useIesStore } from "~/stores/ies.js";
+import { useIesStore } from "~/store/ies.js";
 const iesStore = useIesStore()
 
 definePageMeta({

@@ -1,15 +1,14 @@
 <script setup>
-import {computed, onMounted, ref, onBeforeMount, watch, nextTick } from "vue";
-import {useMainStore} from '~/stores/index'
+import {useMainStore} from '~/store/index'
 const mainStore = useMainStore()
 import FiltersList from "~/components/dashboard/common/select/FiltersList.vue";
-import PanelsResult from "~/components/dashboard/common/PanelsResult.vue";
+import PanelsResult from "~/components/dashboard/common/main/PanelsResult.vue";
 // import { status_filters } from "~/composables/filters.js";
 
 import {storeToRefs} from "pinia";
-import ExportButton from "~/components/dashboard/generic/ExportButton.vue";
+import ExportButton from "~/components/dashboard/common/utils/ExportButton.vue";
 import _debounce from "lodash/debounce.js";
-import QuestionMark from "~/components/dashboard/generic/QuestionMark.vue";
+import QuestionMark from "~/components/dashboard/common/utils/QuestionMark.vue";
 
 
 const { current_collection_data } = storeToRefs(mainStore)
@@ -123,10 +122,10 @@ function realApplyFilters(page=null) {
     collection_name += '_mini'
   results.value = []
   const params = {
+    ...props.init_filters,
     ...final_filters.value,
-    q: q_value.value,
     page: page,
-    ...props.init_filters
+    q: q_value.value,
   }
   fetchElements([collection_name, params]).then(res => {
     if (res.cancelled) {
@@ -166,12 +165,12 @@ function changeShowDetails() {
 
 function resetFilters() {
   const coll_data = collection_data.value
-  console.log("resetFilters", coll_data)
-  if (!coll_data.is_category && !coll_data.cat_params?.init_display)
+  // console.log("resetFilters", props.init_filters)
+  if (!coll_data.is_category && !coll_data.init_display)
     temp_reset.value = true
   if (props.direct_sheet)
     temp_reset.value = true
-  if (coll_data.cat_params?.init_display)
+  else if (coll_data.init_display)
     temp_reset.value = false
   final_filters.value = {
     ordering: collection_data.value.has.order ? 'order' : null,
@@ -192,12 +191,29 @@ function initFilters() {
   let collection_filters = collection_data.value.collection_filters
   current_filters.value = collection_filters
 
-  if (props.is_mini)
-    visible_filters.value = []
+  if (props.is_mini) {
+    if (props.init_filters?.q) {
+      // console.log("current_filters", current_filters.value)
+      visible_filters.value = current_filters.value.filter(
+        f => f.key_name === 'states'
+      )
+      final_filters.value = {
+        ...final_filters.value,
+        ...props.init_filters,
+      }
+    }
+    else {
+      visible_filters.value = []
+    }
+  }
   else if (collection_filters.length <= 3)
     visible_filters.value = current_filters.value
   else
     visible_filters.value = current_filters.value.filter(f => !f.hidden)
+  // console.log("visible_filters", visible_filters.value)
+  if (props.init_filters.q)
+    q_value.value = props.init_filters.q
+
 }
 
 function setInitResults(init_results){
@@ -251,7 +267,11 @@ function selectItem(item) {
 </script>
 
 <template>
-  <v-card class="pt-3" flat style="width: 100%;">
+  <v-card
+    class="pt-3"
+    flat
+    style="width: 100%;"
+  >
     <template v-if="is_mini">
       <v-card-title class="text-h5 d-flex align-center">
         Busca y elige un {{ collection_data.name }}
@@ -268,6 +288,10 @@ function selectItem(item) {
         <v-spacer></v-spacer>
       </v-card-subtitle>
     </template>
+    <div class="text-h6">
+      <slot name="title">
+      </slot>
+    </div>
     <v-row class="mx-0" v-if="collection_data">
       <v-col cols="12" class="px-0" v-if="!simplified_filters">
         <v-chip-group
@@ -292,7 +316,7 @@ function selectItem(item) {
       </v-col>
       <FiltersList
         v-if="!simplified_filters"
-        :final_filters="final_filters"
+        v-model="final_filters"
         :visible_filters="visible_filters"
       />
     </v-row>
@@ -342,7 +366,7 @@ function selectItem(item) {
         <v-spacer></v-spacer>
         <FiltersList
           v-if="simplified_filters"
-          :final_filters="final_filters"
+          v-model="final_filters"
           :visible_filters="visible_filters"
         />
 <!--        <v-btn-->
@@ -363,7 +387,7 @@ function selectItem(item) {
             Agregar {{ collection_data.name }}
           </v-btn>
           <ExportButton
-            v-if="collection_data.xls_export"
+            v-if="collection_data.xls_export && !direct_sheet && !is_mini"
             @export-records="exportRecords($event)"
             :loading-export="loading_export"
           />

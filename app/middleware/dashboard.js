@@ -1,11 +1,11 @@
-import {useMainStore} from "~/stores/index.js";
-import {useAuthStore} from "~/stores/auth.js";
-// import Cookie from "js-cookie";
+import {useMainStore} from "~/store/index.js";
+import {useAuthStore} from "~/store/auth.js";
 
 export default defineNuxtRouteMiddleware((to, from, next) => {
 
   const mainStore = useMainStore()
   const authStore = useAuthStore()
+  const cookieAuth = useCookie('auth_onigies')
   // console.log('FROM', from)
   const {
     fetchCatalogs,
@@ -13,8 +13,10 @@ export default defineNuxtRouteMiddleware((to, from, next) => {
     setCollection,
     setFilterGroup,
   } = mainStore
-  const { is_logged, checkAuthSimple, authCookie, purgeAuth } = authStore
 
+  if (cookieAuth.value && !authStore.auth_onigies) {
+    authStore.setToken(cookieAuth.value)
+  }
   // console.log("is_logged", is_logged)
   // console.log("authCookie", authCookie)
   // console.log("Cookie", useCookie())
@@ -22,14 +24,12 @@ export default defineNuxtRouteMiddleware((to, from, next) => {
   //   console.log('redirecting to login')
   //   return navigateTo('/login')
   // }
-  if (!authCookie) {
-    // console.log('redirecting to login')
-    purgeAuth()
+  if (!authStore.auth_onigies) {
+    authStore.purgeAuth()
     return navigateTo('/login')
   }
-  if (!is_logged) {
-    // console.log('checking auth')
-    checkAuthSimple()
+  if (!authStore.is_logged) {
+    authStore.checkAuthSimple()
   }
 
   if (to.params.group){

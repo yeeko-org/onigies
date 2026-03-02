@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
+  const cookieAuth = useCookie('auth_onigies')
 
   const api = axios.create({
     baseURL: config.public.apiUrl,
@@ -11,10 +12,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   api.interceptors.request.use((config) => {
-    const cookie_auth = useCookie('auth_onigies')
 
-    if (cookie_auth.value) {
-      config.headers.Authorization = `Token ${cookie_auth.value}`
+    if (cookieAuth.value) {
+      config.headers.Authorization = `Token ${cookieAuth.value}`
     }
     return config
   })

@@ -1,8 +1,8 @@
 <script setup>
 import {ref, computed, onMounted, watch} from 'vue'
-import { useAuthStore } from '~/stores/auth.js'
-import { useIesStore } from "~/stores/ies.js";
-import { useMainStore } from '~/stores/index.js'
+import { useAuthStore } from '~/store/auth.js'
+import { useIesStore } from "~/store/ies.js";
+import { useMainStore } from '~/store/index.js'
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
 
@@ -32,7 +32,7 @@ const edition_available = computed(()=> {
   if (isStaff.value)
     return false
   else {
-    return status_register.value.role === 'ies'
+    return status_sending.value.role === 'ies'
   }
 })
 
@@ -49,7 +49,7 @@ const package_id = computed(() => {
     return props.packageId
   // if (!iesStore.ies_data)
   //   return null
-  return iesStore.ies_data.packages.find(p=>p.period === props.period)?.id
+  return iesStore.packages.find(p=>p.period === props.period)?.id
 
 })
 
@@ -128,21 +128,21 @@ function sendPackage(){
   })
 }
 
-const status_register = computed(()=> {
-  if (!mainStore.status_dict.register)
+const status_sending = computed(()=> {
+  if (!mainStore.status_dict.sending)
     return {}
-  return mainStore.status_dict.register[goodPracticePackage.value.status_register] || {}
+  return mainStore.status_dict.sending[goodPracticePackage.value.status_sending] || {}
 })
 
 </script>
 
 <template>
-  <v-card>
+  <v-card elevation="6" class="pa-3">
     <v-card-title class="d-flex align-center flex-wrap ga-2">
       <v-icon start>lightbulb</v-icon>
       <span>
-        Buenas Prácticas
-        <template v-if="goodPractices.length">
+        Buenas prácticas
+        <template v-if="goodPractices.length && false">
           ({{ goodPractices.length }})
         </template>
       </span>
@@ -177,7 +177,7 @@ const status_register = computed(()=> {
 <!--        />-->
     </v-card-title>
     <v-alert
-      v-if="!isStaff && status_register.role !== 'ies'"
+      v-if="!isStaff && status_sending.role !== 'ies'"
       type="success"
     >
       Las buenas prácticas han sido enviadas y están en revisión.
@@ -230,13 +230,13 @@ const status_register = computed(()=> {
 
       <v-row v-else>
         <v-col
-          v-for="practice in goodPractices"
+          v-for="(practice, index) in goodPractices"
           :key="practice.id"
           cols="12"
         >
 
           <GoodPracticeCard
-            :practice="practice"
+            v-model="goodPractices[index]"
             :is-staff="isStaff"
             :sent-at="goodPracticePackage.sent_at"
             :edition-available="edition_available"
@@ -271,12 +271,12 @@ const status_register = computed(()=> {
         size="large"
         class="px-6"
       >
-        Enviar
+        Enviar buenas prácticas
       </v-btn>
     </v-card-actions>
     <v-dialog
       v-model="create_dialog"
-      max-width="950"
+      max-width="600"
       persistent
       scrollable
     >
@@ -292,8 +292,8 @@ const status_register = computed(()=> {
       max-width="500"
     >
       <v-card>
-        <v-card-title class="headline">
-          ¿Desea enviar las buenas prácticas registradas?
+        <v-card-title class="headline text-no-wrap no-wrap">
+          ¿Desea enviar a revisión las buenas prácticas?
         </v-card-title>
         <v-card-text cxlass="text-grey-darken-2">
           <v-alert
@@ -302,7 +302,7 @@ const status_register = computed(()=> {
             variant="outlined"
           >
 
-            Una vez enviadas, no podrá realizar modificaciones.
+            Una vez enviadas, no podrás realizar modificaciones o agregar nuevas.
           </v-alert>
         </v-card-text>
         <v-card-actions>
@@ -329,3 +329,9 @@ const status_register = computed(()=> {
   </v-card>
 
 </template>
+
+<style scoped>
+.no-wrap{
+  word-break: normal !important;
+}
+</style>

@@ -1,6 +1,6 @@
 <script setup>
-import Evidences from "~/components/dashboard/utils/Evidences.vue";
-import Comments from "~/components/dashboard/utils/Comments.vue";
+import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
+import Comments from "~/components/dashboard/common/utils/Comments.vue";
 
 const props = defineProps({
   feature: { type: Object, required: true },

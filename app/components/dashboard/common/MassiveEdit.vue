@@ -2,20 +2,20 @@
 
 import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
-import {ref} from "vue";
 import { saveElement } from "~/composables/save_elements.js";
 
-import {useMainStore} from "~/stores/index.js";
+import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from 'pinia'
+import SelectSubtype from "~/components/dashboard/common/select/SelectSubtype.vue";
 const mainStore = useMainStore()
 const { schemas } = storeToRefs(mainStore)
 
 const props = defineProps({
-  full_main: Object,
   collection_data: Object,
   collection_name: String,
   ids_to_edit: Array,
 })
+const full_main = defineModel({type: Object, required: true})
 
 const active_fields = ref([])
 const saving = ref(false)
@@ -57,7 +57,7 @@ const merged_params = computed(() => {
       if (!field.related_snake_name || field.relation_type === 'one_to_many')
         return
       if (models.includes(field.related_snake_name))
-        params[field.name] = props.full_main[field.name]
+        params[field.name] = full_main.value[field.name]
     })
   })
   // console.log("params", params)
@@ -115,7 +115,7 @@ function sendMassiveEdit() {
         >
           <StatusDetail
             v-if="field.collection"
-            :final_filters="full_main"
+            v-model="full_main"
             :collection="field.key_name"
             clearable
             hide-details
@@ -129,10 +129,17 @@ function sendMassiveEdit() {
             class="pr-3 pl-0 py-1 d-flex"
           >
             <SelectGroup
+              v-if="field.category_type"
+              v-model="full_main"
               :filter_group_name="field.key_name"
-              :main_object="full_main"
               :category_group_value="field.category_group_value"
               :forced_level="field.forced_level || 'other'"
+            />
+            <SelectSubtype
+              v-else
+              v-model="full_main"
+              :filter_collection_name="field.category_subtype"
+              :main_collection="final_collection_data"
             />
           </div>
           <h5 v-else>{{field.title || field.name}}</h5>

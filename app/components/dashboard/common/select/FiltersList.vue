@@ -8,10 +8,11 @@ import UserSelect from "~/components/dashboard/custom_filters/UserSelect.vue";
 import OnlyByFilter from "~/components/dashboard/custom_filters/OnlyByFilter.vue";
 
 const props = defineProps({
-  final_filters: Object,
+  // final_filters: Object,
   visible_filters: Array,
   filter_group: Object,
 })
+const final_filters = defineModel({type: Object, required: true})
 const emits = defineEmits(['apply-filters'])
 
 const applyFilters = () => {
@@ -35,7 +36,7 @@ const applyFilters = () => {
 <!--      _v-if="filter_box.collection && filter_box.collection_group === 'status'"-->
     <StatusDetail
       v-if="filter_box.collection"
-      :final_filters="final_filters"
+      v-model="final_filters"
       :collection="filter_box.key_name"
       clearable
       hide-details
@@ -48,10 +49,9 @@ const applyFilters = () => {
       v-else-if="filter_box.key_name"
       class="pr-3 pl-0 py-1 d-flex"
     >
-
       <SelectGroup
+        v-model="final_filters"
         :filter_group_name="filter_box.key_name"
-        :main_object="final_filters"
         :category_group_value="filter_box.category_group_value"
         :forced_level="filter_box.forced_level"
         is_filter
@@ -60,7 +60,6 @@ const applyFilters = () => {
     <template
       v-else-if="filter_box.component"
     >
-
       <TripleBooleanFilter
         v-if="filter_box.component === 'TripleBooleanFilter'"
         :final_filters="final_filters"

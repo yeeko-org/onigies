@@ -1,6 +1,6 @@
 <script setup>
 
-import HeaderCommon from "~/components/dashboard/generic/HeaderCommon.vue";
+import HeaderCommon from "~/components/dashboard/common/generic/HeaderCommon.vue";
 
 const props = defineProps({
   main: Object,

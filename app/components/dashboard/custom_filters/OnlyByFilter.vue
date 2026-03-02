@@ -1,5 +1,5 @@
 <script setup>
-import {useMainStore} from "~/stores/index.js";
+import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";
 const mainStore = useMainStore()
 const { collections_summary } = storeToRefs(mainStore)

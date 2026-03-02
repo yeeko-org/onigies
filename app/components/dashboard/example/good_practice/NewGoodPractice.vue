@@ -1,5 +1,5 @@
 <script setup>
-import {useMainStore} from "~/stores/index.js";
+import {useMainStore} from "~/store/index.js";
 const mainStore = useMainStore()
 // const { saveSimple, deleteSimple } = mainStore
 
@@ -17,7 +17,7 @@ const form = ref({
   id: null,
   package: props.packageId,
   name: '',
-  status_register: 'draft'
+  status_sending: 'draft'
 })
 
 const create = async () => {
@@ -38,7 +38,7 @@ const create = async () => {
 
 <template>
   <v-card>
-    <v-toolbar color="primary" density="compact">
+    <v-toolbar color="secondary" density="compact">
       <v-toolbar-title>Crear Buena Práctica</v-toolbar-title>
       <v-spacer />
       <v-btn icon @click="emit('close')">
@@ -47,24 +47,31 @@ const create = async () => {
     </v-toolbar>
     <v-card-text>
       <v-form ref="createForm">
-        <v-text-field
+        <v-textarea
           v-model="form.name"
           label="Nombre de la buena práctica *"
           variant="outlined"
           class="mt-4"
+          rows="2"
+          auto-grow
         />
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn variant="text" @click="emit('close')">
-        Cerrar
+      <v-btn
+        variant="text"
+        class="px-4"
+        @click="emit('close')"
+      >
+        Cancelar
       </v-btn>
       <v-btn
         color="primary"
         variant="flat"
         :loading="loading"
         @click="create"
+        class="px-5"
       >
         <v-icon start>save</v-icon>
         Crear

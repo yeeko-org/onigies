@@ -1,27 +1,29 @@
 <script setup>
 import { computed } from 'vue'
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
-import {useMainStore} from "~/stores/index.js";
-import TitleCommon from "~/components/dashboard/generic/TitleCommon.vue";
+import {useMainStore} from "~/store/index.js";
+import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
-import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
+import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
 const mainStore = useMainStore()
 
 const props = defineProps({
-  practice: { type: Object, required: true },
+  // practice: { type: Object, required: true },
   isStaff: { type: Boolean, default: false },
   sentAt: String,
   editionAvailable: Boolean,
 })
 
+const practice = defineModel({type: Object,required: true,})
+
 const emit = defineEmits(['edit', 'deleted'])
 
 const active_features = computed(() => {
-  return (props.practice.feature_values || []).filter(f => f.has_attribute)
+  return (practice.value.feature_values || []).filter(f => f.has_attribute)
 })
 
 const evaluatedCount = computed(() => {
-  const features = props.practice.feature_values || []
+  const features = practice.value.feature_values || []
   return features.filter(
     f => f.has_attribute && f.final_option
   ).length
@@ -35,13 +37,13 @@ const features_dict = computed(() => {
 })
 
 function deletePractice(practice){
-  props.practice.in_edition = false
+  practice.value.in_edition = false
   emit('deleted')
 }
 
 function openEdit(){
   if (!props.editionAvailable) return
-  props.practice.in_edition = true
+  practice.value.in_edition = true
 }
 
 </script>
@@ -114,7 +116,7 @@ function openEdit(){
         <v-spacer></v-spacer>
         <StatusChip
           v-if="sentAt"
-          collection="register"
+          collection="sending"
           :main="practice"
           class="ml-4"
         />
@@ -122,11 +124,10 @@ function openEdit(){
 
       <v-card-text>
         <div class="d-flex flex-wrap ga-2 align-center mb-3">
-          <SelectGroup
-            filter_group_name="axes"
+          <DisplayGroup
             :main_object="practice"
+            filter_group_name="axes"
             forced_level="subtype"
-            is_display
           />
         </div>
 
@@ -166,7 +167,7 @@ function openEdit(){
     <v-dialog v-model="practice.in_edition">
       <GoodPracticeEditSimple
         v-if="practice.in_edition"
-        :full_main="practice"
+        v-model="practice"
         :package-id="practice.package"
         :sentAt="sentAt"
         :is-staff="isStaff"
@@ -177,7 +178,7 @@ function openEdit(){
       >
         <template v-slot:header>
           <v-toolbar
-            color="primary"
+            color="secondary"
             density="compact"
           >
             <v-toolbar-title>

@@ -4,14 +4,17 @@ import {computed, onMounted, ref, watch} from 'vue'
 const menu_drawer = ref(false)
 import {useMainStore} from "~/store/index.js";
 import {useAuthStore} from "~/store/auth.js";
+import {useDashboardStore} from "~/store/dash.js";
 import {storeToRefs} from "pinia";
 const router = useRouter()
 const config = useRuntimeConfig();
 
 const mainStore = useMainStore()
 const authStore = useAuthStore()
+const dashboardStore = useDashboardStore()
 const { schemas, current_collection_data } = storeToRefs(mainStore)
 const { is_full_editor } = storeToRefs(authStore);
+const { global_snackbar, global_snackbar_message } = storeToRefs(dashboardStore)
 // const { fetchCatalogs } = mainStore
 const { logout } = authStore
 const admin_url = config.public.adminUrl
@@ -284,6 +287,24 @@ watch(
           </client-only>
         </v-layout>
       </v-container>
+      <v-snackbar
+        v-model="global_snackbar"
+        color="success"
+        location="right bottom"
+        location-strategy="connected"
+        timeout="4000"
+      >
+        {{ global_snackbar_message || 'Cambios guardados' }}
+        <template v-slot:actions>
+          <v-btn
+            color="accent"
+            variant="text"
+            @click="global_snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>

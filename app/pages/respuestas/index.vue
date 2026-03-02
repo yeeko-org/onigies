@@ -92,7 +92,7 @@ definePageMeta({
                   </template>
                 </v-badge>
                 <v-badge
-                  v-if="year.package"
+                  v-if="year.survey?.packages.length > 0"
                   color="transparent"
                   location="bottom right"
                   offset-x="74"
@@ -110,7 +110,7 @@ definePageMeta({
                   <template #badge>
                     <StatusChip
                       collection="sending"
-                      :main="year.package"
+                      :main="year.survey.packages[0]"
                       hide_details
                     />
                   </template>

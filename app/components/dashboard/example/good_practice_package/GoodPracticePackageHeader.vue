@@ -20,7 +20,7 @@ const props = defineProps({
     :collection_data="collection_data"
   >
     <template #title>
-      {{main.institution_full.acronym}} - {{main.period}}
+      {{main.survey_full?.institution_full?.acronym}} - {{main.survey_full?.period}}
     </template>
     <template #details>
       <v-chip

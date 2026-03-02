@@ -48,7 +48,7 @@ All of this is stored in `useMainStore` (`store/index.js`).
 
 - **`index.js` (`useMainStore`)**: Central state — `cats` (raw catalog data), `schemas` (computed schemas), `all_nodes` (D3 filter trees), `current_collection_data`, `current_filter_group_data`. All API CRUD actions live here.
 - **`auth.js` (`useAuthStore`)**: Auth state — `user_onigies`, `is_logged`, token. Role getters: `is_staff`, `is_full_editor`, `is_mini_editor`.
-- **`ies.js` (`useIesStore`)**: IES-specific state — `ies_data`, `surveys`, `packages`, `current_period`.
+- **`ies.js` (`useIesStore`)**: IES-specific state — `ies_data`, `surveys`, `current_period`.
 - **`dash.js`**: Dashboard-specific ephemeral state.
 
 ### API Plugin (`app/plugins/api.ts`)

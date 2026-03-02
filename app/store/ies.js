@@ -3,14 +3,14 @@ export const useIesStore = defineStore('ies', {
     ies_data: null,
     current_period: null,
     surveys: [],
-    packages: [],
+    // packages: [],
   }),
   actions: {
     setIesData(main_ies, ies_details) {
-      console.log("setIesData", main_ies, ies_details)
+      // console.log("setIesData", main_ies, ies_details)
       this.ies_data = main_ies;
       this.surveys = ies_details.surveys || []
-      this.packages = ies_details.packages || []
+      // this.packages = ies_details.packages || []
       // const last_survey = data?.surveys?.length
       //   ? data.surveys[data.surveys.length - 1]
       //   : {};
@@ -20,7 +20,7 @@ export const useIesStore = defineStore('ies', {
     purgeIesData() {
       this.ies_data = null;
       this.surveys = []
-      this.packages = []
+      // this.packages = []
       this.current_period = null
     },
     setLogo(logo_url) {
@@ -64,7 +64,7 @@ export const useIesStore = defineStore('ies', {
   },
   getters: {
     available_years(state) {
-      console.log("state", state)
+      // console.log("state", state)
       if (!state.surveys) return [];
       const yearsSet = new Set();
       state.surveys.forEach(survey => {
@@ -74,8 +74,19 @@ export const useIesStore = defineStore('ies', {
       return years_list.reduce((list, year) => {
         let year_data = {year}
         year_data.survey = state.surveys.find(s => s.period === year)
-        year_data.package = state.packages.find(p => p.period === year)
+        // year_data.package = state.packages.find(p => p.period === year)
         list.push(year_data)
+        return list
+      }, []);
+    },
+    all_packages(state) {
+      // console.log("state", state)
+      if (!state.surveys) return [];
+      return state.surveys.reduce((list, survey) => {
+        survey.packages.forEach(p => {
+          let package_data = { ...p, survey_full: survey, period: survey.period }
+          list.push(package_data)
+        })
         return list
       }, []);
     },

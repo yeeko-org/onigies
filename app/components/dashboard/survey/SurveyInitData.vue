@@ -47,7 +47,7 @@ watch(() => props.period, (newVal) => {
 <template>
   <v-card v-if="survey_data" class="pa-3" elevation="6">
     <v-card-title class="text-h5 mb-4">
-      Datos generales
+      Datos base
     </v-card-title>
 <!--    <v-alert type="info">-->
 <!--      Esta sección está ahora en desarrollo,-->

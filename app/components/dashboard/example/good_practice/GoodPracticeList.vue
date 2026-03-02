@@ -49,7 +49,7 @@ const package_id = computed(() => {
     return props.packageId
   // if (!iesStore.ies_data)
   //   return null
-  return iesStore.packages.find(p=>p.period === props.period)?.id
+  return iesStore.all_packages.find(p=>p.period === props.period)?.id
 
 })
 

@@ -88,4 +88,9 @@ Icons use **Material Symbols Outlined** (not MDI). Use icon name strings like `"
 
 - `primary`: `#8a221f` (dark red)
 - `secondary`: purple darken-1
-- `accent`: `#f59322` (orange)
+- `accent`: `#f59322` (orange) used for buttons and user actions
+
+### Additional important notes
+- When the developer ask you about the best approach or advices, after answer, ask if you can proceed with the implementation of the code, and wait for the confirmation before start writing the code.
+- The interface messages should be in Spanish, the functions, variables, and file names should be in English.
+- Limit code width to 80 columns. Wrap lines only if they exceed this limit, maintaining a single-line format whenever possible for readability.

@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from '~/store/auth.js'
 import { useDashboardStore } from '~/store/dash.js'
+import InvitationRow from "~/components/dashboard/ies/institution/InvitationRow.vue";
 
 const props = defineProps({
   invitations: {
@@ -22,22 +23,9 @@ const dialog_create = ref(false)
 const dialog_delete = ref(false)
 const delete_target = ref(null)
 const new_email = ref('')
-const copied_key = ref(null)
 const create_form = ref(null)
 
 const email_rule = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido'
-
-function formatDate(dateStr) {
-  if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString('es-MX', { dateStyle: 'short' })
-}
-
-async function copyUrl(inv) {
-  await navigator.clipboard.writeText(inv.destination_url)
-  copied_key.value = inv.key
-  setTimeout(() => { copied_key.value = null }, 2000)
-  dashStore.showSnackbar('URL copiada al portapapeles')
-}
 
 function openDelete(inv) {
   delete_target.value = inv
@@ -96,7 +84,7 @@ async function deleteInvitation() {
       <thead>
         <tr>
           <th>Email</th>
-          <th>Creada</th>
+          <th>Creación</th>
           <th>Vista</th>
           <th>Usada</th>
           <th class="text-center">URL</th>
@@ -104,51 +92,13 @@ async function deleteInvitation() {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="inv in local_invitations" :key="inv.key">
-          <td>{{ inv.email || 'Sin email, envíala manualmente' }}</td>
-          <td>{{ formatDate(inv.created_at) }}</td>
-          <td>
-            <v-chip v-if="inv.viewed_at" color="success" size="x-small" label>
-              {{ formatDate(inv.viewed_at) }}
-            </v-chip>
-            <span v-else class="text-grey">—</span>
-          </td>
-          <td>
-            <v-chip v-if="inv.used_at" color="success" size="x-small" label>
-              {{ formatDate(inv.used_at) }}
-            </v-chip>
-            <span v-else class="text-grey">—</span>
-          </td>
-          <td class="text-center">
-            <v-btn
-              v-if="!inv.email"
-              :icon="copied_key === inv.key ? 'check' : 'content_copy'"
-              size="x-small"
-              variant="text"
-              :color="copied_key === inv.key ? 'success' : undefined"
-              @click="copyUrl(inv)"
-              v-tooltip:bottom="'Copiar URL de invitación'"
-            />
-            <v-chip
-              v-else
-              color="info"
-              size="x-small"
-              label
-            >
-              Enviada
-            </v-chip>
-          </td>
-          <td class="text-center">
-            <v-btn
-              icon="delete"
-              size="x-small"
-              variant="text"
-              color="error"
-              :disabled="!!inv.used_at || loading || !!inv.email"
-              @click="openDelete(inv)"
-            />
-          </td>
-        </tr>
+        <InvitationRow
+          v-for="inv in local_invitations"
+          :key="inv.key"
+          :invitation="inv"
+          :loading="loading"
+          @delete="openDelete"
+        />
         <tr v-if="!local_invitations.length">
           <td colspan="6" class="text-center text-grey py-3">Sin invitaciones</td>
         </tr>

@@ -56,6 +56,7 @@ cover/
 *.pot
 
 # Django stuff:
+logs
 *.log
 local_settings.py
 db.sqlite3
@@ -143,6 +144,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env.*
+!.env.example
 
 # Spyder project settings
 .spyderproject
@@ -211,3 +214,27 @@ staticfiles/
 static/
 media/
 
+
+
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+dist
+
+# Node dependencies
+node_modules
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+*-lock.yaml
+
+*.pem
+
+written
+components/written/written.vue

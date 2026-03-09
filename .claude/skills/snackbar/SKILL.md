@@ -1,6 +1,9 @@
 ---
 name: snackbar
-description: Show global snackbar notifications after user actions. Use when a CRUD operation, clipboard copy, or UI event needs visual feedback. Trigger on "snackbar", "toast", "notification", "success message", or "user feedback".
+description: >
+  [nuxt] Global toast notification after async operations (success, error,
+  warning). Trigger when showing user feedback after create, update, delete,
+  copy, or any action that needs a confirmation message.
 ---
 
 # snackbar

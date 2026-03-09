@@ -1,6 +1,9 @@
 ---
 name: send-email
-description: Sending emails, creating email templates, and checking email records. Use this skill whenever the user wants to send an email programmatically, create or register a new email template, and related settings.
+description: "[api] Sending emails, creating email templates, and checking
+  email records. Use this skill whenever the user wants to send an email
+  programmatically, create or register a new email template, and related
+  settings."
 ---
 
 # send-email

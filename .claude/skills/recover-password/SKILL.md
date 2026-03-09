@@ -1,9 +1,15 @@
 ---
-name: password-recovery
-description: Implementing password recovery flows. Use this skill whenever the user needs to build or modify the forgot-password page, the recover-password page, token validation on page load, the confirm-new-password step, or the auto-login after reset. Also trigger when the user mentions password reset, recovery link, token expiry, `auth_onigies` cookie setup after recovery, or any of the `/api/password-recovery/` endpoints from the frontend side.
+name: recover-password
+description: "[nuxt] Implementing password recovery flows. Use this skill
+  whenever the user needs to build or modify the forgot-password page, the
+  recover-password page, token validation on page load, the
+  confirm-new-password step, or the auto-login after reset. Also trigger
+  when the user mentions password reset, recovery link, token expiry,
+  `auth_onigies` cookie setup after recovery, or any of the
+  `/api/password-recovery/` endpoints from the frontend side."
 ---
 
-# password-recovery
+# recover-password
 
 Three-step flow split across two pages. Uses the project's `$api` plugin (axios) for all requests.
 

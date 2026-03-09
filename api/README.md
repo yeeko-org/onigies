@@ -10,7 +10,7 @@
 - La primera para los entornos virtuales, y otro para los sistemas/proyectos
 
 - Instalar venv
-- Crear en ambiente virtual, en este caso llamado 'escaleras' en la carpeta env:
+- Crear en ambiente virtual, en este caso llamado 'onigies' en la carpeta env:
 ```bash
 python3 -m venv [onigies || venv]
 ````
@@ -67,11 +67,11 @@ DATABASE_NAME=db.sqlite3
 ### Opción 2: PostgreSQL (Para producción o equipos que ya lo usan)
 
 - Deberás tener instalado PostgreSQL
-- Crear una base de datos en PostgreSQL llamada 'escaleras-local' (o el nombre que desees)
+- Crear una base de datos en PostgreSQL llamada 'onigies-local' (o el nombre que desees)
 - Configurar tu archivo `.env` con las credenciales de PostgreSQL:
   ```env
   POSTRGRESQL_DB=True
-  DATABASE_NAME=escaleras-local
+  DATABASE_NAME=onigies-local
   DATABASE_USER=tu_usuario
   DATABASE_PASSWORD=tu_contraseña
   DATABASE_HOST=localhost

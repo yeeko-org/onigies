@@ -1,0 +1,89 @@
+from rest_framework import serializers
+
+from survey.models import Survey
+from example.models import (
+    Feature, GoodPractice, FeatureOption, FeatureGoodPractice,
+    GoodPracticePackage, Evidence)
+from api.views.ies.serializers import InstitutionSimpleSerializer
+
+
+class EvidenceSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source="file.name")
+    url = serializers.ReadOnlyField(source="file.url")
+
+    class Meta:
+        model = Evidence
+        fields = ['id', 'file', 'name', 'url']
+
+
+class FeatureOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeatureOption
+        fields = '__all__'
+
+
+class FeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feature
+        fields = '__all__'
+
+
+class FeatureFullSerializer(FeatureSerializer):
+    feature_options = FeatureOptionSerializer(
+        many=True, read_only=True, source='options')
+
+
+class FeatureGoodPracticeSerializer(serializers.ModelSerializer):
+    evidences = EvidenceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = FeatureGoodPractice
+        fields = '__all__'
+
+
+class GoodPracticeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GoodPractice
+        fields = '__all__'
+
+
+class GoodPracticeFullSerializer(GoodPracticeSerializer):
+    feature_values = FeatureGoodPracticeSerializer(many=True, read_only=True)
+    evidences = EvidenceSerializer(many=True, read_only=True)
+
+
+class SurveySemiFullSerializer(serializers.ModelSerializer):
+    institution_full = InstitutionSimpleSerializer(
+        read_only=True, source='survey__institution')
+
+    class Meta:
+        model = Survey
+        fields = '__all__'
+
+
+class GoodPracticePackageSerializer(serializers.ModelSerializer):
+    good_practices_count = serializers.SerializerMethodField()
+    institution_full = InstitutionSimpleSerializer(
+        read_only=True, source='survey__institution')
+    survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
+
+    def get_good_practices_count(self, obj):
+        return obj.good_practices.count()
+
+    class Meta:
+        model = GoodPracticePackage
+        fields = '__all__'
+
+
+class GoodPracticePackageFullSerializer(serializers.ModelSerializer):
+    good_practices = GoodPracticeFullSerializer(many=True, read_only=True)
+    # institution_full = InstitutionSimpleSerializer(
+    #     read_only=True, source='survey__institution')
+    survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
+
+
+    class Meta:
+        model = GoodPracticePackage
+        fields = '__all__'
+

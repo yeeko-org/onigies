@@ -1,0 +1,17 @@
+from django.apps import AppConfig
+import sys
+
+
+class QuestionConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "question"
+
+    def ready(self) -> None:
+        from .initial_data import InitQuestionTypes
+
+        _ready = super().ready()
+        if "migrate_initial_data" in sys.argv:
+            print("Cargando datos iniciales de Question...")
+            InitQuestionTypes()
+            print("Datos iniciales cargados.")
+        return _ready

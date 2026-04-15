@@ -2,8 +2,10 @@
 import {storeToRefs} from "pinia";
 import {useIesStore} from "~/store/ies.js";
 import {useMainStore} from '~/store/index.js'
+import {useDashboardStore} from '~/store/dash.js'
 const iesStore = useIesStore()
 const mainStore = useMainStore()
+const dashStore = useDashboardStore()
 
 const current_period = computed(() => iesStore.current_period)
 const { all_months } = storeToRefs(iesStore)
@@ -16,6 +18,21 @@ const props = defineProps({
   survey_id: { type: Number, required: false },
 })
 const survey_data = ref(null)
+const saving = ref(false)
+
+async function saveSurvey() {
+  saving.value = true
+  try {
+    survey_data.value = await mainStore.saveSimple(
+      ['survey', survey_data.value]
+    )
+    dashStore.showSnackbar('Datos guardados')
+  } catch (e) {
+    console.error('Error al guardar datos iniciales:', e)
+  } finally {
+    saving.value = false
+  }
+}
 
 const plan_types = [
   { key: "media_plans", name: "nivel medio superior" },
@@ -173,7 +190,8 @@ watch(() => props.period, (newVal) => {
       <v-btn
         color="primary"
         variant="elevated"
-
+        :loading="saving"
+        @click="saveSurvey"
       >
         Guardar datos iniciales
       </v-btn>

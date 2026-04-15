@@ -4,8 +4,10 @@ import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
 import { useMainStore } from '~/store/index.js'
+import { useDashboardStore } from '~/store/dash.js'
 import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
 const mainStore = useMainStore()
+const dashStore = useDashboardStore()
 
 const props = defineProps({
   isStaff: { type: Boolean, default: true },
@@ -66,11 +68,13 @@ const savePractice = async () => {
   loading.value = true
   try {
     const res = await mainStore.saveSimple(['good_practice', form.value])
+    dashStore.showSnackbar()
     emit('saved', res)
   } catch (e) {
     console.error('Error al guardar:', e)
+  } finally {
+    loading.value = false
   }
-  loading.value = true
 }
 
 const remove = async () => {

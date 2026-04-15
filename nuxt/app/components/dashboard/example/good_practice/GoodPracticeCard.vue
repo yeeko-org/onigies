@@ -42,7 +42,7 @@ function deletePractice(practice){
 }
 
 function openEdit(){
-  if (!props.editionAvailable) return
+  if (!props.editionAvailable && !props.sentAt) return
   practice.value.in_edition = true
 }
 
@@ -55,8 +55,8 @@ function openEdit(){
     rounded="lg"
   >
     <v-card
-      :hover="editionAvailable"
-      :class="{'cursor-pointer': editionAvailable}"
+      :hover="editionAvailable || !!sentAt"
+      :class="{'cursor-pointer': editionAvailable || !!sentAt}"
       variant="tonal"
       color="blue"
       @click="openEdit"
@@ -151,7 +151,7 @@ function openEdit(){
 
       </v-card-text>
       <v-card-actions
-        v-if="!practice.in_edition && editionAvailable"
+        v-if="!practice.in_edition && (editionAvailable || sentAt)"
       >
         <v-spacer/>
         <v-btn
@@ -159,7 +159,7 @@ function openEdit(){
           variant="text"
           @click="practice.in_edition = true;"
         >
-          {{ isStaff ? 'Evaluar' : 'Editar' }}
+          {{ editionAvailable ? (isStaff ? 'Evaluar' : 'Editar') : 'Ver detalles' }}
         </v-btn>
         <v-spacer/>
       </v-card-actions>

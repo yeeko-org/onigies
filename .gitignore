@@ -238,3 +238,4 @@ node_modules
 
 written
 components/written/written.vue
+.venv-tools/

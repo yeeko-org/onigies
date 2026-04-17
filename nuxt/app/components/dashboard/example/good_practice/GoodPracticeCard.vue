@@ -3,27 +3,25 @@ import { computed } from 'vue'
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import {useMainStore} from "~/store/index.js";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
-import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
 const mainStore = useMainStore()
 
-const props = defineProps({
-  // practice: { type: Object, required: true },
+const { practice, isStaff, editionAvailable, loading } = defineProps({
+  practice: { type: Object, required: true },
   isStaff: { type: Boolean, default: false },
   sentAt: String,
   editionAvailable: Boolean,
+  loading: { type: Boolean, default: false },
 })
 
-const practice = defineModel({type: Object,required: true,})
-
-const emit = defineEmits(['edit', 'deleted'])
+const emit = defineEmits(['open'])
 
 const active_features = computed(() => {
-  return (practice.value.feature_values || []).filter(f => f.has_attribute)
+  return (practice.feature_values || []).filter(f => f.has_attribute)
 })
 
 const evaluatedCount = computed(() => {
-  const features = practice.value.feature_values || []
+  const features = practice.feature_values || []
   return features.filter(
     f => f.has_attribute && f.final_option
   ).length
@@ -36,14 +34,9 @@ const features_dict = computed(() => {
   }, {})
 })
 
-function deletePractice(practice){
-  practice.value.in_edition = false
-  emit('deleted')
-}
-
 function openEdit(){
-  if (!props.editionAvailable) return
-  practice.value.in_edition = true
+  if (!editionAvailable && !isStaff) return
+  emit('open', practice.id)
 }
 
 </script>
@@ -51,12 +44,12 @@ function openEdit(){
 <template>
   <v-sheet
     elevation="4"
-    :class="{'pa-3': practice.in_edition}"
     rounded="lg"
   >
     <v-card
       :hover="editionAvailable"
       :class="{'cursor-pointer': editionAvailable}"
+      :loading="loading"
       variant="tonal"
       color="blue"
       @click="openEdit"
@@ -115,7 +108,6 @@ function openEdit(){
           </v-chip>
         <v-spacer></v-spacer>
         <StatusChip
-          v-if="sentAt"
           collection="sending"
           :main="practice"
           class="ml-4"
@@ -131,70 +123,40 @@ function openEdit(){
           />
         </div>
 
-        <template v-if="!practice.in_edition">
-          <p
-            v-if="practice.description"
-            class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
-          >
-            <b class="mr-1">Descripción:</b>
-            <span v-html="practice.description"></span>
-          </p>
-          <p
-            v-if="practice.results"
-            class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
-          >
-            <b class="mr-1">Resultados:</b>
-            <span v-html="practice.results"></span>
-          </p>
-        </template>
+        <p
+          v-if="practice.description"
+          class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
+        >
+          <b class="mr-1">Descripción:</b>
+          <span v-html="practice.description"></span>
+        </p>
+        <p
+          v-if="practice.results"
+          class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
+        >
+          <b class="mr-1">Resultados:</b>
+          <span v-html="practice.results"></span>
+        </p>
 
 
       </v-card-text>
       <v-card-actions
-        v-if="!practice.in_edition && editionAvailable"
+        v-if="editionAvailable"
       >
         <v-spacer/>
         <v-btn
           color="primary"
           variant="text"
-          @click="practice.in_edition = true;"
+          :loading="loading"
+          @click.stop="openEdit"
         >
-          {{ isStaff ? 'Evaluar' : 'Editar' }}
+          {{ editionAvailable
+            ? 'Editar'
+            : (isStaff ? 'Evaluar' : 'Ver detalles') }}
         </v-btn>
         <v-spacer/>
       </v-card-actions>
     </v-card>
-    <v-dialog v-model="practice.in_edition">
-      <GoodPracticeEditSimple
-        v-if="practice.in_edition"
-        v-model="practice"
-        :package-id="practice.package"
-        :sentAt="sentAt"
-        :is-staff="isStaff"
-        :edition-available="editionAvailable"
-        class="mt-3"
-        @saved="emit('edit', $event)"
-        @deleted="deletePractice"
-      >
-        <template v-slot:header>
-          <v-toolbar
-            color="secondary"
-            density="compact"
-          >
-            <v-toolbar-title>
-              Editar Buena Práctica
-            </v-toolbar-title>
-            <v-spacer />
-            <v-btn
-              icon
-              @click="practice.in_edition = false"
-            >
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-toolbar>
-        </template>
-      </GoodPracticeEditSimple>
-    </v-dialog>
 
   </v-sheet>
 </template>

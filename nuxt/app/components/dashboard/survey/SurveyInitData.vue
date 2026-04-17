@@ -2,8 +2,10 @@
 import {storeToRefs} from "pinia";
 import {useIesStore} from "~/store/ies.js";
 import {useMainStore} from '~/store/index.js'
+import {useDashboardStore} from '~/store/dash.js'
 const iesStore = useIesStore()
 const mainStore = useMainStore()
+const dashStore = useDashboardStore()
 
 const current_period = computed(() => iesStore.current_period)
 const { all_months } = storeToRefs(iesStore)
@@ -16,6 +18,27 @@ const props = defineProps({
   survey_id: { type: Number, required: false },
 })
 const survey_data = ref(null)
+const saving = ref(false)
+
+async function saveSurvey() {
+  saving.value = true
+  try {
+    const result = await mainStore.saveSimple(
+      ['survey', survey_data.value]
+    )
+    if (result?.errors) {
+      console.error('Error al guardar datos iniciales:', result.errors)
+      dashStore.showSnackbar('Error al guardar datos iniciales')
+      return
+    }
+    survey_data.value = result
+    dashStore.showSnackbar('Datos iniciales guardados')
+  } catch (e) {
+    console.error('Error al guardar datos iniciales:', e)
+  } finally {
+    saving.value = false
+  }
+}
 
 const plan_types = [
   { key: "media_plans", name: "nivel medio superior" },
@@ -66,7 +89,7 @@ watch(() => props.period, (newVal) => {
         <v-row>
           <v-col cols="12" md="6">
             <v-text-field
-              v-model="survey_data.academic_instances"
+              v-model.number="survey_data.academic_instances"
               label="Instancias académicas"
               type="number"
               variant="outlined"
@@ -75,7 +98,7 @@ watch(() => props.period, (newVal) => {
           </v-col>
             <v-col cols="12" md="6">
             <v-text-field
-              v-model="survey_data.admin_instances"
+              v-model.number="survey_data.admin_instances"
               label="Instancias administrativas"
               type="number"
               variant="outlined"
@@ -153,7 +176,7 @@ watch(() => props.period, (newVal) => {
             md="4"
           >
             <v-text-field
-              v-model="survey_data[plan_type.key]"
+              v-model.number="survey_data[plan_type.key]"
               :label="`Planes de estudio ${plan_type.name}`"
               type="number"
               variant="outlined"
@@ -173,7 +196,8 @@ watch(() => props.period, (newVal) => {
       <v-btn
         color="primary"
         variant="elevated"
-
+        :loading="saving"
+        @click="saveSurvey"
       >
         Guardar datos iniciales
       </v-btn>

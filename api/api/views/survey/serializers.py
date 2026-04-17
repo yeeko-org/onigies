@@ -11,6 +11,8 @@ class PopulationQuantitySerializer(serializers.ModelSerializer):
 class SurveySerializer(serializers.ModelSerializer):
     population_quantities = PopulationQuantitySerializer(
         many=True, read_only=True)
+
     class Meta:
         model = Survey
         fields = '__all__'
+        read_only_fields = ('institution', 'period')

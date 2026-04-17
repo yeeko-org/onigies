@@ -86,7 +86,8 @@ class GoodPractice(models.Model):
     end_year = models.IntegerField(blank=True, null=True)
     final_value = models.IntegerField(blank=True, null=True)
     status_sending = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE, blank=True, null=True)
+        StatusControl, on_delete=models.CASCADE,
+        blank=True, null=True, default='draft')
     comments = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):

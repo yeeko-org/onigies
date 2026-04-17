@@ -257,7 +257,8 @@ class StatusControl(models.Model):
     send_admin = models.BooleanField(default=False)
     role = models.CharField(
         max_length=10, choices=ROLE_CHOICES,
-        verbose_name="rol asociado", default="ies")
+        blank=True, null=True,
+        verbose_name="rol asociado")
     # is_public = models.BooleanField(default=True)
     priority = models.IntegerField(default=0)
 

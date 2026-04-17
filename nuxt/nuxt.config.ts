@@ -21,7 +21,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
@@ -50,6 +49,14 @@ export default defineNuxtConfig({
     devServer: {
       timeout: 300000
     }
+  },
+  routeRules: {
+    '/dashboard/**': { ssr: false },
+    '/respuestas/**': { ssr: false },
+    '/login': { ssr: false },
+    '/register': { ssr: false },
+    '/forgot-password': { ssr: false },
+    '/recover-password': { ssr: false },
   },
   vite: {
     vue: {

@@ -92,11 +92,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 AUTH_USER_MODEL = 'ies.User'
 
 
-POSTRGRESQL_DB = getenv_bool('POSTRGRESQL_DB', False)
+POSTGRESQL_DB = getenv_bool('POSTGRESQL_DB', False)
 DATABASE_NAME = os.getenv("DATABASE_NAME", "db.sqlite3")
 DATABASE_SCHEMA = os.getenv("DATABASE_SCHEMA")
 
-if POSTRGRESQL_DB:
+if POSTGRESQL_DB:
 
     INSTALLED_APPS += ("django.contrib.postgres",)
     
@@ -117,7 +117,7 @@ else:
     }
 
 # Only apply schema options for PostgreSQL
-if DATABASE_SCHEMA and POSTRGRESQL_DB:
+if DATABASE_SCHEMA and POSTGRESQL_DB:
     default_database['OPTIONS'] = {  # type: ignore
         'options': f'-c search_path={DATABASE_SCHEMA}',
     }

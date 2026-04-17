@@ -3,8 +3,11 @@ import {ref, computed, onMounted, watch} from 'vue'
 import { useAuthStore } from '~/store/auth.js'
 import { useIesStore } from "~/store/ies.js";
 import { useMainStore } from '~/store/index.js'
+import { useDashboardStore } from '~/store/dash.js'
+import { getMissingFields } from "~/composables/good_practice_validation.js"
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
+import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -15,6 +18,7 @@ const authStore = useAuthStore()
 const { getSimple, saveSimple, saveAction, status_dict } = useMainStore()
 const mainStore = useMainStore()
 const iesStore = useIesStore()
+const dashStore = useDashboardStore()
 
 const isStaff = computed(() => authStore.is_staff)
 const goodPracticePackage = ref({
@@ -23,26 +27,49 @@ const goodPracticePackage = ref({
 const goodPractices = ref([])
 const create_dialog = ref(false)
 const current_loading = ref(false)
+const editingPractice = ref(null)
+const loadingId = ref(null)
 
 const limit_reached = computed(() => {
   return goodPractices.value.length >= 5
 })
 
-const edition_available = computed(()=> {
+const editionAvailable = computed(()=> {
   if (isStaff.value)
     return false
   else {
-    return status_sending.value.role === 'ies'
+    return statusSending.value.role === 'ies'
   }
 })
 
 const canAddMore = computed(() => {
   if (isStaff.value)
     return false
-  if (!edition_available.value)
+  if (!editionAvailable.value)
     return false
   return goodPracticePackage.value.has_good_practices && !limit_reached.value
 })
+
+const responseOptions = [
+  {
+    value: true,
+    label: 'Sí tengo buenas prácticas',
+    color: 'success',
+    icon: 'check_circle',
+  },
+  {
+    value: false,
+    label: 'No / No deseo responder',
+    color: 'grey-darken-1',
+    icon: 'cancel',
+  },
+]
+
+const selectedResponse = computed(() =>
+  responseOptions.find(
+    o => o.value === goodPracticePackage.value.has_good_practices
+  ) || {}
+)
 
 const package_id = computed(() => {
   if (props.packageId)
@@ -67,39 +94,42 @@ const loadPractices = async () => {
 }
 
 function setPractices(newPractices) {
-  goodPractices.value = newPractices.map(gp => ({
-    ...gp,
-    in_edition: false
-  }))
+  goodPractices.value = newPractices
 }
 
 onMounted(loadPractices)
 
-function editPractice(new_value, practice) {
-  const idx = goodPractices.value.findIndex(p => p.id === practice.id)
-  if (idx !== -1) {
-    goodPractices.value[idx] = {
-      ...new_value,
-      in_edition: false
-    }
+async function openEdit(practiceId) {
+  loadingId.value = practiceId
+  try {
+    const full_practice = await getSimple(['good_practice', practiceId])
+    if (full_practice) editingPractice.value = full_practice
+  } finally {
+    loadingId.value = null
   }
 }
 
-function deletePractice(practice) {
-  const idx = goodPractices.value.findIndex(p => p.id === practice.id)
-  if (idx !== -1) {
-    goodPractices.value.splice(idx, 1)
-  }
+function onSaved(updated) {
+  const idx = goodPractices.value.findIndex(p => p.id === updated.id)
+  if (idx !== -1) goodPractices.value[idx] = updated
+  editingPractice.value = null
+}
+
+function onDeleted() {
+  if (!editingPractice.value) return
+  const id = editingPractice.value.id
+  goodPractices.value = goodPractices.value.filter(p => p.id !== id)
+  editingPractice.value = null
 }
 
 const openNewForm = () => {
   create_dialog.value = true
 }
 
-const onCreated = (new_practice) => {
-  new_practice.in_edition = true
+const onCreated = async (new_practice) => {
   goodPractices.value.push(new_practice)
   create_dialog.value = false
+  await openEdit(new_practice.id)
 }
 
 function editPackage() {
@@ -114,12 +144,37 @@ function editPackage() {
 }
 
 const send_dialog = ref(false)
+const not_ready_dialog = ref(false)
+
+const canSendPackage = computed(() => {
+  if (!goodPractices.value.length) return false
+  return goodPractices.value.every(p => p.status_sending === 'ready_to_send')
+})
+
+const notReadyDetails = computed(() => {
+  return goodPractices.value
+    .filter(p => p.status_sending !== 'ready_to_send')
+    .map(p => ({
+      id: p.id,
+      name: p.name || 'Sin nombre',
+      missing: getMissingFields(p)
+    }))
+})
+
 function wantSend() {
-  send_dialog.value = true
+  if (canSendPackage.value)
+    send_dialog.value = true
+  else
+    not_ready_dialog.value = true
 }
 
 function sendPackage(){
   saveAction(['good_practice_package', package_id.value, 'send']).then(res=>{
+    if (res?.errors) {
+      dashStore.showSnackbar(
+        res.errors.detail || 'No se pudo enviar el paquete', 'error')
+      return
+    }
     goodPracticePackage.value = res
     setPractices(res.good_practices)
     send_dialog.value = false
@@ -128,7 +183,7 @@ function sendPackage(){
   })
 }
 
-const status_sending = computed(()=> {
+const statusSending = computed(()=> {
   if (!mainStore.status_dict.sending)
     return {}
   return mainStore.status_dict.sending[goodPracticePackage.value.status_sending] || {}
@@ -156,7 +211,7 @@ const status_sending = computed(()=> {
         >
           Has alcanzado el límite de buenas prácticas.
         </span>
-        <span v-else-if="edition_available">
+        <span v-else-if="editionAvailable">
           (Puedes agregar hasta 5 buenas prácticas)
         </span>
       </v-chip>
@@ -177,7 +232,7 @@ const status_sending = computed(()=> {
 <!--        />-->
     </v-card-title>
     <v-alert
-      v-if="!isStaff && status_sending.role !== 'ies'"
+      v-if="!isStaff && statusSending.role !== 'ies'"
       type="success"
     >
       Las buenas prácticas han sido enviadas y están en revisión.
@@ -194,21 +249,36 @@ const status_sending = computed(()=> {
         que pudiera ser compartida a nivel nacional?
       </div>
       <v-spacer></v-spacer>
+      <div
+        v-if="!editionAvailable"
+        class="ml-3 d-flex align-center"
+        style="width: 680px;"
+      >
+        <v-chip
+          :color="selectedResponse.color"
+          :prepend-icon="selectedResponse.icon"
+          variant="tonal"
+          size="large"
+        >
+          {{ selectedResponse.label }}
+        </v-chip>
+        <span class="text-caption text-medium-emphasis ml-3">
+          Respuesta registrada
+        </span>
+      </div>
       <v-radio-group
+        v-else
         v-model="goodPracticePackage.has_good_practices"
         style="width: 680px;"
         class="ml-3"
         @update:modelValue="editPackage"
-        :readonly="!edition_available"
       >
         <v-radio
-          class="mr-3"
-          :label="`Sí tengo buenas prácticas`"
-          :value="true"
-        />
-        <v-radio
-          :label="`No / No deseo responder`"
-          :value="false"
+          v-for="(opt, i) in responseOptions"
+          :key="opt.value"
+          :class="{ 'mr-3': i === 0 }"
+          :label="opt.label"
+          :value="opt.value"
         />
       </v-radio-group>
     </v-card-text>
@@ -230,18 +300,18 @@ const status_sending = computed(()=> {
 
       <v-row v-else>
         <v-col
-          v-for="(practice, index) in goodPractices"
+          v-for="practice in goodPractices"
           :key="practice.id"
           cols="12"
         >
 
           <GoodPracticeCard
-            v-model="goodPractices[index]"
+            :practice="practice"
             :is-staff="isStaff"
             :sent-at="goodPracticePackage.sent_at"
-            :edition-available="edition_available"
-            @edit="editPractice($event, practice)"
-            @deleted="deletePractice(practice)"
+            :edition-available="editionAvailable"
+            :loading="loadingId === practice.id"
+            @open="openEdit"
           />
 
         </v-col>
@@ -249,7 +319,7 @@ const status_sending = computed(()=> {
 
     </v-card-text>
     <v-card-actions
-      v-if="goodPracticePackage.has_good_practices && edition_available"
+      v-if="goodPracticePackage.has_good_practices && editionAvailable"
       class="mb-3 mx-3"
     >
       <v-btn
@@ -265,13 +335,12 @@ const status_sending = computed(()=> {
       <v-spacer></v-spacer>
       <v-btn
         color="accent"
-        variant="elevated"
+        variant="tonal"
         append-icon="send"
         @click="wantSend"
-        size="large"
         class="px-6"
       >
-        Enviar buenas prácticas
+        Enviar a revisión
       </v-btn>
     </v-card-actions>
     <v-dialog
@@ -288,24 +357,115 @@ const status_sending = computed(()=> {
       />
     </v-dialog>
     <v-dialog
+      :model-value="!!editingPractice"
+      @update:model-value="editingPractice = null"
+      scrollable
+    >
+      <GoodPracticeEditSimple
+        v-if="editingPractice"
+        v-model="editingPractice"
+        :sent-at="goodPracticePackage.sent_at"
+        :is-staff="isStaff"
+        :edition-available="editionAvailable"
+        class="mt-3"
+        @saved="onSaved"
+        @deleted="onDeleted"
+        @close="editingPractice = null"
+      >
+        <template #header>
+          <v-toolbar
+            color="secondary"
+            density="compact"
+          >
+            <v-toolbar-title>
+              Editar Buena Práctica
+            </v-toolbar-title>
+            <v-spacer />
+            <v-btn
+              icon
+              @click="editingPractice = null"
+            >
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </template>
+      </GoodPracticeEditSimple>
+    </v-dialog>
+    <v-dialog
+      v-model="not_ready_dialog"
+      max-width="640"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          Aún no puedes enviar las buenas prácticas
+        </v-card-title>
+        <v-card-text>
+          <v-alert
+            type="info"
+            variant="tonal"
+            class="mb-3"
+          >
+            Todas tus buenas prácticas deben estar en el estado
+            <b>"Lista para enviar"</b> antes de enviar el paquete
+            a revisión.
+          </v-alert>
+          <div
+            v-if="!goodPractices.length"
+            class="text-body-2"
+          >
+            Aún no has agregado ninguna buena práctica.
+          </div>
+          <div v-else>
+            <div class="text-body-2 mb-2">
+              Estas prácticas aún no están listas:
+            </div>
+            <ul class="ml-4">
+              <li
+                v-for="p in notReadyDetails"
+                :key="p.id"
+                class="mb-1"
+              >
+                <b>{{ p.name }}</b>
+                <template v-if="p.missing.length">
+                  — falta: {{ p.missing.join(', ') }}
+                </template>
+                <template v-else>
+                  — falta marcarla como "Lista para enviar"
+                </template>
+              </li>
+            </ul>
+          </div>
+        </v-card-text>
+        <v-card-actions class="mx-3 mb-2">
+          <v-spacer />
+          <v-btn
+            variant="elevated"
+            color="primary"
+            @click="not_ready_dialog = false"
+          >
+            Entendido, regresar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
       v-model="send_dialog"
-      max-width="500"
+      max-width="600"
     >
       <v-card>
         <v-card-title class="headline text-no-wrap no-wrap">
-          ¿Desea enviar a revisión las buenas prácticas?
+          ¿De verdad quieres enviar a revisión las buenas prácticas?
         </v-card-title>
         <v-card-text cxlass="text-grey-darken-2">
           <v-alert
-            color="info"
+            type="warning"
             border="start"
             variant="outlined"
           >
-
             Una vez enviadas, no podrás realizar modificaciones o agregar nuevas.
           </v-alert>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="mx-2">
           <v-btn
             color="error"
             variant="outlined"

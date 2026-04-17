@@ -81,3 +81,36 @@ class IsEditorOrCreateOrRead(BaseHardPermission):
 
         return request.user.is_admin
 
+
+class IsInstitutionOwnerOrSuperuser(BaseObjectPermission):
+    """Write access for the user whose institution matches the object's
+    institution, or for any superuser. Reads are allowed to any
+    authenticated user — per-row visibility must be enforced in
+    `get_queryset()` of the consuming ViewSet.
+
+    POST is restricted to superuser (Survey and similar models are
+    auto-created by side-effects; manual creation is an admin action).
+
+    Subclasses override `get_institution(obj)` to resolve the owning
+    institution for nested models (e.g. `return obj.survey.institution`).
+    Returning None denies write.
+    """
+
+    def get_institution(self, obj):
+        return obj.institution
+
+    def has_write_permission(self, request, view):
+        if view.action == 'create':
+            return request.user.is_superuser
+        # PATCH/PUT/DELETE defer ownership check to object level.
+        return True
+
+    def has_write_permission_object(self, request, view, obj):
+        user = request.user
+        if user.is_superuser:
+            return True
+        institution = self.get_institution(obj)
+        if institution is None:
+            return False
+        return user.institution_id == institution.pk
+

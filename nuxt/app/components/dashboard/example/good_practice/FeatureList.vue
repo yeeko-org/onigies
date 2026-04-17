@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import FeatureItem from "~/components/dashboard/example/good_practice/FeatureItem.vue";
 
 import { useMainStore } from '~/store/index.js'
@@ -8,62 +8,50 @@ const { cats, cats_ready, all_nodes } = mainStore
 
 const props = defineProps({
   goodPracticeId: { type: Number, required: true },
-  featureValues: { type: Array, default: () => [] },
   isStaff: { type: Boolean, default: false }
 })
 
-const localValues = ref([])
-
-// console.log("all_nodes.feature", all_nodes)
-
-const getFeatureValue = (featureId) => {
-  return localValues.value.find(fv => {
-    const fvFeatureId = fv.feature?.id || fv.feature
-    return fvFeatureId === featureId
-  }) || null
-}
-
-const initializeValues = () => {
-  localValues.value = cats.feature.map(feature => {
-    const existing = props.featureValues.find(fv => {
-      const fvFeatureId = fv.feature?.id || fv.feature
-      return fvFeatureId === feature.id
-    })
-    return existing || {
-      good_practice: props.goodPracticeId,
-      feature: feature.id,
-      has_attribute: false,
-      justification: '',
-      final_option: null
-    }
-  })
-}
-
-const activeFeatures = computed(() => {
-  return cats.feature.filter(f => {
-    const value = getFeatureValue(f.id)
-    return value?.has_attribute
-  })
+const featureValues = defineModel('featureValues', {
+  type: Array,
+  default: () => []
 })
 
-const handleUpdate = async (featureId, data) => {
-  // console.log("Updating feature:", featureId, data)
-  const idx = localValues.value.findIndex(v => {
-    const vFeatureId = v.feature?.id || v.feature
-    return vFeatureId === featureId
-  })
-  if (idx !== -1) {
-    const updated = { ...localValues.value[idx], ...data }
-    try {
-      localValues.value[idx] = await mainStore.saveSimple(
-        ['feature_good_practice', updated])
-    } catch (e) {
-      console.error('Error al guardar característica:', e)
-    }
+const featureIdOf = fv => fv.feature?.id || fv.feature
+
+const findIndex = featureId =>
+  featureValues.value.findIndex(fv => featureIdOf(fv) === featureId)
+
+const getFeatureValue = featureId => {
+  const existing = featureValues.value.find(
+    fv => featureIdOf(fv) === featureId)
+  if (existing) return existing
+  return {
+    good_practice: props.goodPracticeId,
+    feature: featureId,
+    has_attribute: false,
+    justification: '',
+    final_option: null
   }
 }
 
-onMounted(initializeValues)
+const activeFeatures = computed(() =>
+  cats.feature.filter(f => getFeatureValue(f.id)?.has_attribute))
+
+const handleUpdate = async (featureId, data) => {
+  const current = getFeatureValue(featureId)
+  const updated = { ...current, ...data }
+  try {
+    const saved = await mainStore.saveSimple(
+      ['feature_good_practice', updated])
+    const idx = findIndex(featureId)
+    if (idx !== -1)
+      featureValues.value[idx] = saved
+    else
+      featureValues.value.push(saved)
+  } catch (e) {
+    console.error('Error al guardar característica:', e)
+  }
+}
 
 </script>
 

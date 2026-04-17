@@ -1,4 +1,4 @@
-from .models import StatusControl, Period
+from ies.models import StatusControl, Period
 
 
 class InitStatus:
@@ -7,6 +7,8 @@ class InitStatus:
             # is_public, open_editor, is_deleted
             ("draft", "sending", "Borrador",
                 "blue", "edit_note", False, 'ies', False, 8),
+            ("ready_to_send", "sending", "Lista para enviar",
+                "green", "done_outline", True, 'ies', False, 7),
             ("created", "sending", "Enviado (para revisarse)",
                 "green", "pending_actions", True, 'validator', False, 6),
             ("needs_adjustments", "sending", "Requiere ajustes",
@@ -14,9 +16,9 @@ class InitStatus:
             ("need_new_checking", "sending", "Requiere nueva revisión",
                 "pink", "report_gmailerrorred", False, 'validator', False, 4),
             ("accepted", "sending", "Aceptado",
-                "green", "done_all", True, 'ies', False, 16),
+                "green", "done_all", True, None, False, 16),
             ("discarded", "sending", "Descartado",
-                "red", "heart_broken", True, 'ies', False, 10),
+                "red", "heart_broken", True, None, False, 10),
 
             ("pre_start", "register", "Por iniciar",
                 "blue-grey", "hourglass", False, 'ies', False, 8),
@@ -52,7 +54,7 @@ class InitStatus:
             role = data[6]
             # is_deleted = data[7]
             try:
-                priority = data[8]
+                priority = data[7]
             except IndexError:
                 priority = 99
             try:

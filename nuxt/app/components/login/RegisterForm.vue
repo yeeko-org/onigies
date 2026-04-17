@@ -20,6 +20,7 @@ const password_confirm = ref('')
 const loading = ref(false)
 const invitation_valid = ref(false)
 const institution = ref(null)
+const already_registered = ref(false)
 
 const confirm_rules = [
   rules.required,
@@ -37,12 +38,14 @@ onMounted(async () => {
     emits('set-alert', false)
   } catch (err) {
     const status = err.response?.status
-    if (status === 400)
-      emits('set-alert', 'La invitación ya ha sido utilizada.')
-    else if (status === 404)
+    if (status === 400) {
+      already_registered.value = true
+      emits('set-alert', false)
+    } else if (status === 404) {
       emits('set-alert', 'Invitación no encontrada.')
-    else
+    } else {
       emits('set-alert', err.response?.data || 'Error al validar la invitación.')
+    }
   }
 })
 
@@ -67,7 +70,24 @@ async function submitRegister() {
 </script>
 
 <template>
-  <v-form ref="form_ref" class="d-flex flex-column align-center">
+  <v-card-text
+    v-if="already_registered"
+    style="width: 450px;"
+    class="d-flex flex-column align-center"
+  >
+    <v-alert type="info" variant="tonal" class="mb-4">
+      Tu cuenta ya fue creada con esta invitación.
+      Por favor, inicia sesión con tus credenciales para continuar.
+    </v-alert>
+    <v-btn
+      color="accent"
+      variant="elevated"
+      to="/login"
+    >
+      Iniciar sesión
+    </v-btn>
+  </v-card-text>
+  <v-form v-else ref="form_ref" class="d-flex flex-column align-center">
     <v-card-text style="width: 450px;">
       <v-chip
         v-if="institution"

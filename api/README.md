@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 Para usar SQLite, configura tu archivo `.env` de la siguiente manera:
 ```env
-POSTRGRESQL_DB=  # Dejar vacío o comentar esta línea
+POSTGRESQL_DB=  # Dejar vacío o comentar esta línea
 DATABASE_NAME=db.sqlite3
 ```
 
@@ -57,7 +57,7 @@ DATABASE_NAME=db.sqlite3
 2. La configuración de `DATABASE_SCHEMA` solo debe aplicarse para PostgreSQL:
    ```python
    # Only apply schema options for PostgreSQL
-   if DATABASE_SCHEMA and POSTRGRESQL_DB:
+   if DATABASE_SCHEMA and POSTGRESQL_DB:
        default_database['OPTIONS'] = {
            'options': f'-c search_path={DATABASE_SCHEMA}',
        }
@@ -70,7 +70,7 @@ DATABASE_NAME=db.sqlite3
 - Crear una base de datos en PostgreSQL llamada 'onigies-local' (o el nombre que desees)
 - Configurar tu archivo `.env` con las credenciales de PostgreSQL:
   ```env
-  POSTRGRESQL_DB=True
+  POSTGRESQL_DB=True
   DATABASE_NAME=onigies-local
   DATABASE_USER=tu_usuario
   DATABASE_PASSWORD=tu_contraseña

@@ -87,9 +87,28 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
 
     @action(detail=True, methods=['post'])
     def send(self, request, pk=None):
+        """Envía el paquete de buenas prácticas a revisión.
+
+        En el primer envío valida que todas las prácticas estén
+        en status ``ready_to_send``. En re-envíos posteriores
+        (cuando hubo ajustes) sólo transita el status del paquete
+        y de sus prácticas no-finales.
+        """
         from django.utils import timezone
         good_practice_package = self.get_object()
         has_sent = good_practice_package.sent_at is not None
+
+        if not has_sent:
+            practices = good_practice_package.good_practices.all()
+            if not practices.exists():
+                msg = ('Debes agregar al menos una buena práctica '
+                       'antes de enviar el paquete.')
+                return Response({'detail': msg}, status=400)
+            pending = practices.exclude(status_sending_id='ready_to_send')
+            if pending.exists():
+                msg = ('Todas las buenas prácticas deben estar en '
+                       '"Lista para enviar" antes de enviar el paquete.')
+                return Response({'detail': msg,}, status=400)
         status_sending = "created" if not has_sent else "need_new_checking"
         good_practice_package.status_sending_id = status_sending
         if not has_sent:

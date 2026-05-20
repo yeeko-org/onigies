@@ -1,7 +1,7 @@
 <script setup>
 
 import PanelsResult from "~/components/dashboard/common/main/PanelsResult.vue";
-import InvitationList from "~/components/dashboard/ies/institution/InvitationList.vue";
+import InvitationList from "~/components/dashboard/common/InvitationList.vue";
 
 import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";

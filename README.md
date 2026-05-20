@@ -24,3 +24,13 @@ python manage.py runserver
 cd nuxt
 pnpm dev
 ```
+
+## Tests
+
+```bash
+cd api  && pytest             # Tests unitarios/integración Django
+cd nuxt && pnpm test:e2e      # Tests E2E Playwright (backend mockeado)
+```
+
+Ver [`nuxt/README.md`](nuxt/README.md#tests-e2e-playwright) para
+detalles de E2E.

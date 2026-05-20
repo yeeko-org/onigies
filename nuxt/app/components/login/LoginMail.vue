@@ -19,7 +19,7 @@ async function sendLogin() {
   const { valid } = await form_ref.value.validate()
   if (!valid) return
   loading_login.value = true
-  const res = await loginMail({ username: email.value, password: password.value })
+  const res = await loginMail({ email: email.value, password: password.value })
   loading_login.value = false
   if (res?.error) {
     emits('set-alert', res.error.response?.data)

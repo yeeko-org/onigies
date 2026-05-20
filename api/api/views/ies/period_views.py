@@ -28,3 +28,9 @@ class InstitutionCatalogViewSet(BaseGenericViewSet):
             'update': InstitutionDetailSerializer,
         }
         return action_serializer.get(self.action, self.serializer_class)
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.action in ('retrieve', 'update'):
+            qs = qs.prefetch_related('invitation_tokens__user')
+        return qs

@@ -118,6 +118,10 @@ class User(AbstractUser):
             return False
         return self.is_superuser or self.is_staff
 
+    class Meta:
+        verbose_name = "Persona usuaria"
+        verbose_name_plural = "1. Personas usuarias"
+
 
 class InvitationToken(models.Model):
     key = models.UUIDField(

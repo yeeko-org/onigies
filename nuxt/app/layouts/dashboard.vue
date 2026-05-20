@@ -42,6 +42,13 @@ const main_items = [
     color: 'indigo',
   },
   {
+    plural_name: 'Personas staff y revisoras',
+    snake_name: 'staff_users',
+    icon: 'admin_panel_settings',
+    color: 'red-darken-2',
+    superuser_only: true,
+  },    
+  {
     plural_name: 'Años de registro',
     snake_name: 'period',
     icon: 'event',
@@ -180,6 +187,7 @@ watch(
         outlined
         icon="logout"
         v-tooltip:bottom="'Cerrar sesión'"
+        data-testid="logout-button"
       >
       </v-btn>
     </v-app-bar>
@@ -205,18 +213,22 @@ watch(
             v-for="collection in main_items"
             :key="collection.snake_name"
           >
-
-            <v-list-item
-              :value="collection.snake_name"
-              exact
-              _active-class="text-accent"
-              :to="`/dashboard/${collection.snake_name}`"
-              :prepend-icon="collection.icon"
-              :base-color="collection.color || 'grey-darken-1'"
-              :disabled="!is_full_editor"
-              :title="collection.plural_name"
-            ></v-list-item>
-            <v-divider></v-divider>
+            <template
+              v-if="!collection.superuser_only
+                || authStore.user_onigies?.is_superuser"
+            >
+              <v-list-item
+                :value="collection.snake_name"
+                exact
+                _active-class="text-accent"
+                :to="`/dashboard/${collection.snake_name}`"
+                :prepend-icon="collection.icon"
+                :base-color="collection.color || 'grey-darken-1'"
+                :disabled="!is_full_editor"
+                :title="collection.plural_name"
+              ></v-list-item>
+              <v-divider></v-divider>
+            </template>
           </template>
           <template
             v-for="collection in main_collections"

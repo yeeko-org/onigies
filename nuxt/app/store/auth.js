@@ -173,10 +173,9 @@ export const useAuthStore = defineStore("auth", {
       const { $api } = useNuxtApp()
       return await $api.get(`/invitation/${uuid}/`)
     },
-    async listInvitations(institution_id) {
+    async listInvitations(params = {}) {
       const { $api } = useNuxtApp()
-      const { data } = await $api.get('/invitation/', 
-        { params: { institution: institution_id } })
+      const { data } = await $api.get('/invitation/', { params })
       return data
     },
     async createInvitation(payload) {
@@ -187,6 +186,16 @@ export const useAuthStore = defineStore("auth", {
     async deleteInvitation(uuid) {
       const { $api } = useNuxtApp()
       await $api.delete(`/invitation/${uuid}/`)
+    },
+    async listUsers(params = {}) {
+      const { $api } = useNuxtApp()
+      const { data } = await $api.get('/user/', { params })
+      return data
+    },
+    async updateUserPermissions(userId, payload) {
+      const { $api } = useNuxtApp()
+      const { data } = await $api.patch(`/user/${userId}/`, payload)
+      return data
     },
   },
   getters: {

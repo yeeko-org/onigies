@@ -239,3 +239,12 @@ node_modules
 written
 components/written/written.vue
 .venv-tools/
+
+# Playwright
+nuxt/test-results/
+nuxt/playwright-report/
+nuxt/playwright/.cache/
+
+# Keep env templates tracked (override the .env.* rule above)
+!nuxt/.env.test.template
+!api/.env.template

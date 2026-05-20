@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import health_check
 from api.views.auth.login_views import UserLoginAPIView
 from api.views.auth.invitation_views import InvitationTokenViewSet
+from api.views.auth.user_views import UserViewSet
 from api.views.auth.recovery_views import (
     PasswordRecoveryRequestView,
     PasswordRecoveryValidateView,
@@ -33,6 +34,7 @@ router.register(r'evidence', EvidenceViewSet, basename='evidence')
 router.register(r'feature_good_practice', FeatureGoodPracticeViewSet, basename='feature_good_practice')
 router.register(r'good_practice_package', GoodPracticePackageViewSet, basename='good_practice_package')
 router.register(r'invitation', InvitationTokenViewSet, basename='invitation')
+router.register(r'user', UserViewSet, basename='user')
 router.register(r'institution', InstitutionViewSet, basename='institution')
 router.register(r'survey', SurveyViewSet, basename='survey')
 

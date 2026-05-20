@@ -82,11 +82,11 @@ Authorization: Token <auth_token>
 
 **Filtros opcionales:**
 
-| Query param | Efecto |
-|-------------|--------|
-| `?institution=<id>` | Solo tokens de esa institución |
-| `?no_institution=true` | Solo tokens sin institución |
-| (ninguno) | Todos los tokens |
+| Query param               | Efecto |
+|---------------------------|--------|
+| `?institution=<id>`       | Solo tokens de esa institución |
+| `?hide_institutions=true` | Solo tokens sin institución |
+| (ninguno)                 | Todos los tokens |
 
 **Respuesta 200:** lista de objetos con el mismo formato que la creación.
 

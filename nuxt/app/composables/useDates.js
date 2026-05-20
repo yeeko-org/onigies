@@ -1,4 +1,9 @@
 import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(localizedFormat)
+dayjs.locale('es')
 
 export function useDates() {
   const months_of_year = [
@@ -16,7 +21,14 @@ export function useDates() {
     { name: 'Diciembre', short_name: 'Dic' },
   ]
 
+  // 'L' usa el formato corto localizado: con locale 'es' → DD/MM/YYYY
+  function formatDate(dateStr) {
+    if (!dateStr) return '—'
+    return dayjs(dateStr).format('L')
+  }
+
   return {
     months_of_year,
+    formatDate,
   }
 }

@@ -15,6 +15,20 @@ class IsReviewer(BasePermission):
         return request.user.is_reviewer
 
 
+class IsSuperuser(BasePermission):
+    """Exige que la persona usuaria sea superusuaria (estricto).
+
+    Para endpoints que gestionan permisos de otras personas o
+    invitaciones de staff/revisoras, donde la elevación a staff o
+    revisora debe quedar bajo control directo de la superusuaria.
+    """
+
+    def has_permission(self, request, view):
+        if request.user.is_anonymous:
+            return False
+        return request.user.is_superuser
+
+
 class BaseReadOnlyPermission(BasePermission):
     """Base permission that allows read access to everyone"""
 

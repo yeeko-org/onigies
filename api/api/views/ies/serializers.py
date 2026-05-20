@@ -42,8 +42,7 @@ class InstitutionSimpleSerializer(serializers.ModelSerializer):
 
 
 class InstitutionDetailSerializer(serializers.ModelSerializer):
-    invitation_tokens = InvitationTokenBaseSerializer(
-        many=True, read_only=True)
+    invitation_tokens = InvitationTokenBaseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Institution

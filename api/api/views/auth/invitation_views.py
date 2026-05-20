@@ -48,9 +48,9 @@ class InvitationTokenViewSet(MultiSerializerCreateRetrieveMix):
     register POST   /api/invitation/<key>/register/ (anyone)
     """
 
-    queryset = InvitationToken.objects.select_related(
-        'institution', 'user'
-    ).order_by('-created_at')
+    queryset = InvitationToken.objects\
+        .select_related('institution', 'user')\
+        .order_by('-created_at')
     serializer_class = InvitationTokenListSerializer
     action_serializers = {
         'list': InvitationTokenListSerializer,
@@ -69,12 +69,10 @@ class InvitationTokenViewSet(MultiSerializerCreateRetrieveMix):
     def get_queryset(self):
         qs = super().get_queryset()
         institution = self.request.query_params.get('institution')
-        no_institution = self.request.query_params.get(
-            'no_institution', ''
-        )
+        hide_institution = self.request.query_params.get('hide_institution', '')
         if institution:
             qs = qs.filter(institution_id=institution)
-        elif no_institution.lower() in ('true', '1'):
+        elif hide_institution.lower() in ('true', '1'):
             qs = qs.filter(institution__isnull=True)
         return qs
 
@@ -103,9 +101,7 @@ class InvitationTokenViewSet(MultiSerializerCreateRetrieveMix):
         return Response(self.get_serializer(token).data)
 
     @action(
-        detail=True, methods=['post'],
-        url_path='register', url_name='register',
-    )
+        detail=True, methods=['post'], url_path='register', url_name='register')
     def register(self, request, pk=None):
         try:
             token = InvitationToken.objects\

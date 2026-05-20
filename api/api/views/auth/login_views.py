@@ -1,64 +1,63 @@
-from api.views.auth import serializers
-# from django.contrib.auth.models import User
-from ies.models import User, InvitationToken
+from django.db.models import Q
+from rest_framework import permissions, status, views
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import APIException, ParseError
+from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import permissions, views, status
-from api.mixins import CreateRetrieveMix
+
+from api.views.auth import serializers
+from ies.models import User
 
 
 class UserLoginAPIView(views.APIView):
-    permission_classes = (permissions.AllowAny, )
+    """Login por email o username (ambos llegan en el campo `email`)."""
+
+    permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.UserLoginSerializer
 
-    def post(self, request):
-        from rest_framework.exceptions import ParseError
-        from rest_framework.authtoken.models import Token
-        # from circles.views import activate_invitation, invitation_search
+    def post(self, request: Request) -> Response:
+        """Autentica al usuario y devuelve sus datos junto al token."""
         serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response({"errors": serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
-        email = serializer.data.get('email', None)
-        username = serializer.data.get('username', None)
-        password = serializer.data.get('password', None)
-        # invitation_key = serializer.data.get('key', False)
+        identifier = serializer.validated_data['email']
+        password = serializer.validated_data['password']
 
-        if email:
-            user_query = User.objects.filter(email=email)
-        elif username:
-            user_query = User.objects.filter(username=username)
-        else:
-            raise ParseError(
-                detail="Please enter username or email to login.")
+        user_query = User.objects\
+            .filter(username=identifier)\
+            .select_related('institution', 'auth_token')
+        if not user_query.exists():
+            user_query = User.objects\
+                .filter(email=identifier)\
+                .select_related('institution', 'auth_token')
 
-        if user_query.count() == 1:
-            user_obj = user_query.first()
-        else:
-            raise ParseError(detail="This username/email is not valid.")
+        count = user_query.count()
+        if count == 0:
+            raise ParseError(detail='Usuario o correo no válido.')
+        if count > 1:
+            msg = (
+                'Existen múltiples usuarios con ese identificador. '
+                'Contacta al administrador.')
+            raise APIException(detail=msg)
+
+        user_obj = user_query.first()
         if not user_obj.check_password(password):
-            raise ParseError(detail="Invalid credentials.")
+            raise ParseError(detail='Credenciales inválidas.')
         if not user_obj.is_active:
-            raise ParseError(detail="User not active.")
+            raise ParseError(detail='Usuario no activo.')
 
-        auth_token = getattr(user_obj, "auth_token", None)
-        if not auth_token:
-            user_obj.auth_token, is_created = Token.objects\
-                .get_or_create(user=user_obj)
+        user_obj.auth_token, _ = Token.objects.get_or_create(user=user_obj)
 
         user_serializer = serializers.UserDataSerializer(
-            user_obj, context={"request": request})
-
+            user_obj, context={'request': request})
         return Response(user_serializer.data, status=status.HTTP_200_OK)
-        # get_serializer = serializers.UserDataSerializer
-        # data = get_serializer(user_obj, context={'request': request}).data
-        # return Response(data, status=status.HTTP_200_OK)
 
-    def get(self, request):
+    def get(self, request: Request) -> Response:
+        """Devuelve los datos del usuario autenticado en sesión."""
         user = request.user
         if user.is_authenticated:
-            serializer = serializers.UserDataSerializer(
+            user_serializer = serializers.UserDataSerializer(
                 user, context={'request': request})
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
         return Response()
 

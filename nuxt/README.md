@@ -44,6 +44,28 @@ pnpm install
 pnpm dev    # Servidor de desarrollo (HTTPS, puerto 3018)
 ```
 
+## Tests E2E (Playwright)
+
+Pruebas end-to-end con backend mockeado (Django no corre durante los
+tests). Cubren login, register con invitación, recuperación de
+contraseña, logout y rutas protegidas.
+
+```bash
+pnpm test:e2e         # headless, todas las pruebas
+pnpm test:e2e:ui      # modo UI interactivo (recomendado para debug)
+pnpm test:e2e:debug   # paso a paso con inspector
+pnpm test:e2e:report  # abre el reporte HTML de la última corrida
+```
+
+Primera corrida: Playwright levanta automáticamente un servidor Nuxt
+de pruebas en `https://localhost:3019` (puerto dedicado, no afecta tu
+`pnpm dev`). Si ya tienes el servidor encendido, lo reusa.
+
+Los tests viven en `e2e/`. Para detalles arquitectónicos (mocks,
+convenciones de selectores, flujo de trabajo con Playwright MCP) ver
+[`CLAUDE.md`](CLAUDE.md) y el skill
+[`.claude/skills/playwright-e2e/`](../.claude/skills/playwright-e2e/SKILL.md).
+
 ## Implementación en producción:
 ```bash
 pnpm build

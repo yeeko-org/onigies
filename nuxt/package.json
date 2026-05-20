@@ -5,9 +5,14 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "dev:test": "nuxt dev --port 3019 --dotenv .env.test",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@date-io/date-fns": "^3.0.0",
@@ -25,6 +30,7 @@
     "vuetify": "^3.10.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "material-design-icons-iconfont": "^6.7.0",
     "unplugin-fonts": "^1.4.0",
     "vite-plugin-vuetify": "^2.1.0"

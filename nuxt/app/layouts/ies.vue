@@ -145,6 +145,7 @@ const current_page = computed(() => {
         outlined
         icon="logout"
         v-tooltip:bottom="'Cerrar sesión'"
+        data-testid="logout-button"
       >
       </v-btn>
     </v-app-bar>

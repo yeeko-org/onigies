@@ -10,11 +10,17 @@ from api.views.ies.serializers import (
 
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=False, allow_blank=True)
-    email = serializers.EmailField(required=False, allow_blank=True)
+    """Login por email o username; ambos llegan en el campo `email`."""
+
+    email = serializers.CharField(required=True)
     password = serializers.CharField(
         required=True, style={'input_type': 'password'})
-    key = serializers.CharField(required=False)
+
+    def validate_email(self, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError('Campo requerido.')
+        return value
 
 
 class UserDataSerializer(serializers.ModelSerializer):
@@ -145,7 +151,68 @@ class InvitationTokenCreateSerializer(InvitationTokenListSerializer):
                     'asocia una institución.'
                 )
             })
+        if not institution:
+            request = self.context.get('request')
+            user = getattr(request, 'user', None)
+            if not user or not user.is_superuser:
+                raise serializers.ValidationError({
+                    'detail': (
+                        'Solo un superusuario puede crear '
+                        'invitaciones sin institución.'
+                    )
+                })
         return data
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    """Listado de personas usuarias para el panel de gestión de la
+    superusuaria. Excluye campos sensibles (password, auth token) y
+    expone las banderas de permisos que el panel puede alternar.
+    """
+
+    fullname = serializers.ReadOnlyField(source='full_name')
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'username', 'first_name', 'last_name',
+            'fullname', 'is_active', 'reviewer', 'is_staff',
+            'is_superuser', 'last_login', 'date_joined',
+        ]
+        read_only_fields = fields
+
+
+class UserPermissionsUpdateSerializer(serializers.ModelSerializer):
+    """Restringe el PATCH a nombre y banderas de permisos.
+
+    Una persona superusuaria no puede modificarse a sí misma desde
+    este endpoint — esto evita un lockout accidental (quitarse
+    `is_superuser` o `is_active`) y obliga a usar el endpoint de
+    perfil propio para editar nombre.
+    """
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'is_active', 'reviewer',
+            'is_staff', 'is_superuser',
+        ]
+
+    def validate(self, data):
+        request = self.context.get('request')
+        actor = getattr(request, 'user', None)
+        if actor and self.instance and actor.pk == self.instance.pk:
+            raise serializers.ValidationError({
+                'detail': (
+                    'No puedes modificar tus propios datos desde '
+                    'este endpoint.'
+                )
+            })
+        return data
+
+    def to_representation(self, instance):
+        return UserListSerializer(
+            instance, context=self.context).data
 
 
 class InvitationTokenDetailSerializer(InvitationTokenListSerializer):

@@ -8,10 +8,15 @@ SPA for managing educational institution (IES) data. Two user flows:
 ## Commands
 
 ```bash
-pnpm dev         # HTTPS dev server on :3018
+pnpm dev              # HTTPS dev server on :3018
+pnpm dev:test         # HTTPS test server on :3019 (uses .env.test)
+pnpm test:e2e         # Run Playwright tests (mocked backend)
+pnpm test:e2e:ui      # Interactive UI mode — best for debug
+pnpm test:e2e:debug   # Step-through debug with inspector
+pnpm test:e2e:report  # Open last HTML report
 ```
 
-No linting or test scripts configured. Dev server requires `localhost-key.pem` and `localhost.pem` at repo root.
+Dev server requires `localhost-key.pem` and `localhost.pem` at repo root.
 
 ## Environment
 
@@ -20,22 +25,26 @@ NUXT_API_URL=https://...     # Django REST API base URL
 NUXT_ADMIN_URL=https://...   # Django admin URL (sidebar link)
 ```
 
+## E2E tests
+
+Playwright on `:3019` with a mocked Django backend — every request to `:8019` is intercepted via `page.route`; unmocked hits return `501`. Tests import `test`/`expect` from `./fixtures`, not `@playwright/test`.
+
+See `.claude/skills/playwright-e2e/SKILL.md` for MCP ↔ test workflow, selector conventions, layout, and coverage.
+
 ## Catalog-driven UI
 
-The dashboard is **schema-driven by `/catalogs/all/`**. `middleware/dashboard.js` calls `fetchCatalogs()`, which loads collections metadata, filter groups, and catalog items. Then:
+Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard.js` → `fetchCatalogs()`. All state lives in `useMainStore`.
 
-1. `composables/cats.js` `calculateSchemas()` enriches each collection with field metadata, filters, sorts, `has.*` flags, and `is_category` flag.
-2. `composables/nodes.js` `calculateNewCats()` builds D3 `stratify()` trees for hierarchical filter selects. Rebuilds after any catalog mutation.
-3. `composables/fetch.js` manages debounced (600 ms) list fetching with global `results`, `loading_fetch`, `final_filters` refs.
-
-All stored in `useMainStore` (`store/index.js`).
+- `composables/cats.js` — enriches each collection with field metadata, filters, sorts, `has.*` and `is_category` flags
+- `composables/nodes.js` — builds D3 `stratify()` trees for hierarchical selects; rebuilds on catalog mutation
+- `composables/fetch.js` — debounced (600 ms) list fetching with global `results`, `loading_fetch`, `final_filters`
 
 ### Collection vs category
 
-- Regular collections (`is_category: false`): API `/{snake_name}/` — store actions `saveSimple`, `deleteSimple`, etc.
-- Category collections (`is_category: true`, level starts with `category_`): API `/catalogs/{snake_name}/` — actions `saveCatalog`, `deleteCatalog` also update `cats` in place.
+- Regular (`is_category: false`): API `/{snake_name}/` — actions `saveSimple`, `deleteSimple`.
+- Category (`is_category: true`, level starts with `category_`): API `/catalogs/{snake_name}/` — actions `saveCatalog`, `deleteCatalog` also update `cats` in place.
 
-`composables/save_elements.js` exports `saveElement`, `patchElement`, `deleteElement`, `getElement` — route automatically based on `collection_data.is_category`.
+`composables/save_elements.js` routes `saveElement`/`patchElement`/`deleteElement`/`getElement` based on `is_category`.
 
 ## Stores (`app/store/`)
 
@@ -44,13 +53,20 @@ All stored in `useMainStore` (`store/index.js`).
 - `ies.js` (`useIesStore`) — `ies_data`, `surveys`, `current_period`
 - `dash.js` — dashboard ephemeral state
 
+## Shared building blocks
+
+- `composables/usePermissions.js` — `USER_PERMISSIONS` / `INVITATION_PERMISSIONS` constants; single source of truth.
+- `composables/useApiError.js` — `notifyApiError(err, fallback?)` for DRF error → snackbar.
+- `composables/useDates.js` — `formatDate(dateStr)` (dayjs, locale `es`).
+- `components/dashboard/common/dialog/DialogDelete.vue` — confirm dialog with `title`/`subtitle`/`loading`/default slot; reusable beyond delete.
+
 ## Layouts
 
 | Layout | Routes | Middleware |
 |---|---|---|
 | `dashboard.vue` | `/dashboard/**` | `dashboard.js` (auth + `fetchCatalogs` + `current_collection`) |
-| `ies.vue` | `/respuestas/**` | `authenticated.js` |
-| `login.vue` | `/login`, `/register` | — |
+| `ies.vue` | `/respuestas/**` | `dashboard.js` (applied per-page; needs catalogs too) |
+| `login.vue` | `/login`, `/register`, `/forgot-password`, `/recover-password` | — |
 
 ## Gotchas
 

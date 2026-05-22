@@ -1,0 +1,95 @@
+---
+name: deployment
+description: Deployment topology, hosting, and the migration roadmap for the ONIGIES monorepo. Use when touching nginx config, the UNAM or Yeeko servers, the temporary Netlify bridge, environment variables, production setup, DNS, or when asking what is left to migrate or deploy.
+---
+
+# deployment
+
+How the ONIGIES monorepo is hosted **during the transition** from the legacy system to the new stack. This setup is temporary: it exists until the UNAM virtual machine is provisioned.
+
+## Topology
+
+```
+Browser at onigies.unam.mx/dashboard
+   │
+   ├─ HTML + /_nuxt/  ──► nginx (UNAM) ──proxy──► onigies.netlify.app   new frontend
+   │
+   └─ /api/...  ───────────────────────────────► apionigies.yeeko.org   new backend
+                                                  cross-origin · token in header
+
+onigies.unam.mx/ · /api · /admin · /media · /static
+   └─► nginx (UNAM) ──► legacy Django 127.0.0.1:6000   legacy public site
+```
+
+The new dashboard is a **self-contained stack** — frontend on Netlify, API on Yeeko. The nginx bridge only forwards the frontend; it never touches the API. The dashboard behaves identically at `onigies.netlify.app` or `onigies.unam.mx` because `NUXT_API_URL` is baked into the build.
+
+## Hosts
+
+| Component | Runs on | Public URL |
+|---|---|---|
+| Legacy public site (Vue 2) | UNAM server — static `/var/www/onigies/` | `onigies.unam.mx/` |
+| Legacy backend (Python 2 Django) | UNAM server — `127.0.0.1:6000` | `onigies.unam.mx/{api,admin,media,static}` |
+| New dashboard (`nuxt/`) | Netlify | `onigies.netlify.app`, bridged onto `onigies.unam.mx` |
+| New API (`api/`) | Yeeko server | `apionigies.yeeko.org` |
+
+Netlify build env vars (baked at build time, so the browser always calls Yeeko):
+
+```
+NUXT_API_URL=https://apionigies.yeeko.org/api
+NUXT_ADMIN_URL=https://apionigies.yeeko.org/admin
+```
+
+## The temporary nginx bridge
+
+Lives in the UNAM server's nginx site config (e.g. `/etc/nginx/sites-available/onigies.unam.mx`). Two `location` blocks forward the dashboard's six routes and the Nuxt build assets to Netlify; the legacy `location` blocks (`/`, `/api`, `/admin`, `/media`, `/static`) stay untouched.
+
+```nginx
+# Dashboard pages → Netlify
+location ~ ^/(dashboard|respuestas|login|register|forgot-password|recover-password)(/|$) {
+        proxy_pass https://onigies.netlify.app;
+        proxy_ssl_server_name on;
+        proxy_set_header Host onigies.netlify.app;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_redirect https://onigies.netlify.app/ /;
+}
+
+# Nuxt build assets (JS/CSS) → Netlify
+location /_nuxt/ {
+        proxy_pass https://onigies.netlify.app;
+        proxy_ssl_server_name on;
+        proxy_set_header Host onigies.netlify.app;
+}
+```
+
+Why the non-obvious directives:
+
+| Directive | Reason |
+|---|---|
+| `Host onigies.netlify.app` | Netlify is multi-tenant and routes by `Host`. The real host returns "site not found". |
+| `proxy_ssl_server_name on` | Sends SNI in the TLS handshake so Netlify serves the right certificate. |
+| `location /_nuxt/` | Build assets use absolute paths; without proxying them the browser hits the legacy site and gets its `index.html`. |
+| no URI after `proxy_pass` | In a regex `location`, a URI part in `proxy_pass` is a syntax error; omitting it forwards the path verbatim. |
+
+Apply on the server:
+
+```bash
+sudo cp /etc/nginx/sites-available/onigies.unam.mx{,.bak}
+sudo nginx -t                  # validate syntax
+sudo systemctl reload nginx    # apply with no downtime
+```
+
+Rollback: restore the `.bak` and reload.
+
+## Why no backend change was needed
+
+The dashboard calls `apionigies.yeeko.org` cross-origin, and it works without CORS edits because:
+
+- `api/core/settings/__init__.py` sets `CORS_ORIGIN_ALLOW_ALL = True` — every origin is accepted.
+- Auth is a token in the `Authorization` header (`nuxt/app/plugins/api.ts`, no `withCredentials`), so CSRF never triggers.
+
+**Hardening pending:** `CORS_ORIGIN_ALLOW_ALL = True` is wide open. Tighten it to an explicit `CORS_ALLOWED_ORIGINS` allowlist once the topology stabilizes — tracked in the roadmap.
+
+## Migration roadmap
+
+The running checklist of what is left to move onto UNAM infrastructure lives in [`references/roadmap.md`](references/roadmap.md). Update that file as steps land; keep this SKILL.md for the stable runbook.

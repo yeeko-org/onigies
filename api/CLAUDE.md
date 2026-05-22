@@ -4,6 +4,8 @@ Django REST Framework API. Validation and business shape live in serializers.
 
 ## Commands
 
+Virtualenv interpreter: `D:/env/onigies/Scripts/python.exe` (outside the repo).
+
 ```bash
 python manage.py runserver   # dev server on :8018
 pytest                       # run tests

@@ -28,7 +28,10 @@ def _send_invitation_email(token: InvitationToken):
 
     context = {'destination_url': get_destination_url(token, 'register')}
     if token.institution:
-        context['institution'] = token.institution
+        context['institution'] = {
+            'name': token.institution.name,
+            'acronym': token.institution.acronym,
+        }
         template_name = 'email/invitation_institution.html'
     else:
         template_name = 'email/invitation_generic.html'

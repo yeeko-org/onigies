@@ -44,25 +44,19 @@ async function saveRecord() {
   errors.value = null
   const { valid } = await editForm.value.validate()
   if (!valid) return
-  if (!full_main.value.id && !full_main.value.comments){
+  const pk = final_collection_data.value.pk
+  const is_new = pk === 'id'
+    ? !full_main.value.id
+    : full_main.value.is_new === true
+  if (is_new && !full_main.value.comments){
     const coll = final_collection_data.value
     if (coll.is_category && coll.has.comments) {
       errors.value = "Cuando creas una categoría, debes añadir un comentario " +
         "para explicar la razón de su creación"
       return
     }
-    // errors.value = "Cuando creas una categoría, debes añadir un comentario " +
-    //     "para explicar la razón de su creación"
-    // return
   }
   saving.value = true
-  // const elem_id = full_main.value.id ? 'id' : 'key_name'
-  const elem_id = final_collection_data.value.pk
-  let is_new = true
-  if (elem_id === 'id')
-    is_new = !full_main.value.id
-  else if (elem_id === 'key_name')
-    is_new = full_main.value.is_new === true
   saveElement(final_collection_data.value, full_main.value).then((res) => {
     if (res.errors) {
       errors.value = res.errors
@@ -102,7 +96,7 @@ function updateComments(res){
 function deleteRecord() {
   errors.value = null
   deleting.value = true
-  const id_to_delete = full_main.value[props.collection_data.pk]
+  const id_to_delete = full_main.value[final_collection_data.value.pk]
   deleteElement(final_collection_data.value, id_to_delete)
     .then((res) => {
       if (res.errors) {

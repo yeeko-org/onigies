@@ -336,11 +336,7 @@ function setInitialData() {
   }
 }
 
-const subtype_key = computed(() => {
-  const fields = collections.value.subtype.fields
-  const available_ids = ['id', 'key_name', 'name']
-  return available_ids.find(id => fields.some(field => field.name === id))
-})
+const subtype_key = computed(() => collections.value.subtype.pk)
 
 const main_width = computed(() => props.width || 250)
 
@@ -388,7 +384,7 @@ function selectItem(item){
   // console.log("level_dialog", level_dialog.value)
   // console.log("level_names", level_names.value)
   // console.log("main_object", main_object.value)
-  const elem_id = item.id || item.key_name
+  const elem_id = item[collections.value[level_dialog.value].pk]
   Object.entries(level_names.value).forEach(([level, cat_name]) => {
     const [is_multiple, new_cat_name] = isLevelMultiple(level, cat_name)
     if (level === level_dialog.value)

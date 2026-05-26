@@ -80,12 +80,7 @@ const final_subtype_field = computed(() => {
   return final_field_object.value.name
 })
 
-const subtype_key = computed(() => {
-  const fields = filter_collection.value.fields
-  const available_ids = ['id', 'key_name', 'name']
-  return available_ids.find(id_key => fields.some(
-    field => field.name === id_key))
-})
+const subtype_key = computed(() => filter_collection.value.pk)
 
 const main_width = computed(() => props.width || 250)
 

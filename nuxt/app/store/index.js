@@ -7,14 +7,12 @@ import { calculateSchemas } from "~/composables/cats.js";
 import { calculate_status } from "~/composables/filters.js";
 let request = axios.CancelToken.source();
 
-function getLastId(data) {
+function getLastId(data, pk='id') {
   if (data.elems_ids){
     return { method: 'patch', last_id: `${data.elems_ids[0]}/massive_patch/` }
   }
-    // return { method: 'post', last_id: 'massive_edit/' }
-  const id = data.id || data.key_name
-  // const id = data.id
-  const is_edit = data.id && !data.is_new
+  const id = data[pk]
+  const is_edit = id && !data.is_new
   const method = is_edit ? 'put' : 'post'
   const last_id = is_edit ? `${id}/` : ''
   return { method, last_id }
@@ -89,7 +87,8 @@ export const useMainStore = defineStore('main', {
     async saveSimple([collection, data]) {
       // this.setHeader()
       const { $api } = useNuxtApp()
-      const { method, last_id } = getLastId(data)
+      const pk = this.schemas.collections_dict[collection]?.pk || 'id'
+      const { method, last_id } = getLastId(data, pk)
       try {
         let response = await $api[method](
           `/${collection}/${last_id}`, data, { timeout: 300000 }
@@ -116,7 +115,8 @@ export const useMainStore = defineStore('main', {
     async saveCatalog([collection_data, data]) {
       // this.setHeader()
       const { $api } = useNuxtApp()
-      const { method, last_id } = getLastId(data)
+      const { pk } = collection_data
+      const { method, last_id } = getLastId(data, pk)
       const collection = collection_data.snake_name
       const full_url = `catalogs/${collection}/${last_id}`
       try {
@@ -124,9 +124,8 @@ export const useMainStore = defineStore('main', {
         if (method === 'post')
           this.cats[collection].unshift(response.data)
         else {
-          const elem_id = response.data.id ? 'id' : 'key_name'
           const index = this.cats[collection].findIndex(
-            el => el[elem_id] === response.data[elem_id])
+            el => el[pk] === response.data[pk])
           this.cats[collection][index] = response.data
         }
         this.all_nodes = calculateNewCats(this.cats, this.schemas)

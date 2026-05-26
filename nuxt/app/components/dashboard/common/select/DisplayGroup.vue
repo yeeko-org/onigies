@@ -280,11 +280,7 @@ function setInitialData() {
   }
 }
 
-const subtype_key = computed(() => {
-  const fields = collections.value.subtype.fields
-  const available_ids = ['id', 'key_name', 'name']
-  return available_ids.find(id => fields.some(field => field.name === id))
-})
+const subtype_key = computed(() => collections.value.subtype.pk)
 
 </script>
 

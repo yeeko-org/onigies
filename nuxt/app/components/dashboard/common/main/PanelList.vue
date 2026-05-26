@@ -52,13 +52,11 @@ import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${sheet_na
   })
 
 function addItem({res, is_new}) {
-  // console.log("addItem", res, is_new)
-  const elem_id = res.id ? 'id' : 'key_name'
   if (is_new)
     props.results.unshift(res)
   else {
-    const index = props.results.findIndex(
-      result => result[elem_id] === res[elem_id])
+    const pk = props.collection_data.pk
+    const index = props.results.findIndex(result => result[pk] === res[pk])
     props.results[index] = {...props.results[index], ...res}
   }
 }

@@ -53,12 +53,6 @@ class GoodPracticePackage(models.Model):
     sent_at = models.DateTimeField(blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        print("Saving GoodPracticePackage...", self.has_good_practices)
-        if self.has_good_practices is False:
-            self.status_sending_id = 'discarded'
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return (f"Paquete de Buenas Prácticas - "
                 f"{self.survey.institution.acronym} - {self.survey.period.year}")

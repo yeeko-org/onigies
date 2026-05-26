@@ -85,7 +85,6 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 
 <template>
   <v-card
-
     class="my-2"
     variant="tonal"
     color="indigo"

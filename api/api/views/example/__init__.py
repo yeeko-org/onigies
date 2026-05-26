@@ -121,6 +121,50 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         serializer = self.get_serializer(good_practice_package)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'])
+    def discard(self, request, pk=None):
+        """Cierra el paquete con la respuesta "No tengo buenas prácticas".
+
+        Sólo permitido si el estado actual pertenece al rol ``ies``
+        (es decir, el paquete está bajo control de la institución) y si
+        el periodo de buenas prácticas sigue abierto.
+        """
+        package = self.get_object()
+        status = package.status_sending
+        if not status or status.role != 'ies':
+            msg = 'No puedes descartar el paquete en este estado.'
+            return Response({'detail': msg}, status=400)
+        if package.survey.period.good_practices_published:
+            msg = 'El periodo ya cerró, no se puede modificar la respuesta.'
+            return Response({'detail': msg}, status=400)
+        package.has_good_practices = False
+        package.status_sending_id = 'discarded'
+        package.save()
+        serializer = self.get_serializer(package)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def reopen(self, request, pk=None):
+        """Reabre un paquete previamente descartado.
+
+        Sólo permitido si el paquete está en estado ``discarded`` y si
+        el periodo de buenas prácticas sigue abierto. Vuelve el paquete
+        a estado ``draft`` con ``has_good_practices = None`` para que la
+        institución pueda responder de nuevo.
+        """
+        package = self.get_object()
+        if package.status_sending_id != 'discarded':
+            msg = 'No se pueden reabrir paquetes que no estén "descartados".'
+            return Response({'detail': msg}, status=400)
+        if package.survey.period.good_practices_published:
+            msg = 'El periodo de registro ya cerró, no se puede reabrir.'
+            return Response({'detail': msg}, status=400)
+        package.has_good_practices = None
+        package.status_sending_id = 'draft'
+        package.save()
+        serializer = self.get_serializer(package)
+        return Response(serializer.data)
+
 
 class EvidenceViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]

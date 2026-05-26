@@ -9,6 +9,8 @@ import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodP
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
 import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
+import NotReadyDialog from "~/components/dashboard/example/good_practice/NotReadyDialog.vue";
+import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmActionDialog.vue";
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -40,6 +42,29 @@ const editionAvailable = computed(()=> {
     return false
   else {
     return statusSending.value.role === 'ies'
+  }
+})
+
+const periodOpen = computed(() =>
+  !goodPracticePackage.value.survey_full?.period_full?.good_practices_published
+)
+
+const canReopen = computed(() => {
+  if (isStaff.value)
+    return false
+  return goodPracticePackage.value.status_sending === 'discarded'
+    && periodOpen.value
+})
+
+const responseModel = computed({
+  get: () => goodPracticePackage.value.has_good_practices,
+  set: (newValue) => {
+    if (newValue === true) {
+      goodPracticePackage.value.has_good_practices = true
+      editPackage()
+    } else if (newValue === false) {
+      discard_dialog.value = true
+    }
   }
 })
 
@@ -146,6 +171,7 @@ function editPackage() {
 
 const send_dialog = ref(false)
 const not_ready_dialog = ref(false)
+const discard_dialog = ref(false)
 
 const canSendPackage = computed(() => {
   if (!goodPractices.value.length) return false
@@ -184,6 +210,37 @@ function sendPackage(){
   })
 }
 
+function discardPackage() {
+  saveAction(['good_practice_package', package_id.value, 'discard'])
+    .then(res => {
+      if (res?.errors) {
+        dashStore.showSnackbar(
+          res.errors.detail || 'No se pudo descartar el paquete', 'error')
+        return
+      }
+      goodPracticePackage.value = res
+      discard_dialog.value = false
+    }).catch(e => {
+      console.error("Error discarding package:", e)
+    })
+}
+
+function reopenPackage() {
+  saveAction(
+    ['good_practice_package', package_id.value, 'reopen']
+  ).then(res => {
+    if (res?.errors) {
+      dashStore.showSnackbar(
+        res.errors.detail || 'No se pudo reabrir el paquete', 'error')
+      return
+    }
+    goodPracticePackage.value = res
+    setPractices(res.good_practices || [])
+  }).catch(e => {
+    console.error("Error reopening package:", e)
+  })
+}
+
 const statusSending = computed(()=> {
   if (!mainStore.status_dict.sending)
     return {}
@@ -207,7 +264,6 @@ const statusSending = computed(()=> {
         <template #activator="{ props: activatorProps }">
           <v-btn
             v-bind="activatorProps"
-            size="small"
             variant="outlined"
             color="primary"
             prepend-icon="help_outline"
@@ -285,13 +341,23 @@ const statusSending = computed(()=> {
         <span class="text-caption text-medium-emphasis text-info">
           Respuesta registrada
         </span>
+        <v-btn
+          v-if="canReopen"
+          color="accent"
+          variant="outlined"
+          prepend-icon="undo"
+          class="mt-3"
+          size="small"
+          @click="reopenPackage"
+        >
+          Cambiar respuesta
+        </v-btn>
       </div>
       <v-radio-group
         v-else
-        v-model="goodPracticePackage.has_good_practices"
+        v-model="responseModel"
         style="width: 680px;"
         class="ml-3"
-        @update:modelValue="editPackage"
       >
         <v-radio
           v-for="(opt, i) in responseOptions"
@@ -333,7 +399,6 @@ const statusSending = computed(()=> {
             :loading="loadingId === practice.id"
             @open="openEdit"
           />
-
         </v-col>
       </v-row>
 
@@ -394,7 +459,7 @@ const statusSending = computed(()=> {
       >
         <template #header>
           <v-toolbar
-            color="secondary"
+            color="primary"
             density="compact"
           >
             <v-toolbar-title>
@@ -411,107 +476,43 @@ const statusSending = computed(()=> {
         </template>
       </GoodPracticeEditSimple>
     </v-dialog>
-    <v-dialog
+    <NotReadyDialog
       v-model="not_ready_dialog"
-      max-width="640"
-    >
-      <v-card>
-        <v-card-title class="headline">
-          Aún no puedes enviar las buenas prácticas
-        </v-card-title>
-        <v-card-text>
-          <v-alert
-            type="info"
-            variant="tonal"
-            class="mb-3"
-          >
-            Todas tus buenas prácticas deben estar en el estado
-            <b>"Lista para enviar"</b> antes de enviar el paquete
-            a revisión.
-          </v-alert>
-          <div
-            v-if="!goodPractices.length"
-            class="text-body-2"
-          >
-            Aún no has agregado ninguna buena práctica.
-          </div>
-          <div v-else>
-            <div class="text-body-2 mb-2">
-              Estas prácticas aún no están listas:
-            </div>
-            <ul class="ml-4">
-              <li
-                v-for="p in notReadyDetails"
-                :key="p.id"
-                class="mb-1"
-              >
-                <b>{{ p.name }}</b>
-                <template v-if="p.missing.length">
-                  — falta: {{ p.missing.join(', ') }}
-                </template>
-                <template v-else>
-                  — falta marcarla como "Lista para enviar"
-                </template>
-              </li>
-            </ul>
-          </div>
-        </v-card-text>
-        <v-card-actions class="mx-3 mb-2">
-          <v-spacer />
-          <v-btn
-            variant="elevated"
-            color="primary"
-            @click="not_ready_dialog = false"
-          >
-            Entendido, regresar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
+      :good-practices="goodPractices"
+      :not-ready-details="notReadyDetails"
+    />
+    <ConfirmActionDialog
       v-model="send_dialog"
-      max-width="600"
+      title="¿De verdad quieres enviar a revisión las buenas prácticas?"
+      confirm-label="Sí enviar"
+      confirm-icon="send"
+      cancel-label="Cancelar envío"
+      @confirm="sendPackage"
     >
-      <v-card>
-        <v-card-title class="headline text-no-wrap no-wrap">
-          ¿De verdad quieres enviar a revisión las buenas prácticas?
-        </v-card-title>
-        <v-card-text cxlass="text-grey-darken-2">
-          <v-alert
-            type="warning"
-            border="start"
-            variant="outlined"
-          >
-            Una vez enviadas, no podrás realizar modificaciones o agregar nuevas.
-          </v-alert>
-        </v-card-text>
-        <v-card-actions class="mx-2">
-          <v-btn
-            color="error"
-            variant="outlined"
-            @click="send_dialog = false"
-          >
-            Cancelar envio
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="accent"
-            variant="elevated"
-            @click="sendPackage"
-            append-icon="send"
-            class="px-6"
-          >
-            Sí enviar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-alert
+        type="warning"
+        border="start"
+        variant="outlined"
+      >
+        Una vez enviadas, no podrás realizar modificaciones o agregar nuevas.
+      </v-alert>
+    </ConfirmActionDialog>
+    <ConfirmActionDialog
+      v-model="discard_dialog"
+      title="¿Confirmas que no quieres reportar Buenas Prácticas?"
+      confirm-label="Sí, confirmo"
+      @confirm="discardPackage"
+    >
+      <v-alert
+        type="info"
+        border="start"
+        variant="outlined"
+      >
+        Vas a cerrar tu participación en este módulo.
+        Mientras el periodo siga abierto, podrás reabrir y cambiar
+        tu respuesta.
+      </v-alert>
+    </ConfirmActionDialog>
   </v-card>
 
 </template>
-
-<style scoped>
-.no-wrap{
-  word-break: normal !important;
-}
-</style>

@@ -4,7 +4,8 @@ from survey.models import Survey
 from example.models import (
     Feature, GoodPractice, FeatureOption, FeatureGoodPractice,
     GoodPracticePackage, Evidence)
-from api.views.ies.serializers import InstitutionSimpleSerializer
+from api.views.ies.serializers import (
+    InstitutionSimpleSerializer, PeriodSimpleSerializer)
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
@@ -56,6 +57,7 @@ class GoodPracticeFullSerializer(GoodPracticeSerializer):
 class SurveySemiFullSerializer(serializers.ModelSerializer):
     institution_full = InstitutionSimpleSerializer(
         read_only=True, source='institution')
+    period_full = PeriodSimpleSerializer(read_only=True, source='period')
 
     class Meta:
         model = Survey

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Eje cards</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .eje { background: var(--bg-page); border-radius: var(--radius-lg);
+         box-shadow: var(--neu-raised); padding: 20px 20px 18px; }
+  .eje .ico { width: 54px; height: 54px; border-radius: var(--radius-pill);
+              background: var(--bg-page); box-shadow: var(--neu-inset-sm);
+              display: flex; align-items: center; justify-content: center;
+              margin-bottom: 14px; }
+  .eje .ico .material-symbols-rounded { font-size: 30px; }
+  .eje .name { font-family: var(--font-display); font-weight: 700; font-size: 14px;
+               color: var(--fg-1); line-height: 1.25; min-height: 50px; }
+  .eje .short { font-family: var(--font-body); font-size: 11px; color: var(--fg-3);
+                margin-top: 4px; letter-spacing: 0.02em; }
+  .eje .score { display: flex; align-items: baseline; gap: 6px; margin-top: 14px; }
+  .eje .score .n { font-family: var(--font-display); font-weight: 800; font-size: 34px;
+                    line-height: 1; font-variant-numeric: tabular-nums; }
+  .eje .score .of { font-family: var(--font-body); font-size: 12px; color: var(--fg-3); }
+
+  .violeta .ico .material-symbols-rounded { color: var(--violeta-500); }
+  .violeta .score .n { color: var(--violeta-600); }
+
+  .azul    .ico .material-symbols-rounded { color: var(--azul-500); }
+  .azul    .score .n { color: var(--azul-600); }
+
+  .ambar   .ico .material-symbols-rounded { color: var(--ambar-600); }
+  .ambar   .score .n { color: var(--ambar-700); }
+
+  .rosa    .ico .material-symbols-rounded { color: var(--rosa-500); }
+  .rosa    .score .n { color: var(--rosa-600); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="eje violeta">
+      <div class="ico"><span class="material-symbols-rounded">add</span></div>
+      <div class="name">Igualdad de género</div>
+      <div class="short">corto: Igualdad</div>
+      <div class="score"><span class="n">1.8</span><span class="of">/ 5</span></div>
+    </div>
+    <div class="eje azul">
+      <div class="ico"><span class="material-symbols-rounded">self_improvement</span></div>
+      <div class="name">Inclusión y no discriminación</div>
+      <div class="short">corto: Inclusión</div>
+      <div class="score"><span class="n">2.2</span><span class="of">/ 5</span></div>
+    </div>
+    <div class="eje ambar">
+      <div class="ico"><span class="material-symbols-rounded">baby_changing_station</span></div>
+      <div class="name">Cuidados corresponsables</div>
+      <div class="short">corto: Cuidados</div>
+      <div class="score"><span class="n">1.5</span><span class="of">/ 5</span></div>
+    </div>
+    <div class="eje rosa">
+      <div class="ico"><span class="material-symbols-rounded">volunteer_activism</span></div>
+      <div class="name">Una vida libre de discriminaciones y violencias</div>
+      <div class="short">corto: Vida libre</div>
+      <div class="score"><span class="n">3.0</span><span class="of">/ 5</span></div>
+    </div>
+  </div>
+</body>
+</html>

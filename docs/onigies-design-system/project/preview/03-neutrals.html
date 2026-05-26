@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Neutrals</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page);
+         font-family: var(--font-body); }
+  .ramp { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+  .cell { border-radius: var(--radius-sm); overflow: hidden;
+          box-shadow: var(--elev-1); background: white; }
+  .chip { height: 70px; }
+  .meta { padding: 8px 10px; }
+  .name { font-family: var(--font-display); font-weight: 700; font-size: 11px;
+          color: var(--fg-1); }
+  .hex { font-family: var(--font-mono); font-size: 9.5px; color: var(--fg-3); margin-top: 2px; }
+  .title { font-family: var(--font-display); font-weight: 700; font-size: 13px;
+           color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.12em;
+           margin-bottom: 14px; }
+</style>
+</head>
+<body>
+  <div class="title">Neutrals · warm gray w/ violet undertone</div>
+  <div class="ramp">
+    <div class="cell"><div class="chip" style="background:var(--neutral-0);  border-bottom: 1px solid var(--border-soft)"></div><div class="meta"><div class="name">0</div><div class="hex">#FFFFFF</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-50)"></div><div class="meta"><div class="name">50</div><div class="hex">#F6F4F9</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-100)"></div><div class="meta"><div class="name">100</div><div class="hex">#ECEAF1</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-200)"></div><div class="meta"><div class="name">200</div><div class="hex">#DCD9E3</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-300)"></div><div class="meta"><div class="name">300</div><div class="hex">#C3BFCC</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-400)"></div><div class="meta"><div class="name">400</div><div class="hex">#9A95A8</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-500)"></div><div class="meta"><div class="name">500</div><div class="hex">#726D81</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-700)"></div><div class="meta"><div class="name">700</div><div class="hex">#3A3648</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-800)"></div><div class="meta"><div class="name">800</div><div class="hex">#25232E</div></div></div>
+    <div class="cell"><div class="chip" style="background:var(--neutral-900)"></div><div class="meta"><div class="name">900</div><div class="hex">#14131B</div></div></div>
+  </div>
+</body>
+</html>

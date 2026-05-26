@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Primary action color</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=block" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page); }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+  .card { background: var(--bg-page); border-radius: var(--radius-lg);
+          box-shadow: var(--neu-raised); padding: 20px; }
+  .swatch { height: 70px; border-radius: var(--radius-md); margin-bottom: 14px;
+            box-shadow: var(--elev-2); background: var(--primary-500); }
+  .name { font-family: var(--font-display); font-weight: 700; font-size: 15px;
+          color: var(--fg-1); }
+  .role { font-family: var(--font-body); font-size: 11.5px; color: var(--fg-3);
+          margin: 2px 0 8px; line-height: 1.4; }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--fg-2); }
+  .ramp { display: flex; gap: 3px; margin-top: 8px; }
+  .ramp span { flex: 1; height: 14px; border-radius: 3px; }
+
+  .demo { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+  .demo-btn {
+    background: var(--primary-500); color: white;
+    padding: 10px 18px; border-radius: var(--radius-sm); border: 0;
+    font-family: var(--font-body); font-weight: 600; font-size: 13px;
+    box-shadow: var(--elev-2); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .demo-btn .material-symbols-rounded { font-size: 18px; }
+  .demo-link {
+    font-family: var(--font-body); font-weight: 600; font-size: 13px;
+    color: var(--primary-700);
+  }
+
+  .label { font-family: var(--font-body); font-weight: 700; font-size: 10.5px;
+           color: var(--fg-3); letter-spacing: 0.12em; text-transform: uppercase;
+           margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="card">
+      <div class="swatch"></div>
+      <div class="name">Turquesa · Primary</div>
+      <div class="role">Color de acción que vive fuera de los 4 ejes. Usado en sitio público + admin para CTAs, links, gauge, KPIs no-eje.</div>
+      <div class="hex">#14A8A0</div>
+      <div class="ramp">
+        <span style="background:var(--turquesa-50)"></span>
+        <span style="background:var(--turquesa-100)"></span>
+        <span style="background:var(--turquesa-500)"></span>
+        <span style="background:var(--turquesa-700)"></span>
+        <span style="background:var(--turquesa-900)"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">CTA & link</div>
+      <div class="demo">
+        <button class="demo-btn"><span class="material-symbols-rounded">download</span>Descargar</button>
+        <span class="demo-link">Leer más →</span>
+      </div>
+      <div class="label" style="margin-top: 18px">Por qué no morado/violeta</div>
+      <div class="role" style="font-size: 12px; color: var(--fg-2)">
+        El morado ahora es uno de los 4 ejes (Igualdad de género). Si lo usáramos también para el CTA y el Índice global, se mezclarían los significados.
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">No se confunde con los ejes</div>
+      <div class="row" style="grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px">
+        <div style="height: 30px; border-radius: 6px; background: var(--violeta-500)" title="Igualdad"></div>
+        <div style="height: 30px; border-radius: 6px; background: var(--azul-500)" title="Inclusión"></div>
+        <div style="height: 30px; border-radius: 6px; background: var(--ambar-500)" title="Cuidados"></div>
+        <div style="height: 30px; border-radius: 6px; background: var(--rosa-500)" title="Vida libre"></div>
+      </div>
+      <div style="height: 30px; border-radius: 6px; background: var(--primary-500); margin-top: 8px"></div>
+      <div class="role" style="font-size: 11.5px; margin-top: 10px">Los 4 ejes arriba · primary turquesa abajo. Diferentes hues, sin choque visual.</div>
+    </div>
+  </div>
+</body>
+</html>

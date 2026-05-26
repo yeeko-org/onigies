@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Neumorphism shadows</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 36px 28px; background: var(--bg-page);
+         font-family: var(--font-body); }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+  .box { height: 90px; background: var(--bg-page); border-radius: var(--radius-md);
+         display: flex; align-items: center; justify-content: center;
+         font-family: var(--font-display); font-weight: 700; font-size: 16px;
+         color: var(--fg-2); }
+  .label { font-family: var(--font-body); font-size: 11px; color: var(--fg-3);
+           margin-top: 12px; text-align: center; letter-spacing: 0.02em;
+           line-height: 1.4; }
+  .label b { font-family: var(--font-display); display: block; color: var(--fg-1);
+             font-size: 12px; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div>
+      <div class="box" style="box-shadow: var(--neu-raised-sm)">N raised sm</div>
+      <div class="label"><b>neu-raised-sm</b>buttons, tags</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--neu-raised)">N raised</div>
+      <div class="label"><b>neu-raised</b>default card</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--neu-raised-lg)">N raised lg</div>
+      <div class="label"><b>neu-raised-lg</b>hero / focused</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--neu-inset-sm)">N inset sm</div>
+      <div class="label"><b>neu-inset-sm</b>input field rest</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--neu-inset)">N inset</div>
+      <div class="label"><b>neu-inset</b>pressed / well</div>
+    </div>
+  </div>
+</body>
+</html>

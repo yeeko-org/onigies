@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Spacing scale</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page);
+         font-family: var(--font-body); }
+  .row { display: flex; align-items: flex-end; gap: 12px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 6px;
+          flex: 1; }
+  .bar { background: linear-gradient(180deg, var(--violeta-200), var(--violeta-500));
+         border-radius: 4px 4px 0 0; width: 100%; box-shadow: var(--elev-1); }
+  .name { font-family: var(--font-display); font-weight: 700; font-size: 11px; color: var(--fg-1); }
+  .px   { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="bar" style="height: 4px"></div><div class="name">1</div><div class="px">4</div></div>
+    <div class="item"><div class="bar" style="height: 8px"></div><div class="name">2</div><div class="px">8</div></div>
+    <div class="item"><div class="bar" style="height: 12px"></div><div class="name">3</div><div class="px">12</div></div>
+    <div class="item"><div class="bar" style="height: 16px"></div><div class="name">4</div><div class="px">16</div></div>
+    <div class="item"><div class="bar" style="height: 20px"></div><div class="name">5</div><div class="px">20</div></div>
+    <div class="item"><div class="bar" style="height: 24px"></div><div class="name">6</div><div class="px">24</div></div>
+    <div class="item"><div class="bar" style="height: 32px"></div><div class="name">7</div><div class="px">32</div></div>
+    <div class="item"><div class="bar" style="height: 40px"></div><div class="name">8</div><div class="px">40</div></div>
+    <div class="item"><div class="bar" style="height: 56px"></div><div class="name">9</div><div class="px">56</div></div>
+    <div class="item"><div class="bar" style="height: 72px"></div><div class="name">10</div><div class="px">72</div></div>
+    <div class="item"><div class="bar" style="height: 96px"></div><div class="name">11</div><div class="px">96</div></div>
+  </div>
+</body>
+</html>

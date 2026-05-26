@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Radii</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page);
+         font-family: var(--font-body); }
+  .row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .item { text-align: center; }
+  .box { height: 80px; background: var(--bg-page); box-shadow: var(--neu-raised);
+         margin-bottom: 10px; }
+  .name { font-family: var(--font-display); font-weight: 700; font-size: 12px;
+          color: var(--fg-1); }
+  .val { font-family: var(--font-mono); font-size: 10.5px; color: var(--fg-3); margin-top: 2px; }
+  .use { font-family: var(--font-body); font-size: 10.5px; color: var(--fg-3); margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="box" style="border-radius: var(--radius-xs)"></div>
+      <div class="name">xs</div><div class="val">6px</div><div class="use">tags, chips</div></div>
+    <div class="item"><div class="box" style="border-radius: var(--radius-sm)"></div>
+      <div class="name">sm</div><div class="val">10px</div><div class="use">inputs</div></div>
+    <div class="item"><div class="box" style="border-radius: var(--radius-md)"></div>
+      <div class="name">md</div><div class="val">16px</div><div class="use">cards</div></div>
+    <div class="item"><div class="box" style="border-radius: var(--radius-lg)"></div>
+      <div class="name">lg</div><div class="val">22px</div><div class="use">hero cards</div></div>
+    <div class="item"><div class="box" style="border-radius: var(--radius-xl)"></div>
+      <div class="name">xl</div><div class="val">32px</div><div class="use">sheets</div></div>
+    <div class="item"><div class="box" style="border-radius: var(--radius-pill); height: 40px; margin-top: 40px"></div>
+      <div class="name">pill</div><div class="val">999px</div><div class="use">chips, badges</div></div>
+  </div>
+</body>
+</html>

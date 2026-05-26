@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=block" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 28px; background: var(--bg-page); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 36px; }
+  .group { display: flex; flex-direction: column; gap: 12px; }
+  .label { font-family: var(--font-body); font-weight: 700; font-size: 10.5px;
+           color: var(--fg-3); letter-spacing: 0.12em; text-transform: uppercase; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 14px;
+         padding: 10px 18px; border-radius: var(--radius-sm);
+         border: none; cursor: pointer; display: inline-flex; align-items: center;
+         gap: 8px; transition: all var(--dur-base) var(--ease-out); }
+  .btn .material-symbols-rounded { font-size: 18px; }
+
+  .btn-primary { background: var(--primary-500); color: white; box-shadow: var(--elev-2); }
+  .btn-primary:hover { background: var(--primary-700); box-shadow: var(--elev-3); }
+  .btn-secondary { background: var(--bg-page); color: var(--primary-700);
+                   box-shadow: var(--neu-raised-sm); }
+  .btn-text { background: transparent; color: var(--primary-700); padding: 10px 12px; }
+  .btn-text:hover { background: var(--primary-50); }
+
+  .btn-rosa  { background: var(--rosa-500); color: white; box-shadow: var(--elev-2); }
+  .btn-azul  { background: var(--azul-500); color: white; box-shadow: var(--elev-2); }
+  .btn-ambar { background: var(--ambar-500); color: var(--ambar-900); box-shadow: var(--elev-2); }
+
+  .btn-ghost { background: var(--bg-page); color: var(--fg-1); box-shadow: var(--neu-raised-sm); }
+  .btn-ghost.pressed { box-shadow: var(--neu-inset-sm); color: var(--primary-700); }
+  .btn-disabled { background: var(--neutral-100); color: var(--fg-4); cursor: not-allowed; box-shadow: none; }
+
+  .btn-sm { font-size: 12.5px; padding: 7px 12px; border-radius: var(--radius-xs); }
+  .btn-lg { font-size: 15px; padding: 14px 24px; border-radius: var(--radius-md); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="group">
+      <div class="label">Primary · filled (Material)</div>
+      <div class="row">
+        <button class="btn btn-primary">Descargar informe</button>
+        <button class="btn btn-primary"><span class="material-symbols-rounded">download</span>Descargar</button>
+        <button class="btn btn-primary btn-sm">Aplicar</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Secondary (Neumorphic)</div>
+      <div class="row">
+        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-secondary"><span class="material-symbols-rounded">tune</span>Filtros</button>
+        <button class="btn btn-secondary btn-sm">Editar</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Eje-tinted (data context only)</div>
+      <div class="row">
+        <button class="btn btn-rosa btn-sm">Vida libre</button>
+        <button class="btn btn-azul btn-sm">Inclusión</button>
+        <button class="btn btn-ambar btn-sm">Cuidados</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Text · ghost · toggle · disabled</div>
+      <div class="row">
+        <button class="btn btn-text">Leer más →</button>
+        <button class="btn btn-ghost">Inactivo</button>
+        <button class="btn btn-ghost pressed">Activo</button>
+        <button class="btn btn-disabled" disabled>No disponible</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

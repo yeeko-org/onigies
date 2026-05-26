@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Material elevation</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 36px 28px; background: var(--bg-page);
+         font-family: var(--font-body); }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
+  .box { height: 90px; background: white; border-radius: var(--radius-md);
+         display: flex; align-items: center; justify-content: center;
+         font-family: var(--font-display); font-weight: 700; font-size: 18px;
+         color: var(--fg-2); }
+  .label { font-family: var(--font-body); font-size: 11px; color: var(--fg-3);
+           margin-top: 10px; text-align: center; letter-spacing: 0.04em; }
+  .label b { font-family: var(--font-display); display: block; color: var(--fg-1);
+             font-size: 12px; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div>
+      <div class="box" style="box-shadow: var(--elev-1)">E1</div>
+      <div class="label"><b>elev-1</b>floating chip</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--elev-2)">E2</div>
+      <div class="label"><b>elev-2</b>card hover</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--elev-3)">E3</div>
+      <div class="label"><b>elev-3</b>dropdown</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--elev-4)">E4</div>
+      <div class="label"><b>elev-4</b>modal</div>
+    </div>
+    <div>
+      <div class="box" style="box-shadow: var(--elev-5)">E5</div>
+      <div class="label"><b>elev-5</b>dialog</div>
+    </div>
+  </div>
+</body>
+</html>

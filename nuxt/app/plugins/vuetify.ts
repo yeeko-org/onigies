@@ -28,15 +28,31 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: false,
           colors: {
-            // primary: colors.indigo.darken1,
-            // secondary: '#424242',
-            // accent: colors.teal.accent4,
-            primary: "#8a221f",
+            // ONIGIES design system — ver docs/onigies-design-system
+            // primary: índigo profundo (chrome del dashboard, layout
+            // institucional). accent: turquesa, color de acción para
+            // CTAs y botones — los botones DEBEN usar accent, no primary.
+            primary: "#2C2F6E",   // --indigo-700
             secondary: colors.purple.darken1,
-            accent: "#f59322",
+            accent: "#14A8A0",    // --turquesa-500
+            // Los 4 ejes del índice. Sobrescriben los defaults de
+            // Vuetify para que `color="purple|blue|amber|pink"` rinda
+            // con la paleta del design system.
+            purple: "#6E4BC4",    // Eje · Igualdad de género
+            blue:   "#2E8FCC",    // Eje · Inclusión y no discriminación
+            amber:  "#F2A53A",    // Eje · Cuidados corresponsables
+            pink:   "#E63E9A",    // Eje · Vida libre de violencias
           }
         }
       }
+    },
+    defaults: {
+      VBtn: {
+        // Convención ONIGIES: los botones usan el color de acción
+        // (turquesa) por default. Si necesitas chrome institucional,
+        // pasa color="primary" explícitamente.
+        color: 'accent',
+      },
     },
     icons: {
       defaultSet: 'ms',

@@ -1,5 +1,6 @@
 <script setup>
 import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
+import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
 import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import StatusToggle from "~/components/dashboard/status/StatusToggle.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
@@ -142,6 +143,21 @@ const remove = async () => {
     <v-card-text
       class="pa-4"
     >
+      <div class="d-flex justify-end mb-2">
+        <GoodPracticeIntro>
+          <template #activator="{ props: activatorProps }">
+            <v-btn
+              v-bind="activatorProps"
+              size="small"
+              variant="text"
+              color="primary"
+              prepend-icon="help_outline"
+            >
+              ¿Qué es una buena práctica?
+            </v-btn>
+          </template>
+        </GoodPracticeIntro>
+      </div>
       <v-form ref="formRef" validate-on="input">
         <div class="d-flex align-center">
           <v-text-field

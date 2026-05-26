@@ -8,6 +8,7 @@ import { getMissingFields } from "~/composables/good_practice_validation.js"
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
 import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
+import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -202,6 +203,20 @@ const statusSending = computed(()=> {
         </template>
       </span>
       <v-spacer />
+      <GoodPracticeIntro>
+        <template #activator="{ props: activatorProps }">
+          <v-btn
+            v-bind="activatorProps"
+            size="small"
+            variant="outlined"
+            color="primary"
+            prepend-icon="help_outline"
+          >
+            ¿Qué es una buena práctica?
+          </v-btn>
+        </template>
+      </GoodPracticeIntro>
+      <v-spacer />
       <v-chip
         variant="text"
         color="grey-darken-1"
@@ -239,6 +254,11 @@ const statusSending = computed(()=> {
       Espera los resultados.
     </v-alert>
 
+    <v-card-text class="py-1 text-body-2 text-grey-darken-1 font-italic">
+      Experiencias institucionales exitosas que han logrado
+      transformaciones significativas para la igualdad de género.
+    </v-card-text>
+
     <v-card-text class="text-subtitle-1 mt-3 mb-1 d-flex">
       <div class="text-indigo">
         ¿Durante los últimos tres años, su institución ha implementado
@@ -251,7 +271,7 @@ const statusSending = computed(()=> {
       <v-spacer></v-spacer>
       <div
         v-if="!editionAvailable"
-        class="ml-3 d-flex align-center"
+        class="ml-3 d-flex flex-column align-center"
         style="width: 680px;"
       >
         <v-chip
@@ -262,7 +282,7 @@ const statusSending = computed(()=> {
         >
           {{ selectedResponse.label }}
         </v-chip>
-        <span class="text-caption text-medium-emphasis ml-3">
+        <span class="text-caption text-medium-emphasis text-info">
           Respuesta registrada
         </span>
       </div>

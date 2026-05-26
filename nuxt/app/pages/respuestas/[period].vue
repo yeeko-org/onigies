@@ -33,7 +33,6 @@ const current_survey = computed(() => {
       align-tabs="center"
       color="deep-purple-accent-4"
     >
-      <v-tab :value="0">Datos base</v-tab>
       <v-tab
         :value="8"
         color="pink"
@@ -44,6 +43,7 @@ const current_survey = computed(() => {
         </v-icon>
         Buenas prácticas
       </v-tab>
+      <v-tab :value="0" disabled>Datos base</v-tab>
 <!--      <v-tab :value="1">City</v-tab>-->
       <v-tab
         v-for="axis in all_axis"

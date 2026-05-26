@@ -21,3 +21,19 @@ Adicionalmente, las buenas prácticas pueden cumplir alguno o varios de los sigu
 5. **Participación opcional.** No es obligatorio llenar la sección de buenas prácticas. En caso de no llenar esta sección, las IES no tendrán ninguna penalización en el puntaje final de la medición. 
 
 6. **Años de referencia.** Buenas prácticas que hayan estado vigentes en los últimos cinco años (2022-2026)
+
+------
+
+## Forma de medición
+
+1.  Transformadora 0-10 puntos
+2.  Metodología sólida 0-10 puntos
+3.  Criterios adicionales
+    a)  Ser novedosa y/o creativa 0-3 puntos
+    b)  Tener relevancia contextual 0-3 puntos
+    c)  Tener continuidad (más de 5 años) 0-3 puntos
+    d)  Tener respaldo comunitario 0-3 puntos
+    e)  Se replicada por otras instituciones 0-3 puntos
+    f)  Tener una amplia cobertura 0-3 puntos
+    g)  Ser evaluada positivamente 0-3 puntos
+    h)  Criterio adicional 0-3 puntos

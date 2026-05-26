@@ -72,8 +72,7 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         .prefetch_related('good_practices')
     serializer_class = GoodPracticePackageFullSerializer
     search_fields = [
-        'survey__period__year', 'survey__institution__name',
-        'survey__institution__acronym']
+        'survey__institution__name', 'survey__institution__acronym']
     ordering_fields = [
         'id', 'survey__period__year', 'survey__institution__name']
     # filterset_fields = ['survey__institution', 'survey__period']

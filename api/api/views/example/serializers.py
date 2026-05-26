@@ -55,7 +55,7 @@ class GoodPracticeFullSerializer(GoodPracticeSerializer):
 
 class SurveySemiFullSerializer(serializers.ModelSerializer):
     institution_full = InstitutionSimpleSerializer(
-        read_only=True, source='survey__institution')
+        read_only=True, source='institution')
 
     class Meta:
         model = Survey
@@ -64,8 +64,6 @@ class SurveySemiFullSerializer(serializers.ModelSerializer):
 
 class GoodPracticePackageSerializer(serializers.ModelSerializer):
     good_practices_count = serializers.SerializerMethodField()
-    institution_full = InstitutionSimpleSerializer(
-        read_only=True, source='survey__institution')
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
 
     def get_good_practices_count(self, obj):

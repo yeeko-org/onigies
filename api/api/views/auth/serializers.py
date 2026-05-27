@@ -157,7 +157,7 @@ class InvitationTokenCreateSerializer(InvitationTokenListSerializer):
             if not user or not user.is_superuser:
                 raise serializers.ValidationError({
                     'detail': (
-                        'Solo un superusuario puede crear '
+                        'Solo una persona superusuaria puede crear '
                         'invitaciones sin institución.'
                     )
                 })
@@ -250,6 +250,6 @@ class UserRegistrationFromInvitationSerializer(
     def validate_email(self, value):
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError(
-                'Ya existe un usuario registrado con este correo.'
+                'Ya existe una persona usuaria registrada con este correo.'
             )
         return value.lower()

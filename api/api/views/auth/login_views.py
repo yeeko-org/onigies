@@ -33,10 +33,10 @@ class UserLoginAPIView(views.APIView):
 
         count = user_query.count()
         if count == 0:
-            raise ParseError(detail='Usuario o correo no válido.')
+            raise ParseError(detail='Correo no válido.')
         if count > 1:
             msg = (
-                'Existen múltiples usuarios con ese identificador. '
+                'Existen múltiples cuentas con ese identificador. '
                 'Contacta al administrador.')
             raise APIException(detail=msg)
 
@@ -44,7 +44,7 @@ class UserLoginAPIView(views.APIView):
         if not user_obj.check_password(password):
             raise ParseError(detail='Credenciales inválidas.')
         if not user_obj.is_active:
-            raise ParseError(detail='Usuario no activo.')
+            raise ParseError(detail='Persona usuaria no activa.')
 
         user_obj.auth_token, _ = Token.objects.get_or_create(user=user_obj)
 

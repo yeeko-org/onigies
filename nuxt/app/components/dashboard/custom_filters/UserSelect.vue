@@ -7,7 +7,7 @@ const props = defineProps({
   field: String,
   label: {
     type: String,
-    default: "Usuario",
+    default: "Persona usuaria",
   },
   is_filter: Boolean,
   editors: Boolean,

@@ -12,7 +12,7 @@ const uuid = computed(() => route.query.token || '')
 <template>
   <LoginCard
     ref="card"
-    title="Crea tu usuario"
+    title="Crea tu cuenta"
     subtitle="Agrega un correo electrónico y contraseña"
   >
     <RegisterForm

@@ -62,7 +62,7 @@ async function submitRegister() {
       password_confirm: password_confirm.value,
     })
   } catch (err) {
-    emits('set-alert', err.response?.data || 'Error al registrar el usuario.')
+    emits('set-alert', err.response?.data || 'Error al registrar a la persona usuaria.')
   } finally {
     loading.value = false
   }

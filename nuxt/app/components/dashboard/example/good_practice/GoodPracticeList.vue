@@ -317,7 +317,7 @@ const statusSending = computed(()=> {
 
     <v-card-text class="text-subtitle-1 mt-3 mb-1 d-flex">
       <div class="text-indigo">
-        ¿Durante los últimos tres años, su institución ha implementado
+        ¿Durante los últimos cinco años, su institución ha implementado
         alguna política, programa o acción en materia de igualdad de género,
         no discriminación, cuidados corresponsables y/o
         una vida libre de violencias que, por su trascendencia o innovación,

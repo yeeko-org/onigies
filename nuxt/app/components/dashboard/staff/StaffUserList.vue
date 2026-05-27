@@ -194,7 +194,7 @@ onMounted(loadUsers)
             :colspan="4 + USER_PERMISSIONS.length"
             class="text-center text-grey py-3"
           >
-            Sin usuarios
+            Sin personas usuarias
           </td>
         </tr>
       </tbody>

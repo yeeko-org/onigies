@@ -136,7 +136,7 @@ class EmailRecord(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name='email_records',
-        help_text="Usuario que disparó el envío",
+        help_text="Persona usuaria que disparó el envío",
     )
     recipient_email = models.EmailField()
     subject = models.CharField(max_length=200)

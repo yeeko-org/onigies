@@ -269,7 +269,7 @@ watch(
         <v-list-item
           :href="`${admin_url}/profile_auth/user/`"
           target="_blank"
-          title="Gestión de usuarios"
+          title="Gestión de personas usuarias"
         >
           <template v-slot:prepend>
             <v-icon color="accent">manage_accounts</v-icon>

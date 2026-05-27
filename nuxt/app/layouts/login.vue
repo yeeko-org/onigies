@@ -8,7 +8,7 @@ const title = computed(() => {
   if (route.name === 'login')
     return 'Inicio de sesión'
   else if (route.name === 'register')
-    return 'Registro de usuario'
+    return 'Registro de persona usuaria'
   else if (route.name === 'forgot-password')
     return 'Recuperar contraseña'
 

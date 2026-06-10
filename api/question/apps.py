@@ -7,6 +7,7 @@ class QuestionConfig(AppConfig):
     name = "question"
 
     def ready(self) -> None:
+        import question.catalog_schema  # noqa: F401 — registra catálogos
         from .initial_data import InitQuestionTypes
 
         _ready = super().ready()

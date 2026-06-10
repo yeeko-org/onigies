@@ -4,16 +4,21 @@ from ies.models import StatusControl, Period
 class InitStatus:
     def __init__(self):
         init_status = [
-            # is_public, open_editor, is_deleted
+            # name, group, public_name, color, icon, is_final,
+            # role, priority, ___, description
             ("draft", "sending", "Borrador",
                 "blue", "edit_note", False, 'ies', False, 8),
             ("ready_to_send", "sending", "Lista para enviar",
                 "green", "done_outline", True, 'ies', False, 7),
             ("created", "sending", "Enviado (para revisarse)",
                 "green", "pending_actions", True, 'validator', False, 6),
+            ("in_review", "sending", "En revisión",
+                "green", "done_outline", True, 'validator', False, 7),
             ("needs_adjustments", "sending", "Requiere ajustes",
                 "orange", "new_releases", False, 'ies', False, 2),
-            ("need_new_checking", "sending", "Requiere nueva revisión",
+            ("ready_to_resend", "sending", "Lista para reenviar",
+                "green", "done_outline", True, 'ies', False, 7),
+            ("need_new_checking", "sending", "Enviado (requiere nueva revisión)",
                 "pink", "report_gmailerrorred", False, 'validator', False, 4),
             ("accepted", "sending", "Aceptado",
                 "green", "done_all", True, None, False, 16),
@@ -49,21 +54,20 @@ class InitStatus:
             public_name = data[2]
             color = data[3]
             icon = data[4]
-            is_final = data[5]
             # open_editor = data[6]
+            can_send = data[5]
             role = data[6]
             # is_deleted = data[7]
+            is_final = data[7]
             try:
-                priority = data[7]
+                priority = data[8]
             except IndexError:
                 priority = 99
             try:
                 description = data[9]
             except IndexError:
                 description = None
-            status, _ = StatusControl.objects.get_or_create(
-                name=name
-            )
+            status, _ = StatusControl.objects.get_or_create(name=name)
             status.group = group
             status.public_name = public_name
             status.color = color
@@ -75,9 +79,8 @@ class InitStatus:
             if group == "validation" and order < 40:
                 order = 40
             status.order = order
-            # status.open_editor = open_editor
+            status.can_send = can_send
             status.role = role
-            # status.is_deleted = is_deleted
             status.priority = priority
             status.description = description
             status.save()

@@ -175,6 +175,26 @@ REST_FRAMEWORK = {
 }
 
 
+# Seams configurables del registry de ps_schema (ver ps_schema/registry.py).
+# Resueltos vía import_string; desacoplan la mecánica de catálogos del
+# proyecto concreto. Los catálogos de onigies no tienen status_validation,
+# por eso el base por defecto es "generic" (no "status").
+PS_SCHEMA = {
+    "BASE_VIEWSETS": {
+        "status": "api.views.common_views.BaseStatusViewSet",
+        "generic": "api.views.common_views.BaseGenericViewSet",
+        "viewset": "rest_framework.viewsets.ModelViewSet",
+    },
+    "PERMISSIONS": {
+        "editor": "api.permissions.IsFullEditorOrReadOnly",
+        "admin": "api.permissions.IsAdminOrReadOnly",
+        "any": "rest_framework.permissions.AllowAny",
+    },
+    "DEFAULT_CATALOG_BASE": "generic",
+    "DEFAULT_CATALOG_PERMISSION": "editor",
+}
+
+
 # ---------------------------------STORAGE-----------------------------------
 COMPRESS_ENABLED = getenv_bool("COMPRESS_ENABLED", True)
 COMPRESS_OFFLINE = getenv_bool("COMPRESS_OFFLINE", True)

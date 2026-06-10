@@ -6,6 +6,7 @@ class ExampleConfig(AppConfig):
     name = 'example'
 
     def ready(self) -> None:
+        import example.catalog_schema  # noqa: F401 — registra catálogos
         from .initial_data import InitFeatures
 
         _ready = super().ready()

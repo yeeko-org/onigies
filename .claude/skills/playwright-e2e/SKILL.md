@@ -22,7 +22,8 @@ End-to-end testing for the Nuxt SPA. Tests run against a **mocked backend** — 
 | Env file | `.env` | `.env.test` |
 | Backend URL (mocked) | `http://localhost:8018/api` | `http://localhost:8019/api` |
 
-Running tests: `pnpm test:e2e` (headless), `pnpm test:e2e:ui` (interactive debug).
+Running tests: `pnpm run test:e2e` (headless), `pnpm run test:e2e:ui`
+(interactive debug).
 
 ## Project layout
 
@@ -55,7 +56,7 @@ Follow these 3 phases each time Playwright MCP is used to test a flow.
 Before opening the browser:
 
 1. Read `e2e/*.test.ts` and check whether the flow already has coverage.
-2. If a test covers the scenario, **run it** (`pnpm test:e2e e2e/<file>.test.ts`) instead of firing up MCP.
+2. If a test covers the scenario, **run it** (`pnpm run test:e2e e2e/<file>.test.ts`) instead of firing up MCP.
 3. If the test exists but is incomplete or broken, note the gap and use MCP only on the uncovered part.
 4. If there is no coverage, proceed to Phase 2.
 

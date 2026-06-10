@@ -2,71 +2,29 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 
-# from ies.models import User
-# from api.views.auth.serializers import UserProfileSerializer
+from ies.models import StatusControl
+from ps_schema.models import LEVEL_CHOICES
+from ps_schema.registry import catalog_registry, collection_registry
+from api.views.catalogs.serializers import StatusControlSerializer
 
-from ies.models import Institution, Period, StatusControl
-from indicator.models import Axis, Component, Observable, Sector
-from example.models import Feature, FeatureOption
-from question.models import AOption
-from ps_schema.models import Level, Collection, FilterGroup
-from api.views.catalogs.serializers import (
-    StatusControlSerializer,
-    LevelSerializer,
-    CollectionSerializer,
-    FilterGroupSerializer,
-    InstitutionSerializer,
-    PeriodSerializer,
-)
-from api.views.indicator.serializers import (
-    AxisSerializer,
-    ComponentSerializer,
-    ObservableSerializer,
-    SectorSerializer,
-)
-from api.views.example.serializers import (
-    FeatureSerializer, FeatureOptionSerializer)
-from api.views.question.serializers import AOptionSerializer
 
 class CatalogsView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
-
         catalogs = {
-            # "user": UserProfileSerializer(
-            #     User.objects.all(), many=True).data,
-            "period": PeriodSerializer(
-                Period.objects.all(), many=True).data,
-            "institution": InstitutionSerializer(
-                Institution.objects.all(), many=True).data,
-
             "status_control": StatusControlSerializer(
                 StatusControl.objects.all(), many=True).data,
-            "levels": LevelSerializer(
-                Level.objects.all(), many=True).data,
-            "collections": CollectionSerializer(
-                Collection.objects.all(), many=True).data,
-            "filter_groups": FilterGroupSerializer(
-                FilterGroup.objects.all(), many=True).data,
-
-            "axis": AxisSerializer(
-                Axis.objects.all(), many=True).data,
-            "component": ComponentSerializer(
-                Component.objects.all(), many=True).data,
-            "observable": ObservableSerializer(
-                Observable.objects.all(), many=True).data,
-            "sector": SectorSerializer(
-                Sector.objects.all(), many=True).data,
-
-            "feature": FeatureSerializer(
-                Feature.objects.all(), many=True).data,
-            "feature_option": FeatureOptionSerializer(
-                FeatureOption.objects.all(), many=True).data,
-            "a_option": AOptionSerializer(
-                AOption.objects.all(), many=True).data,
+            "levels": [
+                {"key_name": k, "name": v} for k, v in LEVEL_CHOICES],
+            "collections": (
+                collection_registry.get_collections_data()
+                + catalog_registry.get_collections_data()
+            ),
+            "filter_groups": list(catalog_registry.iter_filter_group_data()),
         }
-        if not self.request.user.is_authenticated:
+        # Dump de catálogos por snake_name (institution, period, axis, ...).
+        catalogs.update(catalog_registry.get_catalog_dump())
+        if not request.user.is_authenticated:
             catalogs["institution"] = []
-
         return Response(catalogs)

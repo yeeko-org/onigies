@@ -41,7 +41,7 @@ pnpm install
 ## Comandos
 
 ```bash
-pnpm dev    # Servidor de desarrollo (HTTPS, puerto 3018)
+pnpm run dev    # Servidor de desarrollo (HTTPS, puerto 3018)
 ```
 
 ## Tests E2E (Playwright)
@@ -51,15 +51,15 @@ tests). Cubren login, register con invitación, recuperación de
 contraseña, logout y rutas protegidas.
 
 ```bash
-pnpm test:e2e         # headless, todas las pruebas
-pnpm test:e2e:ui      # modo UI interactivo (recomendado para debug)
-pnpm test:e2e:debug   # paso a paso con inspector
-pnpm test:e2e:report  # abre el reporte HTML de la última corrida
+pnpm run test:e2e         # headless, todas las pruebas
+pnpm run test:e2e:ui      # modo UI interactivo (recomendado para debug)
+pnpm run test:e2e:debug   # paso a paso con inspector
+pnpm run test:e2e:report  # abre el reporte HTML de la última corrida
 ```
 
 Primera corrida: Playwright levanta automáticamente un servidor Nuxt
 de pruebas en `https://localhost:3019` (puerto dedicado, no afecta tu
-`pnpm dev`). Si ya tienes el servidor encendido, lo reusa.
+`pnpm run dev`). Si ya tienes el servidor encendido, lo reusa.
 
 Los tests viven en `e2e/`. Para detalles arquitectónicos (mocks,
 convenciones de selectores, flujo de trabajo con Playwright MCP) ver
@@ -68,6 +68,6 @@ convenciones de selectores, flujo de trabajo con Playwright MCP) ver
 
 ## Implementación en producción:
 ```bash
-pnpm build
+pnpm run build
 ```
 

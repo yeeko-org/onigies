@@ -253,16 +253,17 @@ class StatusControl(models.Model):
         max_length=40, blank=True, null=True,
         help_text="https://fonts.google.com/icons")
     order = models.IntegerField(default=4)
+    is_default = models.BooleanField(
+        default=False, verbose_name="Es status por defecto")
 
-    is_final = models.BooleanField(default=False)
-
-    send_ies = models.BooleanField(default=False)
-    strict_ies = models.BooleanField(default=False)
-    send_admin = models.BooleanField(default=False)
     role = models.CharField(
         max_length=10, choices=ROLE_CHOICES,
         blank=True, null=True,
         verbose_name="rol asociado")
+    can_send = models.BooleanField(
+        default=False, verbose_name="Puede enviarse",
+        help_text="Se puede enviar el paquete a la siguiente etapa")
+    is_final = models.BooleanField(default=False)
     # is_public = models.BooleanField(default=True)
     priority = models.IntegerField(default=0)
 

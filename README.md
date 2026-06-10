@@ -22,14 +22,14 @@ python manage.py runserver
 
 # Terminal 2 — frontend
 cd nuxt
-pnpm dev
+pnpm run dev
 ```
 
 ## Tests
 
 ```bash
 cd api  && pytest             # Tests unitarios/integración Django
-cd nuxt && pnpm test:e2e      # Tests E2E Playwright (backend mockeado)
+cd nuxt && pnpm run test:e2e  # Tests E2E Playwright (backend mockeado)
 ```
 
 Ver [`nuxt/README.md`](nuxt/README.md#tests-e2e-playwright) para

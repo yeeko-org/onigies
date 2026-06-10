@@ -9,6 +9,7 @@ class IesConfig(AppConfig):
 
 
     def ready(self) -> None:
+        import ies.catalog_schema  # noqa: F401 — registra los CatalogSchema
         from ies.initial_data import InitStatus, InitPeriod
         _ready = super().ready()
         if 'migrate_initial_data' in sys.argv:

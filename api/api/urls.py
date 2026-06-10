@@ -12,8 +12,9 @@ from api.views.auth.recovery_views import (
 )
 
 from .views.ps_schemas import CollectionViewSet
-from .views.example import GoodPracticeViewSet, FeatureGoodPracticeViewSet, GoodPracticePackageViewSet, EvidenceViewSet
+from .views.example import EvidenceViewSet
 from api.views.ies import InstitutionViewSet
+from ps_schema.registry import collection_registry
 # from api.views.stop import StationViewSet
 # from api.views.report import StairReportViewSet, AscertainableViewSet
 from api.views.survey import SurveyViewSet
@@ -29,14 +30,15 @@ router = DefaultRouter()
 # )
 # )
 router.register(r'collection', CollectionViewSet, basename='collection')
-router.register(r'good_practice', GoodPracticeViewSet, basename='good_practice')
 router.register(r'evidence', EvidenceViewSet, basename='evidence')
-router.register(r'feature_good_practice', FeatureGoodPracticeViewSet, basename='feature_good_practice')
-router.register(r'good_practice_package', GoodPracticePackageViewSet, basename='good_practice_package')
 router.register(r'invitation', InvitationTokenViewSet, basename='invitation')
 router.register(r'user', UserViewSet, basename='user')
 router.register(r'institution', InstitutionViewSet, basename='institution')
 router.register(r'survey', SurveyViewSet, basename='survey')
+
+# Colecciones primary (CollectionSchema): good_practice_package, good_practice,
+# feature_good_practice. Reemplaza sus registros manuales de arriba.
+collection_registry.register_routes(router)
 
 urlpatterns = [
     # path('login/', obtain_auth_token, name='api-login'),

@@ -8,12 +8,12 @@ SPA for managing educational institution (IES) data. Two user flows:
 ## Commands
 
 ```bash
-pnpm dev              # HTTPS dev server on :3018
-pnpm dev:test         # HTTPS test server on :3019 (uses .env.test)
-pnpm test:e2e         # Run Playwright tests (mocked backend)
-pnpm test:e2e:ui      # Interactive UI mode — best for debug
-pnpm test:e2e:debug   # Step-through debug with inspector
-pnpm test:e2e:report  # Open last HTML report
+pnpm run dev              # HTTPS dev server on :3018
+pnpm run dev:test         # HTTPS test server on :3019 (uses .env.test)
+pnpm run test:e2e         # Run Playwright tests (mocked backend)
+pnpm run test:e2e:ui      # Interactive UI mode — best for debug
+pnpm run test:e2e:debug   # Step-through debug with inspector
+pnpm run test:e2e:report  # Open last HTML report
 ```
 
 Dev server requires `localhost-key.pem` and `localhost.pem` at repo root.

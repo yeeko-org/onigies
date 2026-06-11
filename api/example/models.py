@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from indicator.models import Axis, Component
 from ies.models import User, Period, StatusControl, Institution
@@ -50,8 +51,15 @@ class GoodPracticePackage(models.Model):
         blank=True, null=True, verbose_name="Tiene buenas prácticas")
     status_sending = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE, blank=True, null=True)
+    # Flujo nuevo; coexiste con status_sending hasta verificar la
+    # migración de datos (ver ies/flux_rules/PLAN_flujo_validacion.md §5).
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
     sent_at = models.DateTimeField(blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return (f"Paquete de Buenas Prácticas - "
@@ -82,7 +90,12 @@ class GoodPractice(models.Model):
     status_sending = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE,
         blank=True, null=True, default='draft')
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+', default='bp_draft')
     comments = models.TextField(blank=True, null=True)
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def save(self, *args, **kwargs):
         is_create = self._state.adding

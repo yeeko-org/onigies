@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from indicator.models import Axis, Component, Sector, GeneralGroup
@@ -62,6 +63,13 @@ class AxisValue(models.Model):
         max_digits=5, decimal_places=2, blank=True, null=True)
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE, blank=True, null=True)
+    # Flujo nuevo; coexiste con status_register hasta verificar la
+    # migración de datos (ver flux_rules/PLAN_flujo_validacion.md §5).
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return f"{self.axis.name}: {self.value}"
@@ -116,6 +124,11 @@ class GeneralGroupResponse(models.Model):
         related_name='general_group_responses')
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE)
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return (f"Respuesta del grupo general "

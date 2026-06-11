@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from indicator.models import Observable, Sector
@@ -16,8 +17,15 @@ class ObservableResponse(models.Model):
         Observable, on_delete=models.CASCADE, related_name='responses')
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE)
+    # Flujo nuevo; coexiste con status_register hasta verificar la
+    # migración de datos (ver flux_rules/PLAN_flujo_validacion.md §5).
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
     value = models.BooleanField(
         blank=True, null=True, verbose_name='Respuesta a pregunta inicial')
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return f"Response to '{self.observable}' ({self.survey})"
@@ -46,8 +54,13 @@ class GroupResponse(models.Model):
         related_name='group_responses')
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE)
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
     value = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return "Group Response"

@@ -1,0 +1,931 @@
+{
+  "Buenas prácticas": {
+    "frame": "Buenas prácticas",
+    "models": [
+      {
+        "letter": "P",
+        "model": "GoodPracticePackage"
+      },
+      {
+        "letter": "G",
+        "model": "GoodPractice"
+      }
+    ],
+    "legend_box_id": "3458764674839693694",
+    "recalc_boxes": [
+      {
+        "text": "Recálculo hacia arriba",
+        "border_color": "#2dc75c",
+        "rounded": true
+      },
+      {
+        "text": "Recálculo hacia abajo",
+        "border_color": "#067429",
+        "rounded": true
+      }
+    ],
+    "statuses": [
+      {
+        "id": "3458764674839693581",
+        "name": "Borrador",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "si"
+        }
+      },
+      {
+        "id": "3458764674839693582",
+        "name": "Completado (en espera de revisión)",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "no"
+        }
+      },
+      {
+        "id": "3458764674839693583",
+        "name": "Enviado (para revisarse)",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "no",
+          "GoodPracticePackage": "si"
+        }
+      },
+      {
+        "id": "3458764674839693584",
+        "name": "Recibida para dictamen",
+        "fill": "#fff6b6",
+        "role": "terminal",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "no"
+        }
+      },
+      {
+        "id": "3458764674839693585",
+        "name": "Requiere ajustes",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "si"
+        }
+      },
+      {
+        "id": "3458764674839693586",
+        "name": "Ajuste completo",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "no"
+        }
+      },
+      {
+        "id": "3458764674839693587",
+        "name": "Enviado con ajustes",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "no",
+          "GoodPracticePackage": "si"
+        }
+      },
+      {
+        "id": "3458764674839693588",
+        "name": "Recibida, no pasó filtros [requiere comentarios]",
+        "fill": "#fff6b6",
+        "role": "terminal",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "si",
+          "GoodPracticePackage": "no"
+        }
+      },
+      {
+        "id": "3458764674839693595",
+        "name": "Finalizado (solo agrupadores)",
+        "fill": "#fff6b6",
+        "role": "terminal",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "GoodPractice": "no",
+          "GoodPracticePackage": "si"
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "id": "3458764674839693589",
+        "from_id": "3458764674839693581",
+        "from": "Borrador",
+        "to_id": "3458764674839693582",
+        "to": "Completado (en espera de revisión)",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693590",
+        "from_id": "3458764674839693582",
+        "from": "Completado (en espera de revisión)",
+        "to_id": "3458764674839693585",
+        "to": "Requiere ajustes",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693591",
+        "from_id": "3458764674839693586",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693585",
+        "to": "Requiere ajustes",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693592",
+        "from_id": "3458764674839693582",
+        "from": "Completado (en espera de revisión)",
+        "to_id": "3458764674839693584",
+        "to": "Recibida para dictamen",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693593",
+        "from_id": "3458764674839693582",
+        "from": "Completado (en espera de revisión)",
+        "to_id": "3458764674839693588",
+        "to": "Recibida, no pasó filtros [requiere comentarios]",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693594",
+        "from_id": "3458764674839693585",
+        "from": "Requiere ajustes",
+        "to_id": "3458764674839693586",
+        "to": "Ajuste completo",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693596",
+        "from_id": "3458764674839693581",
+        "from": "Borrador",
+        "to_id": "3458764674839693583",
+        "to": "Enviado (para revisarse)",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693723",
+        "from_id": "3458764674839693585",
+        "from": "Requiere ajustes",
+        "to_id": "3458764674839693587",
+        "to": "Enviado con ajustes",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693726",
+        "from_id": "3458764674839693586",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693584",
+        "to": "Recibida para dictamen",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693727",
+        "from_id": "3458764674839693586",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693588",
+        "to": "Recibida, no pasó filtros [requiere comentarios]",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693728",
+        "from_id": "3458764674839693587",
+        "from": "Enviado con ajustes",
+        "to_id": "3458764674839693595",
+        "to": "Finalizado (solo agrupadores)",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693729",
+        "from_id": "3458764674839693583",
+        "from": "Enviado (para revisarse)",
+        "to_id": "3458764674839693595",
+        "to": "Finalizado (solo agrupadores)",
+        "stroke": "#6631d7",
+        "role": "revisora"
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "3458764674839693693",
+        "from_id": "3458764674839693582",
+        "from": "Completado (en espera de revisión)",
+        "to_id": "3458764674839693583",
+        "to": "Enviado (para revisarse)",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693724",
+        "from_id": "3458764674839693586",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693587",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693725",
+        "from_id": "3458764674839693582",
+        "from": "Completado (en espera de revisión)",
+        "to_id": "3458764674839693587",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693730",
+        "from_id": "3458764674839693584",
+        "from": "Recibida para dictamen",
+        "to_id": "3458764674839693595",
+        "to": "Finalizado (solo agrupadores)",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693731",
+        "from_id": "3458764674839693588",
+        "from": "Recibida, no pasó filtros [requiere comentarios]",
+        "to_id": "3458764674839693595",
+        "to": "Finalizado (solo agrupadores)",
+        "stroke": "#b0b0b0"
+      }
+    ]
+  },
+  "Cuestionario principal": {
+    "frame": "Cuestionario principal",
+    "models": [
+      {
+        "letter": "A",
+        "model": "AxisValue"
+      },
+      {
+        "letter": "O",
+        "model": "ObservableResponse"
+      },
+      {
+        "letter": "G",
+        "model": "GroupResponse"
+      }
+    ],
+    "legend_box_id": "3458764674839693849",
+    "recalc_boxes": [
+      {
+        "text": "Recálculo hacia arriba",
+        "border_color": "#2dc75c",
+        "rounded": true
+      },
+      {
+        "text": "Recálculo hacia abajo",
+        "border_color": "#067429",
+        "rounded": true
+      }
+    ],
+    "statuses": [
+      {
+        "id": "3458764674839693749",
+        "name": "Aprobado",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693754",
+        "name": "En llenado [Calculado en primer guardado]",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#2dc75c",
+        "shape": "round_rectangle",
+        "upward_propagation": true,
+        "recalc": "up",
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693755",
+        "name": "Completado",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "no",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693759",
+        "name": "Enviado (para revisión)",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "no",
+          "ObservableResponse": "no"
+        }
+      },
+      {
+        "id": "3458764674839693762",
+        "name": "En revisión",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "no",
+          "ObservableResponse": "no"
+        }
+      },
+      {
+        "id": "3458764674839693765",
+        "name": "Ajuste completo",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "no",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693769",
+        "name": "Enviado con ajustes",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "no",
+          "ObservableResponse": "no"
+        }
+      },
+      {
+        "id": "3458764674839693775",
+        "name": "Por iniciar",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693777",
+        "name": "Requiere ajustes [requiere comentario]",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693783",
+        "name": "Posponer respuesta",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "no",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693801",
+        "name": "Solicitar Reajuste voluntario [requiere comentario]",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#2dc75c",
+        "shape": "round_rectangle",
+        "upward_propagation": true,
+        "recalc": "up",
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693807",
+        "name": "En ajustes [Calculado en primer guardado]",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#2dc75c",
+        "shape": "round_rectangle",
+        "upward_propagation": true,
+        "recalc": "up",
+        "model_applicability": {
+          "AxisValue": "si",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693830",
+        "name": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "fill": "#dedaff",
+        "role": "revisora",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "no",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      },
+      {
+        "id": "3458764674839693840",
+        "name": "Parcialmente aprobado",
+        "fill": "#c6dcff",
+        "role": "ies",
+        "border_color": "#1a1a1a",
+        "shape": "rectangle",
+        "upward_propagation": false,
+        "recalc": null,
+        "model_applicability": {
+          "AxisValue": "no",
+          "GroupResponse": "si",
+          "ObservableResponse": "si"
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "id": "3458764674839693757",
+        "from_id": "3458764674839693754",
+        "from": "En llenado [Calculado en primer guardado]",
+        "to_id": "3458764674839693755",
+        "to": "Completado",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693758",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693749",
+        "to": "Aprobado",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693760",
+        "from_id": "3458764674839693754",
+        "from": "En llenado [Calculado en primer guardado]",
+        "to_id": "3458764674839693759",
+        "to": "Enviado (para revisión)",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693763",
+        "from_id": "3458764674839693759",
+        "from": "Enviado (para revisión)",
+        "to_id": "3458764674839693762",
+        "to": "En revisión",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693764",
+        "from_id": "3458764674839693762",
+        "from": "En revisión",
+        "to_id": "3458764674839693749",
+        "to": "Aprobado",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693768",
+        "from_id": "3458764674839693765",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693749",
+        "to": "Aprobado",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693771",
+        "from_id": "3458764674839693769",
+        "from": "Enviado con ajustes",
+        "to_id": "3458764674839693762",
+        "to": "En revisión",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693776",
+        "from_id": "3458764674839693775",
+        "from": "Por iniciar",
+        "to_id": "3458764674839693754",
+        "to": "En llenado [Calculado en primer guardado]",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693779",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693780",
+        "from_id": "3458764674839693762",
+        "from": "En revisión",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693781",
+        "from_id": "3458764674839693765",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693784",
+        "from_id": "3458764674839693754",
+        "from": "En llenado [Calculado en primer guardado]",
+        "to_id": "3458764674839693783",
+        "to": "Posponer respuesta",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693785",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693755",
+        "to": "Completado",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693802",
+        "from_id": "3458764674839693749",
+        "from": "Aprobado",
+        "to_id": "3458764674839693801",
+        "to": "Solicitar Reajuste voluntario [requiere comentario]",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693803",
+        "from_id": "3458764674839693801",
+        "from": "Solicitar Reajuste voluntario [requiere comentario]",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693808",
+        "from_id": "3458764674839693807",
+        "from": "En ajustes [Calculado en primer guardado]",
+        "to_id": "3458764674839693765",
+        "to": "Ajuste completo",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693809",
+        "from_id": "3458764674839693807",
+        "from": "En ajustes [Calculado en primer guardado]",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693810",
+        "from_id": "3458764674839693777",
+        "from": "Requiere ajustes [requiere comentario]",
+        "to_id": "3458764674839693807",
+        "to": "En ajustes [Calculado en primer guardado]",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693811",
+        "from_id": "3458764674839693807",
+        "from": "En ajustes [Calculado en primer guardado]",
+        "to_id": "3458764674839693783",
+        "to": "Posponer respuesta",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693831",
+        "from_id": "3458764674839693830",
+        "from": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693832",
+        "from_id": "3458764674839693754",
+        "from": "En llenado [Calculado en primer guardado]",
+        "to_id": "3458764674839693830",
+        "to": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693841",
+        "from_id": "3458764674839693840",
+        "from": "Parcialmente aprobado",
+        "to_id": "3458764674839693755",
+        "to": "Completado",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693842",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693830",
+        "to": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "stroke": "#305bab",
+        "role": "ies"
+      },
+      {
+        "id": "3458764674839693844",
+        "from_id": "3458764674839693830",
+        "from": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "to_id": "3458764674839693840",
+        "to": "Parcialmente aprobado",
+        "stroke": "#e456da",
+        "role": "revisora"
+      },
+      {
+        "id": "3458764674839693845",
+        "from_id": "3458764674839693840",
+        "from": "Parcialmente aprobado",
+        "to_id": "3458764674839693830",
+        "to": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "stroke": "#305bab",
+        "role": "ies"
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "3458764674839693750",
+        "from_id": "3458764674839693749",
+        "from": "Aprobado",
+        "to_id": "3458764674839693749",
+        "to": "Aprobado",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693756",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693755",
+        "to": "Completado",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693761",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693759",
+        "to": "Enviado (para revisión)",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693766",
+        "from_id": "3458764674839693765",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693765",
+        "to": "Ajuste completo",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693767",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693765",
+        "to": "Ajuste completo",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693770",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693772",
+        "from_id": "3458764674839693765",
+        "from": "Ajuste completo",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693773",
+        "from_id": "3458764674839693749",
+        "from": "Aprobado",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693774",
+        "from_id": "3458764674839693749",
+        "from": "Aprobado",
+        "to_id": "3458764674839693765",
+        "to": "Ajuste completo",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693778",
+        "from_id": "3458764674839693777",
+        "from": "Requiere ajustes [requiere comentario]",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693782",
+        "from_id": "3458764674839693749",
+        "from": "Aprobado",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693786",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693759",
+        "to": "Enviado (para revisión)",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693787",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693788",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693777",
+        "to": "Requiere ajustes [requiere comentario]",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693833",
+        "from_id": "3458764674839693755",
+        "from": "Completado",
+        "to_id": "3458764674839693830",
+        "to": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693834",
+        "from_id": "3458764674839693830",
+        "from": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "to_id": "3458764674839693759",
+        "to": "Enviado (para revisión)",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693835",
+        "from_id": "3458764674839693830",
+        "from": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "to_id": "3458764674839693769",
+        "to": "Enviado con ajustes",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693836",
+        "from_id": "3458764674839693783",
+        "from": "Posponer respuesta",
+        "to_id": "3458764674839693830",
+        "to": "Parcialmente respondido (Algunas respuestas ya se pueden corroborar) [requiere comentario]",
+        "stroke": "#b0b0b0"
+      },
+      {
+        "id": "3458764674839693843",
+        "from_id": "3458764674839693840",
+        "from": "Parcialmente aprobado",
+        "to_id": "3458764674839693840",
+        "to": "Parcialmente aprobado",
+        "stroke": "#b0b0b0"
+      }
+    ]
+  }
+}

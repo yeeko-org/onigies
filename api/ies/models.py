@@ -45,8 +45,16 @@ class Institution(models.Model):
                 survey.save()
             for axis in all_axes:
                 av, av_created = survey.axis_values.get_or_create(axis=axis)
+                # Durante la coexistencia se setean ambos flujos (viejo
+                # y nuevo); el viejo se retira en la fase de borrado.
+                changed = False
                 if not av.status_register_id:
                     av.status_register_id = 'pre_start'
+                    changed = True
+                if not av.status_id:
+                    av.status_id = 'cp_pre_start'
+                    changed = True
+                if changed:
                     av.save()
             for sector in main_sectors:
                 survey.population_quantities.get_or_create(sector=sector)
@@ -56,6 +64,7 @@ class Institution(models.Model):
             if not has_packages:
                 package = survey.packages.create()
                 package.status_sending_id = 'draft'
+                package.status_id = 'bp_draft'
                 package.save()
 
     def __str__(self):

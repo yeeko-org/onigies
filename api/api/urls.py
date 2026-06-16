@@ -60,6 +60,7 @@ urlpatterns = [
         name='password_recovery_confirm',
     ),
     path('catalogs/', include('api.views.catalogs.urls')),
+    path('flow/', include('flow.urls')),
     # path('space_time/', include('api.views.space_time.urls')),
     path('', include(router.urls)),
 ]

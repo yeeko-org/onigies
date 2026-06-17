@@ -6,6 +6,7 @@ from example.models import (
     GoodPracticePackage, Evidence)
 from api.views.ies.serializers import (
     InstitutionSimpleSerializer, PeriodSimpleSerializer)
+from flow.serializers import StatusBriefSerializer
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
@@ -43,6 +44,7 @@ class FeatureGoodPracticeSerializer(serializers.ModelSerializer):
 
 
 class GoodPracticeSerializer(serializers.ModelSerializer):
+    status = StatusBriefSerializer(read_only=True)
 
     class Meta:
         model = GoodPractice
@@ -67,6 +69,7 @@ class SurveySemiFullSerializer(serializers.ModelSerializer):
 class GoodPracticePackageSerializer(serializers.ModelSerializer):
     good_practices_count = serializers.SerializerMethodField()
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
+    status = StatusBriefSerializer(read_only=True)
 
     def get_good_practices_count(self, obj):
         return obj.good_practices.count()
@@ -78,10 +81,8 @@ class GoodPracticePackageSerializer(serializers.ModelSerializer):
 
 class GoodPracticePackageFullSerializer(serializers.ModelSerializer):
     good_practices = GoodPracticeFullSerializer(many=True, read_only=True)
-    # institution_full = InstitutionSimpleSerializer(
-    #     read_only=True, source='survey__institution')
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
-
+    status = StatusBriefSerializer(read_only=True)
 
     class Meta:
         model = GoodPracticePackage

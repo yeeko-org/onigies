@@ -17,7 +17,6 @@ const form = ref({
   id: null,
   package: props.packageId,
   name: '',
-  status_sending: 'draft'
 })
 
 const create = async () => {

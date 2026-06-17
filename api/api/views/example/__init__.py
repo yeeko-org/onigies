@@ -84,42 +84,10 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         }
         return action_serializer.get(self.action, self.serializer_class)
 
-    @action(detail=True, methods=['post'])
-    def send(self, request, pk=None):
-        """Envía el paquete de buenas prácticas a revisión.
-
-        En el primer envío valida que todas las prácticas estén
-        en status ``ready_to_send``. En re-envíos posteriores
-        (cuando hubo ajustes) sólo transita el status del paquete
-        y de sus prácticas no-finales.
-        """
-        from django.utils import timezone
-        good_practice_package = self.get_object()
-        has_sent = good_practice_package.sent_at is not None
-
-        if not has_sent:
-            practices = good_practice_package.good_practices.all()
-            if not practices.exists():
-                msg = ('Debes agregar al menos una buena práctica '
-                       'antes de enviar el paquete.')
-                return Response({'detail': msg}, status=400)
-            pending = practices.exclude(status_sending_id='ready_to_send')
-            if pending.exists():
-                msg = ('Todas las buenas prácticas deben estar en '
-                       '"Lista para enviar" antes de enviar el paquete.')
-                return Response({'detail': msg,}, status=400)
-        status_sending = "created" if not has_sent else "need_new_checking"
-        good_practice_package.status_sending_id = status_sending
-        if not has_sent:
-            good_practice_package.sent_at = timezone.now()
-        good_practice_package.save()
-        pending_good_practices = good_practice_package.good_practices\
-            .filter(status_sending__is_final=False)
-        for good_practice in pending_good_practices:
-            good_practice.status_sending_id = status_sending
-            good_practice.save()
-        serializer = self.get_serializer(good_practice_package)
-        return Response(serializer.data)
+    # El envío a revisión lo ejecuta ahora el motor de flujo
+    # (POST /flow/example/goodpracticepackage/{pk}/transitions/ con
+    # bp_sent / bp_resent). La acción `send` vieja se jubiló: el front
+    # llama al motor y `sent_at` lo fija el hook de GoodPracticePackage.save.
 
     @action(detail=True, methods=['post'])
     def discard(self, request, pk=None):

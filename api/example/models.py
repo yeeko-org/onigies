@@ -61,6 +61,15 @@ class GoodPracticePackage(models.Model):
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 
+    def save(self, *args, **kwargs):
+        # Registra la fecha de envío la primera vez que el motor
+        # transiciona a bp_sent o bp_resent (sent_at no se borra al resend).
+        if (self.sent_at is None
+                and self.status_id in ('bp_sent', 'bp_resent')):
+            from django.utils import timezone
+            self.sent_at = timezone.now()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return (f"Paquete de Buenas Prácticas - "
                 f"{self.survey.institution.acronym} - {self.survey.period.year}")

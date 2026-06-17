@@ -1,15 +1,13 @@
 <script setup>
 import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
-import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
-import StatusToggle from "~/components/dashboard/status/StatusToggle.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
+import FlowTransitions from "~/components/dashboard/flow/FlowTransitions.vue";
+import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
 import { useMainStore } from '~/store/index.js'
 import { useDashboardStore } from '~/store/dash.js'
-import {
-  isPracticeComplete, getMissingFields
-} from "~/composables/good_practice_validation.js"
 import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
 import { useRules } from "~/composables/useRules.js"
 const mainStore = useMainStore()
@@ -18,7 +16,6 @@ const { rules } = useRules()
 
 const props = defineProps({
   isStaff: { type: Boolean, default: true },
-  sentAt: String,
   editionAvailable: {
     type: Boolean,
     default: true
@@ -31,39 +28,15 @@ const emit = defineEmits(['close', 'saved', 'deleted'])
 
 const confirmDelete = ref(false)
 const loading = ref(false)
-const showBlockedAlert = ref(false)
-const blockedItems = ref([])
 const formRef = ref(null)
 
 const isEditing = computed(() => !!full_main.value?.id)
 
-const canToggleStatus = computed(() => {
-  if (props.isStaff) return false
-  if (props.sentAt) return false
-  const code = full_main.value?.status_sending
-  return !code || code === 'draft' || code === 'ready_to_send'
-})
-
-function canMarkReady() {
-  return isPracticeComplete(full_main.value)
+// El motor entrega el nuevo status en flowEvent.to_status; sincronizamos el
+// objeto local para que el chip y las transiciones disponibles se refresquen.
+function onTransitioned(flowEvent) {
+  full_main.value.status = flowEvent.to_status
 }
-
-function missingForReady() {
-  return getMissingFields(full_main.value)
-}
-
-function onStatusChange(newCode) {
-  full_main.value.status_sending = newCode
-  showBlockedAlert.value = false
-}
-
-function onStatusBlocked(items) {
-  blockedItems.value = items
-  showBlockedAlert.value = true
-}
-
-const showReadyPrompt = ref(false)
-const pendingPractice = ref(null)
 
 const savePractice = async () => {
   if (!props.isStaff) {
@@ -79,47 +52,10 @@ const savePractice = async () => {
         res.errors.detail || 'No se pudo guardar la buena práctica', 'error')
       return
     }
-    if (isPracticeComplete(res) && res.status_sending === 'draft') {
-      pendingPractice.value = res
-      showReadyPrompt.value = true
-      return
-    }
     dashStore.showSnackbar('Se guardó la buena práctica')
     emit('saved', res)
   } catch (e) {
     console.error('Error al guardar:', e)
-  } finally {
-    loading.value = false
-  }
-}
-
-function keepAsDraft() {
-  const res = pendingPractice.value
-  showReadyPrompt.value = false
-  pendingPractice.value = null
-  dashStore.showSnackbar('Se guardó la buena práctica')
-  emit('saved', res)
-}
-
-async function markAsReady() {
-  const base = pendingPractice.value
-  loading.value = true
-  try {
-    const res = await mainStore.patchSimple([
-      'good_practice', base.id, {status_sending: 'ready_to_send' }])
-    if (res?.errors) {
-      dashStore.showSnackbar(
-        res.errors.detail || 'No se pudo cambiar el status', 'error')
-      showReadyPrompt.value = false
-      emit('saved', base)
-      return
-    }
-    showReadyPrompt.value = false
-    pendingPractice.value = null
-    dashStore.showSnackbar(
-      'Buena práctica marcada como "Lista para enviar"'
-    )
-    emit('saved', res)
   } finally {
     loading.value = false
   }
@@ -168,53 +104,18 @@ const remove = async () => {
             class="mr-6"
             :readonly="isStaff"
           />
-          <StatusToggle
-            v-if="canToggleStatus"
-            :main="full_main"
-            collection="sending"
-            from-code="draft"
-            to-code="ready_to_send"
-            :can-transition="canMarkReady"
-            :missing-items="missingForReady"
-            @change="onStatusChange"
-            @blocked="onStatusBlocked"
+          <FlowStatusChip
+            :status="full_main.status"
+            class="mr-3 flex-shrink-0"
           />
-          <StatusDetail
-            v-else-if="full_main.status_sending
-              && full_main.status_sending !== 'draft'
-              && full_main.status_sending !== 'ready_to_send'"
-            v-model="full_main"
-            collection="sending"
+          <FlowTransitions
+            v-if="isEditing"
+            app-label="example"
+            model-name="goodpractice"
+            :pk="full_main.id"
+            @transitioned="onTransitioned"
           />
         </div>
-        <v-alert
-          v-if="showBlockedAlert"
-          type="error"
-          variant="tonal"
-          density="compact"
-          class="mb-3 mt-2"
-          closable
-        >
-          <div class="text-subtitle-1 mb-1">
-            Para poder marcar esta buena práctica como
-            <b>"Lista para enviar"</b>, aún falta agregar:
-          </div>
-          <ul class="ml-4 mb-2 text-body-2">
-            <li v-for="item in blockedItems" :key="item">
-              {{ item }}
-            </li>
-          </ul>
-<!--          <div class="d-flex justify-center">-->
-<!--            <v-btn-->
-<!--              variant="outlined"-->
-<!--              color="accent"-->
-<!--              size="small"-->
-<!--              @click="showBlockedAlert = false"-->
-<!--            >-->
-<!--              Entendido-->
-<!--            </v-btn>-->
-<!--          </div>-->
-        </v-alert>
         <div class="d-flex align-center">
 
           <SelectGroup
@@ -288,6 +189,15 @@ const remove = async () => {
         :is-staff="isStaff"
         class="mt-4 mb-4"
       />
+      <template v-if="isEditing">
+        <v-divider class="mt-2" />
+        <div class="text-subtitle-2 mt-3 mb-1">Comentarios</div>
+        <FlowComments
+          app-label="example"
+          model-name="goodpractice"
+          :pk="full_main.id"
+        />
+      </template>
     </v-card-text>
 
 
@@ -332,40 +242,6 @@ const remove = async () => {
           <v-spacer />
           <v-btn @click="confirmDelete = false">Cancelar</v-btn>
           <v-btn color="error" @click="remove">Eliminar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Prompt tras guardar: ¿marcar como Lista para enviar? -->
-    <v-dialog v-model="showReadyPrompt" max-width="520" persistent>
-      <v-card>
-        <v-card-title class="text-h6">
-          Buena práctica completa
-        </v-card-title>
-        <v-card-text>
-          Esta buena práctica ya cumple con los elementos
-          mínimos necesarios para enviarse a revisión.
-          ¿Quieres marcarla como
-          <b>"Lista para enviar"</b>
-          o dejarla en borrador para seguirla editando?
-        </v-card-text>
-        <v-card-actions class="mx-3 mb-2">
-          <v-btn
-            variant="outlined"
-            @click="keepAsDraft"
-          >
-            Dejar en borrador
-          </v-btn>
-          <v-spacer />
-          <v-btn
-            color="success"
-            variant="elevated"
-            :loading="loading"
-            prepend-icon="done_outline"
-            @click="markAsReady"
-          >
-            Lista para enviar
-          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

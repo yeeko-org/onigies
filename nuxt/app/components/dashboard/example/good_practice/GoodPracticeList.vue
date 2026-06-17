@@ -4,6 +4,7 @@ import { useAuthStore } from '~/store/auth.js'
 import { useIesStore } from "~/store/ies.js";
 import { useMainStore } from '~/store/index.js'
 import { useDashboardStore } from '~/store/dash.js'
+import { useApiError } from '~/composables/useApiError.js'
 import { getMissingFields } from "~/composables/good_practice_validation.js"
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
@@ -11,6 +12,8 @@ import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
 import NotReadyDialog from "~/components/dashboard/example/good_practice/NotReadyDialog.vue";
 import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmActionDialog.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
+import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -18,10 +21,11 @@ const props = defineProps({
 })
 
 const authStore = useAuthStore()
-const { getSimple, saveSimple, saveAction, status_dict } = useMainStore()
-const mainStore = useMainStore()
+const { getSimple, saveSimple, saveAction } = useMainStore()
 const iesStore = useIesStore()
 const dashStore = useDashboardStore()
+const { $api } = useNuxtApp()
+const { notifyApiError } = useApiError()
 
 const isStaff = computed(() => authStore.is_staff)
 const goodPracticePackage = ref({
@@ -40,9 +44,12 @@ const limit_reached = computed(() => {
 const editionAvailable = computed(()=> {
   if (isStaff.value)
     return false
-  else {
-    return statusSending.value.role === 'ies'
-  }
+  // Descartado (has_good_practices=false) deja el status en bp_draft (role
+  // ies), pero la IES ya cerró: no debe poder editar (solo reabrir).
+  if (goodPracticePackage.value.has_good_practices === false)
+    return false
+  // El motor marca role='ies' cuando es turno de la institución.
+  return goodPracticePackage.value.status?.role === 'ies'
 })
 
 const periodOpen = computed(() =>
@@ -52,7 +59,8 @@ const periodOpen = computed(() =>
 const canReopen = computed(() => {
   if (isStaff.value)
     return false
-  return goodPracticePackage.value.status_sending === 'discarded'
+  // "Descartar" = has_good_practices=false; no es un status del flujo.
+  return goodPracticePackage.value.has_good_practices === false
     && periodOpen.value
 })
 
@@ -116,6 +124,7 @@ const loadPractices = async () => {
     goodPracticePackage.value = result
     setPractices(result.good_practices)
   }
+  await loadPackageTransitions()
   current_loading.value = false
 }
 
@@ -173,14 +182,21 @@ const send_dialog = ref(false)
 const not_ready_dialog = ref(false)
 const discard_dialog = ref(false)
 
+// "Lista" = la IES ya marcó la práctica como completada → su status salió del
+// turno de la IES (role !== 'ies'). La regla dura (todas en bp_completed) la
+// valida el motor vía valid_child_statuses; esto es solo para la UX.
+function practiceReady(p) {
+  return !!p.status && p.status.role !== 'ies'
+}
+
 const canSendPackage = computed(() => {
   if (!goodPractices.value.length) return false
-  return goodPractices.value.every(p => p.status_sending === 'ready_to_send')
+  return goodPractices.value.every(practiceReady)
 })
 
 const notReadyDetails = computed(() => {
   return goodPractices.value
-    .filter(p => p.status_sending !== 'ready_to_send')
+    .filter(p => !practiceReady(p))
     .map(p => ({
       id: p.id,
       name: p.name || 'Sin nombre',
@@ -195,19 +211,36 @@ function wantSend() {
     not_ready_dialog.value = true
 }
 
-function sendPackage(){
-  saveAction(['good_practice_package', package_id.value, 'send']).then(res=>{
-    if (res?.errors) {
-      dashStore.showSnackbar(
-        res.errors.detail || 'No se pudo enviar el paquete', 'error')
-      return
-    }
-    goodPracticePackage.value = res
-    setPractices(res.good_practices)
+// Transiciones del paquete disponibles para la IES en su turno. En estado
+// editable hay una sola hacia adelante: enviar (bp_sent) o reenviar
+// (bp_resent). Se ejecuta vía el motor, no con la acción /send vieja.
+const packageTransitions = ref([])
+const sendTransition = computed(() => packageTransitions.value[0] || null)
+
+async function loadPackageTransitions() {
+  if (!package_id.value) return
+  try {
+    const res = await $api.get(
+      `/flow/example/goodpracticepackage/${package_id.value}/transitions/`)
+    packageTransitions.value = res.data
+  } catch (e) {
+    packageTransitions.value = []
+  }
+}
+
+async function sendPackage() {
+  if (!sendTransition.value) return
+  try {
+    await $api.post(
+      `/flow/example/goodpracticepackage/${package_id.value}/transitions/`,
+      { target_status: sendTransition.value.name, comment: '' })
     send_dialog.value = false
-  }).catch(e=>{
-    console.error("Error sending package:", e)
-  })
+    // Recargamos el paquete para refrescar status, sent_at y prácticas.
+    await loadPractices()
+    dashStore.showSnackbar('Buenas prácticas enviadas a revisión')
+  } catch (e) {
+    notifyApiError(e, 'No se pudo enviar el paquete')
+  }
 }
 
 function discardPackage() {
@@ -240,12 +273,6 @@ function reopenPackage() {
     console.error("Error reopening package:", e)
   })
 }
-
-const statusSending = computed(()=> {
-  if (!mainStore.status_dict.sending)
-    return {}
-  return mainStore.status_dict.sending[goodPracticePackage.value.status_sending] || {}
-})
 
 </script>
 
@@ -295,15 +322,10 @@ const statusSending = computed(()=> {
       >
         Agregar
       </v-btn>
-<!--        <StatusDetail-->
-<!--          v-if="!isStaff"-->
-<!--          model="goodpracticepackage"-->
-<!--          field="status_sending"-->
-<!--          :item-id="goodPracticePackage.id"-->
-<!--        />-->
+      <FlowStatusChip :status="goodPracticePackage.status" />
     </v-card-title>
     <v-alert
-      v-if="!isStaff && statusSending.role !== 'ies'"
+      v-if="!isStaff && goodPracticePackage.status?.role === 'reviewer'"
       type="success"
     >
       Las buenas prácticas han sido enviadas y están en revisión.
@@ -428,6 +450,17 @@ const statusSending = computed(()=> {
         Enviar a revisión
       </v-btn>
     </v-card-actions>
+
+    <v-card-text v-if="goodPracticePackage.id">
+      <v-divider class="mb-3" />
+      <div class="text-subtitle-2 mb-1">Comentarios del paquete</div>
+      <FlowComments
+        app-label="example"
+        model-name="goodpracticepackage"
+        :pk="goodPracticePackage.id"
+      />
+    </v-card-text>
+
     <v-dialog
       v-model="create_dialog"
       max-width="600"
@@ -449,7 +482,6 @@ const statusSending = computed(()=> {
       <GoodPracticeEditSimple
         v-if="editingPractice"
         v-model="editingPractice"
-        :sent-at="goodPracticePackage.sent_at"
         :is-staff="isStaff"
         :edition-available="editionAvailable"
         class="mt-3"

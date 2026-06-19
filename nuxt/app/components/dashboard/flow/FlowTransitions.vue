@@ -13,6 +13,9 @@ const props = defineProps({
   appLabel:  { type: String, required: true },
   modelName: { type: String, required: true },
   pk:        { type: Number, required: true },
+  // Status actual del objeto (StatusBrief); solo para explicar por qué no
+  // hay acciones cuando la lista de transiciones llega vacía.
+  status:    { type: Object, default: null },
 })
 
 const emit = defineEmits(['transitioned'])
@@ -30,6 +33,16 @@ const comment = ref('')
 
 const base = computed(
   () => `/flow/${props.appLabel}/${props.modelName}/${props.pk}`)
+
+// Sin acciones: si el status tiene role, el turno es de la otra parte; sin
+// role, es un estado final.
+const emptyMessage = computed(() => {
+  const role = props.status?.role
+  if (!role) return 'Sin acciones: este estado es final.'
+  if (role === 'ies') return 'En espera de la institución.'
+  if (role === 'reviewer') return 'En espera de la revisión.'
+  return 'Sin acciones disponibles.'
+})
 
 async function loadTransitions() {
   loading.value = true
@@ -99,6 +112,10 @@ watch(() => props.pk, loadTransitions)
       >
         {{ t.public_name }}
       </v-btn>
+    </div>
+
+    <div v-else class="text-caption text-grey-darken-1 font-italic">
+      {{ emptyMessage }}
     </div>
 
     <v-dialog v-model="commentDialog" max-width="480" persistent>

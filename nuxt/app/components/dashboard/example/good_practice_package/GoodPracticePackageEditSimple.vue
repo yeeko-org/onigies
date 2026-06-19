@@ -71,6 +71,7 @@ function onTransitioned(flowEvent) {
         app-label="example"
         model-name="goodpracticepackage"
         :pk="pkg.id"
+        :status="pkg.status"
         @transitioned="onTransitioned"
       />
     </v-card-text>

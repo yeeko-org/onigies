@@ -12,6 +12,7 @@ class InstitutionViewSet(BaseGenericViewSet):
 
     queryset = Institution.objects.all()
     serializer_class = InstitutionSimpleSerializer
+    search_fields = ['name', 'acronym']
 
     def partial_update(self, request, *args, **kwargs):
         # print("InstitutionViewSet.patch, request.data: ", request.data)

@@ -1,6 +1,7 @@
 <script setup>
 import {computed, nextTick, watch} from "vue";
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import CommentIcon from "~/components/dashboard/common/utils/CommentIcon.vue";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 
@@ -138,7 +139,15 @@ const emits = defineEmits(['open-panel'])
       </div>
     </v-toolbar-title>
     <template v-if="real_show_details" >
-      <template v-if="collection_data.status_groups && !is_map_viz">
+      <!-- Flujo nuevo: si el registro trae el status anidado (objeto), ese
+           manda y reemplaza a los chips viejos por status_group. -->
+      <FlowStatusChip
+        v-if="main.status && typeof main.status === 'object' && !is_map_viz"
+        :status="main.status"
+        size="small"
+        class="ml-1"
+      />
+      <template v-else-if="collection_data.status_groups && !is_map_viz">
         <div
           v-for="status_group in collection_data.status_groups"
           :key="status_group"

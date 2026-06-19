@@ -13,12 +13,10 @@ class PeriodViewSet(BaseGenericViewSet):
 
 class InstitutionCatalogViewSet(BaseGenericViewSet):
     from django.db.models import Count
-    queryset = Institution.objects.all()\
-        .annotate(
+    queryset = Institution.objects.all().annotate(
         good_practice_packages_count=Count('surveys__packages'),
         good_practices_count=Count('surveys__packages__good_practices')
-    )\
-        .distinct()
+    ).distinct()
 
     serializer_class = InstitutionSerializer
 

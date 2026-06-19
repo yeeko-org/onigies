@@ -113,6 +113,7 @@ const remove = async () => {
             app-label="example"
             model-name="goodpractice"
             :pk="full_main.id"
+            :status="full_main.status"
             @transitioned="onTransitioned"
           />
         </div>

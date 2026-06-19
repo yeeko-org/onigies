@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import StatusChip from "~/components/dashboard/status/StatusChip.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import {useMainStore} from "~/store/index.js";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
@@ -107,9 +107,9 @@ function openEdit(){
             {{ evaluatedCount }}/{{ active_features.length }} evaluados
           </v-chip>
         <v-spacer></v-spacer>
-        <StatusChip
-          collection="sending"
-          :main="practice"
+        <FlowStatusChip
+          :status="practice.status"
+          size="small"
           class="ml-4"
         />
       </v-card-title>

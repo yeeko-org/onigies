@@ -38,15 +38,31 @@ GEN_MAP = {
     "approved": "gen_approved",
     "requires_new_checking": "gen_completed",
 }
+# G = GoodPractice. `created`/`in_review` ⇒ la práctica viajó con el envío del
+# paquete: completada y a la espera de revisión (bp_completed).
 GOOD_PRACTICE_MAP = {
     "draft": "bp_draft",
     "ready_to_send": "bp_completed",
+    "created": "bp_completed",
+    "in_review": "bp_completed",
+    "needs_adjustments": "bp_need_changes",
+    "ready_to_resend": "bp_adjusted",
+    "need_new_checking": "bp_adjusted",
+    "accepted": "bp_for_ruling",
+    "discarded": "bp_rejected",
 }
-# `ready_to_send` en un paquete significaba "listo pero no enviado".
+# P = GoodPracticePackage. `ready_to_send`/`ready_to_resend` ⇒ "listo pero no
+# enviado" (vuelve a bp_draft). El envío real lo marcan `created`/`in_review`.
 PACKAGE_MAP = {
     "draft": "bp_draft",
     "ready_to_send": "bp_draft",
     "created": "bp_sent",
+    "in_review": "bp_sent",
+    "needs_adjustments": "bp_need_changes",
+    "ready_to_resend": "bp_draft",
+    "need_new_checking": "bp_resent",
+    "accepted": "bp_finished",
+    "discarded": "bp_finished",
 }
 
 # (app, modelo, campo viejo, mapeo)
@@ -107,6 +123,7 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             self.migrate_statuses()
+            self.reconcile_bp_children()
             self.migrate_comments()
             self.migrate_comment_fields(comments_user)
             self.migrate_attachments()
@@ -132,6 +149,19 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(
                     f"  {model_name}: id viejo sin mapeo '{old_id}' "
                     f"(no migrado, decidir manualmente)"))
+
+    def reconcile_bp_children(self) -> None:
+        """Red de seguridad de la regla padre-hijo: una práctica de un paquete
+        ya enviado no puede seguir en bp_draft. Autorrepara el hueco que deja
+        el default='bp_draft' del modelo cuando un id viejo no se mapeó."""
+        good_practice = apps.get_model("example", "GoodPractice")
+        fixed = (good_practice.objects
+                 .filter(package__status_id__in=["bp_sent", "bp_resent"],
+                         status_id="bp_draft")
+                 .update(status_id="bp_completed"))
+        self.stdout.write(
+            f"Reconciliación: {fixed} prácticas bp_draft → bp_completed "
+            f"(paquete enviado)")
 
     # ------------------------------------------------------------------
     def _create_event(self, target, user, text, created_at) -> bool:

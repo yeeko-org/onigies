@@ -1,7 +1,7 @@
 <script setup>
 
 import PanelList from "~/components/dashboard/common/main/PanelList.vue";
-import {shallowRef} from 'vue'
+import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 import SummaryList from "~/components/dashboard/common/main/SummaryList.vue";
 import EditCommon from "~/components/dashboard/common/generic/EditCommon.vue";
 import MassiveActions from "~/components/dashboard/common/utils/MassiveActions.vue";
@@ -41,13 +41,10 @@ const selected_results = ref([])
 const page_number = ref(1)
 const showing = ref(15)
 
-const edit_component = shallowRef('')
 defineExpose({ addItem, resetPage })
 const emits = defineEmits(['select-item', 'update-page-number'])
 
-const route_key = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const edit_name = computed(() => `${props.collection_data.model_name}Edit`)
+const edit_component = useDynamicComponent(props.collection_data, 'Edit')
 
 const init_indirect = computed(() => {
   return !props.results.length && props.total_count
@@ -56,17 +53,6 @@ const init_indirect = computed(() => {
 const final_main_action = computed(() => {
   return sel.value.show_order ? 'order' : props.main_action
 })
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${edit_name.value}.vue`)
-  .then(module => {
-    edit_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/EditGeneric.vue`).then(module => {
-      edit_component.value = module.default
-    })
-    // edit_component.value = null
-  })
 
 const results_showed = computed(() => {
   if (props.in_sheet)
@@ -159,7 +145,7 @@ function mergeItems(res_main) {
     const snake_name = is_category ? props.collection_data.snake_name : null
     mergeSimple([params, snake_name]).then(res => {
       if (res.error_data) {
-        console.error("Error merging items:", res.error_data)
+        devWarn("Error al fusionar elementos:", res.error_data)
         error_messages.value.push(
           `Error al fusionar ${merge_id}: ${res.error_data.errors}`)
         return

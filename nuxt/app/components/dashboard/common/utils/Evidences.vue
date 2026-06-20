@@ -36,10 +36,10 @@ function sendFile(){
   formData.append("file", main_file.value.file, main_file.value.file.name);
   const elem_id = props.full_main.id
   const params = [elem_id, formData, props.main_collection_name]
-  mainStore.saveFile(params).then(res=>{
-    // ready_files.value += 1
+  mainStore.saveFile(params, 'No se pudo subir el archivo.').then(res=>{
     saving.value = false
-    props.full_main.evidences.push(res)
+    if (res.errors) return
+    props.full_main.evidences.push(res.data)
     main_file.value = null
   })
 }
@@ -52,11 +52,10 @@ function trashFile(file){
 
 function deleteFile(){
   saving.value = true
-  // const elem_id = props.full_main.id
-  console.log("main_file", main_file.value)
   const params = ['evidence', main_file.value.id]
-  mainStore.deleteSimple(params).then(res=>{
+  mainStore.deleteSimple(params, 'No se pudo eliminar el archivo.').then(res=>{
     saving.value = false
+    if (res.errors) return
     props.full_main.evidences = props.full_main.evidences.filter(
       e=>e.id !== main_file.value.id)
     main_file.value = null
@@ -69,7 +68,6 @@ function deleteFile(){
 // })
 
 function downloadFile(item){
-  console.log("downloadFile", item)
   window.open(item.file, '_blank');
 }
 

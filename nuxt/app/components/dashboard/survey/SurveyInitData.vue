@@ -22,19 +22,16 @@ const saving = ref(false)
 
 async function saveSurvey() {
   saving.value = true
+  const msg_error = 'Error al guardar datos iniciales'
   try {
     const result = await mainStore.saveSimple(
-      ['survey', survey_data.value]
+      ['survey', survey_data.value], msg_error
     )
-    if (result?.errors) {
-      console.error('Error al guardar datos iniciales:', result.errors)
-      dashStore.showSnackbar('Error al guardar datos iniciales')
-      return
-    }
-    survey_data.value = result
+    if (result.errors) return
+    survey_data.value = result.data
     dashStore.showSnackbar('Datos iniciales guardados')
   } catch (e) {
-    console.error('Error al guardar datos iniciales:', e)
+    devWarn('Error al guardar datos iniciales:', e)
   } finally {
     saving.value = false
   }
@@ -49,14 +46,14 @@ const plan_types = [
 ]
 
 const main_sectors = computed(() => {
-  console.log("cats", cats.value)
-  if (!cats.value?.sector)
+n  if (!cats.value?.sector)
     return []
   return cats.value.sector.filter(sector => sector.is_main)
 })
 
 async function loadSurvey(survey_id) {
-  survey_data.value = await mainStore.getSimple([ "survey", survey_id ])
+  const res = await mainStore.getSimple([ "survey", survey_id ])
+  survey_data.value = res.data
 }
 
 watch(() => props.period, (newVal) => {

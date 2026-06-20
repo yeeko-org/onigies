@@ -44,25 +44,19 @@ async function changeLogo(e){
     snack_text: "Tu logo ha sido actualizado"
   }
 
-  const res = await iesStore.updateLogo(request)
-  if (res.errors){
-    console.errors(res.errors)
-  }
+  await iesStore.updateLogo(request, 'No se pudo actualizar el logo.')
   loading.value = false
 
 }
 
 async function saveInstitutionData(){
   loading.value = true
-  const res = await mainStore.saveSimple(['institution', edit_data.value])
-  if (res.errors) {
-
-    console.error(res.errors)
-  }
-  else {
+  const res = await mainStore.saveSimple(
+    ['institution', edit_data.value], 'No se pudieron guardar los cambios.')
+  if (!res.errors) {
     iesStore.ies_data = {
       ...iesStore.ies_data,
-      ...res
+      ...res.data
     }
     dialog_edit.value = false
   }

@@ -1,7 +1,6 @@
 <script setup>
 import {useMainStore} from "~/store/index.js";
 const mainStore = useMainStore()
-// const { saveSimple, deleteSimple } = mainStore
 
 const props = defineProps({
   packageId: { type: Number, required: true },
@@ -24,11 +23,12 @@ const create = async () => {
   const { valid } = await createForm.value.validate()
   if (!valid) return
   try {
-    const res = await mainStore.saveSimple(['good_practice', form.value])
-    console.log("res", res)
-    emit('created', res)
+    const res = await mainStore.saveSimple(
+      ['good_practice', form.value], 'No se pudo guardar la buena práctica.')
+    if (res.errors) return
+    emit('created', res.data)
   } catch (e) {
-    console.error('Error al guardar:', e)
+    devWarn('Error al guardar:', e)
   }
   loading.value = false
 }

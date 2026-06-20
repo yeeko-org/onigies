@@ -44,21 +44,17 @@ export const useIesStore = defineStore('ies', {
     //     })
     //   })
     // },
-    async updateLogo({data, institution_id, snack_text}) {
-      // this.in_loading = true
+    async updateLogo({data, institution_id}, error_msg = null) {
       const { $api } = useNuxtApp()
-      let response = await $api.post(
-        `institution/${institution_id}/upload_logo/`, data,
-        {headers: {'Content-Type': 'multipart/form-data'}}
-      )
-      if (response.errors) {
-        return { errors: response.errors }
-      } else {
+      try {
+        const response = await $api.post(
+          `institution/${institution_id}/upload_logo/`, data,
+          {headers: {'Content-Type': 'multipart/form-data'}}
+        )
         this.setLogo(response.data.logo)
-        // if (snack_text) {
-        //   const mainStore = useMainStore()
-        //   mainStore.showSnackbar(snack_text, 'success')
-        // }
+        return ok(response)
+      } catch (error) {
+        return fail(error, error_msg)
       }
     }
   },

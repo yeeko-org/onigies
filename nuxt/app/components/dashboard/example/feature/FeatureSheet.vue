@@ -51,12 +51,12 @@ const saveOption = async () => {
     if (editingId.value) {
       const idx = options.value.findIndex(
         o => o.id === editingId.value)
-      if (idx !== -1) options.value[idx] = response
+      if (idx !== -1) options.value[idx] = response.data
     }
     else {
       if (!props.full_main.feature_options)
         props.full_main.feature_options = []
-      props.full_main.feature_options.push(response)
+      props.full_main.feature_options.push(response.data)
     }
     resetForm()
   }
@@ -73,7 +73,7 @@ const executeDelete = async () => {
     toDelete.value.id
   ])
 
-  if (res.success) {
+  if (!res.errors) {
     want_edit.value = false
     const idx = options.value.findIndex(
       o => o.id === toDelete.value.id

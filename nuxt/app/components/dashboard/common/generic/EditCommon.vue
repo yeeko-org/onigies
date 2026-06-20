@@ -64,9 +64,9 @@ async function saveRecord() {
       return
     }
     if (props.edit_type.key === 'merge')
-      emits('merge-items', res)
+      emits('merge-items', res.data)
     else{
-      emits('item-saved', {res, is_new})
+      emits('item-saved', {res: res.data, is_new})
       finishSave()
     }
   })

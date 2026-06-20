@@ -1,8 +1,8 @@
 <script setup>
-import {shallowRef} from 'vue'
 import { getElement } from "~/composables/save_elements.js";
 import EditCommon from "~/components/dashboard/common/generic/EditCommon.vue";
 import { patchElement } from "~/composables/save_elements.js";
+import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 
 const props = defineProps({
   main: Object,
@@ -18,33 +18,13 @@ const props = defineProps({
 })
 
 const full_main = ref(null)
-const edit_component = shallowRef('')
-const edit_simple_component = shallowRef('')
-const route_key = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const edit_name = computed(() => `${props.collection_data.model_name}Edit`)
-const edit_simple_name = computed(() => `${props.collection_data.model_name}EditSimple`)
 
 const emits = defineEmits([
     'finish-open', 'item-saved', 'item-deleted', 'select-item'])
 
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${edit_name.value}.vue`)
-  .then(module => {
-    edit_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/EditGeneric.vue`).then(module => {
-      edit_component.value = module.default
-    })
-  })
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${edit_simple_name.value}.vue`)
-  .then(module => {
-    edit_simple_component.value = module.default
-  })
-  .catch(e => {
-    edit_simple_component.value = ''
-  })
+const edit_component = useDynamicComponent(props.collection_data, 'Edit')
+const edit_simple_component = useDynamicComponent(
+    props.collection_data, 'EditSimple')
 
 const opening = ref(false)
 
@@ -62,7 +42,7 @@ const openMain = () => {
   }
   const elem_id = props.collection_data.pk
   getElement(props.collection_data, props.main[elem_id]).then((res) => {
-    full_main.value = res
+    full_main.value = res.data
     emits('finish-open')
     opening.value = false
   })
@@ -81,16 +61,11 @@ const is_group = computed(() =>
   props.collection_data.level === 'category_group')
 
 const saveOrder = (val) => {
-  // console.log('saveOrder', val)
-  // console.log('val', props.main.order)
-
   if (!val) return
   const params = {order: props.main.order}
 
-  patchElement(props.collection_data, props.main.id, params).then((res) => {
-    // want_edit_comment.value = false
-    console.log('order saved', res)
-  })
+  patchElement(props.collection_data, props.main.id, params,
+      'No se pudo guardar el orden.')
 }
 
 
@@ -184,8 +159,8 @@ const saveOrder = (val) => {
             v-model="full_main"
             :collection_data="collection_data"
             can_delete
-            @itemSaved="emits('item-saved', $event)"
-            @itemDeleted="emits('item-deleted', $event)"
+            @item-saved="emits('item-saved', $event)"
+            @item-deleted="emits('item-deleted', $event)"
           >
             <template #edit>
               <component
@@ -193,7 +168,7 @@ const saveOrder = (val) => {
                 :is="edit_component"
                 v-model="full_main"
                 is_edit
-                @itemSaved="emits('item-saved', $event)"
+                @item-saved="emits('item-saved', $event)"
               />
             </template>
           </EditCommon>

@@ -1,8 +1,9 @@
 <script setup>
 
 import PanelCommon from "~/components/dashboard/common/main/PanelCommon.vue";
+import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 
-import {shallowRef, nextTick} from 'vue'
+import {nextTick} from 'vue'
 
 const props = defineProps({
   results: Array,
@@ -20,36 +21,10 @@ const props = defineProps({
 const open_panels = ref([])
 const main_show_details = ref(false)
 
-const header_component = shallowRef('')
-const sheet_component = shallowRef('')
-
 const emits = defineEmits(['select-item'])
 
-const route_key = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const header_name = computed(() => `${props.collection_data.model_name}Header`)
-const sheet_name = computed(() => `${props.collection_data.model_name}Sheet`)
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${header_name.value}.vue`)
-  .then(module => {
-    header_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/HeaderGeneric.vue`).then(module => {
-      header_component.value = module.default
-    })
-  })
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${sheet_name.value}.vue`)
-  .then(module => {
-    sheet_component.value = module.default
-  })
-  .catch(e => {
-    // console.log("No specific sheet, loading generic", e)
-    import(`~/components/dashboard/common/generic/SheetCommon.vue`).then(module => {
-      sheet_component.value = module.default
-    })
-  })
+const header_component = useDynamicComponent(props.collection_data, 'Header')
+const sheet_component = useDynamicComponent(props.collection_data, 'Sheet')
 
 function addItem({res, is_new}) {
   if (is_new)

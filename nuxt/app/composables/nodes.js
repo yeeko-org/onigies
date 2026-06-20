@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { devWarn } from "~/utils/log.js";
 
 export function hydrateFilterGroup(fg, data, collections_dict) {
   const group_key = fg.category_group
@@ -97,9 +98,6 @@ export function hydrateFilterGroup(fg, data, collections_dict) {
   })
   types = [...types, ...new_types]
   types = types.map(type => {
-    if (group_key && !type[group_key]) {
-      console.log("No group key", type)
-    }
     type.parent_id = group_key ? `group_${type[group_key]}` : "root"
     type.new_id = `type_${type.id}`
     if (type_field.is_multiple)
@@ -120,15 +118,7 @@ export function hydrateFilterGroup(fg, data, collections_dict) {
       (all_data)
   }
   catch (e){
-    console.log("Error", e)
-    console.log("all_data", all_data)
-    console.log("subtype_key", subtype_key)
-    console.log("type_key", type_key)
-    console.log("group_key", group_key)
-
-    console.log("subtypes", subtypes)
-    console.log("types", types)
-    console.log("groups", groups)
+    devWarn("nodes: fallo al construir el árbol de filtros", e)
     return null
   }
 }

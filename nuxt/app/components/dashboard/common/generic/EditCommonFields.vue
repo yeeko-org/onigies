@@ -32,9 +32,14 @@ function saveStatus(new_status, status_group) {
 
   loading_edition.value = true
   let params = {[status_group]: new_status}
-  patchElement(props.final_collection_data, full_main.value.id, params)
-    .then((res)=>{
-      emits('update-status', {status_group, new_status, res})
+  const msg_error = 'No se pudo actualizar el status.'
+  patchElement(props.final_collection_data, full_main.value.id, params,
+    msg_error).then((res)=>{
+      if (res.errors) {
+        loading_edition.value = false
+        return
+      }
+      emits('update-status', {status_group, new_status, res: res.data})
       setTimeout(() => {
         loading_edition.value = false
       }, 800)

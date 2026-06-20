@@ -60,11 +60,7 @@ const item_built = computed(() => {
       };
   }
   catch (e){
-    console.log("error", e)
-    console.log("field", field.value)
-    console.log("status_dict", status_dict.value)
-    console.log("props.collection", props.collection)
-    console.log("status_field", status_field)
+    devWarn("StatusChip: status no encontrado", e)
     return null
   }
 });

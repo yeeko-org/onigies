@@ -134,9 +134,8 @@ function realApplyFilters(page=null) {
       return
     }
     if (res.errors) {
-      // console.error("Error fetching data:", res.errors)
       if (res.errors.length > 3000) {
-        console.error("Too many errors, resetting filters")
+        devWarn("CollectionDisplay: demasiados errores, reiniciando filtros")
       }
       error_message.value = res.errors
       loading_fetch.value = false

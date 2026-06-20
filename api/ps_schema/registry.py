@@ -136,6 +136,21 @@ def _model_fields(model_cls: type) -> list:
     return result
 
 
+NAME_FIELDS = ("name", "title")
+HAS_FIELDS = ("comments", "description", "help_text", "order", "color", "icon")
+
+def _derive_field_meta(fields: list) -> dict:
+    """pk, name_field, has y status_groups derivados de la metadata de campos.
+    """
+    names = {f["name"] for f in fields}
+    return {
+        "pk": next((f["name"] for f in fields if f["primary_key"]), "id"),
+        "name_field": next((n for n in NAME_FIELDS if n in names), None),
+        "has": {h: h in names for h in HAS_FIELDS},
+        "status_groups": [f["name"] for f in fields
+                          if f.get("related_model") == "StatusControl"],
+    }
+
 # ---------------------------------------------------------------------------
 # Internal factory (CatalogSchema only)
 # ---------------------------------------------------------------------------
@@ -211,10 +226,42 @@ def _base_collection_dict(snake_name: str, schema_cls: type) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Shared collection-data assembly
+# ---------------------------------------------------------------------------
+
+class _CollectionDataMixin:
+    """get_collections_data común: fields + metadata derivada + overrides DB.
+
+    Cada registry define iter_collection_data y _schemas; el hook
+    _db_overrides devuelve {} salvo que el registry lea la tabla Collection.
+    """
+
+    _schemas: dict
+
+    def _db_overrides(self) -> dict:
+        return {}
+
+    def get_collections_data(self) -> list:
+        overrides = self._db_overrides()
+        result = []
+        for _app, data in self.iter_collection_data():
+            snake = data['snake_name']
+            ov = overrides.get(snake, {})
+            merged = {
+                **data,
+                **{k: v for k, v in ov.items() if v is not None},
+                'fields': _model_fields(self._schemas[snake].model)
+            }
+            merged.update(_derive_field_meta(merged['fields']))
+            result.append(merged)
+        return result
+
+
+# ---------------------------------------------------------------------------
 # CatalogRegistry
 # ---------------------------------------------------------------------------
 
-class CatalogRegistry:
+class CatalogRegistry(_CollectionDataMixin):
     """
     Registry para CatalogSchema (category_*) y FilterGroupSchema.
 
@@ -293,18 +340,6 @@ class CatalogRegistry:
             }
             yield data['app_label'], data
 
-    def get_collections_data(self) -> list:
-        """
-        Datos de schema + metadata de campos en runtime.
-        Los catálogos no tienen campos editables en DB — sin overrides.
-        """
-        result = []
-        for _app, data in self.iter_collection_data():
-            data['fields'] = _model_fields(
-                self._schemas[data['snake_name']].model)
-            result.append(data)
-        return result
-
     def iter_filter_group_data(self):
         """
         Yield dicts de filter group para InitFilterGroups, combinando:
@@ -348,7 +383,7 @@ class CatalogRegistry:
 # CollectionRegistry
 # ---------------------------------------------------------------------------
 
-class CollectionRegistry:
+class CollectionRegistry(_CollectionDataMixin):
     """
     Registry para CollectionSchema (primary / secondary / relational).
 
@@ -433,13 +468,11 @@ class CollectionRegistry:
             }
             yield data['app_label'], data
 
-    def get_collections_data(self) -> list:
-        """
-        Datos de schema + overrides de DB (order, icon, color, help_text,
-        description) + metadata de campos en runtime.
-        """
+    def _db_overrides(self) -> dict:
+        """Overrides editables en DB (order, icon, color, help_text,
+        description) por snake_name."""
         from ps_schema.models import Collection  # lazy — evita import circular
-        db_overrides = {
+        return {
             c.snake_name: {
                 'order': c.order,
                 'icon': c.icon,
@@ -449,17 +482,6 @@ class CollectionRegistry:
             }
             for c in Collection.objects.all()
         }
-        result = []
-        for _app, data in self.iter_collection_data():
-            snake = data['snake_name']
-            overrides = db_overrides.get(snake, {})
-            merged = {
-                **data,
-                **{k: v for k, v in overrides.items() if v is not None},
-            }
-            merged['fields'] = _model_fields(self._schemas[snake].model)
-            result.append(merged)
-        return result
 
 
 # ---------------------------------------------------------------------------

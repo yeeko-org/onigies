@@ -40,31 +40,37 @@ middleware/dashboard.js → store.fetchCatalogs()
 
 ### `collection_data` shape (built in `composables/cats.js`)
 
-Backend-provided (`ps_schema/registry.py::_base_collection_dict` + fields):
-`app_label`, `snake_name`, `model_name` (PascalCase), `name`, `plural_name`,
-`level`, `pk`, `fields[]`, `available_actions[]`, `xls_export`, `cat_params`
-(spread to top level — e.g. `init_display`, `hide_create`).
+Backend-provided (`ps_schema/registry.py`): `app_label`, `snake_name`,
+`model_name` (PascalCase), `name`, `plural_name`, `level`, `fields[]`,
+`available_actions[]`, `xls_export`, `cat_params` (spread to top level — e.g.
+`init_display`, `hide_create`). Each `fields[]` entry carries `name`,
+`relation_type` (`simple|one_to_many|many_to_many|one_to_one|relation`),
+`related_snake_name`, `related_model`, `field_type`, `default`, `null`.
 
-Each `fields[]` entry carries `name`, `relation_type`
-(`simple|one_to_many|many_to_many|one_to_one|relation`), `related_snake_name`,
-`related_model`, `field_type`, `default`, `null`. Computed front-side by
-`calculateSchemas`:
+**Field-derived metadata also comes from the backend** (computed once in
+`registry.py::_derive_field_meta`, single source of truth — the frontend no
+longer recomputes it):
 
 | Property | Meaning |
 |---|---|
 | `pk` | primary-key field name (fallback `'id'`) |
 | `name_field` | first of `name`/`title` present — used as the row title |
 | `has.{comments,description,help_text,order,color,icon}` | booleans: does the model have that field |
-| `other_fields` | simple fields not already handled generically |
+| `status_groups` | field names whose `related_model === 'StatusControl'` |
+
+Computed front-side by `calculateSchemas` (UI-only / needs full field objects):
+
+| Property | Meaning |
+|---|---|
+| `other_fields` | simple fields not already handled generically (`Object.keys(has)` + pk + name_field) |
 | `is_category` | `level.startsWith('category_')` → routes to `/catalogs/` API |
 | `child_relation_fields` | fields with `one_to_many`/`many_to_many` → child lists |
-| `status_groups` | field names whose `related_model === 'StatusControl'` |
 | `collection_filters` | the assembled, ordered filter list (see §4) |
 | `available_sorts` | the “Ordenar por” select options |
 
 ## 2. The auto-load convention (the core)
 
-Given `collection_data`, four optional per-model components are resolved by
+Given `collection_data`, several optional per-model components are resolved by
 **dynamic import of a path built from the name**. No registry. The path is:
 
 ```
@@ -74,9 +80,9 @@ Given `collection_data`, four optional per-model components are resolved by
 e.g. `example` / `good_practice` / `GoodPractice` →
 `~/components/dashboard/example/good_practice/GoodPracticeHeader.vue`.
 
-If the file does not exist, the `.catch()` of the dynamic `import()` loads a
-generic fallback instead (except `EditSimple`, which silently renders nothing
-and makes the panel fall back to `EditCommon`).
+If the file does not exist, a generic fallback loads instead (except
+`EditSimple`, which renders nothing and makes the panel fall back to
+`EditCommon`).
 
 | Suffix | Resolved in | Fallback | Role |
 |---|---|---|---|
@@ -84,18 +90,22 @@ and makes the panel fall back to `EditCommon`).
 | `Sheet` | `PanelList.vue`, `DialogEdit.vue` | `SheetCommon.vue` | expanded read-only detail + **child collections** (§5) |
 | `Edit` | `PanelCommon.vue`, `PanelsResult.vue`, `DialogEdit.vue` | `EditGeneric.vue` | form fields, mounted inside `EditCommon`'s `#edit` slot |
 | `EditSimple` | `PanelCommon.vue` | *(none)* | full inline editor that **replaces** `EditCommon` entirely |
+| `Card` | `CardComponent.vue` | `CardGeneric.vue` | compact card render of one object |
 
-The resolution code is identical everywhere — this exact block:
+Resolution is centralized in **`composables/useDynamicComponent.js`** (one
+`import.meta.glob` lazy registry + a `suffix → generic` fallback map). Callers
+pass only the suffix; the generic is chosen by suffix, not by the caller:
 
 ```js
-const route_key  = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const edit_name  = computed(() => `${props.collection_data.model_name}Edit`)
+import { useDynamicComponent } from '~/composables/useDynamicComponent.js'
 
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${edit_name.value}.vue`)
-  .then(m => { edit_component.value = m.default })
-  .catch(() => import('~/.../EditGeneric.vue').then(m => { edit_component.value = m.default }))
+const header_component = useDynamicComponent(props.collection_data, 'Header')
+const edit_component   = useDynamicComponent(props.collection_data, 'Edit')
 ```
+
+In dev it `console.warn`s when a per-model component is missing (so a typo no
+longer falls back silently). The glob is **relative** (`../components/...`);
+`import.meta.glob` does not resolve the `~/` alias.
 
 ### Edit vs EditSimple (the decision that bit you on `flow`)
 
@@ -138,9 +148,9 @@ CollectionDisplay.vue          owns filters, search (debounce 800ms), sort, pagi
 ```
 
 - **`CollectionDisplay.vue`** is the entry point and the place that calls
-  `fetchElements`. It has **local** `results`/`final_filters`/`loading_fetch`
-  refs (note: the same-named module-level refs in `composables/fetch.js` are a
-  parallel older path — CollectionDisplay does not use them; see §6).
+  `fetchElements`. It **owns** the list-fetch state (`results`/`final_filters`/
+  `loading_fetch`/`total_count`) as **local** refs — there is no module-level
+  fetch composable.
 - `PanelCommon.openMain()` lazily fetches the full object via
   `getElement(collection_data, id)` only when the row is expanded — the list
   endpoint returns light rows, the detail endpoint returns the full object.
@@ -205,6 +215,45 @@ that does something other than the default child-iteration.
 `getLastId()` (store) decides POST vs PUT from the pk and `is_new`. `EditCommon`
 calls `saveElement`/`deleteElement`; it never talks to the API directly.
 
+### Return contract: `{data}|{errors}`
+
+Every store CRUD action returns **`{ data }`** on success (`{ data: true }` for
+deletes) or **`{ errors }`** on failure — built by `ok`/`fail` in
+`utils/api.js`. Callers read `res.data` (the saved/fetched object) or
+`res.errors` (control flow).
+
+Each action takes an optional **`error_msg`** as its **last** argument; the
+wrappers in `save_elements.js` forward it. If you pass a message, `fail` shows
+the error snackbar automatically (server detail if present, else `error_msg`,
+via `useApiError().notifyApiError`). Omit it to handle the error yourself —
+e.g. `EditCommon` shows errors **inline** and passes no `error_msg`.
+
+```js
+// auto-snackbar on failure:
+const res = await saveElement(coll, obj, 'No se pudo guardar.')
+if (res.errors) return
+useit(res.data)
+```
+
+> `$api`-direct callers (e.g. `flow/`) keep their own `try/catch` +
+> `notifyApiError(err, fallback)`; they don't go through `ok`/`fail`.
+> For diagnostics use `devWarn`/`devLog` (`utils/log.js`), not bare `console.*`.
+
+### Event names
+
+Templates use **kebab-case** event listeners. The canonical events:
+`item-saved` (`{res, is_new}`), `item-deleted` (id), `select-item`,
+`open-panel`, `update-page-number`, `change-status`, `update-status`,
+`update-comments`, `apply-filters`. Per-model components may define their own
+local events (e.g. `created`/`saved`/`open` in `good_practice/`).
+
+### Template canaries (intentional)
+
+A few visible fallbacks are **on purpose** (they should never show in normal
+flow; if they do, something is mis-wired): `{{full_main}}` in `EditGeneric`,
+`EDICIÓN 1 (REPORTAR…)` in `EditCommon`, `Sheet genérico 3` in `PanelCommon`.
+Keep them; they are not debug leftovers.
+
 ## 7. Adding a custom view — checklist
 
 1. Confirm the collection exists in the backend registry (`manage-collections`).
@@ -216,15 +265,18 @@ calls `saveElement`/`deleteElement`; it never talks to the API directly.
      the generic frame; remember it only gets `v-model`).
 3. Put it under `components/dashboard/{app_label}/{snake_name}/` with the exact
    `{model_name}{Suffix}.vue` name (PascalCase model, snake folder).
-4. No import, no registration — the dynamic import finds it.
+4. No import, no registration — `useDynamicComponent` finds it via the glob.
 
 ## Key files
 
 | Concern | File |
 |---|---|
+| Convention resolver (dynamic import) | `composables/useDynamicComponent.js` |
 | Payload → schema enrichment | `composables/cats.js` |
 | D3 filter trees | `composables/nodes.js` |
 | CRUD routing | `composables/save_elements.js` |
+| CRUD contract helpers (`ok`/`fail`) | `app/utils/api.js` |
+| Dev-only logging (`devWarn`/`devLog`) | `app/utils/log.js` |
 | Store + actions | `app/store/index.js` |
 | List entry / filters | `components/dashboard/CollectionDisplay.vue` |
 | Actions bar + edit dialog | `.../common/main/PanelsResult.vue` |

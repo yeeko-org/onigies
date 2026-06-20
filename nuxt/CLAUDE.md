@@ -37,7 +37,7 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 
 - `composables/cats.js` — enriches each collection with field metadata, filters, sorts, `has.*` and `is_category` flags
 - `composables/nodes.js` — builds D3 `stratify()` trees for hierarchical selects; rebuilds on catalog mutation
-- `composables/fetch.js` — debounced (600 ms) list fetching with global `results`, `loading_fetch`, `final_filters`
+- List fetching (debounced search, `results`, `loading_fetch`, `final_filters`) lives **locally** in `CollectionDisplay.vue`
 
 ### Collection vs category
 
@@ -48,7 +48,7 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 
 ## Stores (`app/store/`)
 
-- `index.js` (`useMainStore`) — central: `cats`, `schemas`, `all_nodes`, `current_collection_data`, all CRUD actions
+- `index.js` (`useMainStore`) — central: `cats`, `schemas`, `all_nodes`, `current_collection_data`, all CRUD actions. **Contract:** every CRUD action returns `{data}` on success or `{errors}` on failure (helpers `ok`/`fail` in `utils/api.js`). Pass an optional `error_msg` as the **last** arg to auto-show the error snackbar; omit it to handle the error inline (e.g. `EditCommon`).
 - `auth.js` (`useAuthStore`) — `user_onigies`, `is_logged`, token; role getters `is_staff`, `is_full_editor`, `is_mini_editor`
 - `ies.js` (`useIesStore`) — `ies_data`, `surveys`, `current_period`
 - `dash.js` — dashboard ephemeral state
@@ -56,7 +56,9 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 ## Shared building blocks
 
 - `composables/usePermissions.js` — `USER_PERMISSIONS` / `INVITATION_PERMISSIONS` constants; single source of truth.
-- `composables/useApiError.js` — `notifyApiError(err, fallback?)` for DRF error → snackbar.
+- `composables/useApiError.js` — `notifyApiError(err, fallback?)` for DRF error → snackbar (used by `$api`-direct callers like `flow/` and by `fail`).
+- `utils/api.js` — `ok`/`fail`, the `{data}|{errors}` contract helpers for store actions.
+- `utils/log.js` — `devWarn`/`devLog`: dev-only logging (no-op in prod). Use instead of bare `console.*` for diagnostics.
 - `composables/useDates.js` — `formatDate(dateStr)` (dayjs, locale `es`).
 - `components/dashboard/common/dialog/DialogDelete.vue` — confirm dialog with `title`/`subtitle`/`loading`/default slot; reusable beyond delete.
 

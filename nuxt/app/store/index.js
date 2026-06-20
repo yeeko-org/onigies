@@ -5,6 +5,8 @@ import axios from "axios";
 import { calculateNewCats, hydrateFilterGroup } from "~/composables/nodes.js";
 import { calculateSchemas } from "~/composables/cats.js";
 import { calculate_status } from "~/composables/filters.js";
+import { devWarn } from "~/utils/log.js";
+import { ok, fail } from "~/utils/api.js";
 let request = axios.CancelToken.source();
 
 function getLastId(data, pk='id') {
@@ -62,30 +64,26 @@ export const useMainStore = defineStore('main', {
             // console.log("schemas", this.schemas)
             this.all_nodes = calculateNewCats(data, this.schemas)
             this.status = calculate_status(data.status_control)
-            console.log("previous to setCollectionData")
             this.setCollectionData()
             this.setFilterGroupData()
             this.cats_ready = true
             resolve(data)
           })
           .catch(error => {
-            console.error(error)
+            devWarn(error)
           })
       })
     },
-    async getSimple([group, id]) {
-      // this.setHeader()
+    async getSimple([group, id], error_msg = null) {
       const { $api } = useNuxtApp()
       try {
         let response = await $api.get(`/${group}/${id}/`);
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error)
-        ;
+        return fail(error, error_msg)
       }
     },
-    async saveSimple([collection, data]) {
-      // this.setHeader()
+    async saveSimple([collection, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const pk = this.schemas.collections_dict[collection]?.pk || 'id'
       const { method, last_id } = getLastId(data, pk)
@@ -93,27 +91,23 @@ export const useMainStore = defineStore('main', {
         let response = await $api[method](
           `/${collection}/${last_id}`, data, { timeout: 300000 }
         );
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
-    async saveAction([collection, id, action_name]) {
-      // this.setHeader()
+    async saveAction([collection, id, action_name], error_msg = null) {
       const { $api } = useNuxtApp()
       try {
         let response = await $api.post(
           `/${collection}/${id}/${action_name}/`
         );
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
-    async saveCatalog([collection_data, data]) {
-      // this.setHeader()
+    async saveCatalog([collection_data, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const { pk } = collection_data
       const { method, last_id } = getLastId(data, pk)
@@ -129,24 +123,21 @@ export const useMainStore = defineStore('main', {
           this.cats[collection][index] = response.data
         }
         this.all_nodes = calculateNewCats(this.cats, this.schemas)
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
-    async patchSimple([collection, id, data]) {
-      // this.setHeader()
+    async patchSimple([collection, id, data], error_msg = null) {
       const { $api } = useNuxtApp()
       try {
         let response = await $api.patch(`/${collection}/${id}/`, data);
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
+        return fail(error, error_msg)
       }
     },
-    async patchCatalog([collection_data, id, data]) {
-      // this.setHeader()
+    async patchCatalog([collection_data, id, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const collection = collection_data.snake_name
       const full_url = `catalogs/${collection}/${id}/`
@@ -163,35 +154,30 @@ export const useMainStore = defineStore('main', {
             filter_group, this.cats, this.schemas.collections_dict)
         }
         // this.cats[collection][index] = response.data
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
+        return fail(error, error_msg)
       }
     },
-    async deleteSimple([group, id]) {
-      // this.setHeader()
+    async deleteSimple([group, id], error_msg = null) {
       const { $api } = useNuxtApp()
       try {
         await $api.delete(`/${group}/${id}/`);
-        return {success: true}
+        return { data: true }
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
-    async deleteCatalog([collection_data, id]) {
-      // this.setHeader()
+    async deleteCatalog([collection_data, id], error_msg = null) {
       const { $api } = useNuxtApp()
       const collection = collection_data.snake_name
       const full_url = `catalogs/${collection}/${id}/`
       try {
         await $api.delete(full_url);
         this.cleanDelete(collection, id)
-        // return id
-        return {success: true}
+        return { data: true }
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
     cleanDelete(collection, id) {
@@ -215,7 +201,7 @@ export const useMainStore = defineStore('main', {
               request = axios.CancelToken.source()
               return resolve({ cancelled: true })
             } else {
-              console.error(thrown)
+              devWarn(thrown)
               return resolve({ errors: thrown.response.data })
             }
           })
@@ -263,34 +249,31 @@ export const useMainStore = defineStore('main', {
               request = axios.CancelToken.source()
               return resolve({cancelled: true})
             } else {
-              console.error(thrown)
+              devWarn(thrown)
               reject(thrown)
             }
           })
       })
     },
-    async saveFile([elem_id, file_data, coll_name]) {
+    async saveFile([elem_id, file_data, coll_name], error_msg = null) {
       const { $api } = useNuxtApp()
       try {
-        // console.log('elem_id', elem_id)
         let response = await $api.post(
           `/${coll_name}/${elem_id}/add_file/`, file_data,
           {headers: {'Content-Type': 'multipart/form-data'
           }});
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
+        return fail(error, error_msg)
       }
     },
-    async saveCollection(data) {
+    async saveCollection(data, error_msg = null) {
       const { $api } = useNuxtApp()
-      // this.setHeader()
       try {
         let response = await $api.put(`collection/${data.snake_name}/`, data);
-        return response.data
+        return ok(response)
       } catch (error) {
-        console.error(error);
-        return {errors: error.response.data}
+        return fail(error, error_msg)
       }
     },
   },

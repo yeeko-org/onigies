@@ -1,5 +1,6 @@
 import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";
+import { devWarn } from "~/utils/log.js";
 
 function final_snake_name(collection_data) {
   const is_category = collection_data.is_category
@@ -7,63 +8,44 @@ function final_snake_name(collection_data) {
   return { snake_name, is_category }
 }
 
-export async function saveElement(collection_data, element) {
+export async function saveElement(collection_data, element, error_msg = null) {
   const mainStore = useMainStore()
   const { saveSimple, saveCatalog } = mainStore
-  // console.log("collection_data", collection_data)
   const { snake_name, is_category } = final_snake_name(collection_data)
   if (is_category)
-    return await saveCatalog([collection_data, element]).then((response) => {
-      return response
-    })
+    return await saveCatalog([collection_data, element], error_msg)
   else
-    return await saveSimple([snake_name, element]).then((response) => {
-      return response
-    })
+    return await saveSimple([snake_name, element], error_msg)
 }
 
-export async function patchElement(collection_data, elem_id, params) {
+export async function patchElement(
+    collection_data, elem_id, params, error_msg = null) {
   const mainStore = useMainStore()
   const { patchSimple, patchCatalog } = mainStore
-  // console.log("collection_data", collection_data)
   const { snake_name, is_category } = final_snake_name(collection_data)
-  if (is_category) {
-    return await patchCatalog([collection_data, elem_id, params]).then((response) => {
-      return response
-    })
-  }
-  else {
-    return await patchSimple([snake_name, elem_id, params]).then((response) => {
-      return response
-    })
-  }
+  if (is_category)
+    return await patchCatalog([collection_data, elem_id, params], error_msg)
+  else
+    return await patchSimple([snake_name, elem_id, params], error_msg)
 }
 
-export async function deleteElement(collection_data, obj_id) {
+export async function deleteElement(collection_data, obj_id, error_msg = null) {
   const mainStore = useMainStore()
   const { deleteSimple, deleteCatalog } = mainStore
   const { snake_name, is_category } = final_snake_name(collection_data)
   if (is_category)
-    return await deleteCatalog([collection_data, obj_id]).then((response) => {
-      return response
-    })
+    return await deleteCatalog([collection_data, obj_id], error_msg)
   else
-    return await deleteSimple([snake_name, obj_id]).then((response) => {
-      return response
-    })
+    return await deleteSimple([snake_name, obj_id], error_msg)
 }
 
-export async function getElement(collection_data, el_id) {
+export async function getElement(collection_data, el_id, error_msg = null) {
   const mainStore = useMainStore()
   const { getSimple } = mainStore
-  // const snake_name = final_snake_name(collection_data)
   let { snake_name, is_category } = final_snake_name(collection_data)
   if (is_category)
     snake_name = `catalogs/${snake_name}`
-  // console.log("save_element", snake_name, element)
-  return await getSimple([snake_name, el_id]).then((response) => {
-    return response
-  })
+  return await getSimple([snake_name, el_id], error_msg)
 }
 
 export function useSaveElements() {
@@ -144,8 +126,7 @@ export function useSaveElements() {
       const snake_name2 = related_collection.snake_name
       const item_list = main_item[field.name]
       if (!item_list){
-        console.warn(`No items to save for field ${field.name}`)
-        console.warn("main_item:", main_item)
+        devWarn(`Sin items que guardar en el campo ${field.name}`, main_item)
         return
       }
 
@@ -164,7 +145,7 @@ export function useSaveElements() {
 
         saveSimple([snake_name2, new_item]).then(res => {
           if (res.errors) {
-            console.error(`Error saving ${snake_name2} item:`, res.errors)
+            devWarn(`Error al guardar ${snake_name2}:`, res.errors)
             save_errors.value.push({
               field: `${field.name} --> ${snake_name2}`,
               item: new_item,
@@ -172,10 +153,10 @@ export function useSaveElements() {
             })
           }
           if (first_special.value && field.name === 'participants')
-            participants_dict.value[item.id] = res.id
+            participants_dict.value[item.id] = res.data?.id
 
           if (!normal_save.value)
-            saveOneToMany(snake_name2, new_item, onFinished, res.id)
+            saveOneToMany(snake_name2, new_item, onFinished, res.data?.id)
 
           resolved_requests.value += 1
           onFinished()

@@ -71,8 +71,8 @@ class Institution(models.Model):
         return self.acronym
 
     class Meta:
-        verbose_name = "Institución de Educación Superior"
-        verbose_name_plural = "Instituciones de Educación Superior"
+        verbose_name = "Institución"
+        verbose_name_plural = "Instituciones"
 
 
 class Instance(models.Model):

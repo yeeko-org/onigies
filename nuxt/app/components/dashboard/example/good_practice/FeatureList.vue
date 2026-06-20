@@ -42,14 +42,16 @@ const handleUpdate = async (featureId, data) => {
   const updated = { ...current, ...data }
   try {
     const saved = await mainStore.saveSimple(
-      ['feature_good_practice', updated])
+      ['feature_good_practice', updated], 
+        'No se pudo guardar la calificación de la característica.')
+    if (saved.errors) return
     const idx = findIndex(featureId)
     if (idx !== -1)
-      featureValues.value[idx] = saved
+      featureValues.value[idx] = saved.data
     else
-      featureValues.value.push(saved)
+      featureValues.value.push(saved.data)
   } catch (e) {
-    console.error('Error al guardar característica:', e)
+    devWarn('Error al guardar característica:', e)
   }
 }
 

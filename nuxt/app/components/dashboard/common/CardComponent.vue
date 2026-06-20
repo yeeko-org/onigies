@@ -1,6 +1,6 @@
 <script setup>
 
-import {shallowRef} from "vue";
+import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 const props = defineProps({
   collection_data: {
     type: Object,
@@ -13,20 +13,7 @@ const props = defineProps({
   title: String,
 })
 
-const card_component = shallowRef('')
-const route_key = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const card_name = computed(() => `${props.collection_data.model_name}Card`)
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${card_name.value}.vue`)
-  .then(module => {
-    card_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/CardGeneric.vue`).then(module => {
-      card_component.value = module.default
-    })
-  })
+const card_component = useDynamicComponent(props.collection_data, 'Card')
 </script>
 
 <template>

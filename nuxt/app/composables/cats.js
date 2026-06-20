@@ -1,4 +1,5 @@
 import {status_filters} from "~/composables/filters.js";
+import { devWarn } from "~/utils/log.js";
 
 export function calculateSchemas(data) {
   let filter_groups = data.filter_groups.map(fg => {
@@ -12,29 +13,14 @@ export function calculateSchemas(data) {
     obj[fg.key_name] = fg
     return obj
   }, {})
-  const has_fields = [
-    "comments", "description", "help_text", "order", "color", "icon"]
-  // const name_fields = ["name", "title", "description"]
-  const name_fields = ["name", "title"]
-
   let collections = data.collections.map(coll => {
     const valid_relations = ['one_to_many', 'many_to_many']
     coll.child_relation_fields = coll.fields.filter(field => {
       return valid_relations.includes(field.relation_type)
     })
-    const primary_key = coll.fields.find(f => f.primary_key)
-    coll.pk = primary_key ? primary_key.name : 'id'
-    name_fields.forEach(field => {
-      if (coll.name_field)
-        return
-      if (coll.fields.some(f => f.name === field))
-        coll.name_field = field
-    })
-    coll.has = has_fields.reduce((obj, field) => {
-      obj[field] = coll.fields.some(f => f.name === field)
-      return obj
-    }, {})
-    const other_fields = has_fields.concat([coll.pk, coll.name_field])
+    // pk, name_field, has y status_groups vienen del payload (ps_schema).
+    const other_fields = Object.keys(coll.has).concat(
+      [coll.pk, coll.name_field])
     coll.other_fields = coll.fields.filter(f =>
       !other_fields.includes(f.name) && f.relation_type === 'simple')
 
@@ -58,15 +44,11 @@ export function calculateSchemas(data) {
       }
       const filter_data = filters_dict[filter.filter_name]
       if (!filter_data){
-        console.error("No filter data", filter.filter_name)
+        devWarn("cats: sin datos de filtro para", filter.filter_name)
         return arr
       }
       const new_filter = {...filter_data, ...filter}
       arr.push(new_filter)
-      if (filter_data.category_group){
-        console.log("collection", coll.snake_name)
-        console.log("new_filter with category_group", new_filter)
-      }
       return arr
     }, [])
     coll.is_category = coll.level.includes('category_')
@@ -89,13 +71,7 @@ export function calculateSchemas(data) {
       }
     }
 
-    const status_groups = coll.fields.reduce((arr, field)=>{
-      if (field.related_model === 'StatusControl')
-        arr.push(field.name)
-      return arr
-    }, [])
-    coll.status_groups = status_groups
-    status_groups.forEach(sg => {
+    coll.status_groups.forEach(sg => {
       const status = status_filters[sg]
       collection_filters.push(status)
       available_sorts.push({

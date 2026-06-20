@@ -44,18 +44,15 @@ const savePractice = async () => {
     if (!valid) return
   }
   loading.value = true
+  const msg_error = 'No se pudo guardar la buena práctica'
   try {
     const res = await mainStore.saveSimple(
-      ['good_practice', full_main.value])
-    if (res?.errors) {
-      dashStore.showSnackbar(
-        res.errors.detail || 'No se pudo guardar la buena práctica', 'error')
-      return
-    }
+      ['good_practice', full_main.value], msg_error)
+    if (res.errors) return
     dashStore.showSnackbar('Se guardó la buena práctica')
-    emit('saved', res)
+    emit('saved', res.data)
   } catch (e) {
-    console.error('Error al guardar:', e)
+    devWarn('Error al guardar:', e)
   } finally {
     loading.value = false
   }
@@ -63,10 +60,15 @@ const savePractice = async () => {
 
 const remove = async () => {
   try {
-    await mainStore.deleteSimple(['good_practice', full_main.value.id])
+    const res = await mainStore.deleteSimple(
+      ['good_practice', full_main.value.id])
+    if (res.errors) {
+      dashStore.showSnackbar('No se pudo eliminar la buena práctica')
+      return
+    }
     emit('deleted')
   } catch (e) {
-    console.error('Error al eliminar:', e)
+    devWarn('Error al eliminar:', e)
   }
 }
 

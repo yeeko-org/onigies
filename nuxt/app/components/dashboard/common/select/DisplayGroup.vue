@@ -135,12 +135,7 @@ const category_values = computed(() => {
         acc[level] = value
     }
     catch (error){
-      console.log("error", error)
-      console.log("level", level)
-      console.log("cat_name", cat_name)
-      console.log("main_object", props.main_object)
-      console.log("category_group_value", props.category_group_value)
-      console.log("value", value)
+      devWarn("DisplayGroup: fallo al armar el nivel", level, error)
     }
     return acc
   }, {})

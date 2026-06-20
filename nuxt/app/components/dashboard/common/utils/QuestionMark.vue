@@ -1,7 +1,6 @@
 <script setup>
 import {useMainStore} from "~/store/index.js";
 const mainStore = useMainStore()
-// const { saveCollection } = mainStore
 
 const props = defineProps({
   size: {
@@ -17,9 +16,9 @@ const props = defineProps({
 const dialog = ref(false)
 
 function saveDefinition() {
-  // console.log('props.collection_data', props.collection_data)
-  mainStore.saveCollection(props.collection_data).then((res) => {
-    // console.log('res', res)
+  const msg_error = 'No se pudo guardar la definición.' 
+  mainStore.saveCollection(props.collection_data, msg_error).then((res) => {
+    if (res.errors) return
     dialog.value = false
   })
 }

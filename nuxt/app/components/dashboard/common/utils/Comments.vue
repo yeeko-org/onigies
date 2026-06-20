@@ -43,7 +43,7 @@ function saveComment() {
       : schemas.value.collections_dict[props.collection_name]
     patchElement(collection_data, props.main.id, params).then((res) => {
       want_edit_comment.value = false
-      emits('update-comments', res)
+      emits('update-comments', res.data)
     })
   }
   else

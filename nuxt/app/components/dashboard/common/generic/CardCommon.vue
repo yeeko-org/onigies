@@ -38,7 +38,7 @@ const elem_in_edition = ref(null)
 function editItem(item) {
   if (props.indirect_get || props.is_select){
     getElement(final_collection_data.value, item.id).then(response => {
-      elem_in_edition.value = response
+      elem_in_edition.value = response.data
       dialog_edit.value = true
     })
   }

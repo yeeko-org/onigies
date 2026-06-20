@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useIesStore } from '~/store/ies'
+import { devWarn } from "~/utils/log.js";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -37,7 +38,7 @@ export const useAuthStore = defineStore("auth", {
               return resolve({valid: false, error: 'Not Content (204)'})
           })
           .catch(err =>{
-            console.log("VALIDATE_TOKEN_ERROR", err)
+            devWarn("validate_token error", err)
             return resolve({valid: false,  error: `Server error: ${err}`})
           })
       })
@@ -65,7 +66,6 @@ export const useAuthStore = defineStore("auth", {
       })
     },
     getCurrentUser() {
-      console.log("getCurrentUser", this.user_onigies)
       if (this.user_onigies){
         return this.user_onigies
       }
@@ -79,7 +79,6 @@ export const useAuthStore = defineStore("auth", {
         $api.get('/login/')
           .then(({data, status}) => {
             if (status !== 204){
-              console.log("LOGIN_DATA", data)
               this.hasLogged(data)
               return resolve(data)
             }
@@ -90,7 +89,7 @@ export const useAuthStore = defineStore("auth", {
             }
           })
           .catch(err =>{
-            console.log("LOGIN_ERROR", err)
+            devWarn("login error", err)
             this.hasNotLogged(`Server error: ${err}`)
             return resolve(null)
           })
@@ -118,7 +117,7 @@ export const useAuthStore = defineStore("auth", {
     },
     hasNotLogged(error) {
       this.is_logging_in = false
-      console.error(error)
+      devWarn(error)
       this.purgeAuth()
       return null
     },

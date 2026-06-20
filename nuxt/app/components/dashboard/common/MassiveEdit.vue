@@ -68,9 +68,10 @@ function sendMassiveEdit() {
   saving.value = true
   // console.log("merged_params", merged_params.value)
   const final_params = {...merged_params.value, elems_ids: props.ids_to_edit}
-  saveElement(final_collection_data.value, final_params).then((res) => {
-    // console.log("res", res)
+  const error_msg = 'No se pudo aplicar la edición masiva.'
+  saveElement(final_collection_data.value, final_params, error_msg).then((res) => {
     saving.value = false
+    if (res.errors) return
     active_fields.value = []
     emits('massive-finish')
   })

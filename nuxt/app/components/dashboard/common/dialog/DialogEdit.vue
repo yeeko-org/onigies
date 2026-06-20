@@ -1,40 +1,17 @@
 <script setup>
 
 import EditCommon from "~/components/dashboard/common/generic/EditCommon.vue";
-import {shallowRef} from "vue";
+import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 
 const props = defineProps({
   collection_data: Object,
 })
 const full_main = defineModel({type: Object, required: true})
 
-const edit_component = shallowRef('')
-const sheet_component = shallowRef('')
 const emits = defineEmits(['close-dialog'])
-const route_key = computed(() => props.collection_data.app_label)
-const snake_name = computed(() => props.collection_data.snake_name)
-const edit_name = computed(() => `${props.collection_data.model_name}Edit`)
-const sheet_name = computed(() => `${props.collection_data.model_name}Sheet`)
 
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${edit_name.value}.vue`)
-  .then(module => {
-    edit_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/EditGeneric.vue`).then(module => {
-      edit_component.value = module.default
-    })
-  })
-
-import(`~/components/dashboard/${route_key.value}/${snake_name.value}/${sheet_name.value}.vue`)
-  .then(module => {
-    sheet_component.value = module.default
-  })
-  .catch(e => {
-    import(`~/components/dashboard/common/generic/SheetCommon.vue`).then(module => {
-      sheet_component.value = module.default
-    })
-  })
+const edit_component = useDynamicComponent(props.collection_data, 'Edit')
+const sheet_component = useDynamicComponent(props.collection_data, 'Sheet')
 
 function saveItem({res, is_new}) {
   // console.log('saveItem', res, is_new)

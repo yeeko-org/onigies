@@ -119,10 +119,9 @@ const loadPractices = async () => {
   const result = await getSimple(
     ['good_practice_package', package_id.value]
   )
-  // console.log("Result good practices:", result)
-  if (result && result.good_practices){
-    goodPracticePackage.value = result
-    setPractices(result.good_practices)
+  if (result.data && result.data.good_practices){
+    goodPracticePackage.value = result.data
+    setPractices(result.data.good_practices)
   }
   await loadPackageTransitions()
   current_loading.value = false
@@ -138,7 +137,7 @@ async function openEdit(practiceId) {
   loadingId.value = practiceId
   try {
     const full_practice = await getSimple(['good_practice', practiceId])
-    if (full_practice) editingPractice.value = full_practice
+    if (full_practice.data) editingPractice.value = full_practice.data
   } finally {
     loadingId.value = null
   }
@@ -169,13 +168,16 @@ const onCreated = async (new_practice) => {
 
 function editPackage() {
   current_loading.value = true
-  saveSimple(['good_practice_package', goodPracticePackage.value]).then(res=>{
-    goodPracticePackage.value = res
-    current_loading.value = false
-  }).catch(e=>{
-    console.error("Error updating package:", e)
-    current_loading.value = false
-  })
+  const msg_error = 'No se pudo guardar el paquete.'
+  saveSimple(['good_practice_package', goodPracticePackage.value], msg_error)
+    .then(res=>{
+      if (!res.errors)
+        goodPracticePackage.value = res.data
+      current_loading.value = false
+    }).catch(e=>{
+      devWarn("Error updating package:", e)
+      current_loading.value = false
+    })
 }
 
 const send_dialog = ref(false)
@@ -244,34 +246,27 @@ async function sendPackage() {
 }
 
 function discardPackage() {
-  saveAction(['good_practice_package', package_id.value, 'discard'])
+  const msg_error = 'No se pudo descartar el paquete'
+  saveAction(['good_practice_package', package_id.value, 'discard'], msg_error)
     .then(res => {
-      if (res?.errors) {
-        dashStore.showSnackbar(
-          res.errors.detail || 'No se pudo descartar el paquete', 'error')
-        return
-      }
-      goodPracticePackage.value = res
+      if (res.errors) return
+      goodPracticePackage.value = res.data
       discard_dialog.value = false
     }).catch(e => {
-      console.error("Error discarding package:", e)
+      devWarn("Error discarding package:", e)
     })
 }
 
 function reopenPackage() {
-  saveAction(
-    ['good_practice_package', package_id.value, 'reopen']
-  ).then(res => {
-    if (res?.errors) {
-      dashStore.showSnackbar(
-        res.errors.detail || 'No se pudo reabrir el paquete', 'error')
-      return
-    }
-    goodPracticePackage.value = res
-    setPractices(res.good_practices || [])
-  }).catch(e => {
-    console.error("Error reopening package:", e)
-  })
+  const msg_error = 'No se pudo reabrir el paquete'
+  saveAction(['good_practice_package', package_id.value, 'reopen'], msg_error)
+    .then(res => {
+      if (res.errors) return
+      goodPracticePackage.value = res.data
+      setPractices(res.data.good_practices || [])
+    }).catch(e => {
+      devWarn("Error reopening package:", e)
+    })
 }
 
 </script>

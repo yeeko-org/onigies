@@ -1,23 +1,27 @@
 <script setup>
 /**
- * Vista de revisión de un GoodPracticePackage (dashboard / revisora).
- * El dashboard la auto-carga inline para la colección GoodPracticePackage
- * (convención {Model}EditSimple), pasándole solo v-model="full_main".
+ * Centro de control de revisión de un Envío de Buenas Prácticas
+ * (dashboard / revisora). 
  *
- * Muestra: cabecera (institución / periodo / fecha de envío), status actual,
- * transiciones del motor para la revisora, comentarios del paquete y la lista
- * de prácticas en solo-lectura.
+ * Espejea la lógica de GoodPracticeList.vue (la vista IES): cabecera con los
+ * datos del envío + status + comentarios, un resumen de progreso y una rejilla
+ * de GoodPracticeCard. Al abrir una tarjeta se despliega GoodPracticeEditSimple
+ * en un diálogo para calificar (FeatureList) y cambiar el status de esa
+ * práctica.
  *
- * NO incluye la pregunta has_good_practices ni el envío/descartar: eso es del
+ * NO incluye has_good_practices ni enviar/descartar: eso es del
  * mundo de la IES (ver GoodPracticeList.vue en /respuestas).
  */
-import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
-import FlowTransitions from '~/components/dashboard/flow/FlowTransitions.vue'
+import { useFlowStore } from '~/store/flow.js'
+import FlowStatusActions from '~/components/dashboard/flow/FlowStatusActions.vue'
 import FlowComments from '~/components/dashboard/flow/FlowComments.vue'
+import GoodPracticeCard from '~/components/dashboard/example/good_practice/GoodPracticeCard.vue'
+import GoodPracticeEditSimple from '~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue'
 import { useDates } from '~/composables/useDates.js'
 
 const pkg = defineModel({ type: Object, required: true })
 
+const flowStore = useFlowStore()
 const { formatDate } = useDates()
 
 const institution = computed(
@@ -29,78 +33,137 @@ const period = computed(
 
 const practices = computed(() => pkg.value.good_practices || [])
 
-// El motor entrega el nuevo status en flowEvent.to_status.
-function onTransitioned(flowEvent) {
-  pkg.value.status = flowEvent.to_status
+// Turno de la revisora: el motor marca role='reviewer' en bp_sent / bp_resent.
+const canReview = computed(
+  () => flowStore.getStatus(pkg.value.status)?.role === 'reviewer')
+
+// Progreso de dictamen: prácticas en status terminal (role null) ya resueltas
+// (bp_for_ruling / bp_rejected). El motor bloquea bp_finished hasta que todas
+// lo estén; el resumen es solo orientación.
+const ruledCount = computed(() => practices.value.filter(p => {
+  const st = flowStore.getStatus(p.status)
+  return !!st && st.role === null
+}).length)
+
+const editingPractice = ref(null)
+
+function openPractice(practiceId) {
+  editingPractice.value =
+    practices.value.find(p => p.id === practiceId) || null
+}
+
+function onSaved(updated) {
+  if (editingPractice.value)
+    Object.assign(editingPractice.value, updated)
 }
 </script>
 
 <template>
   <v-card variant="flat">
-    <!-- Cabecera ─────────────────────────────────────────────────────── -->
-    <v-card-title class="d-flex align-center flex-wrap ga-2">
-      <v-card
-        v-if="pkg.survey_full"
-        class="px-3 py-1"
-        color="blue"
-        variant="tonal"
-      >
-        {{ institution.name }}
-        <span v-if="institution.acronym" class="text-caption ml-1">
-          ({{ institution.acronym }})
-        </span>
-      </v-card>
-      <v-card class="px-3 py-1" color="indigo" variant="tonal">
-        {{ period }}
-      </v-card>
-      <v-card
-        v-if="pkg.sent_at"
-        class="px-3 py-1"
-        color="green"
-        variant="tonal"
-      >
-        Enviado el {{ formatDate(pkg.sent_at) }}
-      </v-card>
-      <v-spacer />
-      <FlowStatusChip :status="pkg.status" />
+    <!-- Cabecera: datos del envío + status + comentarios ───────────────── -->
+    <v-card-title class="d-flex align-start flex-wrap ga-2">
+      <div class="d-flex align-center flex-wrap ga-2 flex-grow-1">
+        <v-card
+          v-if="pkg.survey_full"
+          class="px-3 py-1"
+          color="blue"
+          variant="tonal"
+        >
+          {{ institution.name }}
+          <span v-if="institution.acronym" class="text-caption ml-1">
+            ({{ institution.acronym }})
+          </span>
+        </v-card>
+        <v-card class="px-3 py-1" color="indigo" variant="tonal">
+          {{ period }}
+        </v-card>
+        <v-card
+          v-if="pkg.sent_at"
+          class="px-3 py-1"
+          color="green"
+          variant="tonal"
+        >
+          Enviado el {{ formatDate(pkg.sent_at) }}
+        </v-card>
+      </div>
+      <FlowComments
+        v-if="pkg.id"
+        v-model="pkg"
+        app-label="example"
+        model-name="goodpracticepackage"
+      />
     </v-card-title>
 
-    <!-- Transiciones de la revisora ──────────────────────────────────── -->
-    <v-card-text v-if="pkg.id" class="py-2">
-      <FlowTransitions
+    <!-- Estado + transiciones del envío (turno de la revisora) ─────────── -->
+    <v-card-text v-if="pkg.id" class="d-flex align-center flex-wrap ga-6 py-3">
+      <FlowStatusActions
+        v-model="pkg"
         app-label="example"
         model-name="goodpracticepackage"
-        :pk="pkg.id"
-        :status="pkg.status"
-        @transitioned="onTransitioned"
       />
+      <v-chip
+        v-if="practices.length"
+        variant="tonal"
+        :color="ruledCount === practices.length ? 'success' : 'warning'"
+        prepend-icon="gavel"
+      >
+        {{ ruledCount }}/{{ practices.length }} prácticas dictaminadas
+      </v-chip>
     </v-card-text>
 
-    <!-- Prácticas (solo lectura) ─────────────────────────────────────── -->
-    <v-card-text v-if="practices.length" class="py-1">
-      <div class="text-subtitle-2 mb-1">Buenas prácticas del paquete</div>
-      <v-list density="compact">
-        <v-list-item
-          v-for="p in practices"
-          :key="p.id"
-          :title="p.name || 'Sin nombre'"
+    <v-divider />
+
+    <!--  Buenas Prácticas del envío  ─────────────────────────────────── -->
+    <v-card-text>
+      <div class="text-subtitle-1 mb-3">
+        {{ practices.length
+          ? `${practices.length} buenas prácticas`
+          : 'Este envío no tiene buenas prácticas registradas' }}
+      </div>
+      <v-row v-if="practices.length">
+        <v-col
+          v-for="practice in practices"
+          :key="practice.id"
+          cols="12"
         >
-          <template #append>
-            <FlowStatusChip :status="p.status" size="small" />
-          </template>
-        </v-list-item>
-      </v-list>
+          <GoodPracticeCard
+            :practice="practice"
+            :is-staff="true"
+            :sent-at="pkg.sent_at"
+            :edition-available="canReview"
+            @open="openPractice"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
 
-    <!-- Comentarios del paquete ──────────────────────────────────────── -->
-    <v-card-text v-if="pkg.id">
-      <v-divider class="mb-3" />
-      <div class="text-subtitle-2 mb-1">Comentarios del paquete</div>
-      <FlowComments
-        app-label="example"
-        model-name="goodpracticepackage"
-        :pk="pkg.id"
-      />
-    </v-card-text>
+    <!-- Diálogo de calificación / status de una práctica ───────────────── -->
+    <v-dialog
+      :model-value="!!editingPractice"
+      @update:model-value="editingPractice = null"
+      scrollable
+    >
+      <GoodPracticeEditSimple
+        v-if="editingPractice"
+        v-model="editingPractice"
+        :is-staff="true"
+        :edition-available="canReview"
+        class="mt-3"
+        @saved="onSaved"
+        @close="editingPractice = null"
+      >
+        <template #header>
+          <v-toolbar color="primary">
+            <v-toolbar-title>
+              {{ canReview ? 'Calificar buena práctica' : 'Buena práctica' }}
+            </v-toolbar-title>
+            <v-spacer />
+            <v-btn icon @click="editingPractice = null">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </template>
+      </GoodPracticeEditSimple>
+    </v-dialog>
   </v-card>
 </template>

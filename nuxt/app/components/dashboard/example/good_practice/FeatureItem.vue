@@ -5,7 +5,9 @@ import Comments from "~/components/dashboard/common/utils/Comments.vue";
 const props = defineProps({
   feature: { type: Object, required: true },
   value: { type: Object, default: null },
-  isStaff: { type: Boolean, default: false }
+  isStaff: { type: Boolean, default: false },
+  // Solo el turno del usuario habilita la edición; en false, todo es read-only.
+  editable: { type: Boolean, default: true }
 })
 
 const emit = defineEmits(['update'])
@@ -94,6 +96,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         <v-checkbox
           v-if="!isStaff"
           v-model="hasAttribute"
+          :disabled="!editable"
           hide-details
           density="compact"
           class="flex-grow-0 mr-2"
@@ -157,6 +160,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         <v-textarea
           v-model="localValue.justification"
           :label="`${feature.data.reason_text} (Opcional)`"
+          :readonly="!editable"
           variant="outlined"
           density="compact"
           rows="2"
@@ -196,6 +200,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         </span>
         <v-slider
           v-model="localValue.final_option"
+          :disabled="!editable"
           :ticks="feature_options.reduce((acc, opt) => ({ ...acc, [opt.id]: opt.name }), {})"
           :min="feature_options[0]?.id"
           :max="feature_options[feature_options.length - 1]?.id"

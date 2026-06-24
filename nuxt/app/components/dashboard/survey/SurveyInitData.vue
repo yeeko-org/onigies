@@ -46,7 +46,7 @@ const plan_types = [
 ]
 
 const main_sectors = computed(() => {
-n  if (!cats.value?.sector)
+  if (!cats.value?.sector)
     return []
   return cats.value.sector.filter(sector => sector.is_main)
 })

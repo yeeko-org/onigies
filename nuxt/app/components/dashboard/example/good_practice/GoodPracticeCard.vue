@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
+import FlowCommentIcon from "~/components/dashboard/flow/FlowCommentIcon.vue";
 import {useMainStore} from "~/store/index.js";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
@@ -47,8 +48,8 @@ function openEdit(){
     rounded="lg"
   >
     <v-card
-      :hover="editionAvailable"
-      :class="{'cursor-pointer': editionAvailable}"
+      :hover="editionAvailable || isStaff"
+      :class="{'cursor-pointer': editionAvailable || isStaff}"
       :loading="loading"
       variant="tonal"
       color="blue"
@@ -107,6 +108,7 @@ function openEdit(){
             {{ evaluatedCount }}/{{ active_features.length }} evaluados
           </v-chip>
         <v-spacer></v-spacer>
+        <FlowCommentIcon :events="practice.flow_events" />
         <FlowStatusChip
           :status="practice.status"
           size="small"
@@ -141,7 +143,7 @@ function openEdit(){
 
       </v-card-text>
       <v-card-actions
-        v-if="editionAvailable"
+        v-if="editionAvailable || isStaff"
       >
         <v-spacer/>
         <v-btn
@@ -150,9 +152,9 @@ function openEdit(){
           :loading="loading"
           @click.stop="openEdit"
         >
-          {{ editionAvailable
-            ? 'Editar'
-            : (isStaff ? 'Evaluar' : 'Ver detalles') }}
+          {{ isStaff
+            ? 'Evaluar'
+            : (editionAvailable ? 'Editar' : 'Ver detalles') }}
         </v-btn>
         <v-spacer/>
       </v-card-actions>

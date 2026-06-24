@@ -71,7 +71,7 @@ class GoodPracticePackage(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return (f"Paquete de Buenas Prácticas - "
+        return (f"Envío de Buenas Prácticas - "
                 f"{self.survey.institution.acronym} - {self.survey.period.year}")
 
     class Meta:

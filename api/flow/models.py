@@ -69,10 +69,23 @@ class Status(models.Model):
     propagates_up = models.BooleanField(
         default=False, verbose_name="Propaga hacia arriba",
         help_text="Al asignarse a un hijo, el padre también lo adopta")
+    propagates_down = models.BooleanField(
+        default=False, verbose_name="Propaga hacia abajo",
+        help_text="Al asignarse, todos los hijos también lo adoptan")
     auto_on_first_save = models.BooleanField(
         default=False, verbose_name="Automático al primer guardado",
         help_text="Se asigna solo cuando la captura se guarda por "
                   "primera vez")
+    hint = models.TextField(
+        blank=True, null=True, verbose_name="Sugerencia (frontend)",
+        help_text="Guía de siguiente paso que el frontend muestra bajo el "
+                  "control de status; distinta de description (tooltip)")
+    # Reglas de UX evaluadas en el frontend ANTES de transicionar a este
+    # status (lista de nombres en flowRules).
+    entry_rules = models.JSONField(
+        default=list, blank=True, verbose_name="Reglas de entrada (frontend)",
+        help_text="Nombres de reglas del registry flowRules que deben "
+                  "cumplirse para mover un objeto a este status")
 
     applicable_models = models.ManyToManyField(
         ContentType, blank=True, related_name='applicable_statuses',

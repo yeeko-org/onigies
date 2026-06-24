@@ -2,6 +2,7 @@
 import {computed, nextTick, watch} from "vue";
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
+import { useFlowStore } from "~/store/flow.js";
 import CommentIcon from "~/components/dashboard/common/utils/CommentIcon.vue";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 
@@ -22,6 +23,9 @@ const props = defineProps({
     default: false,
   },
 })
+const flowStore = useFlowStore()
+// Status del registro resuelto en el catálogo de flujo (null si no aplica).
+const mainFlowStatus = computed(() => flowStore.getStatus(props.main?.status))
 const expansionHeader = ref(null);
 const is_active = ref(false)
 const real_show_details = ref(false)
@@ -139,10 +143,10 @@ const emits = defineEmits(['open-panel'])
       </div>
     </v-toolbar-title>
     <template v-if="real_show_details" >
-      <!-- Flujo nuevo: si el registro trae el status anidado (objeto), ese
-           manda y reemplaza a los chips viejos por status_group. -->
+      <!-- Flujo nuevo: si `main.status` resuelve en el catálogo de flujo, ese
+           chip manda y reemplaza a los chips viejos por status_group. -->
       <FlowStatusChip
-        v-if="main.status && typeof main.status === 'object' && !is_map_viz"
+        v-if="mainFlowStatus && !is_map_viz"
         :status="main.status"
         size="small"
         class="ml-1"

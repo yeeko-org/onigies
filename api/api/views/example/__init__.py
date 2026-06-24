@@ -9,11 +9,14 @@ from api.views.example.serializers import GoodPracticeFullSerializer, GoodPracti
     FeatureSerializer, FeatureFullSerializer, FeatureOptionSerializer, FeatureGoodPracticeSerializer, \
     GoodPracticePackageFullSerializer, GoodPracticePackageSerializer
 from example.models import GoodPractice, Feature, FeatureOption, FeatureGoodPractice, GoodPracticePackage, Evidence
+from flow.models import Status
+from flow.services import execute_transition
 
 
 class GoodPracticeViewSet(BaseGenericViewSet, ActionFileMixin):
 
-    queryset = GoodPractice.objects.all()
+    queryset = GoodPractice.objects.all().prefetch_related(
+        'flow_events__user', 'flow_events__attachments')
     serializer_class = GoodPracticeFullSerializer
     action_add_file_param = 'good_practice'
     disable_protection = True
@@ -68,8 +71,11 @@ class PackageFilter(FilterSet):
 
 
 class GoodPracticePackageViewSet(BaseGenericViewSet):
-    queryset = GoodPracticePackage.objects.all()\
-        .prefetch_related('good_practices')
+    queryset = GoodPracticePackage.objects.all().prefetch_related(
+        'good_practices',
+        'flow_events__user', 'flow_events__attachments',
+        'good_practices__flow_events__user',
+        'good_practices__flow_events__attachments')
     serializer_class = GoodPracticePackageFullSerializer
     search_fields = [
         'survey__institution__name', 'survey__institution__acronym']
@@ -91,45 +97,61 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
 
     @action(detail=True, methods=['post'])
     def discard(self, request, pk=None):
-        """Cierra el paquete con la respuesta "No tengo buenas prácticas".
+        """Cierra el módulo con la respuesta "No tengo buenas prácticas".
 
-        Sólo permitido si el estado actual pertenece al rol ``ies``
-        (es decir, el paquete está bajo control de la institución) y si
-        el periodo de buenas prácticas sigue abierto.
+        Es una transición validada ``→ bp_discarded``: el motor verifica
+        turno, ``next_statuses`` y ``valid_child_statuses`` (no se puede
+        descartar si las prácticas no están en un status compatible) y
+        propaga el descarte a las prácticas (``propagates_down``).
         """
         package = self.get_object()
-        status = package.status_sending
-        if not status or status.role != 'ies':
-            msg = 'No puedes descartar el paquete en este estado.'
-            return Response({'detail': msg}, status=400)
         if package.survey.period.good_practices_published:
             msg = 'El periodo ya cerró, no se puede modificar la respuesta.'
             return Response({'detail': msg}, status=400)
+        try:
+            execute_transition(
+                request.user, package, Status.objects.get(name='bp_discarded'))
+        except ValueError as exc:
+            errors = exc.args[0]
+            return Response(
+                {'detail': errors[0] if len(errors) == 1 else errors},
+                status=400)
         package.has_good_practices = False
-        package.status_sending_id = 'discarded'
-        package.save()
+        package.save(update_fields=['has_good_practices'])
         serializer = self.get_serializer(package)
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
     def reopen(self, request, pk=None):
-        """Reabre un paquete previamente descartado.
+        """Reabre el módulo para que la IES vuelva a elegir respuesta.
 
-        Sólo permitido si el paquete está en estado ``discarded`` y si
-        el periodo de buenas prácticas sigue abierto. Vuelve el paquete
-        a estado ``draft`` con ``has_good_practices = None`` para que la
-        institución pueda responder de nuevo.
+        "Cambiar respuesta" llama aquí en ambos casos:
+        - Desde "No" (``bp_discarded``): transición validada
+          ``→ bp_draft`` (con ``valid_child_statuses``) que propaga a las
+          prácticas.
+        - Desde "Sí" (ya en ``bp_draft``): no hay cambio de status que
+          revertir; solo se reabre la pregunta (``has_good_practices =
+          None``) sin tocar el status ni las prácticas.
         """
         package = self.get_object()
-        if package.status_sending_id != 'discarded':
-            msg = 'No se pueden reabrir paquetes que no estén "descartados".'
+        status = package.status
+        if not status or status.role != 'ies':
+            msg = 'No puedes reabrir el paquete en este estado.'
             return Response({'detail': msg}, status=400)
         if package.survey.period.good_practices_published:
             msg = 'El periodo de registro ya cerró, no se puede reabrir.'
             return Response({'detail': msg}, status=400)
+        if status.name != 'bp_draft':
+            try:
+                execute_transition(
+                    request.user, package, Status.objects.get(name='bp_draft'))
+            except ValueError as exc:
+                errors = exc.args[0]
+                return Response(
+                    {'detail': errors[0] if len(errors) == 1 else errors},
+                    status=400)
         package.has_good_practices = None
-        package.status_sending_id = 'draft'
-        package.save()
+        package.save(update_fields=['has_good_practices'])
         serializer = self.get_serializer(package)
         return Response(serializer.data)
 

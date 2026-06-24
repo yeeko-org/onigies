@@ -22,14 +22,17 @@ O = "answer.observableresponse"       # ObservableResponse
 G = "answer.groupresponse"            # GroupResponse
 GEN = "survey.generalgroupresponse"   # GeneralGroupResponse
 
-# Flags: default, public, comment (requires_comment),
-#        up (propagates_up), auto (auto_on_first_save)
+# Flags: default, public, comment (requires_comment), up (propagates_up),
+#        down (propagates_down), auto (auto_on_first_save)
 # Tuplas: (name, public_name, description, role, flags, aplica)
 STATUSES = {
     "bp": [
         ("bp_draft", "Borrador",
          "En captura; la IES puede editar libremente.",
-         "ies", {"default"}, [P, GP]),
+         "ies", {"default", "down"}, [P, GP]),
+        ("bp_discarded", "Descartado",
+         "La IES descartó enviarlas.",
+         "ies", {"down"}, [P, GP]),
         ("bp_completed", "Completada",
          "La IES la marcó como completa; se revisará cuando se envíe "
          "el paquete.",
@@ -126,11 +129,12 @@ STATUSES = {
 
 NEXT_STATUSES = {
     # Buenas prácticas
-    "bp_draft": ["bp_completed", "bp_sent"],
+    "bp_draft": ["bp_completed", "bp_sent", "bp_discarded"],
+    "bp_discarded": ["bp_draft"],
     "bp_completed": ["bp_need_changes", "bp_for_ruling", "bp_rejected"],
     "bp_adjusted": ["bp_need_changes", "bp_for_ruling", "bp_rejected"],
-    "bp_need_changes": ["bp_adjusted", "bp_resent"],
-    "bp_sent": ["bp_finished"],
+    "bp_need_changes": ["bp_adjusted", "bp_resent", "bp_discarded"],
+    "bp_sent": ["bp_finished", "bp_need_changes"],
     "bp_resent": ["bp_finished"],
     # Cuestionario principal
     "cp_pre_start": ["cp_filling"],
@@ -159,7 +163,8 @@ NEXT_STATUSES = {
 # Para mover el PADRE al status clave, TODOS sus hijos deben estar en
 # alguno de los status de la lista (auto-loops incluidos).
 VALID_CHILD_STATUSES = {
-    "bp_sent": ["bp_completed"],
+    "bp_sent": ["bp_completed", "bp_discarded"],
+    "bp_discarded": ["bp_discarded", "bp_draft", "bp_need_changes"],
     "bp_resent": ["bp_adjusted", "bp_completed"],
     "bp_finished": ["bp_for_ruling", "bp_rejected"],
     "cp_approved": ["cp_approved"],
@@ -171,6 +176,32 @@ VALID_CHILD_STATUSES = {
     "cp_need_changes": ["cp_need_changes", "cp_approved", "cp_postponed"],
     "cp_partial": ["cp_completed", "cp_postponed"],
     "cp_partial_approved": ["cp_partial_approved"],
+}
+
+# Guía de siguiente paso por status (frontend la muestra bajo el control)
+HINTS = {
+    "bp_draft": "Edita los datos, marca cada práctica como completada y "
+                "envía el paquete a revisión.",
+    "bp_discarded": "Participación cerrada. Puedes reabrir para cambiar tu "
+                    "respuesta mientras el periodo siga abierto.",
+    "bp_completed": "Práctica completada por la IES; en espera de que se "
+                    "envíe el paquete para revisarla.",
+    "bp_sent": "Paquete en revisión. Dictamina cada práctica o solicita "
+               "ajustes.",
+    "bp_need_changes": "La revisión solicitó correcciones. Ajusta las "
+                       "prácticas y reenvía el paquete.",
+    "bp_adjusted": "Ajustes incorporados; en espera de nueva revisión.",
+    "bp_resent": "Paquete reenviado con ajustes. Continúa la revisión.",
+    "bp_for_ruling": "Práctica recibida para dictamen. Sin acciones "
+                     "pendientes aquí.",
+    "bp_rejected": "No pasó los filtros mínimos de la convocatoria.",
+    "bp_finished": "Revisión del paquete concluida.",
+}
+
+# Reglas de UX (nombres del registry flowRules en el frontend) que deben
+# cumplirse para mover un objeto a ese status. El motor no las valida.
+ENTRY_RULES = {
+    "bp_completed": ["practice_complete"],
 }
 
 # Color inicial según el rol (tonos del board de Miró → vuetify).
@@ -210,7 +241,10 @@ def seed_flow() -> dict:
                     "is_public": "public" in flags,
                     "requires_comment": "comment" in flags,
                     "propagates_up": "up" in flags,
+                    "propagates_down": "down" in flags,
                     "auto_on_first_save": "auto" in flags,
+                    "hint": HINTS.get(name),
+                    "entry_rules": ENTRY_RULES.get(name, []),
                 },
             )
             if created:

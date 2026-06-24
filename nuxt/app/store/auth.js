@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useIesStore } from '~/store/ies'
 import { devWarn } from "~/utils/log.js";
+import { flowRoleOf } from "~/composables/flowRules.js";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -214,6 +215,10 @@ export const useAuthStore = defineStore("auth", {
       if (state.user_onigies)
         return state.user_onigies.is_mini_editor || false
       return false
+    },
+    // Rol del usuario autenticado en el motor de flujo (ver flowRoleOf).
+    flow_role(state) {
+      return flowRoleOf(state.user_onigies)
     }
   }
 

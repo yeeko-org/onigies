@@ -6,7 +6,24 @@ from example.models import (
     GoodPracticePackage, Evidence)
 from api.views.ies.serializers import (
     InstitutionSimpleSerializer, PeriodSimpleSerializer)
-from flow.serializers import StatusBriefSerializer
+from flow.serializers import FlowEventSerializer
+
+
+def hide_review_fields(serializer, data: dict, names: list[str]) -> dict:
+    """Quita campos de calificación cuando quien consulta no es revisora.
+
+    Se aplica en ``to_representation`` (no en ``__init__``)
+    porque los serializers anidados se instancian en tiempo de import, sin
+    ``request``; aquí el ``context`` ya está disponible y DRF lo propaga a
+    cualquier profundidad.
+    """
+    request = serializer.context.get('request')
+    user = getattr(request, 'user', None)
+    if user and user.is_authenticated and user.is_reviewer:
+        return data
+    for name in names:
+        data.pop(name, None)
+    return data
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
@@ -42,18 +59,28 @@ class FeatureGoodPracticeSerializer(serializers.ModelSerializer):
         model = FeatureGoodPractice
         fields = '__all__'
 
+    def to_representation(self, instance) -> dict:
+        data = super().to_representation(instance)
+        return hide_review_fields(
+            self, data, ['final_option', 'comments', 'reviewers'])
+
 
 class GoodPracticeSerializer(serializers.ModelSerializer):
-    status = StatusBriefSerializer(read_only=True)
+    # status = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = GoodPractice
         fields = '__all__'
 
+    def to_representation(self, instance) -> dict:
+        data = super().to_representation(instance)
+        return hide_review_fields(self, data, ['final_value'])
+
 
 class GoodPracticeFullSerializer(GoodPracticeSerializer):
     feature_values = FeatureGoodPracticeSerializer(many=True, read_only=True)
     evidences = EvidenceSerializer(many=True, read_only=True)
+    flow_events = FlowEventSerializer(many=True, read_only=True)
 
 
 class SurveySemiFullSerializer(serializers.ModelSerializer):
@@ -69,7 +96,7 @@ class SurveySemiFullSerializer(serializers.ModelSerializer):
 class GoodPracticePackageSerializer(serializers.ModelSerializer):
     good_practices_count = serializers.SerializerMethodField()
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
-    status = StatusBriefSerializer(read_only=True)
+    # status = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_good_practices_count(self, obj):
         return obj.good_practices.count()
@@ -82,7 +109,8 @@ class GoodPracticePackageSerializer(serializers.ModelSerializer):
 class GoodPracticePackageFullSerializer(serializers.ModelSerializer):
     good_practices = GoodPracticeFullSerializer(many=True, read_only=True)
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
-    status = StatusBriefSerializer(read_only=True)
+    flow_events = FlowEventSerializer(many=True, read_only=True)
+    # status = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = GoodPracticePackage

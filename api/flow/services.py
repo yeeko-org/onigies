@@ -132,6 +132,8 @@ def execute_transition(
         parent = get_parent(obj)
         if parent is not None:
             _propagate_up(user, parent, target)
+    if target.propagates_down:
+        _propagate_down(user, obj, target)
 
     return event
 
@@ -163,6 +165,35 @@ def _propagate_up(user, obj, status: Status) -> None:
         parent = get_parent(obj)
         if parent is not None:
             _propagate_up(user, parent, status)
+
+
+def _propagate_down(user, parent, status: Status) -> None:
+    """
+    Propaga status a todos los descendientes de parent (recursivo) sin
+    validación. Salta hijos donde status no aplica o que ya lo tienen
+    (mismo criterio que _propagate_up). La jerarquía bp es de 2 niveles;
+    ningún status cp/gen usa propagates_down, así que no recursar en un
+    hijo ya en el status no deja nietos sin propagar en la práctica.
+    """
+    children = get_children(parent)
+    if children is None:
+        return
+    for child in children:
+        ct = _ct(child)
+        if not status.applicable_models.filter(id=ct.id).exists():
+            continue
+        if child.status_id == status.name:
+            continue
+        FlowEvent.objects.create(
+            content_type=ct,
+            object_id=child.pk,
+            from_status=child.status,
+            to_status=status,
+            user=user,
+        )
+        child.status = status
+        child.save(update_fields=['status'])
+        _propagate_down(user, child, status)
 
 
 def get_available_transitions(user, obj) -> QuerySet:

@@ -4,6 +4,7 @@ import sys
 class ExampleConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'example'
+    verbose_name = 'Buenas Prácticas'
 
     def ready(self) -> None:
         import example.catalog_schema  # noqa: F401 — registra catálogos

@@ -1,5 +1,6 @@
 import {useMainStore} from "~/store/index.js";
 import {useAuthStore} from "~/store/auth.js";
+import {useFlowStore} from "~/store/flow.js";
 
 export default defineNuxtRouteMiddleware((to, from, next) => {
 
@@ -31,6 +32,10 @@ export default defineNuxtRouteMiddleware((to, from, next) => {
   if (!authStore.is_logged) {
     authStore.checkAuthSimple()
   }
+
+  // Catálogo de status del flujo (idempotente); listo antes de que rendericen
+  // los componentes de flow, en dashboard e IES.
+  useFlowStore().ensureStatuses()
 
   if (to.params.group){
     setCollection(to.params.group)

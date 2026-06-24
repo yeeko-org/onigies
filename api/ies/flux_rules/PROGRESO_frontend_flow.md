@@ -42,6 +42,28 @@ Dos superficies separadas:
 - ✅ Verificado: `py_compile` backend OK; cero status hardcodeados en
   componentes bp/flow; sin variables huérfanas.
 
+## Consolidación de infraestructura (2026-06-23)
+
+- ✅ `Status.hint` (guía de siguiente paso, ≠ description/tooltip) y
+  `Status.entry_rules` (JSONField, lista de reglas de UX). En seed: `HINTS` y
+  `ENTRY_RULES` (`bp_completed → practice_complete`). `StatusSerializer` pasó a
+  `__all__`. **Falta** la migración (`makemigrations`/`migrate`, manual).
+- ✅ **Bug corregido**: `FlowStatusActions` evalúa `entry_rules` del destino con
+  `composables/flowRules.js` (`runEntryRules`, reusa `getMissingFields`) antes
+  de transicionar; si falla abre `FlowBlockedDialog`. Ya no se puede marcar
+  `bp_completed` una práctica incompleta.
+- ✅ **Historial embebido**: `flow_events` (GenericRelation, ya existía) nido en
+  los Full serializers + `prefetch_related` en los viewsets. `useFlow` quedó sin
+  `events/loading/loadEvents` (solo `sending/addComment/transition`). Cero
+  `loadEvents` en componentes.
+- ✅ **Rename** `FlowStatusControl` → `FlowStatusActions`; usa `st.hint`.
+- ✅ `FlowStatusActions` y `FlowComments` toman el registro completo por
+  `defineModel` (`v-model`) y lo mutan en sitio (`status`/`flow_events`); los
+  tres padres bp ya no tienen handlers `@transitioned`/`@commented`.
+- ✅ `FlowBlockedDialog` (genérico) reemplazó `NotReadyDialog` (eliminado, sin
+  `notReadyDetails`). `FlowStatusChip` retomó `label`/`onlyIcon`/`xSmall`/
+  `disabled` + tooltip.
+
 ## Pendiente
 
 1. **Verificación manual de bp** (no se corrió `pnpm run dev` en la sesión):

@@ -309,6 +309,13 @@ export const useMainStore = defineStore('main', {
         return []
       return state.cats.user
     },
+    // Catálogo de personas usuarias indexado por id
+    users_by_id(state) {
+      const map = {}
+      for (const u of state.cats?.user || [])
+        map[u.id] = u
+      return map
+    },
     full_editors(state) {
       if (!state.cats)
         return []

@@ -1,8 +1,8 @@
 <script setup>
 import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
+import GoodPracticeChecklist from "~/components/dashboard/example/good_practice/GoodPracticeChecklist.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
-import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
-import FlowTransitions from "~/components/dashboard/flow/FlowTransitions.vue";
+import FlowStatusActions from "~/components/dashboard/flow/FlowStatusActions.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
@@ -10,6 +10,7 @@ import { useMainStore } from '~/store/index.js'
 import { useDashboardStore } from '~/store/dash.js'
 import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
 import { useRules } from "~/composables/useRules.js"
+import { yearRules } from "~/composables/good_practice_validation.js"
 const mainStore = useMainStore()
 const dashStore = useDashboardStore()
 const { rules } = useRules()
@@ -29,19 +30,26 @@ const emit = defineEmits(['close', 'saved', 'deleted'])
 const confirmDelete = ref(false)
 const loading = ref(false)
 const formRef = ref(null)
+const showErrorSummary = ref(false)
 
 const isEditing = computed(() => !!full_main.value?.id)
 
-// El motor entrega el nuevo status en flowEvent.to_status; sincronizamos el
-// objeto local para que el chip y las transiciones disponibles se refresquen.
-function onTransitioned(flowEvent) {
-  full_main.value.status = flowEvent.to_status
+// Lleva el foco visual al primer campo en rojo tras un guardado inválido.
+const scrollToFirstError = () => {
+  const el = formRef.value?.$el?.querySelector('.v-input--error')
+  el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
 const savePractice = async () => {
   if (!props.isStaff) {
     const { valid } = await formRef.value.validate()
-    if (!valid) return
+    if (!valid) {
+      showErrorSummary.value = true
+      await nextTick()
+      scrollToFirstError()
+      return
+    }
+    showErrorSummary.value = false
   }
   loading.value = true
   const msg_error = 'No se pudo guardar la buena práctica'
@@ -51,6 +59,7 @@ const savePractice = async () => {
     if (res.errors) return
     dashStore.showSnackbar('Se guardó la buena práctica')
     emit('saved', res.data)
+    emit('close')
   } catch (e) {
     devWarn('Error al guardar:', e)
   } finally {
@@ -78,6 +87,21 @@ const remove = async () => {
   <v-card>
     <slot name="header">
     </slot>
+    <div
+      v-if="isEditing"
+      class="d-flex align-start justify-space-between px-4 pt-3"
+    >
+      <FlowStatusActions
+        v-model="full_main"
+        app-label="example"
+        model-name="goodpractice"
+      />
+      <FlowComments
+        v-model="full_main"
+        app-label="example"
+        model-name="goodpractice"
+      />
+    </div>
     <v-card-text
       class="pa-4"
     >
@@ -97,36 +121,20 @@ const remove = async () => {
         </GoodPracticeIntro>
       </div>
       <v-form ref="formRef" validate-on="input">
-        <div class="d-flex align-center">
-          <v-text-field
-            v-model="full_main.name"
-            :rules="[rules.required]"
-            label="Nombre de la buena práctica *"
-            :variant="isStaff ? 'solo' : 'outlined'"
-            class="mr-6"
-            :readonly="isStaff"
-          />
-          <FlowStatusChip
-            :status="full_main.status"
-            class="mr-3 flex-shrink-0"
-          />
-          <FlowTransitions
-            v-if="isEditing"
-            app-label="example"
-            model-name="goodpractice"
-            :pk="full_main.id"
-            :status="full_main.status"
-            @transitioned="onTransitioned"
-          />
-        </div>
+        <v-text-field
+          v-model="full_main.name"
+          :rules="[rules.required]"
+          label="Nombre de la buena práctica *"
+          :variant="isStaff ? 'solo' : 'outlined'"
+          :readonly="isStaff"
+        />
         <div class="d-flex align-center">
 
           <SelectGroup
             v-model="full_main"
             filter_group_name="axes"
             main_collection_name="good_practice"
-            forced_level="subtype"
-            :required="true"
+            forced_level="type"
             :width="380"
           />
           <div v-if="!isStaff" class="ml-4">
@@ -139,6 +147,7 @@ const remove = async () => {
                 label="Año de inicio"
                 variant="outlined"
                 v-model="full_main.start_year"
+                :rules="yearRules(full_main, 'start')"
                 :readonly="isStaff"
                 class="mr-4"
                 width="160"
@@ -149,6 +158,7 @@ const remove = async () => {
                 label="Año de fin"
                 variant="outlined"
                 v-model="full_main.end_year"
+                :rules="yearRules(full_main, 'end')"
                 :readonly="isStaff"
                 width="160"
                 density="compact"
@@ -190,19 +200,27 @@ const remove = async () => {
         :good-practice-id="full_main.id"
         v-model:feature-values="full_main.feature_values"
         :is-staff="isStaff"
+        :editable="editionAvailable"
         class="mt-4 mb-4"
       />
-      <template v-if="isEditing">
-        <v-divider class="mt-2" />
-        <div class="text-subtitle-2 mt-3 mb-1">Comentarios</div>
-        <FlowComments
-          app-label="example"
-          model-name="goodpractice"
-          :pk="full_main.id"
-        />
-      </template>
+      <GoodPracticeChecklist
+        v-if="!isStaff && editionAvailable"
+        :practice="full_main"
+        class="mt-4"
+      />
     </v-card-text>
 
+    <v-expand-transition>
+      <v-alert
+        v-if="showErrorSummary && !isStaff"
+        type="error"
+        variant="tonal"
+        density="compact"
+        class="mx-4 mb-2"
+      >
+        Hay campos con errores: revisa los marcados en rojo.
+      </v-alert>
+    </v-expand-transition>
 
     <v-card-actions class="mb-3 mx-3">
       <v-btn

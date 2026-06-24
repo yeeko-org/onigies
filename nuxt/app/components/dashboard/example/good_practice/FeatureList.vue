@@ -8,7 +8,10 @@ const { cats, cats_ready, all_nodes } = mainStore
 
 const props = defineProps({
   goodPracticeId: { type: Number, required: true },
-  isStaff: { type: Boolean, default: false }
+  isStaff: { type: Boolean, default: false },
+  // Edición habilitada solo cuando es turno del usuario (IES o revisora). En
+  // false, la calificación queda en solo lectura.
+  editable: { type: Boolean, default: true }
 })
 
 const featureValues = defineModel('featureValues', {
@@ -84,6 +87,7 @@ const handleUpdate = async (featureId, data) => {
         :feature="feature"
         :value="getFeatureValue(feature.data.id)"
         :is-staff="isStaff"
+        :editable="editable"
         @update="(data) => handleUpdate(feature.data.id, data)"
       />
     </template>

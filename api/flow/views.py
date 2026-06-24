@@ -2,7 +2,6 @@
 Vistas del motor de flujo de validación.
 
 Endpoints:
-  GET  /flow/<app>/<model>/<pk>/transitions/ — transiciones disponibles
   POST /flow/<app>/<model>/<pk>/transitions/ — ejecutar transición
   GET  /flow/<app>/<model>/<pk>/events/     — timeline del objeto
   POST /flow/<app>/<model>/<pk>/events/     — agregar comentario puro
@@ -21,11 +20,10 @@ from flow.models import FlowEvent, Status
 from flow.serializers import (
     CommentSerializer,
     FlowEventSerializer,
-    StatusBriefSerializer,
     StatusSerializer,
     TransitionRequestSerializer,
 )
-from flow.services import execute_transition, get_available_transitions
+from flow.services import execute_transition
 from flow.registry import node_for
 
 
@@ -57,18 +55,12 @@ class FlowObjectMixin:
 
 class FlowTransitionView(FlowObjectMixin, APIView):
     """
-    GET  — lista de transiciones disponibles para el usuario actual.
-    POST — ejecuta una transición sobre el objeto.
+    POST — ejecuta una transición sobre el objeto. Las transiciones
+    disponibles se calculan en el cliente desde el catálogo de status
+    (mismas reglas que `get_available_transitions`: rol + next_statuses +
+    applicable_models). La regla de hijos se valida aquí, en el POST.
     """
     permission_classes = [IsAuthenticated]
-
-    def get(self, request, app_label, model_name, pk):
-        """Retorna los status a los que el usuario puede mover el objeto."""
-        obj = self._get_flow_object(app_label, model_name, pk)
-        transitions = get_available_transitions(request.user, obj)
-        serializer = StatusBriefSerializer(
-            transitions, many=True, context={'request': request})
-        return Response(serializer.data)
 
     def post(self, request, app_label, model_name, pk):
         """Ejecuta la transición indicada en el payload."""

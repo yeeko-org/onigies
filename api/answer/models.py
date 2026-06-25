@@ -7,14 +7,19 @@ from question.models import (
     QuestionType, ReachQuestion, AQuestion, AOption, PlanQuestion,
     BQuestion, SpecialQuestion)
 from survey.models import Survey, Comment
+from flow.registry import FlowParticipant
 
 
-class ObservableResponse(models.Model):
+class ObservableResponse(FlowParticipant, models.Model):
+    flow_parent = 'axis_value'
 
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name='observable_responses')
     observable = models.ForeignKey(
         Observable, on_delete=models.CASCADE, related_name='responses')
+    axis_value = models.ForeignKey(
+        'survey.AxisValue', on_delete=models.CASCADE,
+        related_name='observable_responses')
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE)
     # Flujo nuevo; coexiste con status_register hasta verificar la
@@ -45,7 +50,9 @@ class ObservableComment(Comment):
         verbose_name_plural = 'Comentarios de respuestas observables'
 
 
-class GroupResponse(models.Model):
+class GroupResponse(FlowParticipant, models.Model):
+    flow_parent = 'observable_response'
+
     observable_response = models.ForeignKey(
         ObservableResponse, on_delete=models.CASCADE,
         related_name='statuses')

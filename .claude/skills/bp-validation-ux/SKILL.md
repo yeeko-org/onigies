@@ -35,15 +35,25 @@ audience split**.
 | Component | Role | Audience knob |
 |---|---|---|
 | `example/good_practice/GoodPracticeCard.vue` | compact summary of one práctica (axes, evidence count, status chip) | `isStaff` → reviewer adds "X/Y evaluados"; clickable/"Evaluar" when `isStaff` even off-turn |
-| `example/good_practice/GoodPracticeEditSimple.vue` | the práctica detail opened in a **dialog** (content + features + status + comments) | `isStaff` → reviewer sees content read-only + scoring; `editionAvailable` → may edit now |
+| `example/good_practice/GoodPracticeEditSimple.vue` | the práctica detail opened in a **dialog** (content + features + status + comments) | `isStaff` → reviewer sees content read-only + scoring; `editable` → may edit now |
 | `example/good_practice/FeatureList.vue` + `FeatureItem.vue` | the características: IES marks (`has_attribute`/justification/evidences), reviewer scores (`final_option` slider) | `isStaff` chooses mode; `editable` gates editing by turn |
 
 Two distinct knobs, do not conflate them:
 
 - **`isStaff`** = *which audience* → IES marking mode vs reviewer scoring mode.
-- **`editable` / `editionAvailable`** = *is it this user's turn* → read-only when
-  false. The reviewer's turn is `flowStore.getStatus(status)?.role ===
-  'reviewer'`; the IES's turn is `=== 'ies'`.
+- **`editable`** = *may this user edit now* → read-only when false. One prop name
+  across `GoodPracticeCard`, `GoodPracticeEditSimple` and `FeatureList`, but each
+  surface computes it differently:
+  - **IES** (`GoodPracticeList`): `canEdit(obj) = !isStaff &&
+    flowStore.canEditContent(obj, goodPracticePackage)` — **root-aware, per
+    práctica**. Editing depends on the **envío (root)** being in the IES's turn
+    *plus* the práctica's own `content_editable` (the two-permissions model — see
+    [`flow`](../flow/SKILL.md)). Once the envío is sent, every práctica is
+    read-only even if its own status is an IES-turn one.
+  - **Revisora** (`GoodPracticePackageEditSimple`): `canReview =
+    flowStore.getStatus(pkg.status)?.role === 'reviewer'` — package-level and
+    uniform, passed as `:editable` to all cards/dialog. Live only in
+    `bp_sent`/`bp_resent`.
 
 ## IES surface — `GoodPracticeList.vue` (`/respuestas`)
 
@@ -68,14 +78,14 @@ dashboard auto-loads it inline for the `GoodPracticePackage` collection with
    "X/Y dictaminadas" progress chip (`ruledCount` = practices whose status
    `role === null`, i.e. terminal `bp_for_ruling`/`bp_rejected`).
 2. **`canReview`** = `flowStore.getStatus(pkg.status)?.role === 'reviewer'`
-   (true in `bp_sent`/`bp_resent`). It is passed down as `editionAvailable`, so
+   (true in `bp_sent`/`bp_resent`). It is passed down as `editable`, so
    scoring and the "Evaluar" button are live only on the reviewer's turn;
    otherwise everything is read-only (the reviewer can still open a práctica to
    look).
-3. **Grid** of `GoodPracticeCard` (`isStaff=true`, `:edition-available="canReview"`)
+3. **Grid** of `GoodPracticeCard` (`isStaff=true`, `:editable="canReview"`)
    over `pkg.good_practices`.
 4. **Dialog** — clicking a card opens `GoodPracticeEditSimple`
-   (`isStaff=true`, `editionAvailable=canReview`) where the reviewer scores
+   (`isStaff=true`, `:editable="canReview"`) where the reviewer scores
    (`FeatureList`) and runs the práctica's own `FlowStatusActions`.
 
 ### Open the dialog with the nested object directly (no extra fetch)

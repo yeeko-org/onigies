@@ -2,8 +2,11 @@
 import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
 import GoodPracticeChecklist from "~/components/dashboard/example/good_practice/GoodPracticeChecklist.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
-import FlowStatusActions from "~/components/dashboard/flow/FlowStatusActions.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
+import FlowTransitionMenu from "~/components/dashboard/flow/FlowTransitionMenu.vue";
+import FlowTransitionDialogs from "~/components/dashboard/flow/FlowTransitionDialogs.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
+import { useFlowActions } from "~/composables/useFlowActions.js"
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
 import { useMainStore } from '~/store/index.js'
@@ -17,7 +20,7 @@ const { rules } = useRules()
 
 const props = defineProps({
   isStaff: { type: Boolean, default: true },
-  editionAvailable: {
+  editable: {
     type: Boolean,
     default: true
   }
@@ -34,20 +37,25 @@ const showErrorSummary = ref(false)
 
 const isEditing = computed(() => !!full_main.value?.id)
 
+const flowActions = useFlowActions(full_main, 'example', 'goodpractice')
+const { transitions, currentStatus } = flowActions
+
 // Lleva el foco visual al primer campo en rojo tras un guardado inválido.
 const scrollToFirstError = () => {
   const el = formRef.value?.$el?.querySelector('.v-input--error')
   el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-const savePractice = async () => {
+// Persiste el contenido. Devuelve true si guardó, SIN cerrar el diálogo, para
+// que el split-button pueda guardar y luego transicionar sin cerrar antes.
+const persist = async () => {
   if (!props.isStaff) {
     const { valid } = await formRef.value.validate()
     if (!valid) {
       showErrorSummary.value = true
       await nextTick()
       scrollToFirstError()
-      return
+      return false
     }
     showErrorSummary.value = false
   }
@@ -56,15 +64,29 @@ const savePractice = async () => {
   try {
     const res = await mainStore.saveSimple(
       ['good_practice', full_main.value], msg_error)
-    if (res.errors) return
+    if (res.errors) return false
     dashStore.showSnackbar('Se guardó la buena práctica')
     emit('saved', res.data)
-    emit('close')
+    return true
   } catch (e) {
     devWarn('Error al guardar:', e)
+    return false
   } finally {
     loading.value = false
   }
+}
+
+const savePractice = async () => {
+  if (await persist()) emit('close')
+}
+
+// Guarda contenido y, si guardó, dispara la transición elegida en el caret.
+// Cierra solo si la transición se ejecutó (onSelect devuelve el evento; null
+// si abrió el diálogo de bloqueo o de comentario).
+const saveAndTransition = async (t) => {
+  if (!(await persist())) return
+  const ev = await flowActions.onSelect(t)
+  if (ev) emit('close')
 }
 
 const remove = async () => {
@@ -91,11 +113,7 @@ const remove = async () => {
       v-if="isEditing"
       class="d-flex align-start justify-space-between px-4 pt-3"
     >
-      <FlowStatusActions
-        v-model="full_main"
-        app-label="example"
-        model-name="goodpractice"
-      />
+      <FlowStatusChip :status="full_main.status" />
       <FlowComments
         v-model="full_main"
         app-label="example"
@@ -200,11 +218,11 @@ const remove = async () => {
         :good-practice-id="full_main.id"
         v-model:feature-values="full_main.feature_values"
         :is-staff="isStaff"
-        :editable="editionAvailable"
+        :editable="editable"
         class="mt-4 mb-4"
       />
       <GoodPracticeChecklist
-        v-if="!isStaff && editionAvailable"
+        v-if="!isStaff && editable"
         :practice="full_main"
         class="mt-4"
       />
@@ -240,17 +258,59 @@ const remove = async () => {
       >
         Cerrar
       </v-btn>
+      <!-- Sin transiciones (status terminal o no es turno): el botón guarda y
+           cierra directo, sin desplegar opciones. -->
       <v-btn
-        v-if="editionAvailable"
+        v-if="editable && !transitions.length"
         color="accent"
         variant="flat"
+        density="comfortable"
         :loading="loading"
         prepend-icon="save"
         @click="savePractice"
       >
         Guardar
       </v-btn>
+      <!-- Con transiciones: el botón despliega un menú hacia abajo encabezado
+           por "Guardar y mantener como {status}" (guarda sin transicionar),
+           seguido de cada transición (guarda y luego transiciona). -->
+      <v-menu
+        v-else-if="editable"
+        location="bottom end"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            color="accent"
+            variant="flat"
+            density="comfortable"
+            :loading="loading"
+            prepend-icon="save"
+            append-icon="expand_more"
+          >
+            Guardar
+          </v-btn>
+        </template>
+        <FlowTransitionMenu
+          :transitions="transitions"
+          @select="saveAndTransition"
+        >
+          <template #lead>
+            <v-list-item
+              :title="`Guardar y mantener como ${currentStatus?.public_name}`"
+              @click="savePractice"
+            >
+              <template #prepend>
+                <v-icon color="accent">save</v-icon>
+              </template>
+            </v-list-item>
+            <v-divider />
+          </template>
+        </FlowTransitionMenu>
+      </v-menu>
     </v-card-actions>
+
+    <FlowTransitionDialogs :actions="flowActions" />
 
     <!-- Diálogo de confirmación de eliminación -->
     <v-dialog v-model="confirmDelete" max-width="400">

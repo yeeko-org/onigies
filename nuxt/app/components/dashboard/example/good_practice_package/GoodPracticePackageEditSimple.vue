@@ -13,7 +13,10 @@
  * mundo de la IES (ver GoodPracticeList.vue en /respuestas).
  */
 import { useFlowStore } from '~/store/flow.js'
+import { useFlowActions } from '~/composables/useFlowActions.js'
 import FlowStatusActions from '~/components/dashboard/flow/FlowStatusActions.vue'
+import FlowTransitionMenu from '~/components/dashboard/flow/FlowTransitionMenu.vue'
+import FlowTransitionDialogs from '~/components/dashboard/flow/FlowTransitionDialogs.vue'
 import FlowComments from '~/components/dashboard/flow/FlowComments.vue'
 import GoodPracticeCard from '~/components/dashboard/example/good_practice/GoodPracticeCard.vue'
 import GoodPracticeEditSimple from '~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue'
@@ -23,6 +26,10 @@ const pkg = defineModel({ type: Object, required: true })
 
 const flowStore = useFlowStore()
 const { formatDate } = useDates()
+
+// Un solo kernel para el menú-chip de arriba y el botón "Enviar evaluación"
+// de abajo: comparten transiciones y un único juego de diálogos.
+const flowActions = useFlowActions(pkg, 'example', 'goodpracticepackage')
 
 const institution = computed(
   () => pkg.value.survey_full?.institution_full || {})
@@ -100,6 +107,7 @@ function onSaved(updated) {
         v-model="pkg"
         app-label="example"
         model-name="goodpracticepackage"
+        :actions="flowActions"
       />
       <v-chip
         v-if="practices.length"
@@ -130,12 +138,40 @@ function onSaved(updated) {
             :practice="practice"
             :is-staff="true"
             :sent-at="pkg.sent_at"
-            :edition-available="canReview"
+            :editable="canReview"
             @open="openPractice"
           />
         </v-col>
       </v-row>
     </v-card-text>
+
+    <!-- CTA de la revisora: envía la evaluación eligiendo el siguiente status.
+         Comparte kernel con el menú-chip de arriba. -->
+    <v-card-actions
+      v-if="flowActions.transitions.length"
+      class="px-4 pb-4"
+    >
+      <v-spacer />
+      <v-menu location="bottom end">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            color="accent"
+            variant="flat"
+            prepend-icon="send"
+            append-icon="expand_more"
+          >
+            Enviar evaluación
+          </v-btn>
+        </template>
+        <FlowTransitionMenu
+          :transitions="flowActions.transitions"
+          @select="flowActions.onSelect"
+        />
+      </v-menu>
+    </v-card-actions>
+
+    <FlowTransitionDialogs :actions="flowActions" />
 
     <!-- Diálogo de calificación / status de una práctica ───────────────── -->
     <v-dialog
@@ -147,7 +183,7 @@ function onSaved(updated) {
         v-if="editingPractice"
         v-model="editingPractice"
         :is-staff="true"
-        :edition-available="canReview"
+        :editable="canReview"
         class="mt-3"
         @saved="onSaved"
         @close="editingPractice = null"

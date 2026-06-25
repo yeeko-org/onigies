@@ -42,7 +42,15 @@ class Status(models.Model):
     group = models.CharField(
         max_length=10, choices=GROUP_CHOICES,
         verbose_name="Grupo (flujo)")
-    public_name = models.CharField(max_length=255)
+    public_name = models.CharField(
+        max_length=255, verbose_name="Nombre del estado",
+        help_text="Estado que muestra el chip (p.ej. 'Enviado')")
+    action_name = models.CharField(
+        max_length=255, blank=True, null=True,
+        verbose_name="Nombre de la acción",
+        help_text="Verbo del botón/menú que transiciona HACIA este "
+                  "status (p.ej. 'Enviar a revisión'); vacío si nunca "
+                  "es destino de una acción manual")
     description = models.TextField(blank=True, null=True)
     color = models.CharField(
         max_length=30, blank=True, null=True,
@@ -76,6 +84,10 @@ class Status(models.Model):
         default=False, verbose_name="Automático al primer guardado",
         help_text="Se asigna solo cuando la captura se guarda por "
                   "primera vez")
+    content_editable = models.BooleanField(
+        default=False, verbose_name="Contenido editable",
+        help_text="En este status, quien tiene el turno (role) puede "
+                  "editar valores; si no, solo puede transicionar")
     hint = models.TextField(
         blank=True, null=True, verbose_name="Sugerencia (frontend)",
         help_text="Guía de siguiente paso que el frontend muestra bajo el "

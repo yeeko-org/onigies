@@ -28,7 +28,8 @@ class Institution(models.Model):
         help_text="Gobierno centralizado")
 
     def save(self, *args, **kwargs):
-        from indicator.models import Axis, Sector
+        from indicator.models import Axis, Sector, GeneralGroup
+        from survey.models import GeneralPackage
 
         super().save(*args, **kwargs)
         periods = Period.objects.all()
@@ -66,6 +67,21 @@ class Institution(models.Model):
                 package.status_sending_id = 'draft'
                 package.status_id = 'bp_draft'
                 package.save()
+
+            # Paquete de preguntas generales (raíz del flujo gen) + sus
+            # respuestas por grupo, creados eager como los axis_values.
+            gen_pkg, _ = GeneralPackage.objects.get_or_create(survey=survey)
+            if not gen_pkg.status_id:
+                gen_pkg.status_id = 'gen_draft'
+                gen_pkg.save()
+            for general_group in GeneralGroup.objects.all():
+                survey.general_group_responses.get_or_create(
+                    general_group=general_group,
+                    defaults={
+                        'general_package': gen_pkg,
+                        'status_register_id': 'pre_start',
+                        'status_id': 'gen_draft',
+                    })
 
     def __str__(self):
         return self.acronym

@@ -12,7 +12,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from flow.models import FlowEvent, Status
-from flow.registry import get_children, get_parent, node_for
+from flow.registry import get_children, get_parent, is_flow_participant
 
 
 def get_user_flow_role(user) -> str | None:
@@ -218,12 +218,10 @@ def assign_auto_status(user, obj) -> FlowEvent | None:
     """
     if obj.status is not None:
         return None
-    node = node_for(obj)
-    if node is None:
+    if not is_flow_participant(obj):
         return None
     ct = _ct(obj)
     auto = Status.objects.filter(
-        group=node.group,
         auto_on_first_save=True,
         applicable_models=ct,
     ).first()

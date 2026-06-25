@@ -24,7 +24,7 @@ from flow.serializers import (
     TransitionRequestSerializer,
 )
 from flow.services import execute_transition
-from flow.registry import node_for
+from flow.registry import is_flow_participant
 
 
 class FlowObjectMixin:
@@ -39,7 +39,7 @@ class FlowObjectMixin:
         except LookupError:
             raise NotFound(f"Modelo '{app_label}.{model_name}' no encontrado.")
 
-        if node_for(model) is None:
+        if not is_flow_participant(model):
             raise NotFound(
                 f"'{app_label}.{model_name}' no participa en el flujo.")
 

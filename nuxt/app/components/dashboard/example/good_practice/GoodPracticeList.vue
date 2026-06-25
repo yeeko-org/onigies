@@ -14,6 +14,7 @@ import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmAct
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import { useFlowStore } from '~/store/flow.js'
+import { runEntryRules } from '~/composables/flowRules.js'
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -46,16 +47,14 @@ const limit_reached = computed(() => {
 const packageStatus = computed(
   () => flowStore.getStatus(goodPracticePackage.value.status))
 
-const editionAvailable = computed(()=> {
-  if (isStaff.value)
-    return false
-  // Descartado (has_good_practices=false) deja el paquete en bp_discarded
-  // (role ies): la IES ya cerró, no debe editar prácticas, solo reabrir.
-  if (goodPracticePackage.value.has_good_practices === false)
-    return false
-  // El motor marca role='ies' cuando es turno de la institución.
-  return packageStatus.value?.role === 'ies'
-})
+// Editabilidad de contenido de cualquier nodo del paquete : el motor 
+// (flowStore) combina el turno de la RAÍZ —el paquete— con el 
+// content_editable del status propio. 
+const canEdit = (obj) =>
+  !isStaff.value && flowStore.canEditContent(obj, goodPracticePackage.value)
+
+const packageEditable = computed(() => canEdit(goodPracticePackage.value))
+const editingEditable = computed(() => canEdit(editingPractice.value))
 
 const periodOpen = computed(() =>
   !goodPracticePackage.value.survey_full?.period_full?.good_practices_published
@@ -87,7 +86,7 @@ const responseModel = computed({
 const canAddMore = computed(() => {
   if (isStaff.value)
     return false
-  if (!editionAvailable.value)
+  if (!packageEditable.value)
     return false
   return goodPracticePackage.value.has_good_practices && !limit_reached.value
 })
@@ -166,7 +165,6 @@ watch(() => editingPractice.value?.status, (newStatus) => {
 function onSaved(updated) {
   const idx = goodPractices.value.findIndex(p => p.id === updated.id)
   if (idx !== -1) goodPractices.value[idx] = updated
-  editingPractice.value = null
 }
 
 function onDeleted() {
@@ -203,36 +201,30 @@ function editPackage() {
 const send_dialog = ref(false)
 const blocked_dialog = ref(false)
 const discard_dialog = ref(false)
+const sendReasons = ref([])
 
-// "Lista" = la IES ya marcó la práctica como completada → su status salió del
-// turno de la IES (role !== 'ies'). La regla dura (todas en bp_completed) la
-// valida el motor vía valid_child_statuses; esto es solo para la UX.
-function practiceReady(p) {
-  const st = flowStore.getStatus(p.status)
-  return !!st && st.role !== 'ies'
-}
-
-const canSendPackage = computed(() => {
-  if (!goodPractices.value.length) return false
-  return goodPractices.value.every(practiceReady)
-})
-
-// Motivos por los que aún no se puede enviar: prácticas que no están marcadas
-// como completadas. El detalle de qué falta en cada práctica vive en su
-// edición (FlowStatusActions + entry_rules), no aquí.
-const notReadyReasons = computed(() => {
-  if (!goodPractices.value.length)
-    return ['Aún no has agregado ninguna buena práctica.']
-  return goodPractices.value
-    .filter(p => !practiceReady(p))
-    .map(p => `${p.name || 'Sin nombre'}: márcala como completada.`)
-})
-
+// Envío del paquete: la compuerta de UX (todas las prácticas completadas) vive
+// ahora en el entry_rule `package_ready` (flowRules), atado a bp_sent en el
+// catálogo; aquí solo la evaluamos y, si falla, mostramos el bloqueo. La regla
+// dura la fuerza el motor vía valid_child_statuses.
 function wantSend() {
-  if (canSendPackage.value)
-    send_dialog.value = true
-  else
+  const t = flowStore.getAvailableTransitions(
+    goodPracticePackage.value.status, 'example', 'goodpracticepackage')
+    .find(x => x.name === 'bp_sent')
+  if (!t) return
+  // Pasamos las prácticas vivas (goodPractices) por si divergen del array
+  // embebido del paquete tras altas, bajas o ediciones.
+  const pkg = {
+    ...goodPracticePackage.value,
+    good_practices: goodPractices.value,
+  }
+  const { ok, missing } = runEntryRules(t.entry_rules, pkg)
+  if (!ok) {
+    sendReasons.value = missing
     blocked_dialog.value = true
+    return
+  }
+  send_dialog.value = true
 }
 
 async function sendPackage() {
@@ -391,7 +383,7 @@ function reopenPackage() {
         >
           Has alcanzado el límite de buenas prácticas.
         </span>
-        <span v-else-if="editionAvailable">
+        <span v-else-if="packageEditable">
           (Puedes agregar hasta 5 buenas prácticas)
         </span>
       </v-chip>
@@ -433,7 +425,7 @@ function reopenPackage() {
             :practice="practice"
             :is-staff="isStaff"
             :sent-at="goodPracticePackage.sent_at"
-            :edition-available="editionAvailable"
+            :editable="canEdit(practice)"
             :loading="loadingId === practice.id"
             @open="openEdit"
           />
@@ -442,7 +434,7 @@ function reopenPackage() {
 
     </v-card-text>
     <v-card-actions
-      v-if="goodPracticePackage.has_good_practices && editionAvailable"
+      v-if="goodPracticePackage.has_good_practices && packageEditable"
       class="mb-3 mx-3"
     >
       <v-btn
@@ -489,7 +481,7 @@ function reopenPackage() {
         v-if="editingPractice"
         v-model="editingPractice"
         :is-staff="isStaff"
-        :edition-available="editionAvailable"
+        :editable="editingEditable"
         class="mt-3"
         @saved="onSaved"
         @deleted="onDeleted"
@@ -516,7 +508,7 @@ function reopenPackage() {
     <FlowBlockedDialog
       v-model="blocked_dialog"
       title="Aún no puedes enviar las buenas prácticas"
-      :reasons="notReadyReasons"
+      :reasons="sendReasons"
     />
     <ConfirmActionDialog
       v-model="send_dialog"

@@ -1,5 +1,25 @@
 import { getMissingFields } from '~/composables/good_practice_validation.js'
+import { useFlowStore } from '~/store/flow.js'
 import { devWarn } from '~/utils/log.js'
+
+/**
+ * Compuerta de UX para enviar un paquete: lista los motivos por los que aún no
+ * se puede (prácticas que siguen en turno de la IES, es decir, sin marcar como
+ * completadas). Mira el catálogo (role del status de cada hijo); la regla dura
+ * (todas en bp_completed) la enforced el motor vía valid_child_statuses.
+ */
+function getPackageNotReady(pkg) {
+  const practices = pkg?.good_practices || []
+  if (!practices.length)
+    return ['Aún no has agregado ninguna buena práctica.']
+  const flowStore = useFlowStore()
+  return practices
+    .filter(p => {
+      const st = flowStore.getStatus(p.status)
+      return !st || st.role === 'ies'
+    })
+    .map(p => `${p.name || 'Sin nombre'}: márcala como completada.`)
+}
 
 /**
  * Registry de reglas de UX del flujo: nombre → función(obj) → string[] de
@@ -9,6 +29,7 @@ import { devWarn } from '~/utils/log.js'
  */
 const RULES = {
   practice_complete: getMissingFields,
+  package_ready: getPackageNotReady,
 }
 
 /**

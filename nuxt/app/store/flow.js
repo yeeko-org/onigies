@@ -34,6 +34,21 @@ export const useFlowStore = defineStore('flow', () => {
   }
 
   /**
+   * ¿La persona usuaria puede editar el CONTENIDO de un objeto? Son dos
+   * permisos, no uno: el RAÍZ gobierna (su rol debe ser el turno del usuario) y
+   * el status propio debe ser editable (content_editable). Por defecto la raíz
+   * es el propio objeto, para los nodos raíz (p.ej. el GoodPracticePackage en
+   * bp); para hijos/nietos se pasa la raíz explícita.
+   */
+  function canEditContent(obj, root = obj) {
+    const authStore = useAuthStore()
+    const rootStatus = byName.value[root?.status]
+    const ownStatus = byName.value[obj?.status]
+    return !!ownStatus?.content_editable
+      && rootStatus?.role === authStore.flow_role
+  }
+
+  /**
    * Transiciones disponibles para mover un objeto desde su status actual.
    * Replica `get_available_transitions` del backend con datos del catálogo:
    * el turno es del rol del usuario, y el destino aplica al modelo. La regla
@@ -50,5 +65,6 @@ export const useFlowStore = defineStore('flow', () => {
         ([a, m]) => a === appLabel && m === modelName))
   }
 
-  return { byName, loaded, ensureStatuses, getStatus, getAvailableTransitions }
+  return { byName, loaded, ensureStatuses, getStatus, canEditContent,
+    getAvailableTransitions }
 })

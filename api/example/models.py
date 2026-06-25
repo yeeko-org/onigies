@@ -3,6 +3,7 @@ from django.db import models
 from indicator.models import Axis, Component
 from ies.models import User, Period, StatusControl, Institution
 from survey.models import Survey
+from flow.registry import FlowParticipant
 
 
 class Feature(models.Model):
@@ -39,7 +40,7 @@ class FeatureOption(models.Model):
         verbose_name_plural = "Opciones de características"
 
 
-class GoodPracticePackage(models.Model):
+class GoodPracticePackage(FlowParticipant, models.Model):
     # institution = models.ForeignKey(
     #     Institution, on_delete=models.CASCADE, related_name='packages')
     # period = models.ForeignKey(
@@ -80,7 +81,9 @@ class GoodPracticePackage(models.Model):
         verbose_name_plural = "Envío de Buenas Prácticas"
 
 
-class GoodPractice(models.Model):
+class GoodPractice(FlowParticipant, models.Model):
+    flow_parent = 'package'
+
     package = models.ForeignKey(
         GoodPracticePackage, on_delete=models.CASCADE,
         related_name='good_practices')

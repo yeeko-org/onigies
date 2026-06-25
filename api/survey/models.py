@@ -3,6 +3,7 @@ from django.db import models
 
 from indicator.models import Axis, Component, Sector, GeneralGroup
 from ies.models import Institution, Period, StatusControl, Instance, User
+from flow.registry import FlowParticipant
 
 
 class Comment(models.Model):
@@ -54,7 +55,7 @@ class Survey(models.Model):
         verbose_name_plural = 'Conjuntos de respuestas IES-Año'
 
 
-class AxisValue(models.Model):
+class AxisValue(FlowParticipant, models.Model):
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name='axis_values')
     axis = models.ForeignKey(
@@ -77,6 +78,7 @@ class AxisValue(models.Model):
     class Meta:
         verbose_name = 'Valor del eje'
         verbose_name_plural = 'Valores de los ejes'
+        unique_together = ('survey', 'axis')
 
 
 class ComponentValue(models.Model):
@@ -115,9 +117,48 @@ class PopulationQuantity(models.Model):
         verbose_name_plural = 'Cantidades de población por sector'
 
 
-class GeneralGroupResponse(models.Model):
+class GeneralPackage(FlowParticipant, models.Model):
+    """
+    Envío de las preguntas generales de un survey: raíz del flujo gen.
+
+    1:1 con Survey; agrupa los GeneralGroupResponse. Guarda el status de envío
+    """
+    survey = models.OneToOneField(
+        Survey, on_delete=models.CASCADE, related_name='general_package')
+    status = models.ForeignKey(
+        'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
+        related_name='+')
+    sent_at = models.DateTimeField(blank=True, null=True)
+    flow_events = GenericRelation('flow.FlowEvent')
+    flow_attachments = GenericRelation('flow.Attachment')
+
+    def save(self, *args, **kwargs):
+        # Registra la fecha de envío la primera vez que el motor
+        # transiciona a gen_sent o gen_resent (no se borra al reenviar).
+        if (self.sent_at is None
+                and self.status_id in ('gen_sent', 'gen_resent')):
+            from django.utils import timezone
+            self.sent_at = timezone.now()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return (f"Envío de Preguntas Generales - "
+                f"{self.survey.institution.acronym} - "
+                f"{self.survey.period.year}")
+
+    class Meta:
+        verbose_name = "Envío de Preguntas Generales"
+        verbose_name_plural = "Envíos de Preguntas Generales"
+
+
+class GeneralGroupResponse(FlowParticipant, models.Model):
+    flow_parent = 'general_package'
+
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE,
+        related_name='general_group_responses')
+    general_package = models.ForeignKey(
+        GeneralPackage, on_delete=models.CASCADE, blank=True, null=True,
         related_name='general_group_responses')
     general_group = models.ForeignKey(
         GeneralGroup, on_delete=models.CASCADE,

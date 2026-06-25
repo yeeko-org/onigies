@@ -20,110 +20,144 @@ GP = "example.goodpractice"           # GoodPractice
 A = "survey.axisvalue"                # AxisValue
 O = "answer.observableresponse"       # ObservableResponse
 G = "answer.groupresponse"            # GroupResponse
-GEN = "survey.generalgroupresponse"   # GeneralGroupResponse
+GPK = "survey.generalpackage"         # GeneralPackage (raíz gen)
+GEN = "survey.generalgroupresponse"   # GeneralGroupResponse (hijo gen)
 
 # Flags: default, public, comment (requires_comment), up (propagates_up),
-#        down (propagates_down), auto (auto_on_first_save)
-# Tuplas: (name, public_name, description, role, flags, aplica)
+#        down (propagates_down), auto (auto_on_first_save),
+#        edit (content_editable)
+# Tuplas: (name, public_name, action_name, description, role, flags, aplica)
+#   public_name = estado que muestra el chip; action_name = verbo del
+#   botón/menú que transiciona HACIA ese status (None si nunca es destino
+#   de una acción manual).
 STATUSES = {
     "bp": [
-        ("bp_draft", "Borrador",
-         "En captura; la IES puede editar libremente.",
-         "ies", {"default", "down"}, [P, GP]),
-        ("bp_discarded", "Descartado",
-         "La IES descartó enviarlas.",
+        ("bp_draft", "Borrador", None,
+         "En captura. La IES edita libremente y marca cada práctica "
+         "como completada antes de enviar el paquete.",
+         "ies", {"default", "down", "edit"}, [P, GP]),
+        ("bp_discarded", "Descartado", "Descartar",
+         "La IES optó por no reportar buenas prácticas; su "
+         "participación queda cerrada (reabrible mientras el periodo "
+         "siga abierto).",
          "ies", {"down"}, [P, GP]),
-        ("bp_completed", "Completada",
-         "La IES la marcó como completa; se revisará cuando se envíe "
-         "el paquete.",
-         "reviewer", set(), [GP]),
-        ("bp_sent", "Enviado",
-         "Paquete enviado; las prácticas están en revisión.",
+        ("bp_completed", "Completada", "Marcar como completada",
+         "La IES dio por terminada esta práctica; entrará a revisión "
+         "cuando se envíe el paquete.",
+         "reviewer", {"edit"}, [GP]),
+        ("bp_sent", "Enviado a revisión", "Enviar a revisión",
+         "El paquete se envió; las prácticas están en manos de la "
+         "revisión.",
          "reviewer", set(), [P]),
-        ("bp_need_changes", "Requiere ajustes",
-         "La revisión solicitó correcciones a la IES.",
-         "ies", {"comment"}, [P, GP]),
-        ("bp_adjusted", "Ajuste completo",
-         "Correcciones incorporadas; en espera de nueva revisión.",
-         "reviewer", set(), [GP]),
-        ("bp_resent", "Enviado con ajustes",
-         "Paquete reenviado tras incorporar las correcciones.",
+        ("bp_need_changes", "Requiere ajustes", "Solicitar ajustes",
+         "La revisión devolvió el paquete con correcciones para que "
+         "la IES las atienda.",
+         "ies", {"comment", "edit"}, [P, GP]),
+        ("bp_adjusted", "Ajuste completo", "Marcar ajuste como completo",
+         "La IES incorporó las correcciones; la práctica espera una "
+         "nueva revisión.",
+         "reviewer", {"edit"}, [GP]),
+        ("bp_resent", "Reenviado a revisión", "Reenviar a revisión",
+         "El paquete se reenvió con los ajustes incorporados.",
          "reviewer", set(), [P]),
-        ("bp_for_ruling", "Recibida para dictamen",
-         "Cumplió los criterios; pasa a la etapa de dictamen.",
+        ("bp_for_ruling", "Recibida para dictamen", "Recibir para dictamen",
+         "La práctica cumplió los criterios y pasa a la etapa de "
+         "dictamen.",
          None, {"public"}, [GP]),
-        ("bp_rejected", "No pasó los filtros",
-         "Recibida, pero no cumplió los criterios mínimos de la "
+        ("bp_rejected", "No admitida", "No admitir",
+         "La práctica no cumplió los criterios mínimos de la "
          "convocatoria.",
          None, {"comment"}, [GP]),
-        ("bp_finished", "Finalizado",
-         "Revisión del paquete concluida; sin acciones pendientes.",
+        ("bp_finished", "Finalizado", "Finalizar",
+         "La revisión del paquete concluyó; sin acciones pendientes.",
          None, set(), [P]),
     ],
     "cp": [
-        ("cp_pre_start", "Por iniciar",
-         "Aún no se captura ninguna respuesta.",
-         "ies", {"default"}, [A, O, G]),
-        ("cp_filling", "En llenado",
-         "Captura en curso por la IES.",
-         "ies", {"auto", "up"}, [A, O, G]),
-        ("cp_completed", "Completado",
-         "Terminado por la IES; en espera de revisión.",
-         "reviewer", set(), [O, G]),
-        ("cp_sent", "Enviado",
-         "Eje enviado para revisión.",
+        ("cp_pre_start", "Por iniciar", None,
+         "El eje aún no tiene respuestas capturadas.",
+         "ies", {"default", "edit"}, [A, O, G]),
+        ("cp_filling", "En llenado", None,
+         "La IES está capturando las respuestas del eje.",
+         "ies", {"auto", "up", "edit"}, [A, O, G]),
+        ("cp_completed", "Completado", "Marcar como completado",
+         "La IES dio por terminada la respuesta; entrará a revisión "
+         "cuando se envíe el eje.",
+         "reviewer", {"edit"}, [O, G]),
+        ("cp_sent", "Enviado a revisión", "Enviar a revisión",
+         "El eje se envió; sus respuestas están en manos de la "
+         "revisión.",
          "reviewer", set(), [A]),
-        ("cp_in_review", "En revisión",
+        ("cp_in_review", "En revisión", "Iniciar revisión",
          "La revisión del eje está en curso.",
          "reviewer", set(), [A]),
-        ("cp_need_changes", "Requiere ajustes",
-         "La revisión solicitó correcciones a la IES.",
-         "ies", {"comment"}, [A, O, G]),
-        ("cp_in_adjustment", "En ajustes",
-         "Captura de correcciones en curso.",
-         "ies", {"auto", "up"}, [A, O, G]),
-        ("cp_adjusted", "Ajuste completo",
-         "Correcciones incorporadas; en espera de nueva revisión.",
-         "reviewer", set(), [O, G]),
-        ("cp_resent", "Enviado con ajustes",
-         "Eje reenviado tras incorporar las correcciones.",
+        ("cp_need_changes", "Requiere ajustes", "Solicitar ajustes",
+         "La revisión devolvió la respuesta con correcciones para que "
+         "la IES las atienda.",
+         "ies", {"comment", "edit"}, [A, O, G]),
+        ("cp_in_adjustment", "En ajustes", "Iniciar ajustes",
+         "La IES está capturando las correcciones solicitadas.",
+         "ies", {"auto", "up", "edit"}, [A, O, G]),
+        ("cp_adjusted", "Ajuste completo", "Marcar ajuste como completo",
+         "La IES incorporó las correcciones; la respuesta espera una "
+         "nueva revisión.",
+         "reviewer", {"edit"}, [O, G]),
+        ("cp_resent", "Reenviado a revisión", "Reenviar a revisión",
+         "El eje se reenvió con los ajustes incorporados.",
          "reviewer", set(), [A]),
-        ("cp_postponed", "Pospuesta",
+        ("cp_postponed", "Pospuesta", "Posponer",
          "La IES decidió responder esto más adelante.",
          "ies", set(), [O, G]),
-        ("cp_voluntary_readjust", "Reajuste voluntario solicitado",
-         "La IES pidió reabrir una respuesta ya aprobada.",
+        ("cp_voluntary_readjust", "Reajuste solicitado",
+         "Solicitar reajuste",
+         "La IES pidió reabrir una respuesta ya aprobada; la revisión "
+         "debe autorizarlo.",
          "reviewer", {"comment", "up"}, [A, O, G]),
         ("cp_partial", "Parcialmente respondido",
+         "Enviar parcial a corroborar",
          "Hay respuestas listas para corroborar mientras el resto "
          "sigue en captura.",
          "reviewer", {"comment"}, [O, G]),
         ("cp_partial_approved", "Parcialmente aprobado",
-         "La parte entregada fue validada; el resto sigue pendiente.",
-         "ies", set(), [O, G]),
-        ("cp_approved", "Aprobado",
-         "Respuesta validada por la revisión.",
+         "Aprobar parte entregada",
+         "La parte entregada se validó; el resto sigue pendiente del "
+         "lado de la IES.",
+         "ies", {"edit"}, [O, G]),
+        ("cp_approved", "Aprobado", "Aprobar",
+         "La respuesta fue validada por la revisión.",
          "ies", {"public"}, [A, O, G]),
     ],
     "gen": [
-        ("gen_pre_start", "Por iniciar",
-         "Aún no se captura ninguna respuesta.",
-         "ies", {"default"}, [GEN]),
-        ("gen_filling", "En llenado",
-         "Captura en curso por la IES.",
-         "ies", {"auto"}, [GEN]),
-        ("gen_completed", "Completado",
-         "La IES terminó; en espera de revisión.",
-         "reviewer", set(), [GEN]),
-        ("gen_need_changes", "Requiere ajustes",
-         "La revisión encontró puntos por corregir.",
-         "ies", {"comment"}, [GEN]),
-        ("gen_adjusted", "Ajuste completo",
-         "Correcciones incorporadas; en espera de nueva revisión.",
-         "reviewer", set(), [GEN]),
-        ("gen_approved", "Aprobado",
-         "Respuestas validadas por la revisión.",
-         "reviewer", {"public"}, [GEN]),
+        ("gen_draft", "Borrador", None,
+         "En captura. La IES edita las preguntas generales y marca "
+         "cada grupo como completado antes de enviar.",
+         "ies", {"default", "edit"}, [GPK, GEN]),
+        ("gen_completed", "Completado", "Marcar como completado",
+         "La IES dio por terminado este grupo; entrará a revisión "
+         "cuando se envíen las generales.",
+         "reviewer", {"edit"}, [GEN]),
+        ("gen_sent", "Enviado a revisión", "Enviar a revisión",
+         "Las preguntas generales se enviaron; están en manos de la "
+         "revisión.",
+         "reviewer", set(), [GPK]),
+        ("gen_need_changes", "Requiere ajustes", "Solicitar ajustes",
+         "La revisión devolvió las generales con correcciones para "
+         "que la IES las atienda.",
+         "ies", {"comment", "edit"}, [GPK, GEN]),
+        ("gen_adjusted", "Ajuste completo", "Marcar ajuste como completo",
+         "La IES incorporó las correcciones; el grupo espera una "
+         "nueva revisión.",
+         "reviewer", {"edit"}, [GEN]),
+        ("gen_resent", "Reenviado a revisión", "Reenviar a revisión",
+         "Las preguntas generales se reenviaron con los ajustes "
+         "incorporados.",
+         "reviewer", set(), [GPK]),
+        ("gen_approved", "Aprobado", "Aprobar",
+         "El grupo fue validado por la revisión.",
+         None, {"public"}, [GEN]),
+        ("gen_finished", "Finalizado", "Finalizar",
+         "La revisión de las preguntas generales concluyó; sin "
+         "acciones pendientes.",
+         None, set(), [GPK]),
     ],
 }
 
@@ -151,13 +185,13 @@ NEXT_STATUSES = {
     "cp_in_adjustment": ["cp_adjusted", "cp_resent", "cp_postponed"],
     "cp_partial": ["cp_need_changes", "cp_partial_approved"],
     "cp_partial_approved": ["cp_completed", "cp_partial"],
-    # Generales (gen_approved → gen_need_changes es la reapertura)
-    "gen_pre_start": ["gen_filling"],
-    "gen_filling": ["gen_completed"],
-    "gen_completed": ["gen_approved", "gen_need_changes"],
-    "gen_need_changes": ["gen_adjusted"],
-    "gen_adjusted": ["gen_approved", "gen_need_changes"],
-    "gen_approved": ["gen_need_changes"],
+    # Generales (espejo de bp: paquete que se envía + aprobación por grupo)
+    "gen_draft": ["gen_completed", "gen_sent"],
+    "gen_completed": ["gen_need_changes", "gen_approved"],
+    "gen_adjusted": ["gen_need_changes", "gen_approved"],
+    "gen_need_changes": ["gen_adjusted", "gen_resent"],
+    "gen_sent": ["gen_finished", "gen_need_changes"],
+    "gen_resent": ["gen_finished"],
 }
 
 # Para mover el PADRE al status clave, TODOS sus hijos deben estar en
@@ -176,6 +210,10 @@ VALID_CHILD_STATUSES = {
     "cp_need_changes": ["cp_need_changes", "cp_approved", "cp_postponed"],
     "cp_partial": ["cp_completed", "cp_postponed"],
     "cp_partial_approved": ["cp_partial_approved"],
+    # Generales (espejo de bp)
+    "gen_sent": ["gen_completed"],
+    "gen_resent": ["gen_adjusted", "gen_completed", "gen_approved"],
+    "gen_finished": ["gen_approved"],
 }
 
 # Guía de siguiente paso por status (frontend la muestra bajo el control)
@@ -196,12 +234,20 @@ HINTS = {
                      "pendientes aquí.",
     "bp_rejected": "No pasó los filtros mínimos de la convocatoria.",
     "bp_finished": "Revisión del paquete concluida.",
+    "gen_draft": "Edita las preguntas generales, marca cada grupo como "
+                 "completado y envía a revisión.",
+    "gen_sent": "Preguntas generales en revisión. Aprueba cada grupo o "
+                "solicita ajustes.",
+    "gen_need_changes": "La revisión solicitó correcciones. Ajusta y "
+                        "reenvía las preguntas generales.",
+    "gen_finished": "Revisión de las preguntas generales concluida.",
 }
 
 # Reglas de UX (nombres del registry flowRules en el frontend) que deben
 # cumplirse para mover un objeto a ese status. El motor no las valida.
 ENTRY_RULES = {
     "bp_completed": ["practice_complete"],
+    "bp_sent": ["package_ready"],
 }
 
 # Color inicial según el rol (tonos del board de Miró → vuetify).
@@ -226,14 +272,22 @@ def seed_flow() -> dict:
     updated_count = 0
     applicability: dict[str, list] = {}
 
+    # Limpia is_default de los grupos gestionados antes del upsert: evita
+    # chocar con unique_default_per_group cuando el default de un grupo
+    # cambió de nombre (p.ej. gen_pre_start → gen_draft). El loop lo
+    # reasigna enseguida.
+    Status.objects.filter(group__in=STATUSES).update(is_default=False)
+
     for group, rows in STATUSES.items():
         for order, row in enumerate(rows, start=1):
-            name, public_name, description, role, flags, applies = row
+            (name, public_name, action_name, description, role, flags,
+             applies) = row
             status, created = Status.objects.update_or_create(
                 name=name,
                 defaults={
                     "group": group,
                     "public_name": public_name,
+                    "action_name": action_name,
                     "description": description,
                     "role": role,
                     "order": order,
@@ -243,6 +297,7 @@ def seed_flow() -> dict:
                     "propagates_up": "up" in flags,
                     "propagates_down": "down" in flags,
                     "auto_on_first_save": "auto" in flags,
+                    "content_editable": "edit" in flags,
                     "hint": HINTS.get(name),
                     "entry_rules": ENTRY_RULES.get(name, []),
                 },
@@ -266,5 +321,12 @@ def seed_flow() -> dict:
     for name in all_names:
         children = VALID_CHILD_STATUSES.get(name, [])
         Status.objects.get(name=name).valid_child_statuses.set(children)
+
+    # Baja de status obsoletos de los grupos gestionados (p.ej. el gen
+    # viejo de un solo nivel, reemplazado por el flujo con GeneralPackage).
+    # Si algún FlowEvent aún los referencia (PROTECT), la baja falla: hay
+    # que migrar esos eventos antes de re-sembrar.
+    Status.objects.filter(group__in=STATUSES).exclude(
+        name__in=all_names).delete()
 
     return {"created": created_count, "updated": updated_count}

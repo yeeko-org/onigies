@@ -7,11 +7,11 @@ import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
 const mainStore = useMainStore()
 
-const { practice, isStaff, editionAvailable, loading } = defineProps({
+const { practice, isStaff, editable, loading } = defineProps({
   practice: { type: Object, required: true },
   isStaff: { type: Boolean, default: false },
   sentAt: String,
-  editionAvailable: Boolean,
+  editable: Boolean,
   loading: { type: Boolean, default: false },
 })
 
@@ -36,7 +36,7 @@ const features_dict = computed(() => {
 })
 
 function openEdit(){
-  if (!editionAvailable && !isStaff) return
+  if (!editable && !isStaff) return
   emit('open', practice.id)
 }
 
@@ -48,8 +48,8 @@ function openEdit(){
     rounded="lg"
   >
     <v-card
-      :hover="editionAvailable || isStaff"
-      :class="{'cursor-pointer': editionAvailable || isStaff}"
+      :hover="editable || isStaff"
+      :class="{'cursor-pointer': editable || isStaff}"
       :loading="loading"
       variant="tonal"
       color="blue"
@@ -143,7 +143,7 @@ function openEdit(){
 
       </v-card-text>
       <v-card-actions
-        v-if="editionAvailable || isStaff"
+        v-if="editable || isStaff"
       >
         <v-spacer/>
         <v-btn
@@ -154,7 +154,7 @@ function openEdit(){
         >
           {{ isStaff
             ? 'Evaluar'
-            : (editionAvailable ? 'Editar' : 'Ver detalles') }}
+            : (editable ? 'Editar' : 'Ver detalles') }}
         </v-btn>
         <v-spacer/>
       </v-card-actions>

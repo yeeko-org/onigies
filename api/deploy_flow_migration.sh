@@ -35,6 +35,13 @@ PYTHON="${PYTHON:-python}"
 GIT_BRANCH="production"             # rama desplegada (fast-forwardeada a main)
 SUPERVISOR_PROGRAM="apionigies"     # supervisorctl {stop,start} <programa>
 
+# Comandos para detener/levantar el API en la ventana de mantenimiento.
+# Ajústalos a tu server: si supervisord corre como root, antepón sudo; si usa
+# otro socket: "sudo supervisorctl -c /etc/supervisor/supervisord.conf stop ...".
+# SKIP_SERVICE=1 omite el control del servicio (lo bajas/levantas tú a mano).
+SERVICE_STOP="${SERVICE_STOP:-sudo supervisorctl stop $SUPERVISOR_PROGRAM}"
+SERVICE_START="${SERVICE_START:-sudo supervisorctl start $SUPERVISOR_PROGRAM}"
+
 # Carpeta donde cae el respaldo de seguridad.
 BACKUP_DIR="${BACKUP_DIR:-./_backups}"
 # ---------------------------------------------------------------------------
@@ -103,9 +110,14 @@ if [[ "$MODE" == "prod" ]]; then
   # requirements no cambió entre los dos commits; se corre por seguridad.
   $PYTHON -m pip install -r requirements.txt
 
-  echo "Bajando el servicio (ventana de mantenimiento)…"
-  supervisorctl stop "$SUPERVISOR_PROGRAM"
-  gate "Servicio abajo y código en $GIT_BRANCH. Sigue: migraciones de esquema."
+  if [[ "${SKIP_SERVICE:-0}" == "1" ]]; then
+    echo "Control de servicio OMITIDO (SKIP_SERVICE=1): baja el API tú a mano."
+    gate "¿API detenido? Sigue: migraciones de esquema."
+  else
+    echo "Bajando el servicio (ventana de mantenimiento): $SERVICE_STOP"
+    eval "$SERVICE_STOP"
+    gate "Servicio abajo. Sigue: migraciones de esquema."
+  fi
 fi
 
 # ---------------------------------------------------------------------------
@@ -187,8 +199,12 @@ gate "¿Conteos correctos? Sigue: levantar el servicio."
 if [[ "$MODE" == "prod" ]]; then
   echo
   echo "[FASE 7] Levantando el servicio…"
-  supervisorctl start "$SUPERVISOR_PROGRAM"
-  supervisorctl status "$SUPERVISOR_PROGRAM"
+  if [[ "${SKIP_SERVICE:-0}" == "1" ]]; then
+    echo "Control de servicio OMITIDO (SKIP_SERVICE=1): levanta el API tú a mano."
+  else
+    echo "$SERVICE_START"
+    eval "$SERVICE_START"
+  fi
   echo
   echo "Smoke test sugerido:"
   echo "  - GET https://apionigies.yeeko.org/api/  (responde)"

@@ -28,6 +28,11 @@ ROLE_CHOICES = [
     ("reviewer", "Revisora"),
     ("ies", "Institución"),
 ]
+COMMENT_TYPE_CHOICES = [
+    ("none", "Sin comentario"),
+    ("optional", "Opcional"),
+    ("required", "Obligatorio"),
+]
 
 
 class Status(models.Model):
@@ -71,9 +76,28 @@ class Status(models.Model):
         verbose_name="Turno de",
         help_text="Quién puede ejecutar las transiciones de salida; "
                   "vacío = status terminal")
-    requires_comment = models.BooleanField(
-        default=False, verbose_name="Requiere comentario",
-        help_text="Asignarlo exige escribir un comentario")
+    comment_type = models.CharField(
+        max_length=10, choices=COMMENT_TYPE_CHOICES, default="none",
+        verbose_name="Comentario",
+        help_text="Si la transición a este status pide un comentario: "
+                  "ninguno, opcional u obligatorio")
+    requires_confirmation = models.BooleanField(
+        default=False, verbose_name="Requiere confirmación",
+        help_text="Antes de transicionar a este status, el frontend pide "
+                  "una confirmación explícita")
+    confirm_title = models.CharField(
+        max_length=255, blank=True, null=True,
+        verbose_name="Título de confirmación",
+        help_text="Encabezado del diálogo de confirmación; si está vacío "
+                  "el frontend deriva uno de action_name")
+    confirm_text = models.TextField(
+        blank=True, null=True, verbose_name="Texto de confirmación",
+        help_text="Cuerpo del diálogo de confirmación")
+    comment_prompt = models.CharField(
+        max_length=255, blank=True, null=True,
+        verbose_name="Rótulo del comentario",
+        help_text="Etiqueta de la caja de comentario en el diálogo; "
+                  "vacío = el frontend usa un genérico")
     propagates_up = models.BooleanField(
         default=False, verbose_name="Propaga hacia arriba",
         help_text="Al asignarse a un hijo, el padre también lo adopta")

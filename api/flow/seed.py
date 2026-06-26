@@ -23,9 +23,10 @@ G = "answer.groupresponse"            # GroupResponse
 GPK = "survey.generalpackage"         # GeneralPackage (raíz gen)
 GEN = "survey.generalgroupresponse"   # GeneralGroupResponse (hijo gen)
 
-# Flags: default, public, comment (requires_comment), up (propagates_up),
+# Flags: default, public, comment (comment_type=required),
+#        comment_opt (comment_type=optional), up (propagates_up),
 #        down (propagates_down), auto (auto_on_first_save),
-#        edit (content_editable)
+#        edit (content_editable), confirm (requires_confirmation)
 # Tuplas: (name, public_name, action_name, description, role, flags, aplica)
 #   public_name = estado que muestra el chip; action_name = verbo del
 #   botón/menú que transiciona HACIA ese status (None si nunca es destino
@@ -36,11 +37,6 @@ STATUSES = {
          "En captura. La IES edita libremente y marca cada práctica "
          "como completada antes de enviar el paquete.",
          "ies", {"default", "down", "edit"}, [P, GP]),
-        ("bp_discarded", "Descartado", "Descartar",
-         "La IES optó por no reportar buenas prácticas; su "
-         "participación queda cerrada (reabrible mientras el periodo "
-         "siga abierto).",
-         "ies", {"down"}, [P, GP]),
         ("bp_completed", "Completada", "Marcar como completada",
          "La IES dio por terminada esta práctica; entrará a revisión "
          "cuando se envíe el paquete.",
@@ -48,15 +44,11 @@ STATUSES = {
         ("bp_sent", "Enviado a revisión", "Enviar a revisión",
          "El paquete se envió; las prácticas están en manos de la "
          "revisión.",
-         "reviewer", set(), [P]),
-        ("bp_need_changes", "Requiere ajustes", "Solicitar ajustes",
-         "La revisión devolvió el paquete con correcciones para que "
-         "la IES las atienda.",
-         "ies", {"comment", "edit"}, [P, GP]),
+         "reviewer", {"confirm", "comment_opt"}, [P]),
         ("bp_adjusted", "Ajuste completo", "Marcar ajuste como completo",
          "La IES incorporó las correcciones; la práctica espera una "
          "nueva revisión.",
-         "reviewer", {"edit"}, [GP]),
+         "reviewer", {"edit", "comment_opt"}, [GP]),
         ("bp_resent", "Reenviado a revisión", "Reenviar a revisión",
          "El paquete se reenvió con los ajustes incorporados.",
          "reviewer", set(), [P]),
@@ -64,13 +56,22 @@ STATUSES = {
          "La práctica cumplió los criterios y pasa a la etapa de "
          "dictamen.",
          None, {"public"}, [GP]),
+        ("bp_finished", "Finalizado", "Finalizar",
+         "La revisión del paquete concluyó; sin acciones pendientes.",
+         None, set(), [P]),
+        ("bp_need_changes", "Requiere ajustes", "Solicitar ajustes",
+         "La revisión devolvió el paquete con correcciones para que "
+         "la IES las atienda.",
+         "ies", { "comment", "edit" }, [P, GP]),
         ("bp_rejected", "No admitida", "No admitir",
          "La práctica no cumplió los criterios mínimos de la "
          "convocatoria.",
          None, {"comment"}, [GP]),
-        ("bp_finished", "Finalizado", "Finalizar",
-         "La revisión del paquete concluyó; sin acciones pendientes.",
-         None, set(), [P]),
+        ("bp_discarded", "Descartado", "Descartar",
+         "La IES optó por no reportar buenas prácticas; su "
+         "participación queda cerrada (reabrible mientras el periodo "
+         "siga abierto).",
+         "ies", { "down", "confirm" }, [P, GP]),
     ],
     "cp": [
         ("cp_pre_start", "Por iniciar", None,
@@ -218,8 +219,6 @@ VALID_CHILD_STATUSES = {
 
 # Guía de siguiente paso por status (frontend la muestra bajo el control)
 HINTS = {
-    "bp_draft": "Edita los datos, marca cada práctica como completada y "
-                "envía el paquete a revisión.",
     "bp_discarded": "Participación cerrada. Puedes reabrir para cambiar tu "
                     "respuesta mientras el periodo siga abierto.",
     "bp_completed": "Práctica completada por la IES; en espera de que se "
@@ -243,11 +242,43 @@ HINTS = {
     "gen_finished": "Revisión de las preguntas generales concluida.",
 }
 
+# Diálogo de confirmación (título, cuerpo) para los status con flag
+# "confirm". El título cae a un default derivado de action_name si es None.
+CONFIRM_DIALOGS = {
+    "bp_discarded": (
+        "¿De verdad quieres descartar esta buena práctica?",
+        "Esta buena práctica quedará descartada. Podrás reabrirla "
+        "mientras el periodo siga abierto.",
+    ),
+    "bp_sent": (
+        "¿De verdad quieres enviar a revisión las buenas prácticas?",
+        "Una vez enviadas, no podrás realizar modificaciones ni agregar "
+        "nuevas.",
+    ),
+}
+
+# Rótulo de la caja de comentario (front), por defecto según a quién le
+# toca el turno tras la transición (role del status destino = quién leerá
+# el mensaje). Solo se asigna cuando comment_type != "none".
+COMMENT_PROMPT_BY_ROLE = {
+    "reviewer": "Si gustas, agrega un mensaje para la persona revisora.",
+    "ies": "Si gustas, agrega un mensaje para la institución.",
+}
+
+# Override fino por status (gana sobre el default por rol).
+COMMENT_PROMPTS = {
+    "bp_sent": "Si gustas, puedes agregar un mensaje para la persona "
+               "revisora que revisará tus buenas prácticas.",
+    "bp_adjusted": "Si gustas, describe a la persona revisora los "
+                   "ajustes que realizaste.",
+}
+
 # Reglas de UX (nombres del registry flowRules en el frontend) que deben
 # cumplirse para mover un objeto a ese status. El motor no las valida.
 ENTRY_RULES = {
     "bp_completed": ["practice_complete"],
-    "bp_sent": ["package_ready"],
+    "bp_adjusted": ["practice_complete"],
+    "bp_for_ruling": ["features_rated"],
 }
 
 # Color inicial según el rol (tonos del board de Miró → vuetify).
@@ -282,6 +313,18 @@ def seed_flow() -> dict:
         for order, row in enumerate(rows, start=1):
             (name, public_name, action_name, description, role, flags,
              applies) = row
+            confirm_title, confirm_text = CONFIRM_DIALOGS.get(
+                name, (None, None))
+            if "comment" in flags:
+                comment_type = "required"
+            elif "comment_opt" in flags:
+                comment_type = "optional"
+            else:
+                comment_type = "none"
+            comment_prompt = None
+            if comment_type != "none":
+                comment_prompt = (COMMENT_PROMPTS.get(name)
+                                  or COMMENT_PROMPT_BY_ROLE.get(role))
             status, created = Status.objects.update_or_create(
                 name=name,
                 defaults={
@@ -293,7 +336,11 @@ def seed_flow() -> dict:
                     "order": order,
                     "is_default": "default" in flags,
                     "is_public": "public" in flags,
-                    "requires_comment": "comment" in flags,
+                    "comment_type": comment_type,
+                    "comment_prompt": comment_prompt,
+                    "requires_confirmation": "confirm" in flags,
+                    "confirm_title": confirm_title,
+                    "confirm_text": confirm_text,
                     "propagates_up": "up" in flags,
                     "propagates_down": "down" in flags,
                     "auto_on_first_save": "auto" in flags,

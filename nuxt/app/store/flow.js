@@ -4,6 +4,25 @@ import { useAuthStore } from '~/store/auth'
 import { devWarn } from '~/utils/log.js'
 
 /**
+ * Espejo en cliente de la FK registry del backend (flow_parent): para cada
+ * modelo participante, el campo donde su serializer Full anida a los hijos y
+ * la etiqueta con que nombrarlos en los mensajes. Una raíz con regla de hijos
+ * (valid_child_statuses) debe anidarlos en ese campo. Es convención de
+ * serialización, no dato de catálogo: por eso vive como const, no como estado.
+ */
+const CHILD_REGISTRY = {
+  goodpracticepackage: { field: 'good_practices', label: 'buenas prácticas' },
+  // axisvalue: { field: 'observable_responses', label: 'respuestas' },
+  // observableresponse: { field: 'group_responses', label: 'grupos' },
+  // generalpackage: { field: 'general_group_responses', label: 'grupos' },
+}
+
+function childrenOf(record, modelName) {
+  const field = CHILD_REGISTRY[modelName]?.field
+  return field ? (record?.[field] || []) : []
+}
+
+/**
  * Catálogo de status del motor de flujo, cargado una sola vez desde
  * `/flow/statuses/` y cacheado por nombre. Es la única fuente de verdad de
  * display (public_name, color, icon) y de reglas estáticas (role,
@@ -65,6 +84,28 @@ export const useFlowStore = defineStore('flow', () => {
         ([a, m]) => a === appLabel && m === modelName))
   }
 
+  /**
+   * Compuerta de hijos: replica `_check_children_rule` del motor como pre-check
+   * de UX. Si el status destino declara `valid_child_statuses`, TODOS los hijos
+   * deben estar en uno de esos status. Devuelve string[] de motivos ([] =
+   * cumple) para FlowBlockedDialog; el mensaje lista los status permitidos por
+   * su public_name, no nombra al hijo ofensor. La regla dura la enforced el
+   * motor en el POST (400); esto solo evita el round-trip fallido.
+   */
+  function getChildrenNotReady(record, target, modelName) {
+    const allowed = target?.valid_child_statuses || []
+    if (!allowed.length) return []
+    const children = childrenOf(record, modelName)
+    if (children.every((c) => allowed.includes(c.status))) return []
+    const names = allowed
+      .map((name) => getStatus(name)?.public_name || name)
+      .join(', ')
+    const label = CHILD_REGISTRY[modelName]?.label || 'elementos'
+    const verb = target.action_name || target.public_name
+    return [`Todas las ${label} deben tener un status válido para `
+      + `«${verb}»: ${names}.`]
+  }
+
   return { byName, loaded, ensureStatuses, getStatus, canEditContent,
-    getAvailableTransitions }
+    getAvailableTransitions, getChildrenNotReady }
 })

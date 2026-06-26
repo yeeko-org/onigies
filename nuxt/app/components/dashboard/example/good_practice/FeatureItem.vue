@@ -36,8 +36,13 @@ const hasAttribute = computed({
 })
 
 const feature_options = computed(() => {
-  return props.feature.children.map(feature => feature.data) || []
+  return props.feature.children?.map(feature => feature.data) || []
 })
+
+// Una característica tiene escala evaluable solo si define opciones; "Otra"
+// (is_other) no las tiene y queda fuera de la calificación de la revisora.
+const hasScale = computed(() => feature_options.value.length > 0)
+const isRated = computed(() => localValue.value.final_option != null)
 
 const panelColor = computed(() => {
   if (!localValue.value.has_attribute) return ''
@@ -123,12 +128,21 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         </div>
         <template v-if="isStaff">
           <v-chip
-            v-if="localValue.final_option"
+            v-if="isRated"
             size="small"
             color="success"
             class="ml-2"
           >
             Evaluado
+          </v-chip>
+          <v-chip
+            v-else-if="hasScale && localValue.has_attribute"
+            size="small"
+            color="warning"
+            variant="tonal"
+            class="ml-2"
+          >
+            Sin calificar
           </v-chip>
           <Comments
             :main="localValue"
@@ -207,14 +221,21 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           :step="1"
           show-ticks="always"
           tick-size="4"
-          color="primary"
+          :color="isRated ? 'primary' : 'grey-lighten-1'"
           track-color="grey-lighten-2"
+          :class="{ 'slider-unrated': !isRated }"
           @update:model-value="saveFinalOption"
         >
           <template #tick-label="{ tick }">
             <span>{{ tick.label }}</span>
           </template>
         </v-slider>
+        <div
+          v-if="!isRated && hasScale"
+          class="text-caption text-warning mb-2"
+        >
+          Mueve el control para asignar una calificación.
+        </div>
         <div
           v-if="localValue.evidences.length > 0"
           class="mt-4"
@@ -243,5 +264,12 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 <style scoped>
 .v-btn-toggle {
   gap: 4px;
+}
+
+/* Sin calificar: thumb hueco (relleno transparente, solo borde) para que no
+   parezca que ya hay un valor seleccionado a la izquierda. */
+.slider-unrated :deep(.v-slider-thumb__surface) {
+  background-color: rgb(var(--v-theme-surface));
+  border: 2px solid rgb(var(--v-theme-grey-lighten-1));
 }
 </style>

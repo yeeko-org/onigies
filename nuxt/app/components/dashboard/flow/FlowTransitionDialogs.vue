@@ -1,6 +1,7 @@
 <script setup>
 /**
- * Diálogos del flujo (comentario obligatorio + bloqueo por entry_rules),
+ * Diálogos del flujo: uno unificado de acción (confirmación y/o comentario
+ * opcional u obligatorio, con timeline) + el bloqueo por entry_rules,
  * atados al estado de un kernel useFlowActions. Presentacional: recibe el
  * objeto del kernel y lee/escribe sus refs (siguen reactivas por ser el mismo
  * objeto estable). Lo montan FlowStatusActions y los split-buttons que usan el
@@ -8,57 +9,70 @@
  */
 import FlowTimeline from '~/components/dashboard/flow/FlowTimeline.vue'
 import FlowBlockedDialog from '~/components/dashboard/flow/FlowBlockedDialog.vue'
+import ConfirmActionDialog from
+  '~/components/dashboard/common/dialog/ConfirmActionDialog.vue'
 
 const props = defineProps({
   actions: { type: Object, required: true },
 })
 
 const {
-  sending, commentDialog, pendingTransition, comment, events,
-  blockedDialog, blockedTitle, blockedReasons,
-  confirmComment, closeDialog,
+  sending, actionDialog, pendingTransition, comment, events,
+  blockedDialog, blockedTitle, blockedReasons, confirmAction,
 } = props.actions
+
+// Rótulo de la caja de comentario: el del catálogo, con un genérico de
+// respaldo para status obligatorios sin rótulo propio (p. ej. terminales
+// role=None como bp_rejected, que el seed deja sin prompt por rol).
+const commentPrompt = computed(() => {
+  const t = pendingTransition.value
+  if (!t || t.comment_type === 'none') return null
+  return t.comment_prompt || 'Comentario'
+})
 </script>
 
 <template>
   <div>
-    <v-dialog v-model="commentDialog" max-width="520" persistent scrollable>
-      <v-card v-if="pendingTransition">
-        <v-card-title class="text-subtitle-1">
-          {{ pendingTransition.public_name }}
-        </v-card-title>
-        <v-card-text>
-          <div class="text-caption text-medium-emphasis">Historial</div>
+    <ConfirmActionDialog
+      v-if="pendingTransition"
+      v-model="actionDialog"
+      v-model:comment="comment"
+      :title="pendingTransition.confirm_title
+        || `¿${pendingTransition.action_name || pendingTransition.public_name}?`"
+      :confirm-label="pendingTransition.action_name || 'Confirmar'"
+      :comment-prompt="commentPrompt"
+      :comment-required="pendingTransition.comment_type === 'required'"
+      :loading="sending"
+      @confirm="confirmAction"
+    >
+      <v-alert
+        v-if="pendingTransition.confirm_text"
+        type="warning"
+        variant="outlined"
+        density="comfortable"
+        class="mb-2"
+      >
+        {{ pendingTransition.confirm_text }}
+      </v-alert>
+      <template #comment-history>
+        <template v-if="events.length">
+          <div class="text-caption text-medium-emphasis">
+            Historial de comentarios y cambios
+          </div>
           <FlowTimeline :events="events" />
-          <v-divider class="my-2" />
-          <v-textarea
-            v-model="comment"
-            label="Comentario *"
-            variant="outlined"
-            rows="3"
-            auto-grow
-          />
-        </v-card-text>
-        <v-card-actions class="mx-3 mb-2">
-          <v-btn variant="text" @click="closeDialog">Cancelar</v-btn>
-          <v-spacer />
-          <v-btn
-            :color="pendingTransition.color || 'primary'"
-            variant="flat"
-            :loading="sending"
-            :disabled="!comment.trim()"
-            @click="confirmComment"
-          >
-            Confirmar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-divider class="my-3" />
+        </template>
+      </template>
+    </ConfirmActionDialog>
 
     <FlowBlockedDialog
       v-model="blockedDialog"
       :title="blockedTitle"
       :reasons="blockedReasons"
-    />
+    >
+      <template #extra-actions>
+        <slot name="blocked-actions" />
+      </template>
+    </FlowBlockedDialog>
   </div>
 </template>

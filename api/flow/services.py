@@ -92,7 +92,7 @@ def validate_transition(
     if child_error:
         errors.append(child_error)
 
-    if target.requires_comment and not (comment and comment.strip()):
+    if target.comment_type == "required" and not (comment and comment.strip()):
         errors.append(
             f"El status '{target.public_name}' requiere un comentario."
         )

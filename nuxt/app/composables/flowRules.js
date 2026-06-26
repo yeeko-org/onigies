@@ -1,35 +1,23 @@
-import { getMissingFields } from '~/composables/good_practice_validation.js'
-import { useFlowStore } from '~/store/flow.js'
+import {
+  getMissingFields, getUnratedFeatures,
+} from '~/composables/good_practice_validation.js'
+import { useMainStore } from '~/store/index.js'
 import { devWarn } from '~/utils/log.js'
-
-/**
- * Compuerta de UX para enviar un paquete: lista los motivos por los que aún no
- * se puede (prácticas que siguen en turno de la IES, es decir, sin marcar como
- * completadas). Mira el catálogo (role del status de cada hijo); la regla dura
- * (todas en bp_completed) la enforced el motor vía valid_child_statuses.
- */
-function getPackageNotReady(pkg) {
-  const practices = pkg?.good_practices || []
-  if (!practices.length)
-    return ['Aún no has agregado ninguna buena práctica.']
-  const flowStore = useFlowStore()
-  return practices
-    .filter(p => {
-      const st = flowStore.getStatus(p.status)
-      return !st || st.role === 'ies'
-    })
-    .map(p => `${p.name || 'Sin nombre'}: márcala como completada.`)
-}
 
 /**
  * Registry de reglas de UX del flujo: nombre → función(obj) → string[] de
  * faltantes ([] = cumple). El catálogo de status (Status.entry_rules) nombra
  * las reglas que deben cumplirse para mover un objeto a ese status; aquí viven
- * sus implementaciones. Reusa la validación de buenas prácticas.
+ * sus implementaciones. La regla de hijos (valid_child_statuses) NO vive aquí:
+ * es un built-in del motor (useFlowStore.getChildrenNotReady).
  */
 const RULES = {
   practice_complete: getMissingFields,
-  package_ready: getPackageNotReady,
+  // Toda característica marcada debe estar calificada por la revisora
+  // (final_option). Lee cats.feature del store para resolver nombre e is_other.
+  features_rated: obj =>
+    getUnratedFeatures(obj, useMainStore().cats.feature)
+      .map(name => `Falta calificar la característica: ${name}`),
 }
 
 /**

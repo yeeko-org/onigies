@@ -25,6 +25,7 @@ const props = defineProps({
 
   special_multiple: Boolean,
   width: Number,
+  empty_text: { type: String, default: '' },
 })
 
 const loaded = ref(false)
@@ -277,11 +278,39 @@ function setInitialData() {
 
 const subtype_key = computed(() => collections.value.subtype.pk)
 
+const show_group = computed(() => !!collections.value.group)
+const show_subtype = computed(() =>
+  !!subtype_items.value && !!level_names.value.subtype)
+
+// Mirror GenericDisplay's value resolution so DisplayGroup can tell
+// whether a level maps to a real catalog item (vs. the old "!?").
+function resolves(value, items, key = 'id', multiple = false) {
+  if (!items)
+    return false
+  if (multiple)
+    return Array.isArray(value)
+      && value.some(v => items.some(it => it[key] === v))
+  return items.some(it => it[key] === value)
+}
+
+const has_group = computed(() => show_group.value && resolves(
+  props.main_object[level_names.value.group],
+  filter_group_data.value.category_groups))
+const has_type = computed(() => display_type.value && resolves(
+  props.main_object[type_field.value], type_items.value, 'id',
+  category_is_multiple.value))
+const has_subtype = computed(() => show_subtype.value && resolves(
+  props.main_object[subtype_field.value], subtype_items.value,
+  subtype_key.value, subcategory_is_multiple.value))
+
+const is_empty = computed(() =>
+  !has_group.value && !has_type.value && !has_subtype.value)
+
 </script>
 
 <template>
   <GenericDisplay
-    v-if="collections.group"
+    v-if="show_group"
     :element_value="main_object[level_names.group]"
     level="group"
     :items="filter_group_data.category_groups"
@@ -298,7 +327,7 @@ const subtype_key = computed(() => collections.value.subtype.pk)
     :hide_border="hide_border"
   />
   <GenericDisplay
-    v-if="subtype_items && level_names.subtype"
+    v-if="show_subtype"
     :element_value="main_object[subtype_field]"
     level="subtype"
     :item_value="subtype_key"
@@ -307,6 +336,13 @@ const subtype_key = computed(() => collections.value.subtype.pk)
     :show_name="show_all_names"
     :hide_border="hide_border"
   />
+
+  <span
+    v-if="is_empty && empty_text"
+    class="text-caption text-medium-emphasis font-italic"
+  >
+    {{ empty_text }}
+  </span>
 
 </template>
 

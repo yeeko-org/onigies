@@ -12,7 +12,7 @@ defineProps({
   },
   confirmIcon: {
     type: String,
-    default: null,
+    default: 'send',
   },
   cancelLabel: {
     type: String,
@@ -26,8 +26,20 @@ defineProps({
     type: [String, Number],
     default: 600,
   },
+  // Si se pasa, se renderiza la caja de comentario; el texto va como guía
+  // sobre el campo (no como label, suele ser largo).
+  commentPrompt: {
+    type: String,
+    default: null,
+  },
+  // Obliga a escribir el comentario (botón confirmar deshabilitado si vacío).
+  commentRequired: {
+    type: Boolean,
+    default: false,
+  },
 });
 const dialog_visible = defineModel({ type: Boolean, default: false });
+const comment = defineModel('comment', { type: String, default: '' });
 
 </script>
 
@@ -44,6 +56,25 @@ const dialog_visible = defineModel({ type: Boolean, default: false });
       <v-card-text>
         <!-- Slot por defecto: contenido contextual (alertas, texto, etc.) -->
         <slot />
+        <v-card
+          v-if="commentPrompt" variant="tonal" class="mt-2"
+          color="primary"
+        >
+          <v-card-text class="py-3">
+            <slot name="comment-history" />
+            <div class="text-body-2 text-medium-emphasis mb-2">
+              {{ commentPrompt }}
+            </div>
+            <v-textarea
+              v-model="comment"
+              :label="commentRequired ? 'Comentario *' : 'Comentario'"
+              variant="outlined"
+              rows="3"
+              auto-grow
+              hide-details
+            />
+          </v-card-text>
+        </v-card>
       </v-card-text>
       <v-card-actions class="mx-2">
         <v-btn
@@ -60,6 +91,7 @@ const dialog_visible = defineModel({ type: Boolean, default: false });
           variant="elevated"
           :append-icon="confirmIcon"
           :loading="loading"
+          :disabled="commentRequired && !comment.trim()"
           class="px-6"
           @click="emits('confirm')"
         >

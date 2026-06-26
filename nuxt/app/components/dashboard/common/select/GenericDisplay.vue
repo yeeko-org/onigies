@@ -47,6 +47,7 @@ const show_chip = computed(() => {
 
 <template>
   <div
+    v-if="final_value"
     class="mr-0 px-2"
     :class="{'white-border': !hide_border}"
   >
@@ -96,9 +97,6 @@ const show_chip = computed(() => {
         {{ final_value[item_title] }}
       </span>
     </template>
-    <span v-else>
-      !?
-    </span>
   </div>
 </template>
 

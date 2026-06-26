@@ -19,17 +19,18 @@ const open = defineModel({ type: Boolean, default: false })
       <v-card-text>
         <template v-if="reasons.length">
           <v-alert type="info" variant="tonal" class="mb-3">
-            Antes debes completar:
+            <b>Antes debes completar:</b>
+            <ul class="ml-4">
+              <li v-for="(r, i) in reasons" :key="i" class="mb-1">{{ r }}</li>
+            </ul>
           </v-alert>
-          <ul class="ml-4">
-            <li v-for="(r, i) in reasons" :key="i" class="mb-1">{{ r }}</li>
-          </ul>
         </template>
         <div v-else class="text-body-2">
           Revisa los requisitos de este cambio antes de continuar.
         </div>
       </v-card-text>
       <v-card-actions class="mx-3 mb-2">
+        <slot name="extra-actions" />
         <v-spacer />
         <v-btn variant="elevated" color="primary" @click="open = false">
           Entendido, regresar

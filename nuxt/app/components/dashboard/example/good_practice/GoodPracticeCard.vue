@@ -121,7 +121,8 @@ function openEdit(){
           <DisplayGroup
             :main_object="practice"
             filter_group_name="axes"
-            forced_level="subtype"
+            forced_level="type"
+            empty_text="Sin eje asignado"
           />
         </div>
 

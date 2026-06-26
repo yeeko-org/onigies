@@ -3,18 +3,17 @@ import {ref, computed, onMounted, watch} from 'vue'
 import { useAuthStore } from '~/store/auth.js'
 import { useIesStore } from "~/store/ies.js";
 import { useMainStore } from '~/store/index.js'
-import { useDashboardStore } from '~/store/dash.js'
-import { useFlow } from '~/composables/useFlow.js'
+import { useFlowActions } from '~/composables/useFlowActions.js'
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
-import GoodPracticeEditSimple from "~/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue";
+import GoodPracticeResponseQuestion from "~/components/dashboard/example/good_practice/GoodPracticeResponseQuestion.vue";
+import GoodPracticeEditDialog from "~/components/dashboard/example/good_practice/GoodPracticeEditDialog.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
-import FlowBlockedDialog from "~/components/dashboard/flow/FlowBlockedDialog.vue";
+import FlowTransitionDialogs from "~/components/dashboard/flow/FlowTransitionDialogs.vue";
 import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmActionDialog.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import { useFlowStore } from '~/store/flow.js'
-import { runEntryRules } from '~/composables/flowRules.js'
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -24,10 +23,7 @@ const props = defineProps({
 const authStore = useAuthStore()
 const { getSimple, saveSimple, saveAction } = useMainStore()
 const iesStore = useIesStore()
-const dashStore = useDashboardStore()
 const flowStore = useFlowStore()
-const { transition: packageTransition } = useFlow(
-  () => 'example', () => 'goodpracticepackage', () => package_id.value)
 
 const isStaff = computed(() => authStore.is_staff)
 const goodPracticePackage = ref({
@@ -38,6 +34,14 @@ const create_dialog = ref(false)
 const current_loading = ref(false)
 const editingPractice = ref(null)
 const loadingId = ref(null)
+
+// Kernel de flujo del paquete: gate de hijos + confirmación + transición.
+// onTransitioned recarga para traer sent_at y los flow_events frescos.
+const sendActions = useFlowActions(
+  goodPracticePackage, 'example', 'goodpracticepackage',
+  { onTransitioned: () => loadPractices() })
+const sendLabel = computed(() =>
+  flowStore.getStatus('bp_sent')?.action_name || 'Enviar a revisión')
 
 const limit_reached = computed(() => {
   return goodPractices.value.length >= 5
@@ -71,17 +75,17 @@ const canEditResponse = computed(() => {
   return packageStatus.value?.role === 'ies'
 })
 
-const responseModel = computed({
-  get: () => goodPracticePackage.value.has_good_practices,
-  set: (newValue) => {
-    if (newValue === true) {
-      goodPracticePackage.value.has_good_practices = true
-      editPackage()
-    } else if (newValue === false) {
-      discard_dialog.value = true
-    }
+// Mapea la intención emitida por GoodPracticeResponseQuestion: "Sí" guarda
+// el paquete; "No" abre la confirmación de descarte (la acción de flow
+// la ejecuta discardPackage tras confirmar).
+function onRespond(value) {
+  if (value === true) {
+    goodPracticePackage.value.has_good_practices = true
+    editPackage()
+  } else if (value === false) {
+    discard_dialog.value = true
   }
-})
+}
 
 const canAddMore = computed(() => {
   if (isStaff.value)
@@ -91,26 +95,8 @@ const canAddMore = computed(() => {
   return goodPracticePackage.value.has_good_practices && !limit_reached.value
 })
 
-const responseOptions = [
-  {
-    value: true,
-    label: 'Sí tengo buenas prácticas',
-    color: 'success',
-    icon: 'check_circle',
-  },
-  {
-    value: false,
-    label: 'No / No deseo responder',
-    color: 'grey-darken-1',
-    icon: 'cancel',
-  },
-]
-
-const selectedResponse = computed(() =>
-  responseOptions.find(
-    o => o.value === goodPracticePackage.value.has_good_practices
-  ) || {}
-)
+const hasResponse = computed(
+  () => goodPracticePackage.value.has_good_practices != null)
 
 const package_id = computed(() => {
   if (props.packageId)
@@ -198,43 +184,20 @@ function editPackage() {
     })
 }
 
-const send_dialog = ref(false)
-const blocked_dialog = ref(false)
 const discard_dialog = ref(false)
-const sendReasons = ref([])
 
-// Envío del paquete: la compuerta de UX (todas las prácticas completadas) vive
-// ahora en el entry_rule `package_ready` (flowRules), atado a bp_sent en el
-// catálogo; aquí solo la evaluamos y, si falla, mostramos el bloqueo. La regla
-// dura la fuerza el motor vía valid_child_statuses.
+// Envío del paquete: delega en el kernel (gate de hijos por
+// valid_child_statuses + confirmación + transición). Solo resolvemos la
+// transición destino y sincronizamos el array embebido con el vivo: el gate
+// de hijos lee record.good_practices, que se desincroniza tras altas/bajas
+// sin recargar.
 function wantSend() {
   const t = flowStore.getAvailableTransitions(
     goodPracticePackage.value.status, 'example', 'goodpracticepackage')
     .find(x => x.name === 'bp_sent')
   if (!t) return
-  // Pasamos las prácticas vivas (goodPractices) por si divergen del array
-  // embebido del paquete tras altas, bajas o ediciones.
-  const pkg = {
-    ...goodPracticePackage.value,
-    good_practices: goodPractices.value,
-  }
-  const { ok, missing } = runEntryRules(t.entry_rules, pkg)
-  if (!ok) {
-    sendReasons.value = missing
-    blocked_dialog.value = true
-    return
-  }
-  send_dialog.value = true
-}
-
-async function sendPackage() {
-  const ev = await packageTransition('bp_sent', '')
-  if (!ev) return
-  send_dialog.value = false
-  // Recargamos el paquete: trae status, sent_at, prácticas y flow_events
-  // actualizados (incluido el evento de envío), que alimentan los comentarios.
-  await loadPractices()
-  dashStore.showSnackbar('Buenas prácticas enviadas a revisión')
+  goodPracticePackage.value.good_practices = goodPractices.value
+  sendActions.onSelect(t)
 }
 
 function discardPackage() {
@@ -300,59 +263,12 @@ function reopenPackage() {
       transformaciones significativas para la igualdad de género.
     </v-card-text>
 
-    <v-card-text class="text-subtitle-1 mt-3 mb-1 d-flex">
-      <div class="text-indigo">
-        ¿Durante los últimos cinco años, su institución ha implementado
-        alguna política, programa o acción en materia de igualdad de género,
-        no discriminación, cuidados corresponsables y/o
-        una vida libre de violencias que, por su trascendencia o innovación,
-        considere que constituya una práctica exitosa
-        que pudiera ser compartida a nivel nacional?
-      </div>
-      <v-spacer></v-spacer>
-      <div
-        v-if="goodPracticePackage.has_good_practices != null"
-        class="ml-3 d-flex flex-column align-center"
-        style="width: 680px;"
-      >
-        <v-chip
-          :color="selectedResponse.color"
-          :prepend-icon="selectedResponse.icon"
-          variant="tonal"
-          size="large"
-        >
-          {{ selectedResponse.label }}
-        </v-chip>
-<!--        <span class="text-caption text-medium-emphasis text-info">-->
-<!--          Respuesta registrada-->
-<!--        </span>-->
-        <v-btn
-          v-if="canEditResponse"
-          color="accent"
-          variant="outlined"
-          prepend-icon="undo"
-          class="mt-3"
-          size="small"
-          @click="reopenPackage"
-        >
-          Cambiar respuesta
-        </v-btn>
-      </div>
-      <v-radio-group
-        v-else-if="canEditResponse"
-        v-model="responseModel"
-        style="width: 680px;"
-        class="ml-3"
-      >
-        <v-radio
-          v-for="(opt, i) in responseOptions"
-          :key="opt.value"
-          :class="{ 'mr-3': i === 0 }"
-          :label="opt.label"
-          :value="opt.value"
-        />
-      </v-radio-group>
-    </v-card-text>
+    <GoodPracticeResponseQuestion
+      :has-good-practices="goodPracticePackage.has_good_practices"
+      :can-edit-response="canEditResponse"
+      @respond="onRespond"
+      @reopen="reopenPackage"
+    />
 
     <v-divider></v-divider>
 
@@ -388,17 +304,19 @@ function reopenPackage() {
         </span>
       </v-chip>
       <v-spacer></v-spacer>
-      <FlowStatusChip
-        :status="goodPracticePackage.status"
-        label="Status de envío:"
-        class="mr-3"
-      />
-      <FlowComments
-        v-if="goodPracticePackage.id"
-        v-model="goodPracticePackage"
-        app-label="example"
-        model-name="goodpracticepackage"
-      />
+      <template v-if="hasResponse">
+        <FlowStatusChip
+          :status="goodPracticePackage.status"
+          label="Status de envío:"
+          class="mr-3"
+        />
+        <FlowComments
+          v-if="goodPracticePackage.id"
+          v-model="goodPracticePackage"
+          app-label="example"
+          model-name="goodpracticepackage"
+        />
+      </template>
     </v-card-title>
     <v-card-text v-if="goodPracticePackage.has_good_practices">
       <v-progress-linear
@@ -455,7 +373,7 @@ function reopenPackage() {
         @click="wantSend"
         class="px-6"
       >
-        Enviar a revisión
+        {{ sendLabel }}
       </v-btn>
     </v-card-actions>
 
@@ -472,60 +390,14 @@ function reopenPackage() {
         @created="onCreated"
       />
     </v-dialog>
-    <v-dialog
-      :model-value="!!editingPractice"
-      @update:model-value="editingPractice = null"
-      scrollable
-    >
-      <GoodPracticeEditSimple
-        v-if="editingPractice"
-        v-model="editingPractice"
-        :is-staff="isStaff"
-        :editable="editingEditable"
-        class="mt-3"
-        @saved="onSaved"
-        @deleted="onDeleted"
-        @close="editingPractice = null"
-      >
-        <template #header>
-          <v-toolbar
-            color="primary"
-          >
-            <v-toolbar-title>
-              Editar Buena Práctica
-            </v-toolbar-title>
-            <v-spacer />
-            <v-btn
-              icon
-              @click="editingPractice = null"
-            >
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-toolbar>
-        </template>
-      </GoodPracticeEditSimple>
-    </v-dialog>
-    <FlowBlockedDialog
-      v-model="blocked_dialog"
-      title="Aún no puedes enviar las buenas prácticas"
-      :reasons="sendReasons"
+    <GoodPracticeEditDialog
+      v-model="editingPractice"
+      :is-staff="isStaff"
+      :editable="editingEditable"
+      @saved="onSaved"
+      @deleted="onDeleted"
     />
-    <ConfirmActionDialog
-      v-model="send_dialog"
-      title="¿De verdad quieres enviar a revisión las buenas prácticas?"
-      confirm-label="Sí enviar"
-      confirm-icon="send"
-      cancel-label="Cancelar envío"
-      @confirm="sendPackage"
-    >
-      <v-alert
-        type="warning"
-        border="start"
-        variant="outlined"
-      >
-        Una vez enviadas, no podrás realizar modificaciones o agregar nuevas.
-      </v-alert>
-    </ConfirmActionDialog>
+    <FlowTransitionDialogs :actions="sendActions" />
     <ConfirmActionDialog
       v-model="discard_dialog"
       title="¿Confirmas que no quieres reportar Buenas Prácticas?"

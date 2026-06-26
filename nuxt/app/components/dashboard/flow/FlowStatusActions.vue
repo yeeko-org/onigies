@@ -52,7 +52,10 @@ const { sending, transitions, hasActions, onSelect } = actions
         </FlowStatusChip>
       </template>
 
-      <FlowTransitionMenu :transitions="transitions" @select="onSelect" />
+      <FlowTransitionMenu
+        :transitions="transitions"
+        @select="onSelect"
+      />
     </v-menu>
 
     <!-- Sin acciones: solo display, reusando el mismo chip. -->

@@ -13,7 +13,7 @@ import { runEntryRules } from '~/composables/flowRules.js'
  * en sitio al transicionar para que chip, hint y timeline se refresquen sin
  * recargar. `appLabel`/`modelName` pueden ser valores o getters.
  */
-export function useFlowActions(record, appLabel, modelName) {
+export function useFlowActions(record, appLabel, modelName, options = {}) {
   const dashStore = useDashboardStore()
   const flowStore = useFlowStore()
   const { sending, transition } = useFlow(
@@ -27,7 +27,7 @@ export function useFlowActions(record, appLabel, modelName) {
     () => flowStore.getStatus(record.value?.status))
   const events = computed(() => record.value?.flow_events || [])
 
-  const commentDialog = ref(false)
+  const actionDialog = ref(false)
   const pendingTransition = ref(null)
   const comment = ref('')
 
@@ -50,10 +50,18 @@ export function useFlowActions(record, appLabel, modelName) {
       block(`Aún no puedes pasar a "${t.public_name}"`, missing)
       return null
     }
-    if (t.requires_comment) {
+    const childMissing = flowStore.getChildrenNotReady(
+      record.value, t, toValue(modelName))
+    if (childMissing.length) {
+      block(`Aún no puedes pasar a "${t.public_name}"`, childMissing)
+      return null
+    }
+    // Un solo diálogo cubre confirmación y/o comentario (opcional u
+    // obligatorio); solo la transición sin nada se ejecuta directo.
+    if (t.requires_confirmation || t.comment_type !== 'none') {
       pendingTransition.value = t
       comment.value = ''
-      commentDialog.value = true
+      actionDialog.value = true
       return null
     }
     return runTransition(t, '')
@@ -68,23 +76,28 @@ export function useFlowActions(record, appLabel, modelName) {
       record.value.flow_events = []
     record.value.flow_events.push(ev)
     dashStore.showSnackbar(`Estado cambiado a "${t.public_name}"`)
+    await options.onTransitioned?.(ev)
     return ev
   }
 
-  function confirmComment() {
-    if (pendingTransition.value)
-      return runTransition(pendingTransition.value, comment.value)
+  // El comentario va siempre en el evento: vacío si comment_type es 'none' u
+  // 'optional' sin texto; el motor valida el obligatorio.
+  function confirmAction() {
+    const t = pendingTransition.value
+    if (!t) return
+    return runTransition(t, comment.value)
   }
 
   function closeDialog() {
-    commentDialog.value = false
+    actionDialog.value = false
     pendingTransition.value = null
+    comment.value = ''
   }
 
   return {
     sending, transitions, hasActions, currentStatus, events,
-    commentDialog, pendingTransition, comment,
+    actionDialog, pendingTransition, comment,
     blockedDialog, blockedTitle, blockedReasons, block,
-    onSelect, runTransition, confirmComment, closeDialog,
+    onSelect, runTransition, confirmAction, closeDialog,
   }
 }

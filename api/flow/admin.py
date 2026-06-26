@@ -8,10 +8,10 @@ from flow.models import Status, FlowEvent, Attachment
 class StatusAdmin(admin.ModelAdmin):
     list_display = [
         "name", "group", "public_name", "role", "is_default",
-        "is_public", "requires_comment", "propagates_up",
+        "is_public", "comment_type", "propagates_up",
         "auto_on_first_save", "order", "color", "icon"]
     list_editable = ["order", "color", "icon", "is_public"]
-    list_filter = ["group", "role"]
+    list_filter = ["group", "role", "comment_type"]
     search_fields = ["name", "public_name"]
     filter_horizontal = [
         "applicable_models", "next_statuses", "valid_child_statuses"]

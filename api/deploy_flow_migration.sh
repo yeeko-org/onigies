@@ -72,17 +72,25 @@ echo "==========================================================="
 # ---------------------------------------------------------------------------
 # FASE 0 — Respaldo de seguridad (red de rescate; restaurar si algo truena)
 # ---------------------------------------------------------------------------
-mkdir -p "$BACKUP_DIR"
-STAMP="$(date +%Y%m%d_%H%M%S)"
-BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_pre_flow_${STAMP}.dump"
-echo
-echo "[FASE 0] Respaldo -> $BACKUP_FILE"
-# -Fc = formato custom comprimido (se restaura con pg_restore). BD completa.
-pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -Fc "$DB_NAME" -f "$BACKUP_FILE"
-echo "Respaldo OK ($(du -h "$BACKUP_FILE" | cut -f1))."
-echo "   Restauración (si hiciera falta):"
-echo "   PGPASSWORD=… pg_restore -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME --clean --if-exists $BACKUP_FILE"
-gate "Respaldo listo. Sigue: traer código + bajar servicio."
+# SKIP_BACKUP=1 omite el pg_dump (úsalo cuando ya tomaste un snapshot de RDS,
+# que es el respaldo nativo y a prueba de versiones para una BD en RDS).
+if [[ "${SKIP_BACKUP:-0}" == "1" ]]; then
+  echo "[FASE 0] pg_dump OMITIDO (SKIP_BACKUP=1)."
+  echo "   Confirma que ya tienes un snapshot de RDS de '$DB_NAME' antes de seguir."
+  gate "¿Snapshot de RDS tomado? Sigue: bajar servicio + migraciones."
+else
+  mkdir -p "$BACKUP_DIR"
+  STAMP="$(date +%Y%m%d_%H%M%S)"
+  BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_pre_flow_${STAMP}.dump"
+  echo
+  echo "[FASE 0] Respaldo -> $BACKUP_FILE"
+  # Requiere pg_dump de versión >= la de RDS. -Fc = custom comprimido. BD completa.
+  pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -Fc "$DB_NAME" -f "$BACKUP_FILE"
+  echo "Respaldo OK ($(du -h "$BACKUP_FILE" | cut -f1))."
+  echo "   Restauración (si hiciera falta):"
+  echo "   PGPASSWORD=… pg_restore -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME --clean --if-exists $BACKUP_FILE"
+  gate "Respaldo listo. Sigue: traer código + bajar servicio."
+fi
 
 # ---------------------------------------------------------------------------
 # FASE 1 — Código + mantenimiento (solo prod; en local ya estás en main)

@@ -69,7 +69,7 @@ class BaseViewSet(CustomDeleteMixin, viewsets.ModelViewSet):
 class OrderingAutoFilter(OrderingFilter):
 
     def get_valid_fields(self, queryset, view, context={}):
-        from ies.models import StatusControl
+        from flow.models import Status
         valid_fields = getattr(view, 'ordering_fields', self.ordering_fields)
 
         if valid_fields is None:
@@ -81,7 +81,7 @@ class OrderingAutoFilter(OrderingFilter):
             all_fields = queryset.model._meta.fields
             for field in all_fields:
                 if field.many_to_one:
-                    if issubclass(field.related_model, StatusControl):
+                    if issubclass(field.related_model, Status):
                         field_str = f'{field.name}__order'
                         final_valid_fields.append((field_str, field_str))
                 elif field.primary_key:
@@ -99,7 +99,7 @@ class BaseGenericViewSet(BaseViewSet):
 
 
 class BaseStatusViewSet(BaseGenericViewSet):
-    filterset_fields = ['status_validation']
+    filterset_fields = ['status']
 
 
 class MassiveEdit(viewsets.ModelViewSet):

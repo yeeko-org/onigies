@@ -19,6 +19,7 @@ class InstitutionCatalogViewSet(BaseGenericViewSet):
     ).distinct()
 
     serializer_class = InstitutionSerializer
+    search_fields = ['name', 'acronym']
 
     def get_serializer_class(self):
         action_serializer = {

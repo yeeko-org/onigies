@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from ies.models import Period, Institution
 from survey.models import Survey, AxisValue
 from example.models import GoodPracticePackage
@@ -42,11 +43,19 @@ class InstitutionSimpleSerializer(serializers.ModelSerializer):
 
 
 class InstitutionDetailSerializer(serializers.ModelSerializer):
-    invitation_tokens = InvitationTokenBaseSerializer(many=True, read_only=True)
+    invitation_tokens = InvitationTokenBaseSerializer(
+        many=True, read_only=True)
 
     class Meta:
         model = Institution
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Import diferido: rompe el ciclo ies.serializers ⇄ example.serializers
+        from api.views.example import GoodPracticePackageSerializer
+        self.fields['good_practice_packages'] = GoodPracticePackageSerializer(
+            many=True, read_only=True)
 
 
 class InstitutionSerializer(serializers.ModelSerializer):

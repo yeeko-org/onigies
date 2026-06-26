@@ -80,7 +80,9 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
     search_fields = [
         'survey__institution__name', 'survey__institution__acronym']
     ordering_fields = [
-        'id', 'survey__period__year', 'survey__institution__name']
+        'id', 'survey__period__year', 'survey__institution__name',
+        'status__order'
+    ]
     # filterset_fields = ['survey__institution', 'survey__period']
     filterset_class = PackageFilter
 

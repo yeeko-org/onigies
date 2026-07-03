@@ -30,6 +30,9 @@ const { formatDate } = useDates()
 // Un solo kernel para el menú-chip de arriba y el botón "Enviar evaluación"
 // de abajo: comparten transiciones y un único juego de diálogos.
 const flowActions = useFlowActions(pkg, 'example', 'goodpracticepackage')
+// Desestructurado para el CTA inferior: en el template los refs anidados
+// (flowActions.transitions) no se desenvuelven; como variables tope, sí.
+const { transitions: sendTransitions, onSelect: onSendSelect } = flowActions
 
 const institution = computed(
   () => pkg.value.survey_full?.institution_full || {})
@@ -148,7 +151,7 @@ function onSaved(updated) {
     <!-- CTA de la revisora: envía la evaluación eligiendo el siguiente status.
          Comparte kernel con el menú-chip de arriba. -->
     <v-card-actions
-      v-if="flowActions.transitions.length"
+      v-if="sendTransitions.length"
       class="px-4 pb-4"
     >
       <v-spacer />
@@ -165,8 +168,8 @@ function onSaved(updated) {
           </v-btn>
         </template>
         <FlowTransitionMenu
-          :transitions="flowActions.transitions"
-          @select="flowActions.onSelect"
+          :transitions="sendTransitions"
+          @select="onSendSelect"
         />
       </v-menu>
     </v-card-actions>

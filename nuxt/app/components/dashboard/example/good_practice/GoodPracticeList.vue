@@ -40,8 +40,16 @@ const loadingId = ref(null)
 const sendActions = useFlowActions(
   goodPracticePackage, 'example', 'goodpracticepackage',
   { onTransitioned: () => loadPractices() })
+// Transición de envío disponible según el estado del paquete: primer envío
+// (bp_sent) desde bp_draft, o reenvío (bp_resent) desde bp_need_changes. El
+// motor solo expone la que aplica al turno y estado actuales.
+const sendTransition = computed(() =>
+  flowStore.getAvailableTransitions(
+    goodPracticePackage.value.status, 'example', 'goodpracticepackage')
+    .find(x => x.name === 'bp_sent' || x.name === 'bp_resent'))
+
 const sendLabel = computed(() =>
-  flowStore.getStatus('bp_sent')?.action_name || 'Enviar a revisión')
+  sendTransition.value?.action_name || 'Enviar a revisión')
 
 const limit_reached = computed(() => {
   return goodPractices.value.length >= 5
@@ -192,9 +200,7 @@ const discard_dialog = ref(false)
 // de hijos lee record.good_practices, que se desincroniza tras altas/bajas
 // sin recargar.
 function wantSend() {
-  const t = flowStore.getAvailableTransitions(
-    goodPracticePackage.value.status, 'example', 'goodpracticepackage')
-    .find(x => x.name === 'bp_sent')
+  const t = sendTransition.value
   if (!t) return
   goodPracticePackage.value.good_practices = goodPractices.value
   sendActions.onSelect(t)
@@ -352,7 +358,8 @@ function reopenPackage() {
 
     </v-card-text>
     <v-card-actions
-      v-if="goodPracticePackage.has_good_practices && packageEditable"
+      v-if="goodPracticePackage.has_good_practices && packageEditable
+        && sendTransition"
       class="mb-3 mx-3"
     >
       <v-btn

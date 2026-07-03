@@ -45,14 +45,14 @@ STATUSES = {
          "El paquete se envió; las prácticas están en manos de la "
          "revisión.",
          "reviewer", {"confirm", "comment_opt"}, [P]),
-        ("bp_adjusted", "Ajuste completo", "Marcar ajuste como completo",
+        ("bp_adjusted", "Ajuste atendido", "Marcar como atendido",
          "La IES incorporó las correcciones; la práctica espera una "
          "nueva revisión.",
          "reviewer", {"edit", "comment_opt"}, [GP]),
         ("bp_resent", "Reenviado a revisión", "Reenviar a revisión",
          "El paquete se reenvió con los ajustes incorporados.",
          "reviewer", set(), [P]),
-        ("bp_for_ruling", "Recibida para dictamen", "Recibir para dictamen",
+        ("bp_for_ruling", "Recibida", "Recibir",
          "La práctica cumplió los criterios y pasa a la etapa de "
          "dictamen.",
          None, {"public"}, [GP]),
@@ -63,7 +63,7 @@ STATUSES = {
          "La revisión devolvió el paquete con correcciones para que "
          "la IES las atienda.",
          "ies", { "comment", "edit" }, [P, GP]),
-        ("bp_rejected", "No admitida", "No admitir",
+        ("bp_rejected", "No acreditada", "Marcar como no acreditada",
          "La práctica no cumplió los criterios mínimos de la "
          "convocatoria.",
          None, {"comment"}, [GP]),

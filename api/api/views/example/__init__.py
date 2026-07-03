@@ -81,8 +81,10 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         'survey__institution__name', 'survey__institution__acronym']
     ordering_fields = [
         'id', 'survey__period__year', 'survey__institution__name',
-        'status__order'
+        'status__order', 'status__priority'
     ]
+    # Orden por defecto: más urgentes primero (mayor priority del status).
+    ordering = ['-status__priority', 'id']
     # filterset_fields = ['survey__institution', 'survey__period']
     filterset_class = PackageFilter
 

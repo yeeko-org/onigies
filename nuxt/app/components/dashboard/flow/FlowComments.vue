@@ -10,6 +10,8 @@
  * a nivel paquete y práctica.
  */
 import { useFlow } from '~/composables/useFlow.js'
+import { useFlowStore } from '~/store/flow.js'
+import { useAuthStore } from '~/store/auth.js'
 import FlowTimeline from '~/components/dashboard/flow/FlowTimeline.vue'
 
 const props = defineProps({
@@ -23,6 +25,15 @@ const record = defineModel({ type: Object, required: true })
 
 const { sending, addComment } = useFlow(
   () => props.appLabel, () => props.modelName, () => record.value?.id)
+
+const flowStore = useFlowStore()
+const auth = useAuthStore()
+
+// Solo comenta quien tiene el turno del registro: la IES no comenta cuando el
+// objeto está del lado de la revisora y viceversa. El timeline sigue visible
+// para ambos; solo se oculta la caja de captura.
+const canComment = computed(
+  () => flowStore.getStatus(record.value?.status)?.role === auth.flow_role)
 
 const open = ref(false)
 const newComment = ref('')
@@ -70,9 +81,9 @@ async function onAdd() {
       <v-icon class="mr-2" color="yellow-darken-3">open_in_full</v-icon>
     </v-card>
 
-    <!-- Sin historial todavía: botón para abrir el diálogo y comentar. -->
+    <!-- Sin historial y es mi turno: botón para abrir el diálogo y comentar. -->
     <v-btn
-      v-else
+      v-else-if="canComment"
       color="yellow-accent-4"
       variant="elevated"
       size="small"
@@ -95,8 +106,8 @@ async function onAdd() {
         <v-card-text>
           <FlowTimeline :events="events" />
         </v-card-text>
-        <v-divider />
-        <v-card-actions class="d-flex align-end ga-2 pa-3">
+        <v-divider v-if="canComment" />
+        <v-card-actions v-if="canComment" class="d-flex align-end ga-2 pa-3">
           <v-textarea
             v-model="newComment"
             label="Agregar comentario"

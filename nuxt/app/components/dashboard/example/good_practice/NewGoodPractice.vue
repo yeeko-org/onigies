@@ -53,6 +53,7 @@ const create = async () => {
           class="mt-4"
           rows="2"
           auto-grow
+          max-rows="20"
         />
       </v-form>
     </v-card-text>

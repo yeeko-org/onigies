@@ -67,6 +67,9 @@ class Observable(models.Model):
     a_main_subtitle = models.TextField(
         blank=True, null=True,
         verbose_name="Subtítulo institucionalización")
+    reach_instances_question = models.TextField(
+        blank=True, null=True,
+        verbose_name="Pregunta de instancias (alcance)")
 
     a_weight = models.DecimalField(
         max_digits=5, decimal_places=2,

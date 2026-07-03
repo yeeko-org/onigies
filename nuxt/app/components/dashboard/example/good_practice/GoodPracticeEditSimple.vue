@@ -207,6 +207,8 @@ const remove = async () => {
           label="Descripción"
           :variant="isStaff ? 'solo' : 'outlined'"
           rows="3"
+          auto-grow
+          max-rows="20"
           :readonly="isStaff"
           :counter="5000"
           :rules="completeRules(hasDescription, 'La descripción es obligatoria')"
@@ -217,6 +219,8 @@ const remove = async () => {
           label="Resultados obtenidos"
           :variant="isStaff ? 'solo' : 'outlined'"
           rows="3"
+          auto-grow
+          max-rows="20"
           :readonly="isStaff"
           :counter="5000"
           :rules="completeRules(hasResults, 'Los resultados son obligatorios')"

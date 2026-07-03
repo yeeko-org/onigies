@@ -64,6 +64,10 @@ class Status(models.Model):
         max_length=40, blank=True, null=True,
         help_text="https://fonts.google.com/icons")
     order = models.IntegerField(default=4)
+    priority = models.IntegerField(
+        default=0, verbose_name="Prioridad (urgencia)",
+        help_text="Urgencia para ordenar colecciones: mayor = más "
+                  "urgente, se muestra primero")
     is_default = models.BooleanField(
         default=False, verbose_name="Es status por defecto",
         help_text="Status inicial de su grupo (uno por grupo)")

@@ -178,6 +178,8 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           variant="outlined"
           density="compact"
           rows="2"
+          auto-grow
+          max-rows="20"
           hide-details
           @blur="saveJustification"
         />
@@ -197,16 +199,14 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 
       <!-- Para Staff: Evaluación -->
       <template v-if="isStaff && localValue.has_attribute">
-        <v-alert
-          v-if="localValue.justification"
-          type="info"
-          variant="tonal"
-          density="compact"
-          class="mb-4"
-        >
-          <strong>Justificación de la IES:</strong><br>
-          {{ localValue.justification }}
-        </v-alert>
+        <div v-if="localValue.justification" class="mb-4">
+          <div class="text-caption text-medium-emphasis mb-1">
+            Justificación de la IES
+          </div>
+          <div class="text-body-1" style="white-space: pre-wrap;">
+            {{ localValue.justification }}
+          </div>
+        </div>
 
         <span class="text-subtitle-2 mb-2">Evalúa la característica</span>
         <span class="text-caption text-grey-darken-1">

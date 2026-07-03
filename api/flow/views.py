@@ -23,7 +23,7 @@ from flow.serializers import (
     StatusSerializer,
     TransitionRequestSerializer,
 )
-from flow.services import execute_transition
+from flow.services import execute_transition, get_user_flow_role
 from flow.registry import is_flow_participant
 
 
@@ -112,6 +112,16 @@ class FlowEventView(FlowObjectMixin, APIView):
     def post(self, request, app_label, model_name, pk):
         """Agrega un comentario puro al timeline (sin cambiar el status)."""
         obj = self._get_flow_object(app_label, model_name, pk)
+
+        # Solo comenta quien tiene el turno: el rol del usuario debe coincidir
+        # con el role del status actual (guard simétrico IES/revisora).
+        current_role = obj.status.role if obj.status else None
+        if get_user_flow_role(request.user) != current_role:
+            return Response(
+                {'detail': 'No es tu turno para comentar en este objeto.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

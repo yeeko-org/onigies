@@ -3,6 +3,7 @@ import {storeToRefs} from 'pinia';
 import {useIesStore} from "~/store/ies.js";
 import {useMainStore} from '~/store/index.js'
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
+import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import GenericDisplay from "~/components/dashboard/common/select/GenericDisplay.vue";
 import InstitutionCard from "~/components/dashboard/ies/institution/InstitutionCard.vue";
 
@@ -108,10 +109,9 @@ definePageMeta({
                   </v-chip>
 
                   <template #badge>
-                    <StatusChip
-                      collection="sending"
-                      :main="year.survey.packages[0]"
-                      hide_details
+                    <FlowStatusChip
+                      :status="year.survey.packages[0].status"
+                      x-small
                     />
                   </template>
                 </v-badge>

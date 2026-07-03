@@ -45,6 +45,9 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
   // comentario) o falló. El consumidor usa el retorno para decidir, p.ej.,
   // cerrar su diálogo solo cuando el cambio realmente ocurrió.
   async function onSelect(t) {
+    // Guardia anti doble-disparo: `sending` se activa síncrono al entrar a
+    // `transition`, así que un segundo clic mientras el POST vuela se ignora.
+    if (sending.value) return null
     const { ok, missing } = runEntryRules(t.entry_rules, record.value)
     if (!ok) {
       block(`Aún no puedes pasar a "${t.public_name}"`, missing)

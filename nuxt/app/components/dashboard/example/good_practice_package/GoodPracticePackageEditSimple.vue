@@ -12,6 +12,7 @@
  * NO incluye has_good_practices ni enviar/descartar: eso es del
  * mundo de la IES (ver GoodPracticeList.vue en /respuestas).
  */
+import { useMainStore } from '~/store/index.js'
 import { useFlowStore } from '~/store/flow.js'
 import { useFlowActions } from '~/composables/useFlowActions.js'
 import FlowStatusActions from '~/components/dashboard/flow/FlowStatusActions.vue'
@@ -24,6 +25,7 @@ import { useDates } from '~/composables/useDates.js'
 
 const pkg = defineModel({ type: Object, required: true })
 
+const mainStore = useMainStore()
 const flowStore = useFlowStore()
 const { formatDate } = useDates()
 
@@ -65,6 +67,20 @@ function openPractice(practiceId) {
 function onSaved(updated) {
   if (editingPractice.value)
     Object.assign(editingPractice.value, updated)
+}
+
+// Tras una transición de práctica (hijo) recargamos el paquete: su status
+// puede quedar stale si el hijo propaga hacia arriba. Re-apuntamos la práctica
+// abierta al elemento fresco para no perder el diálogo en curso.
+async function refetchPackage() {
+  const openId = editingPractice.value?.id
+  const res = await mainStore.getSimple(
+    ['good_practice_package', pkg.value.id])
+  if (!res.data) return
+  pkg.value = res.data
+  if (openId)
+    editingPractice.value =
+      practices.value.find(p => p.id === openId) || null
 }
 </script>
 
@@ -189,6 +205,7 @@ function onSaved(updated) {
         :editable="canReview"
         class="mt-3"
         @saved="onSaved"
+        @transitioned="refetchPackage"
         @close="editingPractice = null"
       >
         <template #header>

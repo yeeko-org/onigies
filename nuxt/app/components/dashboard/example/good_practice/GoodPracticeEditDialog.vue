@@ -14,7 +14,7 @@ defineProps({
   title: { type: String, default: 'Editar Buena Práctica' },
 })
 
-const emit = defineEmits(['saved', 'deleted'])
+const emit = defineEmits(['saved', 'deleted', 'transitioned'])
 
 function close() {
   practice.value = null
@@ -36,6 +36,7 @@ function close() {
       class="mt-3"
       @saved="emit('saved', $event)"
       @deleted="emit('deleted', $event)"
+      @transitioned="emit('transitioned', $event)"
       @close="close"
     >
       <template #header>

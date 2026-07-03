@@ -22,12 +22,16 @@ const {
 } = props.actions
 
 // Rótulo de la caja de comentario: el del catálogo, con un genérico de
-// respaldo para status obligatorios sin rótulo propio (p. ej. terminales
-// role=None como bp_rejected, que el seed deja sin prompt por rol).
+// respaldo cuando el status no trae prompt propio. El respaldo distingue
+// obligatorio de opcional (p. ej. terminales role=None como bp_rejected, que
+// el seed deja sin prompt por rol) para no rotular igual ambos casos.
 const commentPrompt = computed(() => {
   const t = pendingTransition.value
   if (!t || t.comment_type === 'none') return null
-  return t.comment_prompt || 'Comentario'
+  if (t.comment_prompt) return t.comment_prompt
+  return t.comment_type === 'required'
+    ? 'Comentario (obligatorio)'
+    : 'Comentario (opcional)'
 })
 </script>
 

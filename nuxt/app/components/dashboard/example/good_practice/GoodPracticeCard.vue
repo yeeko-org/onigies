@@ -131,14 +131,14 @@ function openEdit(){
           class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
         >
           <b class="mr-1">Descripción:</b>
-          <span v-html="practice.description"></span>
+          <span class="pre-line">{{ practice.description }}</span>
         </p>
         <p
           v-if="practice.results"
           class="text-body-2 text-medium-emphasis mb-3 text-truncate-2"
         >
           <b class="mr-1">Resultados:</b>
-          <span v-html="practice.results"></span>
+          <span class="pre-line">{{ practice.results }}</span>
         </p>
 
 
@@ -170,5 +170,10 @@ function openEdit(){
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+/* Conserva los saltos de línea del texto capturado por la IES sin recurrir
+   a v-html (evita XSS almacenado). */
+.pre-line {
+  white-space: pre-line;
 }
 </style>

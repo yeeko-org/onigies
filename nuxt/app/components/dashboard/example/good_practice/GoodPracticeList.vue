@@ -3,6 +3,7 @@ import {ref, computed, onMounted, watch} from 'vue'
 import { useAuthStore } from '~/store/auth.js'
 import { useIesStore } from "~/store/ies.js";
 import { useMainStore } from '~/store/index.js'
+import { useDashboardStore } from '~/store/dash.js'
 import { useFlowActions } from '~/composables/useFlowActions.js'
 import GoodPracticeCard from "~/components/dashboard/example/good_practice/GoodPracticeCard.vue";
 import NewGoodPractice from "~/components/dashboard/example/good_practice/NewGoodPractice.vue";
@@ -10,6 +11,7 @@ import GoodPracticeResponseQuestion from "~/components/dashboard/example/good_pr
 import GoodPracticeEditDialog from "~/components/dashboard/example/good_practice/GoodPracticeEditDialog.vue";
 import GoodPracticeIntro from "~/components/dashboard/example/good_practice/GoodPracticeIntro.vue";
 import FlowTransitionDialogs from "~/components/dashboard/flow/FlowTransitionDialogs.vue";
+import FlowTransitionMenu from "~/components/dashboard/flow/FlowTransitionMenu.vue";
 import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmActionDialog.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
@@ -24,6 +26,7 @@ const authStore = useAuthStore()
 const { getSimple, saveSimple, saveAction } = useMainStore()
 const iesStore = useIesStore()
 const flowStore = useFlowStore()
+const dashStore = useDashboardStore()
 
 const isStaff = computed(() => authStore.is_staff)
 const goodPracticePackage = ref({
@@ -40,16 +43,13 @@ const loadingId = ref(null)
 const sendActions = useFlowActions(
   goodPracticePackage, 'example', 'goodpracticepackage',
   { onTransitioned: () => loadPractices() })
-// Transición de envío disponible según el estado del paquete: primer envío
-// (bp_sent) desde bp_draft, o reenvío (bp_resent) desde bp_need_changes. El
-// motor solo expone la que aplica al turno y estado actuales.
-const sendTransition = computed(() =>
+// Transiciones de envío = las disponibles que ceden el turno a la revisora
+// (role 'reviewer': bp_sent / bp_resent). Motor-driven, sin nombres de status;
+// excluye el descarte (role 'ies'), que va por su endpoint y su UI Sí/No.
+const sendTransitions = computed(() =>
   flowStore.getAvailableTransitions(
     goodPracticePackage.value.status, 'example', 'goodpracticepackage')
-    .find(x => x.name === 'bp_sent' || x.name === 'bp_resent'))
-
-const sendLabel = computed(() =>
-  sendTransition.value?.action_name || 'Enviar a revisión')
+    .filter(t => t.role === 'reviewer'))
 
 const limit_reached = computed(() => {
   return goodPractices.value.length >= 5
@@ -59,11 +59,19 @@ const limit_reached = computed(() => {
 const packageStatus = computed(
   () => flowStore.getStatus(goodPracticePackage.value.status))
 
-// Editabilidad de contenido de cualquier nodo del paquete : el motor 
-// (flowStore) combina el turno de la RAÍZ —el paquete— con el 
-// content_editable del status propio. 
+// Textos del diálogo de descarte desde el catálogo (bp_discarded);
+// el descarte va por la acción custom `discard`, no por el kernel de
+// flow, así que el diálogo se arma aquí con los mismos textos.
+const discardStatus = computed(() => flowStore.getStatus('bp_discarded'))
+
+// Editabilidad de contenido de cualquier nodo del paquete : el motor
+// (flowStore) combina el turno de la RAÍZ —el paquete— con el
+// content_editable del status propio. Además, con el periodo cerrado la IES
+// no edita nada: el backend no lo bloquea en /good_practice/, así que el
+// candado de periodo vive aquí.
 const canEdit = (obj) =>
-  !isStaff.value && flowStore.canEditContent(obj, goodPracticePackage.value)
+  !isStaff.value && periodOpen.value
+    && flowStore.canEditContent(obj, goodPracticePackage.value)
 
 const packageEditable = computed(() => canEdit(goodPracticePackage.value))
 const editingEditable = computed(() => canEdit(editingPractice.value))
@@ -194,14 +202,11 @@ function editPackage() {
 
 const discard_dialog = ref(false)
 
-// Envío del paquete: delega en el kernel (gate de hijos por
-// valid_child_statuses + confirmación + transición). Solo resolvemos la
-// transición destino y sincronizamos el array embebido con el vivo: el gate
-// de hijos lee record.good_practices, que se desincroniza tras altas/bajas
-// sin recargar.
-function wantSend() {
-  const t = sendTransition.value
-  if (!t) return
+// Envío del paquete: el menú entrega la transición elegida y delegamos en el
+// kernel (gate de hijos por valid_child_statuses + confirmación + transición).
+// Sincronizamos el array embebido con el vivo: el gate de hijos lee
+// record.good_practices, que se desincroniza tras altas/bajas sin recargar.
+function onSendSelect(t) {
   goodPracticePackage.value.good_practices = goodPractices.value
   sendActions.onSelect(t)
 }
@@ -213,6 +218,7 @@ function discardPackage() {
       if (res.errors) return
       goodPracticePackage.value = res.data
       discard_dialog.value = false
+      dashStore.showSnackbar('Registramos tu respuesta.')
     }).catch(e => {
       devWarn("Error discarding package:", e)
     })
@@ -225,6 +231,7 @@ function reopenPackage() {
       if (res.errors) return
       goodPracticePackage.value = res.data
       setPractices(res.data.good_practices || [])
+      dashStore.showSnackbar('Puedes cambiar tu respuesta.')
     }).catch(e => {
       devWarn("Error reopening package:", e)
     })
@@ -359,7 +366,7 @@ function reopenPackage() {
     </v-card-text>
     <v-card-actions
       v-if="goodPracticePackage.has_good_practices && packageEditable
-        && sendTransition"
+        && sendTransitions.length"
       class="mb-3 mx-3"
     >
       <v-btn
@@ -373,15 +380,26 @@ function reopenPackage() {
       </v-btn>
 
       <v-spacer></v-spacer>
-      <v-btn
-        color="accent"
-        variant="tonal"
-        append-icon="send"
-        @click="wantSend"
-        class="px-6"
-      >
-        {{ sendLabel }}
-      </v-btn>
+      <!-- CTA de envío motor-driven: el menú lista las transiciones que ceden
+           el turno a la revisora (FlowTransitionMenu usa su action_name). -->
+      <v-menu location="top end">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            color="accent"
+            variant="tonal"
+            prepend-icon="send"
+            append-icon="expand_more"
+            class="px-6"
+          >
+            Enviar a revisión
+          </v-btn>
+        </template>
+        <FlowTransitionMenu
+          :transitions="sendTransitions"
+          @select="onSendSelect"
+        />
+      </v-menu>
     </v-card-actions>
 
     <v-dialog
@@ -403,11 +421,13 @@ function reopenPackage() {
       :editable="editingEditable"
       @saved="onSaved"
       @deleted="onDeleted"
+      @transitioned="loadPractices"
     />
     <FlowTransitionDialogs :actions="sendActions" />
     <ConfirmActionDialog
       v-model="discard_dialog"
-      title="¿Confirmas que no quieres reportar Buenas Prácticas?"
+      :title="discardStatus?.confirm_title
+        || '¿Confirmas que no deseas reportar buenas prácticas?'"
       confirm-label="Sí, confirmo"
       @confirm="discardPackage"
     >
@@ -416,9 +436,9 @@ function reopenPackage() {
         border="start"
         variant="outlined"
       >
-        Vas a cerrar tu participación en este módulo.
-        Mientras el periodo siga abierto, podrás reabrir y cambiar
-        tu respuesta.
+        {{ discardStatus?.confirm_text
+          || 'Tu participación quedará cerrada. Mientras el periodo siga '
+          + 'abierto, podrás reabrirla y cambiar tu respuesta.' }}
       </v-alert>
     </ConfirmActionDialog>
   </v-card>

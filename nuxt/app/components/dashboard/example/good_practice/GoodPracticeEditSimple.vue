@@ -29,7 +29,7 @@ const props = defineProps({
 
 const full_main = defineModel({type: Object, required: true})
 
-const emit = defineEmits(['close', 'saved', 'deleted'])
+const emit = defineEmits(['close', 'saved', 'deleted', 'transitioned'])
 
 const confirmDelete = ref(false)
 const loading = ref(false)
@@ -38,8 +38,12 @@ const showErrorSummary = ref(false)
 
 const isEditing = computed(() => !!full_main.value?.id)
 
-const flowActions = useFlowActions(full_main, 'example', 'goodpractice')
-const { transitions, currentStatus } = flowActions
+// onTransitioned avisa al padre para que refresque la raíz (el paquete puede
+// quedar stale si la transición del hijo propaga hacia arriba).
+const flowActions = useFlowActions(
+  full_main, 'example', 'goodpractice',
+  { onTransitioned: (ev) => emit('transitioned', ev) })
+const { transitions, currentStatus, sending } = flowActions
 
 // La validez para QUEDARSE en un status es la misma que para entrar: si el
 // status actual exige `practice_complete` (bp_completed, bp_adjusted), el
@@ -302,7 +306,7 @@ const remove = async () => {
             v-bind="menuProps"
             color="accent"
             variant="flat"
-            :loading="loading"
+            :loading="loading || sending"
             prepend-icon="save"
             append-icon="expand_more"
           >

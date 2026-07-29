@@ -71,6 +71,15 @@ class GoodPracticePackage(FlowParticipant, models.Model):
             self.sent_at = timezone.now()
         super().save(*args, **kwargs)
 
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor (flow.services.validate_transition): con el
+        periodo cerrado la IES no puede transicionar el envío. La
+        revisora sí sigue dictaminando después del cierre."""
+        if self.survey.period.is_bp_submission_closed and not user.is_reviewer:
+            return ['El periodo de envío ya cerró; '
+                    'no puedes enviar a revisión.']
+        return []
+
     def __str__(self):
         return (f"Envío de Buenas Prácticas - "
                 f"{self.survey.institution.acronym} - {self.survey.period.year}")
@@ -111,7 +120,6 @@ class GoodPractice(FlowParticipant, models.Model):
 
     def save(self, *args, **kwargs):
         is_create = self._state.adding
-        print("is_create:", is_create)
         super().save(*args, **kwargs)
         if is_create:
             all_features = Feature.objects.all()

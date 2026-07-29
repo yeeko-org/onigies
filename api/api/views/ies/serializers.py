@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
 from ies.models import Period, Institution
-from survey.models import Survey, AxisValue
+from survey.models import Survey, AxisValue, GeneralPackage
 from example.models import GoodPracticePackage
 from api.views.common_serializers import InvitationTokenBaseSerializer
 
 
 class PeriodSimpleSerializer(serializers.ModelSerializer):
+    is_bp_submission_closed = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Period
         fields = '__all__'
@@ -30,10 +32,17 @@ class GoodPracticePackageSimpleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class GeneralPackageSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GeneralPackage
+        fields = '__all__'
+
+
 class SurveyFullSerializer(SurveySerializer):
     axis_values = AxisValueSerializer(many=True, read_only=True)
     packages = GoodPracticePackageSimpleSerializer(
         many=True, read_only=True)
+    general_package = GeneralPackageSimpleSerializer(read_only=True)
 
 
 class InstitutionSimpleSerializer(serializers.ModelSerializer):

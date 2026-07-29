@@ -13,6 +13,7 @@ from django.db.models import QuerySet
 
 from flow.models import FlowEvent, Status
 from flow.registry import get_children, get_parent, is_flow_participant
+from flow.signals import transition_executed
 
 
 def get_user_flow_role(user) -> str | None:
@@ -97,6 +98,13 @@ def validate_transition(
             f"El status '{target.public_name}' requiere un comentario."
         )
 
+    # Gancho de reglas propias del modelo (duck typing): el motor se
+    # mantiene genérico; cada participante puede vetar la transición sin
+    # que flow conozca su dominio (p.ej. periodo cerrado en el envío bp).
+    hook = getattr(obj, 'validate_flow_transition', None)
+    if callable(hook):
+        errors.extend(hook(user, target))
+
     return errors
 
 
@@ -113,28 +121,45 @@ def execute_transition(
 
     Lanza ValueError con lista de errores si la transición no es válida.
     """
-    errors = validate_transition(user, obj, target, comment)
+    # TOCTOU: la vista leyó `obj` sin lock. Re-obtenemos la fila con
+    # select_for_update() dentro de la transacción para serializar
+    # transiciones concurrentes (usamos type(obj) por el modelo dinámico
+    # del GenericForeignKey).
+    locked = type(obj).objects.select_for_update().get(pk=obj.pk)
+
+    errors = validate_transition(user, locked, target, comment)
     if errors:
         raise ValueError(errors)
 
+    from_status = locked.status
     event = FlowEvent.objects.create(
-        content_type=_ct(obj),
-        object_id=obj.pk,
-        from_status=obj.status,
+        content_type=_ct(locked),
+        object_id=locked.pk,
+        from_status=from_status,
         to_status=target,
         user=user,
         comment=comment or None,
     )
-    obj.status = target
-    obj.save(update_fields=['status'])
+    locked.status = target
+    locked.save(update_fields=['status'])
 
     if target.propagates_up:
-        parent = get_parent(obj)
+        parent = get_parent(locked)
         if parent is not None:
             _propagate_up(user, parent, target)
     if target.propagates_down:
-        _propagate_down(user, obj, target)
+        _propagate_down(user, locked, target)
 
+    # La instancia de la vista debe reflejar el nuevo status (se
+    # reserializa tras el retorno).
+    obj.status = locked.status
+
+    # Notificaciones (flow.notifications): solo la transición manual, no
+    # la propagación. El receptor programa el envío con on_commit.
+    transition_executed.send(
+        sender=type(locked), user=user, obj=locked,
+        from_status=from_status, target=target, comment=comment,
+    )
     return event
 
 
@@ -212,12 +237,15 @@ def get_available_transitions(user, obj) -> QuerySet:
 
 def assign_auto_status(user, obj) -> FlowEvent | None:
     """
-    Asigna el status auto_on_first_save cuando el objeto no tiene status.
-    Llama desde la vista al guardar datos por primera vez.
-    Devuelve el FlowEvent creado o None si no aplica.
+    Promueve el objeto al status `auto_on_first_save` de su grupo
+    (p.ej. `cp_filling`) la primera vez que la IES guarda captura.
+
+    La debe llamar la vista/serializer de captura con la persona usuaria
+    que guarda. Solo actúa desde el estado de reposo inicial —sin status
+    o en el default del grupo (`is_default`)— para no revertir objetos ya
+    avanzados en el flujo. Devuelve el FlowEvent creado o None si no
+    aplica (sin status auto para el tipo, o ya promovido/avanzado).
     """
-    if obj.status is not None:
-        return None
     if not is_flow_participant(obj):
         return None
     ct = _ct(obj)
@@ -228,10 +256,16 @@ def assign_auto_status(user, obj) -> FlowEvent | None:
     if auto is None:
         return None
 
+    current: Status | None = obj.status
+    if current is not None and not current.is_default:
+        return None
+    if current is not None and current.name == auto.name:
+        return None
+
     event = FlowEvent.objects.create(
         content_type=ct,
         object_id=obj.pk,
-        from_status=None,
+        from_status=current,
         to_status=auto,
         user=user,
     )

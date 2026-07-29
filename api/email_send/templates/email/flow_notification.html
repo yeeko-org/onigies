@@ -1,0 +1,43 @@
+{% extends "email/base_email.html" %}
+
+{% block title %}ONIGIES — {{ state }}{% endblock %}
+
+{% block content %}
+<h2>{{ state }}</h2>
+
+<p>
+  Estimada persona responsable de
+  <strong>{{ institution.name }}</strong>:
+</p>
+
+<p>
+  Hay novedades sobre <strong>{{ object_label }}</strong> en el sistema
+  <strong>ONIGIES</strong>.
+</p>
+
+<p>Estado actual: <strong>{{ state }}</strong>.</p>
+
+{% if guidance %}
+<p>{{ guidance }}</p>
+{% endif %}
+
+{% if comment %}
+<div class="alert-box">
+  <strong>Mensaje de la revisión:</strong><br/>
+  {{ comment|linebreaksbr }}
+</div>
+{% endif %}
+
+<p style="text-align: center;">
+  <a href="{{ destination_url }}" class="btn-primary">
+    {{ cta_label }}
+  </a>
+</p>
+{% endblock %}
+
+{% block last_content %}
+<p class="muted">
+  Puedes consultar el detalle y el historial completo en tu panel de
+  respuestas.
+</p>
+{% endblock %}

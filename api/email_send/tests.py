@@ -92,6 +92,11 @@ class EmailProfileModelTest(TestCase):
 
 class GetDefaultProfileTest(TestCase):
 
+    def setUp(self):
+        # La migración 0003 siembra un EmailProfile default; estos
+        # tests parten de cero perfiles.
+        EmailProfile.objects.all().delete()
+
     def test_returns_none_when_no_profiles(self):
         self.assertIsNone(get_default_profile())
 
@@ -172,6 +177,9 @@ class TemplateBaseModelTest(TestCase):
 class SendTemplateEmailTest(TestCase):
 
     def setUp(self):
+        # La migración 0003 siembra un EmailProfile default; aíslalo
+        # para que test_no_profile_creates_failed_record vea cero.
+        EmailProfile.objects.all().delete()
         self.profile = EmailProfile.objects.create(
             name='Default',
             provider='gmail',

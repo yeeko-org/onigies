@@ -27,12 +27,13 @@ CP_MAP = {
     "approved": "cp_approved",
     "requires_new_checking": "cp_in_review",
 }
-# El grupo general usaba los ids del flujo register viejo; `sent` y
-# `requires_new_checking` no tienen equivalente exacto en el flujo gen
-# (un solo nivel) — ambos caen en gen_completed (en espera de revisión).
+# El grupo general usaba los ids del flujo register viejo. El flujo gen
+# nuevo ya no tiene pre_start/filling (arranca en gen_draft), y `sent` /
+# `requires_new_checking` no tienen equivalente exacto (un solo nivel):
+# ambos caen en gen_completed (en espera de revisión).
 GEN_MAP = {
-    "pre_start": "gen_pre_start",
-    "filling": "gen_filling",
+    "pre_start": "gen_draft",
+    "filling": "gen_draft",
     "sent": "gen_completed",
     "need_changes": "gen_need_changes",
     "approved": "gen_approved",
@@ -124,6 +125,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             self.migrate_statuses()
             self.reconcile_bp_children()
+            self.reconcile_gen_packages()
             self.migrate_comments()
             self.migrate_comment_fields(comments_user)
             self.migrate_attachments()
@@ -162,6 +164,17 @@ class Command(BaseCommand):
         self.stdout.write(
             f"Reconciliación: {fixed} prácticas bp_draft → bp_completed "
             f"(paquete enviado)")
+
+    def reconcile_gen_packages(self) -> None:
+        """GeneralPackage no existía en el flujo viejo: no hay campo que
+        migrar y quedaría NULL (el motor rechaza objetos sin status).
+        Recibe el default del grupo; si sus grupos traen avance, la
+        revisión ajusta el paquete a mano."""
+        package = apps.get_model("survey", "GeneralPackage")
+        fixed = package.objects.filter(status__isnull=True).update(
+            status_id="gen_draft")
+        self.stdout.write(
+            f"GeneralPackage: {fixed} sin status → gen_draft")
 
     # ------------------------------------------------------------------
     def _create_event(self, target, user, text, created_at) -> bool:

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
 import uuid as uuid_lib
 
 YEAR_VALIDATORS = [MinValueValidator(2025), MaxValueValidator(2040)]
@@ -244,9 +245,25 @@ class Period(models.Model):
         verbose_name="Buenas prácticas publicadas", default=False)
     results_published = models.BooleanField(
         verbose_name="Resultados publicados", default=False)
+    submission_deadline = models.DateField(
+        verbose_name="Fecha límite de envío", blank=True, null=True,
+        help_text="Último día para enviar buenas prácticas; al día "
+                  "siguiente el periodo cierra solo.")
 
     def __str__(self):
         return str(self.year)
+
+    @property
+    def is_bp_submission_closed(self) -> bool:
+        """Fuente única del cierre de envío de buenas prácticas: cerrado
+        si se publicó a mano o si ya pasó la fecha límite. El día límite
+        cuenta como abierto (cierra al día siguiente, hora del servidor).
+        """
+        if self.good_practices_published:
+            return True
+        if self.submission_deadline:
+            return timezone.localdate() > self.submission_deadline
+        return False
 
     class Meta:
         verbose_name = "Periodo"

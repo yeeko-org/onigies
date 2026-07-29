@@ -23,13 +23,20 @@ class UserLoginAPIView(views.APIView):
         identifier = serializer.validated_data['email']
         password = serializer.validated_data['password']
 
+        survey_prefetch = (
+            'institution__surveys__axis_values',
+            'institution__surveys__packages',
+            'institution__surveys__general_package',
+        )
         user_query = User.objects\
             .filter(username=identifier)\
-            .select_related('institution', 'auth_token')
+            .select_related('institution', 'auth_token')\
+            .prefetch_related(*survey_prefetch)
         if not user_query.exists():
             user_query = User.objects\
                 .filter(email=identifier)\
-                .select_related('institution', 'auth_token')
+                .select_related('institution', 'auth_token')\
+                .prefetch_related(*survey_prefetch)
 
         count = user_query.count()
         if count == 0:

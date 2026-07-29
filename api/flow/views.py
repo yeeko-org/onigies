@@ -10,7 +10,7 @@ Endpoints:
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,6 +25,7 @@ from flow.serializers import (
 )
 from flow.services import execute_transition, get_user_flow_role
 from flow.registry import is_flow_participant
+from flow.permissions import user_can_act_on_flow_object
 
 
 class FlowObjectMixin:
@@ -52,6 +53,16 @@ class FlowObjectMixin:
     def _get_content_type(self, obj) -> ContentType:
         return ContentType.objects.get_for_model(obj)
 
+    def _check_ownership(self, request, obj) -> None:
+        """403 si la persona usuaria no pertenece a la institución dueña.
+
+        Las revisoras pasan siempre; una IES solo puede tocar objetos de
+        su propia institución (ver flow.permissions).
+        """
+        if not user_can_act_on_flow_object(request.user, obj):
+            raise PermissionDenied(
+                "No tienes acceso a este objeto del flujo.")
+
 
 class FlowTransitionView(FlowObjectMixin, APIView):
     """
@@ -65,6 +76,7 @@ class FlowTransitionView(FlowObjectMixin, APIView):
     def post(self, request, app_label, model_name, pk):
         """Ejecuta la transición indicada en el payload."""
         obj = self._get_flow_object(app_label, model_name, pk)
+        self._check_ownership(request, obj)
         serializer = TransitionRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -104,6 +116,7 @@ class FlowEventView(FlowObjectMixin, APIView):
     def get(self, request, app_label, model_name, pk):
         """Retorna el timeline del objeto, del más reciente al más antiguo."""
         obj = self._get_flow_object(app_label, model_name, pk)
+        self._check_ownership(request, obj)
         events = self._get_events(obj)
         serializer = FlowEventSerializer(
             events, many=True, context={'request': request})
@@ -112,6 +125,7 @@ class FlowEventView(FlowObjectMixin, APIView):
     def post(self, request, app_label, model_name, pk):
         """Agrega un comentario puro al timeline (sin cambiar el status)."""
         obj = self._get_flow_object(app_label, model_name, pk)
+        self._check_ownership(request, obj)
 
         # Solo comenta quien tiene el turno: el rol del usuario debe coincidir
         # con el role del status actual (guard simétrico IES/revisora).

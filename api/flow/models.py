@@ -120,6 +120,11 @@ class Status(models.Model):
         blank=True, null=True, verbose_name="Sugerencia (frontend)",
         help_text="Guía de siguiente paso que el frontend muestra bajo el "
                   "control de status; distinta de description (tooltip)")
+    hint_wait = models.TextField(
+        blank=True, null=True,
+        verbose_name="Sugerencia en espera (frontend)",
+        help_text="Variante del hint para el rol que NO tiene el turno "
+                  "(role); vacío = se muestra hint. Sin uso en terminales")
     # Reglas de UX evaluadas en el frontend ANTES de transicionar a este
     # status (lista de nombres en flowRules).
     entry_rules = models.JSONField(

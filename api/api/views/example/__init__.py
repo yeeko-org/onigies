@@ -1,10 +1,12 @@
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from django_filters import FilterSet, CharFilter, NumberFilter
 from api.views.action_file import ActionFileMixin
 from api.views.common_views import BaseGenericViewSet
+from flow.permissions import IsFlowInstitutionOwnerOrReviewer
 from api.views.example.serializers import GoodPracticeFullSerializer, GoodPracticeSerializer, EvidenceSerializer, \
     FeatureSerializer, FeatureFullSerializer, FeatureOptionSerializer, FeatureGoodPracticeSerializer, \
     GoodPracticePackageFullSerializer, GoodPracticePackageSerializer
@@ -71,6 +73,8 @@ class PackageFilter(FilterSet):
 
 
 class GoodPracticePackageViewSet(BaseGenericViewSet):
+    permission_classes = [
+        IsAuthenticated, IsFlowInstitutionOwnerOrReviewer]
     queryset = GoodPracticePackage.objects.all().prefetch_related(
         'good_practices',
         'flow_events__user', 'flow_events__attachments',
@@ -87,6 +91,19 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
     ordering = ['-status__priority', 'id']
     # filterset_fields = ['survey__institution', 'survey__period']
     filterset_class = PackageFilter
+
+    def get_queryset(self):
+        """Las revisoras ven todos los paquetes; una IES solo los de su
+        propia institución (evita fugas por lista)."""
+        qs = super().get_queryset()
+        user = self.request.user
+        if user.is_anonymous:
+            return qs.none()
+        if user.is_reviewer:
+            return qs
+        if user.institution_id:
+            return qs.filter(survey__institution_id=user.institution_id)
+        return qs.none()
 
     def get_serializer_class(self):
         action_serializer = {
@@ -109,7 +126,7 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         propaga el descarte a las prácticas (``propagates_down``).
         """
         package = self.get_object()
-        if package.survey.period.good_practices_published:
+        if package.survey.period.is_bp_submission_closed:
             msg = 'El periodo ya cerró, no se puede modificar la respuesta.'
             return Response({'detail': msg}, status=400)
         try:
@@ -142,7 +159,7 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         if not status or status.role != 'ies':
             msg = 'No puedes reabrir el paquete en este estado.'
             return Response({'detail': msg}, status=400)
-        if package.survey.period.good_practices_published:
+        if package.survey.period.is_bp_submission_closed:
             msg = 'El periodo de registro ya cerró, no se puede reabrir.'
             return Response({'detail': msg}, status=400)
         if status.name != 'bp_draft':

@@ -4,7 +4,7 @@ Django REST Framework API. Validation and business shape live in serializers.
 
 ## Commands
 
-Virtualenv interpreter: `D:/env/onigies/Scripts/python.exe` (outside the repo).
+Virtualenv interpreter: `venv/bin/python` (in `api/`).
 
 ```bash
 python manage.py runserver   # dev server on :8018
@@ -38,11 +38,15 @@ Settings in `core/settings/__init__.py`; root URLs in `core/urls.py`; API routes
 
 ## Creating views
 
-- **APIView vs ViewSet:** `views.APIView` for non-model/custom auth endpoints (login, recovery); `BaseViewSet` / `BaseGenericViewSet` from `api/views/common_views.py` for model CRUD.
-- **Request validation:** never read `request.data` directly. Always use a DRF serializer with `is_valid(raise_exception=True)`.
-- **Error format:** field errors via `raise_exception=True` → 400 automatic. Single non-field message: `{'detail': '...'}`.
-- **Serializer location:** `api/views/{sub-package}/serializers.py` (e.g. auth → `api/views/auth/serializers.py`).
-- Add docstrings to all views, serializers, and complex functions.
+DRF conventions (APIView vs ViewSet, serializer-validated requests, error
+format, docstrings) live in the global backend rules and apply here.
+Project-specific:
+
+- **Base classes:** `BaseViewSet` / `BaseGenericViewSet` from
+  `api/views/common_views.py` for model CRUD; `views.APIView` for custom
+  auth endpoints (login, recovery).
+- **Serializer location:** `api/views/{sub-package}/serializers.py`
+  (e.g. auth → `api/views/auth/serializers.py`).
 
 ## Reference
 

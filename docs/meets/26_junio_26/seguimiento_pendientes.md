@@ -38,13 +38,13 @@ de UX (§3).
   `GoodPracticeEditSimple` ×2).
 - [x] **Ocultar puntuaciones a la IES.** Confirmado ya protegido en UI +
   payload; verificado, sin cambios.
-- [~] **Ordenar por estatus (más urgentes primero).**
+- [x] **Ordenar por estatus (más urgentes primero).**
   - [x] Infra: campo `priority` en `flow.Status` + migración `0007` aplicada +
     orden por defecto `-status__priority` en `GoodPracticePackageViewSet`.
-  - [ ] 🟠 Valores de `priority` y estructura del seed → Fable.
-- [ ] 🟠 **Color de «requiere ajustes».** Hoy el color se deriva del rol, así
+  - [x] 🟠 Valores de `priority` y estructura del seed → Fable.
+- [x] 🟠 **Color de «requiere ajustes».** Hoy el color se deriva del rol, así
   que `bp_need_changes` no se distingue. → Fable.
-- [ ] 🟠 **Asterisco de comentario obligatorio engañoso.** Prompt «si gustas»
+- [x] 🟠 **Asterisco de comentario obligatorio engañoso.** Prompt «si gustas»
   en estados obligatorios. → Fable.
 
 ### Entregable de la sesión
@@ -57,22 +57,26 @@ de UX (§3).
 ## Pendiente de hacer juntos
 
 ### §2 — Nomenclatura de estados
-- [ ] 🟣 **Renombrar estados/verbos** según la tabla acordada (Recibida /
+- [x] 🟣 **Renombrar estados/verbos** según la tabla acordada (Recibida /
   Requiere ajustes / No acreditada / Ajuste realizado). Depende del taller §8.
-- [ ] 🟠 **Icono para «recibida»** (y revisar iconos en general). → Fable.
+- [x] 🟠 **Icono para «recibida»** (y revisar iconos en general). → Fable.
 
 ### §4 — Funcionalidad nueva
 - [ ] 🔵 **Vigencia de la práctica.** «¿Sigue vigente?», rango 2022 → presente.
-- [ ] 🔵 **Notificaciones por correo.** Al cambiar el estatus de los
+- [x] 🔵 **Notificaciones por correo.** Al cambiar el estatus de los
   agrupadores (padres), correo genérico «tienes comentarios».
 - [ ] 🔵 **Exportación a Excel de puntuaciones.** Una columna por criterio con
   el número, más institución, año y descripción.
-- [ ] 🔵 **Edición de reglas desde el dashboard.** Las definiciones de estados
-  editables en vivo (se relaciona con el refactor de Fable).
 
 ### §5 — Infraestructura
 - [ ] 🔵 **`media` → `files` (crítico).** Evitar la colisión con el ONIGIES
   legado en producción.
+  - [x] Código: `MEDIA_URL=/files/` + `MEDIA_ROOT=.../files`; ruta `serve`
+    explícita en `core/urls.py` (sirve con `DEBUG=False`); URLs de archivo
+    absolutas en `example` y `flow` — el navegador pide directo a
+    `apionigies.yeeko.org/files/...`, nginx queda fuera del camino.
+  - [ ] Servidor: mover la carpeta `media/` → `files/` en el server de AWS y
+    reiniciar el API. Sin migración de BD (rutas `FileField` relativas).
 
 ### §6 — Cuestionario
 - [ ] 🔵 Integrar el **cuestionario actualizado** de Rubén.

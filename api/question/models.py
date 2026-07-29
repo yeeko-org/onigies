@@ -24,11 +24,15 @@ class AQuestion(models.Model):
 
     text = models.TextField()
     observable = models.ForeignKey(Observable, on_delete=models.CASCADE)
+    # Clave natural del seed: (observable, order). Sin ella, corregir la
+    # redacción de una opción duplicaría la fila al re-sembrar.
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Pregunta: {self.text} ({self.observable.name})"
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Pregunta de institucionalización"
         verbose_name_plural = "Preguntas de institucionalización"
 
@@ -66,11 +70,15 @@ class ReachQuestion(models.Model):
 class PlanQuestion(models.Model):
     observable = models.ForeignKey(Observable, on_delete=models.CASCADE)
     text = models.TextField()
+    # Clave natural del seed: (observable, order), mismo patrón de
+    # AQuestion.
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Pregunta de planes: {self.text} ({self.observable.name})"
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Pregunta de planes"
         verbose_name_plural = "Preguntas de planes"
 

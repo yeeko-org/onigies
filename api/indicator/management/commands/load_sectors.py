@@ -37,12 +37,28 @@ class Command(BaseCommand):
                 "description": "",
                 "needs_name": False,
                 "is_main": False,
+                "is_authority": True,
             },
             {
                 "name": "Máximo cuerpo colegiado de toda la IES",
                 "description": "",
                 "needs_name": False,
                 "is_main": False,
+                "is_authority": True,
+            },
+            {
+                "name": "Titulares de instancias académicas",
+                "description": "",
+                "needs_name": False,
+                "is_main": False,
+                "is_authority": True,
+            },
+            {
+                "name": "Titulares de instancias administrativas",
+                "description": "",
+                "needs_name": False,
+                "is_main": False,
+                "is_authority": True,
             },
             {
                 "name": "Autoridades y alto funcionariado",
@@ -133,6 +149,8 @@ class Command(BaseCommand):
                             "needs_name": sector_data["needs_name"],
                             "order": index + 1,
                             "is_main": sector_data["is_main"],
+                            "is_authority": sector_data.get(
+                                "is_authority", False),
                         }
                     )
             self.stdout.write(self.style.SUCCESS("Sectores poblacionales cargados exitosamente."))

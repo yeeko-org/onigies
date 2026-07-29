@@ -56,7 +56,13 @@ class Observable(models.Model):
     component = models.ForeignKey(
         Component, on_delete=models.CASCADE, related_name='observables')
 
-    number = models.DecimalField(max_digits=4, decimal_places=2)
+    # CharField y no Decimal: "1.10" y "1.1" son el mismo Decimal, pero
+    # son observables distintos del cuestionario (ver
+    # docs/plans/PLAN_seed_cuestionario.md).
+    number = models.CharField(max_length=10)
+    # Orden global de recorrido del cuestionario; lo asigna
+    # load_questionnaire, no es editable a mano.
+    order = models.IntegerField(default=0)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
@@ -130,6 +136,7 @@ class Observable(models.Model):
         return f"{self.name} ({self.component.name})"
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Observable (Pregunta inicial)"
         verbose_name_plural = "Observables (Preguntas iniciales)"
 
@@ -141,6 +148,8 @@ class Sector(models.Model):
     order = models.IntegerField(default=0)
     is_main = models.BooleanField(
         default=True, verbose_name="Es sector principal")
+    is_authority = models.BooleanField(
+        default=False, verbose_name="Es autoridad")
 
     def __str__(self):
         return self.name

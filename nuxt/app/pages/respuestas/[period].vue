@@ -8,8 +8,13 @@ import SurveyInitData from "~/components/dashboard/survey/SurveyInitData.vue";
 const mainStore = useMainStore()
 const iesStore = useIesStore()
 const route = useRoute()
+const router = useRouter()
 
-const tab = ref(null)
+const DEFAULT_TAB = 'base'
+const tab = computed({
+  get: () => route.query.tab || DEFAULT_TAB,
+  set: (val) => router.replace({ query: { ...route.query, tab: val } }),
+})
 const period = computed(() => parseInt(route.params.period))
 
 const all_axis = computed(() => mainStore.cats?.axis || [])
@@ -33,8 +38,23 @@ const current_survey = computed(() => {
       align-tabs="center"
       color="deep-purple-accent-4"
     >
+      <v-tab value="base">
+        Datos base
+      </v-tab>
       <v-tab
-        :value="8"
+        v-for="axis in all_axis"
+        :key="axis.id"
+        :value="`axis-${axis.id}`"
+        :color="axis.color"
+        :base-color="axis.color"
+      >
+        <v-icon left :color="axis.color">
+          {{ axis.icon }}
+        </v-icon>
+        {{ axis.short_name }}
+      </v-tab>
+      <v-tab
+        value="bp"
         color="pink"
         base-color="pink"
       >
@@ -42,21 +62,6 @@ const current_survey = computed(() => {
           lightbulb
         </v-icon>
         Buenas prácticas
-      </v-tab>
-      <v-tab :value="0" disabled>Datos base</v-tab>
-<!--      <v-tab :value="1">City</v-tab>-->
-      <v-tab
-        v-for="axis in all_axis"
-        :key="axis.id"
-        :value="axis.id"
-        :color="axis.color"
-        :base-color="axis.color"
-        disabled
-      >
-        <v-icon left :color="axis.color">
-          {{ axis.icon }}
-        </v-icon>
-        {{ axis.short_name }}
       </v-tab>
     </v-tabs>
 <!--    <v-progress-linear-->
@@ -68,7 +73,7 @@ const current_survey = computed(() => {
 
     <v-tabs-window v-if="iesStore.ies_data" v-model="tab">
       <v-tabs-window-item
-        :value="0"
+        value="base"
       >
         <v-container fluid>
           <SurveyInitData
@@ -80,9 +85,9 @@ const current_survey = computed(() => {
       </v-tabs-window-item>
 
       <v-tabs-window-item
-        v-for="axis in all_axis"
+        v-for="(axis, ai) in all_axis"
         :key="axis.id"
-        :value="axis.id"
+        :value="`axis-${axis.id}`"
       >
         <v-container fluid>
           <v-row>
@@ -93,8 +98,8 @@ const current_survey = computed(() => {
               md="4"
             >
               <v-img
-                :lazy-src="`https://picsum.photos/10/6?image=${i * n * 5 + 10}`"
-                :src="`https://picsum.photos/500/300?image=${i * n * 5 + 10}`"
+                :lazy-src="`https://picsum.photos/10/6?image=${(ai + 1) * i * 5 + 10}`"
+                :src="`https://picsum.photos/500/300?image=${(ai + 1) * i * 5 + 10}`"
                 height="205"
                 cover
               ></v-img>
@@ -103,7 +108,7 @@ const current_survey = computed(() => {
         </v-container>
       </v-tabs-window-item>
       <v-tabs-window-item
-        :value="8"
+        value="bp"
       >
         <v-container fluid>
           <GoodPracticeList

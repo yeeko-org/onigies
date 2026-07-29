@@ -77,6 +77,7 @@ const current_year = computed({
   },
   set(val){
     setCurrentPeriod(val)
+    router.push({ path: `/respuestas/${val}` })
   }
 })
 

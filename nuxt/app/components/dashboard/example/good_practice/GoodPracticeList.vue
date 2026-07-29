@@ -16,6 +16,7 @@ import ConfirmActionDialog from "~/components/dashboard/common/dialog/ConfirmAct
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import { useFlowStore } from '~/store/flow.js'
+import { useDates } from '~/composables/useDates.js'
 
 const props = defineProps({
   packageId: { type: Number, required: false },
@@ -27,6 +28,7 @@ const { getSimple, saveSimple, saveAction } = useMainStore()
 const iesStore = useIesStore()
 const flowStore = useFlowStore()
 const dashStore = useDashboardStore()
+const { formatLongDate } = useDates()
 
 const isStaff = computed(() => authStore.is_staff)
 const goodPracticePackage = ref({
@@ -76,9 +78,16 @@ const canEdit = (obj) =>
 const packageEditable = computed(() => canEdit(goodPracticePackage.value))
 const editingEditable = computed(() => canEdit(editingPractice.value))
 
+// Cierre autoritativo del backend (booleano manual O fecha vencida); el
+// front no recalcula con el reloj del cliente. La fecha se muestra aparte.
 const periodOpen = computed(() =>
-  !goodPracticePackage.value.survey_full?.period_full?.good_practices_published
+  !goodPracticePackage.value.survey_full?.period_full
+    ?.is_bp_submission_closed
 )
+
+const submissionDeadline = computed(() =>
+  goodPracticePackage.value.survey_full?.period_full
+    ?.submission_deadline || null)
 
 // La IES puede cambiar su respuesta (Sí/No) mientras sea su turno y el
 // periodo siga abierto: bp_draft (respondió "Sí") o bp_discarded ("No"),
@@ -364,6 +373,30 @@ function reopenPackage() {
       </v-row>
 
     </v-card-text>
+    <!-- Recordatorio de la fecha límite mientras es el turno de la IES y
+         el periodo sigue abierto (solo si hay fecha configurada). -->
+    <v-alert
+      v-if="!isStaff && hasResponse && periodOpen && submissionDeadline
+        && packageStatus?.role === 'ies'"
+      type="info"
+      variant="tonal"
+      density="comfortable"
+      class="mt-2 mx-3"
+    >
+      Tienes hasta el {{ formatLongDate(submissionDeadline) }} para enviar
+      tu respuesta.
+    </v-alert>
+    <!-- Periodo cerrado con la IES aún en turno: perdió la ventana de
+         envío. El candado real vive en el backend; esto solo lo comunica. -->
+    <v-alert
+      v-if="!isStaff && hasResponse && !periodOpen
+        && packageStatus?.role === 'ies'"
+      type="warning"
+      variant="tonal"
+      class="my-3 mx-3"
+    >
+      El periodo de envío ya cerró.
+    </v-alert>
     <v-card-actions
       v-if="goodPracticePackage.has_good_practices && packageEditable
         && sendTransitions.length"

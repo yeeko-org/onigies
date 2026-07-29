@@ -70,6 +70,20 @@ export async function mockCurrentUser(
   }
 }
 
+// ── Catálogos / flujo (bootstrap del dashboard e IES) ────────────────
+
+export async function mockCatalogs(
+  page: Page, catalogs: JsonBody = {},
+): Promise<void> {
+  await fulfillMethod(page, `${API_BASE}/catalogs/all/`, 'GET', 200, catalogs)
+}
+
+export async function mockFlowStatuses(
+  page: Page, statuses: unknown[] = [],
+): Promise<void> {
+  await fulfillMethod(page, `${API_BASE}/flow/statuses/`, 'GET', 200, statuses)
+}
+
 // ── Invitation / register ────────────────────────────────────────────
 
 export async function mockInvitationValid(

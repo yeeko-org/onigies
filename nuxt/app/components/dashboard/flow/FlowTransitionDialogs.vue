@@ -22,16 +22,12 @@ const {
 } = props.actions
 
 // Rótulo de la caja de comentario: el del catálogo, con un genérico de
-// respaldo cuando el status no trae prompt propio. El respaldo distingue
-// obligatorio de opcional (p. ej. terminales role=None como bp_rejected, que
-// el seed deja sin prompt por rol) para no rotular igual ambos casos.
+// respaldo cuando el status no trae prompt propio (el badge
+// Obligatorio/Opcional del diálogo ya distingue ambos casos).
 const commentPrompt = computed(() => {
   const t = pendingTransition.value
   if (!t || t.comment_type === 'none') return null
-  if (t.comment_prompt) return t.comment_prompt
-  return t.comment_type === 'required'
-    ? 'Comentario (obligatorio)'
-    : 'Comentario (opcional)'
+  return t.comment_prompt || 'Escribe tu comentario.'
 })
 </script>
 
@@ -49,23 +45,34 @@ const commentPrompt = computed(() => {
       :loading="sending"
       @confirm="confirmAction"
     >
+      <!-- El aviso toma el color del status destino (el motor manda): los
+           terminales rojos/cafés se ven severos, los envíos toman su morado. -->
       <v-alert
         v-if="pendingTransition.confirm_text"
-        type="warning"
-        variant="outlined"
+        :color="pendingTransition.color || 'warning'"
+        :icon="pendingTransition.icon || 'info'"
+        variant="tonal"
+        border="start"
         density="comfortable"
         class="mb-2"
       >
         {{ pendingTransition.confirm_text }}
       </v-alert>
       <template #comment-history>
-        <template v-if="events.length">
-          <div class="text-caption text-medium-emphasis">
-            Historial de comentarios y cambios
-          </div>
-          <FlowTimeline :events="events" />
-          <v-divider class="my-3" />
-        </template>
+        <!-- Historial colapsado por defecto: la acción queda arriba y el
+             diálogo no crece con timelines largos. -->
+        <v-expansion-panels v-if="events.length" class="mt-3">
+          <v-expansion-panel>
+            <v-expansion-panel-title class="text-body-2">
+              <v-icon start size="18">history</v-icon>
+              Historial de comentarios y cambios
+              <v-chip size="x-small" class="ml-2">{{ events.length }}</v-chip>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <FlowTimeline :events="events" />
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </template>
     </ConfirmActionDialog>
 

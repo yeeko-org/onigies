@@ -2,7 +2,6 @@
 import {storeToRefs} from 'pinia';
 import {useIesStore} from "~/store/ies.js";
 import {useMainStore} from '~/store/index.js'
-import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import GenericDisplay from "~/components/dashboard/common/select/GenericDisplay.vue";
 import InstitutionCard from "~/components/dashboard/ies/institution/InstitutionCard.vue";
@@ -64,57 +63,98 @@ definePageMeta({
               <div
                 class="d-flex align-center flex-wrap"
               >
-                <v-badge
+                <NuxtLink
+                  class="chip-link mr-6"
+                  :to="{
+                    path: `/respuestas/${year.year}`,
+                    query: { tab: 'base' },
+                  }"
+                >
+                  <v-badge
+                    color="transparent"
+                    location="bottom right"
+                    offset-x="74"
+                    offset-y="-6"
+                  >
+                    <v-chip
+                      color="blue-grey"
+                      size="large"
+                      class="px-6"
+                      prepend-icon="assignment"
+                    >
+                      Datos base
+                    </v-chip>
+                    <template #badge>
+                      <FlowStatusChip
+                        :status="year.survey?.general_package?.status"
+                        x-small
+                      />
+                    </template>
+                  </v-badge>
+                </NuxtLink>
+                <NuxtLink
                   v-for="axis_value in year.survey?.axis_values || []"
                   :key="axis_value.id"
-                  color="transparent"
-                  location="bottom right"
-                  offset-x="74"
-                  offset-y="-6"
-                  class="mr-6"
+                  class="chip-link mr-6"
+                  :to="{
+                    path: `/respuestas/${year.year}`,
+                    query: { tab: `axis-${axis_value.axis}` },
+                  }"
                 >
-                  <GenericDisplay
-                    :element_value="axis_value.axis"
-                    level="group"
-                    :items="cats.axis"
-                    show_name
-                    hide_border
-                    item_title="short_name"
-                    size="large"
-                    class="px-6"
-                  />
-                  <template #badge>
-                    <StatusChip
-                      collection="register"
-                      :main="axis_value"
-                      hide_details
-                    />
-
-                  </template>
-                </v-badge>
-                <v-badge
-                  v-if="year.survey?.packages.length > 0"
-                  color="transparent"
-                  location="bottom right"
-                  offset-x="74"
-                  offset-y="-6"
-                >
-                  <v-chip
-                    color="pink"
-                    size="large"
-                    class="px-6"
-                    prepend-icon="lightbulb"
+                  <v-badge
+                    color="transparent"
+                    location="bottom right"
+                    offset-x="74"
+                    offset-y="-6"
                   >
-                    Buenas prácticas
-                  </v-chip>
-
-                  <template #badge>
-                    <FlowStatusChip
-                      :status="year.survey.packages[0].status"
-                      x-small
+                    <GenericDisplay
+                      :element_value="axis_value.axis"
+                      level="group"
+                      :items="cats.axis"
+                      show_name
+                      hide_border
+                      item_title="short_name"
+                      size="large"
+                      class="px-6"
                     />
-                  </template>
-                </v-badge>
+                    <template #badge>
+                      <FlowStatusChip
+                        :status="axis_value.status"
+                        x-small
+                      />
+                    </template>
+                  </v-badge>
+                </NuxtLink>
+                <NuxtLink
+                  v-if="year.survey?.packages.length > 0"
+                  class="chip-link"
+                  :to="{
+                    path: `/respuestas/${year.year}`,
+                    query: { tab: 'bp' },
+                  }"
+                >
+                  <v-badge
+                    color="transparent"
+                    location="bottom right"
+                    offset-x="74"
+                    offset-y="-6"
+                  >
+                    <v-chip
+                      color="pink"
+                      size="large"
+                      class="px-6"
+                      prepend-icon="lightbulb"
+                    >
+                      Buenas prácticas
+                    </v-chip>
+                    <template #badge>
+                      <FlowStatusChip
+                        :status="year.survey.packages[0].status"
+                        x-small
+                      />
+                    </template>
+                  </v-badge>
+                </NuxtLink>
               </div>
             </v-card-text>
           </v-card>
@@ -123,3 +163,10 @@ definePageMeta({
     </v-card>
   </v-row>
 </template>
+
+<style scoped>
+.chip-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>

@@ -27,8 +27,15 @@ export function useDates() {
     return dayjs(dateStr).format('L')
   }
 
+  // Forma larga en prosa: "30 de septiembre de 2026".
+  function formatLongDate(dateStr) {
+    if (!dateStr) return '—'
+    return dayjs(dateStr).format('D [de] MMMM [de] YYYY')
+  }
+
   return {
     months_of_year,
     formatDate,
+    formatLongDate,
   }
 }

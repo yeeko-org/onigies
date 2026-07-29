@@ -56,13 +56,19 @@ const comment = defineModel('comment', { type: String, default: '' });
       <v-card-text>
         <!-- Slot por defecto: contenido contextual (alertas, texto, etc.) -->
         <slot />
-        <v-card
-          v-if="commentPrompt" variant="tonal" class="mt-2"
-          color="primary"
-        >
+        <!-- Caja neutra (no primary: el tonal rojizo transmitía alerta);
+             el badge distingue obligatorio de opcional. -->
+        <v-card v-if="commentPrompt" variant="tonal" color="grey" class="mt-2">
           <v-card-text class="py-3">
-            <slot name="comment-history" />
             <div class="text-body-2 text-medium-emphasis mb-2">
+              <v-chip
+                :color="commentRequired ? 'warning' : undefined"
+                size="x-small"
+                label
+                class="mr-1 text-uppercase font-weight-bold"
+              >
+                {{ commentRequired ? 'Obligatorio' : 'Opcional' }}
+              </v-chip>
               {{ commentPrompt }}
             </div>
             <v-textarea
@@ -75,6 +81,9 @@ const comment = defineModel('comment', { type: String, default: '' });
             />
           </v-card-text>
         </v-card>
+        <!-- Contexto secundario (p. ej. historial colapsado) SIEMPRE después
+             de la acción: lo que el usuario vino a hacer va arriba. -->
+        <slot name="comment-history" />
       </v-card-text>
       <v-card-actions class="mx-2">
         <v-btn

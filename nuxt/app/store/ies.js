@@ -28,11 +28,12 @@ export const useIesStore = defineStore('ies', {
         return
       this.ies_data.logo = logo_url
     },
+    // Setter puro del periodo activo. La navegación es responsabilidad
+    // del llamador (el selector de "Año" en el layout ies): así el watch
+    // de la ruta puede reflejar el periodo sin re-navegar y descartar el
+    // ?tab= de un deep-link.
     setCurrentPeriod(period) {
       this.current_period = period;
-      if (!period) return;
-      const router = useRouter()
-      return router.push({ path: `/respuestas/${period}` });
     },
     //     UPDATE_LOGO({state, commit}, new_data){
     //   commit("SET_IN_LOADING", true)

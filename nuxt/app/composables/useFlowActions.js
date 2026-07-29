@@ -20,8 +20,18 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     () => toValue(appLabel), () => toValue(modelName),
     () => record.value?.id)
 
+  // Cada transición viaja con `blocked` (motivos de entry_rules + regla de
+  // hijos) para que el menú pre-deshabilite las que fallarán; onSelect
+  // re-valida por si el estado cambió entre el render y el clic.
   const transitions = computed(() => flowStore.getAvailableTransitions(
-    record.value?.status, toValue(appLabel), toValue(modelName)))
+    record.value?.status, toValue(appLabel), toValue(modelName))
+    .map((t) => {
+      const { missing } = runEntryRules(t.entry_rules, record.value)
+      const childMissing = flowStore.getChildrenNotReady(
+        record.value, t, toValue(modelName))
+      const blocked = [...missing, ...childMissing]
+      return blocked.length ? { ...t, blocked } : t
+    }))
   const hasActions = computed(() => transitions.value.length > 0)
   const currentStatus = computed(
     () => flowStore.getStatus(record.value?.status))

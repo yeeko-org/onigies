@@ -28,11 +28,17 @@ def hide_review_fields(serializer, data: dict, names: list[str]) -> dict:
 
 class EvidenceSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source="file.name")
-    url = serializers.ReadOnlyField(source="file.url")
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Evidence
         fields = ['id', 'file', 'name', 'url']
+
+    def get_url(self, obj) -> str | None:
+        request = self.context.get('request')
+        if obj.file and request:
+            return request.build_absolute_uri(obj.file.url)
+        return obj.file.url if obj.file else None
 
 
 class FeatureOptionSerializer(serializers.ModelSerializer):

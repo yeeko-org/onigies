@@ -212,7 +212,7 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazo
 
 AWS_STATIC_LOCATION = os.getenv('AWS_STATIC_LOCATION', 'static_compressed')
 # AWS_MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
-AWS_MEDIA_LOCATION = os.getenv('AWS_MEDIA_LOCATION', 'media')
+AWS_MEDIA_LOCATION = os.getenv('AWS_MEDIA_LOCATION', 'files')
 
 AWS_S3_FILE_OVERWRITE = getenv_bool('AWS_S3_FILE_OVERWRITE', False)
 AWS_IS_GZIPPED = getenv_bool('AWS_IS_GZIPPED', False)
@@ -244,8 +244,8 @@ else:
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/files/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 
 
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

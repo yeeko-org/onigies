@@ -14,7 +14,7 @@ Browser at onigies.unam.mx/dashboard
    │
    ├─ HTML + /_nuxt/  ──► nginx (UNAM) ──proxy──► onigies.netlify.app   new frontend
    │
-   └─ /api/...  ───────────────────────────────► apionigies.yeeko.org   new backend
+   └─ /api/... · /files/... ───────────────────► apionigies.yeeko.org   new backend
                                                   cross-origin · token in header
 
 onigies.unam.mx/ · /api · /admin · /media · /static
@@ -89,6 +89,22 @@ The dashboard calls `apionigies.yeeko.org` cross-origin, and it works without CO
 - Auth is a token in the `Authorization` header (`nuxt/app/plugins/api.ts`, no `withCredentials`), so CSRF never triggers.
 
 **Hardening pending:** `CORS_ORIGIN_ALLOW_ALL = True` is wide open. Tighten it to an explicit `CORS_ALLOWED_ORIGINS` allowlist once the topology stabilizes — tracked in the roadmap.
+
+## Uploaded files — served under `/files/`, not `/media/`
+
+The new API stores user uploads (good-practice evidences, flow attachments) on its **own server disk** — not S3 — and serves them itself. `AWS_STORAGE_BUCKET_NAME` is unset in production, so `core/settings` takes the local-storage branch. Production currently runs `DEBUG=True` (hardening pending).
+
+The namespace is `/files/`, **renamed from `/media/`** to avoid a collision with the legacy site: the UNAM nginx routes `onigies.unam.mx/media/...` to the legacy Django, and some serializers emitted file URLs the browser resolves against the frontend origin. Under the `onigies.unam.mx` bridge, a new-system file referenced as `/media/...` therefore hit the legacy backend and 404'd.
+
+The fix (§5 in `docs/meets/26_junio_26/seguimiento_pendientes.md`):
+
+- `MEDIA_URL = '/files/'`, `MEDIA_ROOT = BASE_DIR/'files'` (`core/settings/__init__.py`).
+- `core/urls.py` serves `/files/` with an explicit `re_path(..., django.views.static.serve, ...)` instead of `static()`. `static()` registers no routes when `DEBUG=False`; the explicit route serves **regardless of DEBUG**, so it survives the pending `DEBUG=False` hardening.
+- Every file-URL serializer emits **absolute** URLs via `request.build_absolute_uri` (`example`, `flow`). The browser fetches straight from `apionigies.yeeko.org/files/...`, so the UNAM nginx is never in the path — no `/files/` nginx block is needed.
+
+Cutover on the server: move the on-disk folder `media/` → `files/` and restart the API. **No DB migration** — `FileField` values are storage-relative (e.g. `evidences/foo.pdf`), so they resolve unchanged against the new root.
+
+**Trade-off:** serving media through Django's `serve` view is less efficient than an nginx `alias` (every file goes through a WSGI worker, no caching/ranges). Acceptable at ONIGIES's scale, and deliberate — it keeps file serving out of nginx, so nothing needs reconfiguring when the API moves to the UNAM VM.
 
 ## Migration roadmap
 

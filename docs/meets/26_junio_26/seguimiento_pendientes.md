@@ -75,8 +75,8 @@ de UX (§3).
     explícita en `core/urls.py` (sirve con `DEBUG=False`); URLs de archivo
     absolutas en `example` y `flow` — el navegador pide directo a
     `apionigies.yeeko.org/files/...`, nginx queda fuera del camino.
-  - [ ] Servidor: mover la carpeta `media/` → `files/` en el server de AWS y
-    reiniciar el API. Sin migración de BD (rutas `FileField` relativas).
+  - [x] Servidor: carpeta `media/` → `files/` movida y API recargado
+    (2026-07-29); la copia vieja quedó en `api/_backups/files_stale_jul04`.
 
 ### §6 — Cuestionario
 - [ ] 🔵 Integrar el **cuestionario actualizado** de Rubén.

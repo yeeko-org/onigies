@@ -4,13 +4,14 @@ Living checklist for moving the ONIGIES monorepo off the temporary setup and ont
 
 This is a **skeleton** — correct, reorder, and expand it as the real plan firms up.
 
-_Last updated: 2026-05-22_
+_Last updated: 2026-07-29_
 
 ## Phase 0 — Temporary bridge (done)
 
 - [x] New API live at `apionigies.yeeko.org` (Yeeko server)
 - [x] New dashboard deployed on Netlify (`onigies.netlify.app`)
 - [x] nginx on the UNAM server proxies the six dashboard routes + `/_nuxt/` to Netlify
+- [x] Uploads served under `/files/` — server cutover `media/` → `files/` done 2026-07-29 (old partial copy kept in `api/_backups/files_stale_jul04`)
 
 ## Phase 1 — UNAM virtual machine
 

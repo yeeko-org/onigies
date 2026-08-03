@@ -1,6 +1,6 @@
 """Datos del cuestionario 2026 — Eje 1.
 
-Transcrito de docs/questions/all_questions_reduced.md. No editar a mano
+Transcrito de docs/reference/cuestionario-2026-reducido.md. No editar a mano
 sin actualizar el documento fuente.
 """
 
@@ -500,7 +500,7 @@ AXIS = {
                     # El bloque de composición sexo-genérica se pregunta en
                     # Generales (GeneralGroup autoridades + poblaciones);
                     # captura en PopulationQuantity (ver
-                    # docs/plans/PLAN_seed_cuestionario.md).
+                    # docs/records/2026-07-04-seed-del-cuestionario.md).
                 },
             ],
         },
@@ -1199,7 +1199,7 @@ AXIS = {
                     },
                     "has_general_planning": False,
                     # Texto solo menciona "académicas" (mismo hallazgo que
-                    # 1.14; ver PLAN_seed_cuestionario.md).
+                    # 1.14; ver el registro del seed del cuestionario).
                     "b_includes": (True, False),
                     "reach_instances_question": (
                         "¿Cuántas instancias académicas implementan dichos "

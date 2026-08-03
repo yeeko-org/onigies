@@ -6,8 +6,12 @@ National observatory on gender equality in Mexican higher-education institutions
 |-----------|-------|------|
 | `api/` | Django REST Framework | 8018 |
 | `nuxt/` | Nuxt 4 + Vuetify 3 | 3018 |
+| `docs/` | process documentation (`documenter` skill) | — |
+| `design-system/` | brand handoff bundle: palette, type, UI kits | — |
 
 Each subproject has its own `CLAUDE.md` with stack-specific conventions.
+
+`docs/` follows the `documenter` scheme — `tasks/`, `decisions/`, `reference/`, `records/`, `notes/`, linked by `[[id]]`. A pre-commit hook (`.githooks/`) validates it; new clones need `git config core.hooksPath .githooks`.
 
 ## Context
 

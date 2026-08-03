@@ -28,7 +28,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: false,
           colors: {
-            // ONIGIES design system — ver docs/onigies-design-system
+            // ONIGIES design system — ver design-system/
             // primary: índigo profundo (chrome del dashboard, layout
             // institucional). accent: turquesa, color de acción para
             // CTAs y botones — los botones DEBEN usar accent, no primary.

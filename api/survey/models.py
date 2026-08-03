@@ -65,7 +65,7 @@ class AxisValue(FlowParticipant, models.Model):
     status_register = models.ForeignKey(
         StatusControl, on_delete=models.CASCADE, blank=True, null=True)
     # Flujo nuevo; coexiste con status_register hasta verificar la
-    # migración de datos (ver flux_rules/PLAN_flujo_validacion.md §5).
+    # migración de datos (ver docs/records/2026-06-05-diseno-del-motor-de-flujo.md §5).
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')

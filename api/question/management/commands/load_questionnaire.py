@@ -1,7 +1,7 @@
 """Siembra idempotente del cuestionario 2026 completo.
 
 Fuente de verdad: question/seed_data/ (transcrito de
-docs/questions/all_questions_reduced.md). Re-correr el comando actualiza
+docs/reference/cuestionario-2026-reducido.md). Re-correr el comando actualiza
 textos y borra opciones/planes sobrantes; los ajustes hechos por admin se
 pierden a propósito.
 
@@ -109,7 +109,7 @@ class Command(BaseCommand):
             order: int) -> bool:
         # Clave (component, number): number es el string del seed («1.1»,
         # «1.10» no colisionan porque nunca coexisten en el mismo
-        # componente; ver PLAN_seed_cuestionario.md).
+        # componente; ver el registro del seed del cuestionario).
         observable, created = Observable.objects.update_or_create(
             component=component,
             number=obs_data["number"],
@@ -144,7 +144,7 @@ class Command(BaseCommand):
     def _load_reach(self, observable: Observable, obs_data: dict) -> None:
         reach = obs_data["reach"]
         if reach is None:
-            # Caso especial diferido (ver PLAN_seed_cuestionario.md):
+            # Caso especial diferido (ver el registro del seed del cuestionario):
             # no se crea ReachQuestion todavía.
             return
         standard = reach["populations"] == "standard"

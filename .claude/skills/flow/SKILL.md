@@ -11,7 +11,7 @@ description: validation-flow engine (`flow` app) — Status roles, transitions,
 
 The `flow` app is a generic, data-driven state machine shared by three groups:
 **bp** (Buenas Prácticas), **cp** (Cuestionario principal), **gen** (Generales).
-Design source of truth: `api/ies/flux_rules/PLAN_flujo_validacion.md`.
+Design source of truth: `docs/records/2026-06-05-diseno-del-motor-de-flujo.md`.
 
 ## The one rule: `role` = whose turn it is
 
@@ -258,7 +258,7 @@ complete until `good_practice_validation.js` passes;
 stay server-side.
 
 Full bp/cp/gen tables and transitions: plan §3
-(`api/ies/flux_rules/PLAN_flujo_validacion.md`).
+(`docs/records/2026-06-05-diseno-del-motor-de-flujo.md`).
 
 ## Coexistence
 

@@ -1,6 +1,6 @@
 """Datos del cuestionario 2026 — Eje 4.
 
-Transcrito de docs/questions/all_questions_reduced.md. No editar a mano
+Transcrito de docs/reference/cuestionario-2026-reducido.md. No editar a mano
 sin actualizar el documento fuente.
 """
 

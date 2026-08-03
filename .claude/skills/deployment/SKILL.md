@@ -96,7 +96,7 @@ The new API stores user uploads (good-practice evidences, flow attachments) on i
 
 The namespace is `/files/`, **renamed from `/media/`** to avoid a collision with the legacy site: the UNAM nginx routes `onigies.unam.mx/media/...` to the legacy Django, and some serializers emitted file URLs the browser resolves against the frontend origin. Under the `onigies.unam.mx` bridge, a new-system file referenced as `/media/...` therefore hit the legacy backend and 404'd.
 
-The fix (§5 in `docs/meets/26_junio_26/seguimiento_pendientes.md`):
+The fix (§5 in `docs/records/2026-06-26-seguimiento-pendientes-ruben.md`):
 
 - `MEDIA_URL = '/files/'`, `MEDIA_ROOT = BASE_DIR/'files'` (`core/settings/__init__.py`).
 - `core/urls.py` serves `/files/` with an explicit `re_path(..., django.views.static.serve, ...)` instead of `static()`. `static()` registers no routes when `DEBUG=False`; the explicit route serves **regardless of DEBUG**, so it survives the pending `DEBUG=False` hardening.

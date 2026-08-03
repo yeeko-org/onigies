@@ -1,7 +1,7 @@
 """
 Notificaciones por correo cuando el flujo devuelve el turno a la IES.
 
-Alcance (S5, ies/flux_rules/PLAN_mejoras_flow_2026-07.md): solo se
+Alcance (S5, docs/records/2026-07-03-auditoria-y-mejoras-del-flujo.md): solo se
 notifica a la institución —a sus usuarios activos—, nunca a las
 revisoras, y solo sobre los objetos raíz del flujo (GoodPracticePackage,
 GeneralPackage, AxisValue). Las decisiones por hijo y los envíos a

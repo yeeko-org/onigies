@@ -3,7 +3,7 @@ Migra los datos del flujo viejo al nuevo (idempotente, re-ejecutable).
 
 1. Status: copia status_register / status_sending al campo `status`
    nuevo según el mapeo (modelo, id viejo) → id nuevo del plan
-   (ies/flux_rules/PLAN_flujo_validacion.md §6). Los ids viejos sin
+   (docs/records/2026-06-05-diseno-del-motor-de-flujo.md §6). Los ids viejos sin
    mapeo se reportan sin migrarse.
 2. Comentarios: ObservableComment, GroupComment, GeneralGroupComment y
    los TextField `comments` de example → FlowEvent (comentario puro).

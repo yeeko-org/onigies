@@ -1,6 +1,6 @@
 """Datos del cuestionario 2026 (levantamiento).
 
-Transcripción de docs/questions/all_questions_reduced.md a estructuras
+Transcripción de docs/reference/cuestionario-2026-reducido.md a estructuras
 Python consumidas por el comando load_questionnaire. No editar a mano
 sin actualizar el documento fuente.
 """

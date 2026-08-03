@@ -58,7 +58,7 @@ class Observable(models.Model):
 
     # CharField y no Decimal: "1.10" y "1.1" son el mismo Decimal, pero
     # son observables distintos del cuestionario (ver
-    # docs/plans/PLAN_seed_cuestionario.md).
+    # docs/records/2026-07-04-seed-del-cuestionario.md).
     number = models.CharField(max_length=10)
     # Orden global de recorrido del cuestionario; lo asigna
     # load_questionnaire, no es editable a mano.

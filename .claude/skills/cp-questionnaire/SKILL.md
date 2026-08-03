@@ -12,7 +12,7 @@ description: Domain model of the ONIGIES questionnaire per observable (flow
 # cp-questionnaire
 
 The 2026 questionnaire (`cp` flow group). 41 observables in 4 axes.
-Decision history lives in `docs/plans/PLAN_seed_cuestionario.md`; this
+Decision history lives in `docs/records/2026-07-04-seed-del-cuestionario.md`; this
 skill documents the *current* model. Sibling skill: `gen-general-info`
 (the Generales section); flow statuses: `flow` skill.
 
@@ -98,5 +98,5 @@ the client — do not invent them.
 - 2.1/2.2: «instancias académicas» without «administrativas» (their
   `includes_admin=False` may change).
 
-When resolved: correct `docs/questions/all_questions_reduced.md`, then
+When resolved: correct `docs/reference/cuestionario-2026-reducido.md`, then
 `seed_data/axis_N.py`, then re-run `load_questionnaire`.

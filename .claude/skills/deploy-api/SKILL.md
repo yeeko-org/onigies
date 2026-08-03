@@ -9,7 +9,7 @@ Runbook for deploying `api/` to production (`apionigies.yeeko.org`, Yeeko server
 
 ## Branch discipline
 
-`production` is always **strictly behind `main`** and only advances with `git merge --ff-only` (never cherry-picks) — see `docs/decisiones/0001-flow-primero-fast-forward.md`. Commits meant for production go first on `main`; the fast-forward point is the last of them.
+`production` is always **strictly behind `main`** and only advances with `git merge --ff-only` (never cherry-picks) — see `docs/decisions/adr-0001-flow-primero-fast-forward.md`. Commits meant for production go first on `main`; the fast-forward point is the last of them.
 
 **A model change and its migration must land in the same commit.** A field committed without its migration poisons every later commit as a deploy target until the migration lands (see incident below).
 
@@ -24,7 +24,7 @@ Runbook for deploying `api/` to production (`apionigies.yeeko.org`, Yeeko server
 
    Any `models.py` change without an accompanying migration in the same range is a stop-the-line signal. Do NOT trust local `pytest` or `makemigrations --check` run from the working tree for this: they see migration files on disk even when those files sit on the wrong side of the branch cut.
 
-   > **Incident 2026-07-29:** `Observable.reach_instances_question` was committed in June without its migration; the migration arrived a month later in a commit excluded from production. The deploy passed pytest and a root-URL smoke test, then every endpoint touching `Observable` returned 500 (`UndefinedColumn`). See `docs/historico/2026-07-29-incidente-500-migracion-faltante.md`.
+   > **Incident 2026-07-29:** `Observable.reach_instances_question` was committed in June without its migration; the migration arrived a month later in a commit excluded from production. The deploy passed pytest and a root-URL smoke test, then every endpoint touching `Observable` returned 500 (`UndefinedColumn`). See `docs/records/2026-07-29-incidente-500-migracion-faltante.md`.
 
 3. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock.
 

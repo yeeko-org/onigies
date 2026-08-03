@@ -11,7 +11,6 @@ export const mockStaffUser = {
   token: 'test-token-staff-0123456789',
   is_staff: true,
   is_full_editor: true,
-  is_mini_editor: false,
   is_ies: false,
   institution: null,
   institution_details: null,
@@ -25,7 +24,6 @@ export const mockIesUser = {
   token: 'test-token-ies-9876543210',
   is_staff: false,
   is_full_editor: false,
-  is_mini_editor: false,
   is_ies: true,
   institution: {
     id: 10,
@@ -88,7 +86,6 @@ export const mockIesRespuestasUser = {
   token: 'test-token-ies-respuestas',
   is_staff: false,
   is_full_editor: false,
-  is_mini_editor: false,
   is_ies: true,
   institution: {
     id: 5,

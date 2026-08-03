@@ -49,7 +49,7 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 ## Stores (`app/store/`)
 
 - `index.js` (`useMainStore`) — central: `cats`, `schemas`, `all_nodes`, `current_collection_data`, all CRUD actions. **Contract:** every CRUD action returns `{data}` on success or `{errors}` on failure (helpers `ok`/`fail` in `utils/api.js`). Pass an optional `error_msg` as the **last** arg to auto-show the error snackbar; omit it to handle the error inline (e.g. `EditCommon`).
-- `auth.js` (`useAuthStore`) — `user_onigies`, `is_logged`, token; role getters `is_staff`, `is_full_editor`, `is_mini_editor`
+- `auth.js` (`useAuthStore`) — `user_onigies`, `is_logged`, token; role getters `is_staff`, `is_full_editor`
 - `ies.js` (`useIesStore`) — `ies_data`, `surveys`, `current_period`
 - `dash.js` — dashboard ephemeral state
 

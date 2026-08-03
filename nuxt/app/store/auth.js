@@ -211,11 +211,6 @@ export const useAuthStore = defineStore("auth", {
         return state.user_onigies.is_full_editor || state.user_onigies.is_staff || false
       return false
     },
-    is_mini_editor(state) {
-      if (state.user_onigies)
-        return state.user_onigies.is_mini_editor || false
-      return false
-    },
     // Rol del usuario autenticado en el motor de flujo (ver flowRoleOf).
     flow_role(state) {
       return flowRoleOf(state.user_onigies)

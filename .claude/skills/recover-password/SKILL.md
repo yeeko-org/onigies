@@ -109,7 +109,7 @@ HTTP 400 also fires if the token expired between Step 2 and Step 3 (race conditi
 // Expected shape
 user_onigies   // full user object from API
 is_logged      // boolean
-// Getters: is_staff, is_full_editor, is_mini_editor
+// Getters: is_staff, is_full_editor
 ```
 
 After Step 3, set both `user_onigies` and `is_logged = true`. The `$api` plugin auto-attaches `auth_onigies` cookie on all subsequent requests — no extra headers needed. Store the token in the cookie, never in `localStorage`.

@@ -1,0 +1,20 @@
+---
+type: task
+id: task-49
+title: Conteo de buenas prácticas del último año en la lista de instituciones
+state: open
+date: 2026-08-03
+owner: ai
+source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
+---
+
+# Conteo de buenas prácticas del último año en la lista de instituciones
+
+`[06:02]` «como la lista de instituciones, qué bueno que me estoy dando cuenta que lo voy a poner como en el giro también, como si ya tiene buenas prácticas y cuántas y así del último año al menos».
+
+Sirve para el seguimiento de campo de Rubí y las revisoras: saber de un vistazo qué instituciones ya enviaron algo. Estado actual: `InstitutionSchema` en `api/ies/catalog_schema.py` no expone ningún conteo. El procedimiento para tocar el esquema de catálogo está en el skill `manage-collections`.
+
+## Criterios de aceptación
+
+- [ ] La lista de instituciones indica si la institución tiene buenas prácticas en el periodo vigente
+- [ ] Muestra cuántas

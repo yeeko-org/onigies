@@ -58,15 +58,18 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     // Guardia anti doble-disparo: `sending` se activa síncrono al entrar a
     // `transition`, así que un segundo clic mientras el POST vuela se ignora.
     if (sending.value) return null
+    // El bloqueo se anuncia con el verbo de la acción, no con el nombre del
+    // status destino: «Reenviar a revisión», no «Reenviado a revisión».
+    const verb = t.action_name || t.public_name
     const { ok, missing } = runEntryRules(t.entry_rules, record.value)
     if (!ok) {
-      block(`Aún no puedes pasar a "${t.public_name}"`, missing)
+      block(`Aún no puedes pasar a "${verb}"`, missing)
       return null
     }
     const childMissing = flowStore.getChildrenNotReady(
       record.value, t, toValue(modelName))
     if (childMissing.length) {
-      block(`Aún no puedes pasar a "${t.public_name}"`, childMissing)
+      block(`Aún no puedes pasar a "${verb}"`, childMissing)
       return null
     }
     // Un solo diálogo cubre confirmación y/o comentario (opcional u

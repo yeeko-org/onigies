@@ -33,6 +33,16 @@ CORS_ALLOWED_ORIGINS = getenv_list("CORS_ALLOWED_ORIGINS", [
 USE_X_FORWARDED_HOST = getenv_bool("USE_X_FORWARDED_HOST", True)
 HTTP_X_FORWARDED_HOST = os.getenv("HTTP_X_FORWARDED_HOST")
 
+# Endurecimiento (task-24). El nginx de Yeeko termina TLS y manda
+# X-Forwarded-Proto; sin este header confiado, is_secure() es False
+# detrás del proxy y ni cookies Secure ni HSTS se emiten.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = getenv_bool("SECURE_COOKIES", not DEBUG)
+CSRF_COOKIE_SECURE = getenv_bool("SECURE_COOKIES", not DEBUG)
+# 0 = sin HSTS; producción lo fija en el .env. No se activa
+# SECURE_SSL_REDIRECT: la redirección http→https ya la hace nginx.
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "0"))
+
 FRONTEND_SITE_URL = os.getenv("FRONTEND_SITE_URL")
 # Application definition
 

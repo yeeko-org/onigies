@@ -2,7 +2,7 @@
 type: task
 id: task-59
 title: Reparar los sent_at nulos de los envíos en producción
-state: open
+state: closed
 date: 2026-08-04
 owner: ai
 source: ["[[2026-08-04-sesion-seccion-informacion-base]]"]
@@ -14,6 +14,8 @@ El motor guardaba con `update_fields=['status']` y el hook que asigna `sent_at` 
 
 ## Criterios de aceptación
 
-- [ ] Se dimensionó en producción cuántos paquetes bp/gen enviados tienen sent_at nulo, separando con y sin FlowEvent
-- [ ] Los reparables recibieron el created_at del primer FlowEvent de envío (comando o RunPython idempotente)
-- [ ] Los no reparables (migrados del flujo viejo, sin evento) quedaron decididos: fecha del flujo viejo o null deliberado
+- [x] Se dimensionó en producción cuántos paquetes bp/gen enviados tienen sent_at nulo, separando con y sin FlowEvent
+- [x] Los reparables recibieron el created_at del primer FlowEvent de envío (comando o RunPython idempotente)
+- [x] Los no reparables (migrados del flujo viejo, sin evento) quedaron decididos: fecha del flujo viejo o null deliberado
+
+Cierre 2026-08-04: 36 paquetes bp reparados con el comando `repair_sent_at` (dry-run y verificación de idempotencia en producción); gen no tenía envíos. El único sin evento (id=64, migrado del flujo viejo como `bp_finished` con `status_sending=discarded`) era un paquete de prueba: Ricardo decidió null deliberado, sin investigar el mapeo. El flujo viejo no conserva fecha alguna (StatusControl es catálogo puro).

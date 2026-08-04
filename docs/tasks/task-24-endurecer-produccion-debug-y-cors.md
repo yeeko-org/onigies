@@ -2,7 +2,7 @@
 type: task
 id: task-24
 title: "Endurecer producción: DEBUG y CORS"
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-4]]"
@@ -15,5 +15,5 @@ Durante el smoke del deploy de julio se asomó una traza de Django en un 404: pr
 
 ## Criterios de aceptación
 
-- [ ] `DEBUG` es False en producción
-- [ ] El CORS acepta solo los orígenes de ONIGIES
+- [x] `DEBUG` es False en producción
+- [x] El CORS acepta solo los orígenes de ONIGIES

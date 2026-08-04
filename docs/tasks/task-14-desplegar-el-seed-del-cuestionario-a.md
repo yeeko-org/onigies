@@ -15,5 +15,5 @@ El código y el esquema del seed ya llegaron a producción con el fast-forward q
 
 ## Criterios de aceptación
 
-- [ ] `load_questionnaire` corrió en producción
+- [x] `load_questionnaire` corrió en producción
 - [ ] Los ejes, componentes y observables visibles corresponden al instrumento definitivo

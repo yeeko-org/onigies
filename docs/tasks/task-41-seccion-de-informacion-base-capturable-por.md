@@ -25,6 +25,6 @@ Dentro de este alcance entra también la composición sexo-genérica y el sexo d
 
 ## Criterios de aceptación
 
-- [ ] La IES captura la sección completa de información base desde /respuestas
+- [x] La IES captura la sección completa de información base desde /respuestas
 - [ ] Rubí y su equipo validaron la sección antes de abrirla
 - [ ] La sección está abierta a las IES en producción

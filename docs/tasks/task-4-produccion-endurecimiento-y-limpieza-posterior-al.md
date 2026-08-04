@@ -14,5 +14,5 @@ Deuda que dejó el deploy del 29 de julio de 2026, elevada de los marcadores �
 
 ## Criterios de aceptación
 
-- [ ] El API en producción corre sin `DEBUG` ni CORS abierto
+- [x] El API en producción corre sin `DEBUG` ni CORS abierto
 - [ ] No quedan respaldos temporales en el servidor

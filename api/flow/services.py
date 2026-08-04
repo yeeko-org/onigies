@@ -27,6 +27,20 @@ def _ct(obj) -> ContentType:
     return ContentType.objects.get_for_model(obj)
 
 
+def _save_status(obj) -> None:
+    """Persiste el nuevo status con un `save()` completo, a propósito.
+
+    Con `update_fields=['status']` se descartaba en silencio todo lo que
+    el `save()` del modelo derivara del status —así se perdía `sent_at`
+    en los paquetes bp y gen—. El motor no puede saber qué campos toca
+    cada hook, así que guarda la fila entera y cualquier hook futuro
+    funciona sin registrar nada aquí. Es seguro: en `execute_transition`
+    la fila viene releída bajo `select_for_update()` y la propagación
+    corre dentro de esa misma transacción.
+    """
+    obj.save()
+
+
 def _check_children_rule(obj, target: Status) -> str | None:
     """
     Verifica que todos los hijos de obj estén en uno de los
@@ -141,7 +155,7 @@ def execute_transition(
         comment=comment or None,
     )
     locked.status = target
-    locked.save(update_fields=['status'])
+    _save_status(locked)
 
     if target.propagates_up:
         parent = get_parent(locked)
@@ -184,7 +198,7 @@ def _propagate_up(user, obj, status: Status) -> None:
         user=user,
     )
     obj.status = status
-    obj.save(update_fields=['status'])
+    _save_status(obj)
 
     if status.propagates_up:
         parent = get_parent(obj)
@@ -217,7 +231,7 @@ def _propagate_down(user, parent, status: Status) -> None:
             user=user,
         )
         child.status = status
-        child.save(update_fields=['status'])
+        _save_status(child)
         _propagate_down(user, child, status)
 
 
@@ -270,7 +284,7 @@ def assign_auto_status(user, obj) -> FlowEvent | None:
         user=user,
     )
     obj.status = auto
-    obj.save(update_fields=['status'])
+    _save_status(obj)
 
     if auto.propagates_up:
         parent = get_parent(obj)

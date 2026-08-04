@@ -218,6 +218,7 @@ const current_page = computed(() => {
           </client-only>
         </v-layout>
       </v-container>
+      <GlobalSnackbar />
     </v-main>
   </v-app>
 </template>

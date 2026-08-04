@@ -14,7 +14,7 @@ const CHILD_REGISTRY = {
   goodpracticepackage: { field: 'good_practices', label: 'buenas prácticas' },
   // axisvalue: { field: 'observable_responses', label: 'respuestas' },
   // observableresponse: { field: 'group_responses', label: 'grupos' },
-  // generalpackage: { field: 'general_group_responses', label: 'grupos' },
+  generalpackage: { field: 'general_group_responses', label: 'grupos' },
 }
 
 function childrenOf(record, modelName) {
@@ -101,9 +101,10 @@ export const useFlowStore = defineStore('flow', () => {
       .map((name) => getStatus(name)?.public_name || name)
       .join(', ')
     const label = CHILD_REGISTRY[modelName]?.label || 'elementos'
-    const verb = target.action_name || target.public_name
-    return [`Todas las ${label} deben tener un status válido para `
-      + `«${verb}»: ${names}.`]
+    // Sin artículo ni cuantificador delante del label: este concuerda en
+    // género con cada colección («buenas prácticas», «grupos») y una cadena
+    // fija se equivocaría en la mitad de los casos.
+    return [`Faltan ${label} por alcanzar un status válido: ${names}.`]
   }
 
   return { byName, loaded, ensureStatuses, getStatus, canEditContent,

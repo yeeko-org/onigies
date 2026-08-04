@@ -148,10 +148,15 @@ const saveOrder = (val) => {
           :color="background_color"
           class="mt-n2 mb-n4 pa-3"
         >
+          <!-- Un EditSimple que cambie algo visible en el renglón colapsado
+               lo avisa por `item-saved`, igual que EditCommon: PanelList lo
+               fusiona en la fila de la lista (row y detail son objetos
+               distintos, no se sincronizan solos). -->
           <component
             v-if="edit_simple_component"
             :is="edit_simple_component"
             v-model="full_main"
+            @item-saved="emits('item-saved', $event)"
           />
 
           <EditCommon

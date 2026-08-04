@@ -42,6 +42,10 @@ venv/bin/pip install -r requirements.txt    # 4. only if requirements changed
 venv/bin/python manage.py migrate           # 5. schema
 venv/bin/python manage.py makemigrations --check --dry-run   # 6. MUST say "No changes detected" — if not, do NOT reload; a model shipped without its migration
 # 7. idempotent seeds if their source changed: seed_flow, migrate_ps_schemas
+#    question/seed_data/ changed → load_sectors, then
+#    load_questionnaire --sync-institutions (backfills the new wrappers).
+#    load_sectors FIRST: load_questionnaire aborts with "Sectores
+#    inexistentes" if a sector it references is missing (deploy 2026-08-04).
 sudo supervisorctl restart apionigies       # 8. reload (brief downtime, seconds)
 ```
 

@@ -60,11 +60,15 @@ PK is `name` (CharField, e.g. `bp_draft`). Key fields:
 | `color`, `icon` | display (chip/button) |
 | `is_default` | one per group (DB constraint); auto-assigned on create |
 | `is_public` | record shows on the public site in this status |
-| `requires_comment` | transition INTO it needs a comment |
+| `comment_type` | `none` / `optional` / `required` — whether the transition INTO it asks for a comment; only `required` is enforced by the motor |
+| `comment_prompt` | label of the comment box in that dialog; empty → generic text |
 | `propagates_up` | on assignment, recursively set the parent to it too |
 | `propagates_down` | on assignment, recursively set all descendants to it too |
 | `auto_on_first_save` | assigned automatically on the object's first save |
-| `hint` | next-step guidance shown by `FlowStatusActions` below the chip (≠ `description`, the chip tooltip) |
+| `hint` | next-step guidance shown by `FlowStatusActions` below the chip to the role whose turn it is (≠ `description`, the chip tooltip) |
+| `hint_wait` | variant of `hint` for the role that is *waiting*; empty falls back to `hint`. Unused on terminals |
+| `priority` | urgency for ordering (higher = first); used to sort status summaries, e.g. `SurveyHeader`'s group counts |
+| `requires_confirmation` + `confirm_title` / `confirm_text` | the frontend asks for an explicit confirmation before transitioning INTO it; empty title → derived from `action_name` |
 | `entry_rules` | JSON list of `flowRules` names that must pass to move INTO this status — a **UX gate**, enforced client-side only; the motor does NOT check it |
 | `next_statuses` (M2M self) | allowed outgoing transitions |
 | `valid_child_statuses` (M2M self) | to move a PARENT here, ALL children must be in one of these |
@@ -97,7 +101,7 @@ Helpers: `get_parent(obj)`, `get_children(obj)`, `is_flow_participant(model)`.
 `validate_transition(user, obj, target, comment)` checks, in order:
 `target ∈ current.next_statuses` → `target` applies to the model → `user` role
 matches `current.role` → children rule (`_check_children_rule`: all children in
-`target.valid_child_statuses`) → `requires_comment` → the model's own hook, if it
+`target.valid_child_statuses`) → `comment_type == 'required'` → the model's own hook, if it
 defines one: `obj.validate_flow_transition(user, target)` returns a list of
 errors (duck typing, so the motor stays generic — e.g. the bp/gen packages veto
 the send when the period is closed).
@@ -137,15 +141,19 @@ serializers nest it (`FlowEventSerializer(many=True, read_only=True)`,
 prefetched in the viewset). The frontend reads `obj.flow_events` and appends the
 event each POST returns — it never fetches the history separately.
 
-The catalog (`color, icon, public_name, action_name, hint, role, content_editable,
-entry_rules, next_statuses, applicable_models, requires_comment`) loads **once**
-via `middleware/dashboard.js` into `useFlowStore` (`app/store/flow.js`) from
+The catalog is the **whole Status row** (`StatusSerializer`, `fields = '__all__'`:
+display, `hint`/`hint_wait`, `priority`, `comment_type`/`comment_prompt`, the
+confirmation texts, `entry_rules`, `next_statuses`, `valid_child_statuses`,
+`applicable_models`) and loads **once** via `middleware/dashboard.js` into `useFlowStore` (`app/store/flow.js`) from
 `GET /flow/statuses/`. Never re-denormalize the status onto each row.
 
 - `flowStore.getStatus(name)` → the catalog status object (or `null`).
 - `flowStore.canEditContent(obj, root)` → the content-edit permission (above).
 - `flowStore.getAvailableTransitions(currentName, appLabel, modelName)` → mirrors
   the motor's role + `next_statuses` ∩ `applicable_models` filter.
+- `flowStore.getChildrenNotReady(record, target, modelName)` → the children rule
+  read client-side (`CHILD_REGISTRY` says where the children hang), as reasons in
+  Spanish for the blocked dialog. UX only; the motor still enforces it on POST.
 - `auth.flow_role` → `'reviewer'` if `is_superuser || is_staff || reviewer`, else
   `'ies'` (mirrors backend `User.is_reviewer`).
 
@@ -157,14 +165,22 @@ via `middleware/dashboard.js` into `useFlowStore` (`app/store/flow.js`) from
 `notifyApiError` and returns the created `FlowEvent`. The three ids may be
 values, refs or getters (`toValue`). It does not fetch history.
 
-**Transition orchestration → `useFlowActions(record, appLabel, modelName)`**
+**Transition orchestration → `useFlowActions(record, appLabel, modelName, options)`**
 (`app/composables/useFlowActions.js`): the headless kernel holding available
-`transitions`, the `entry_rules` gate → `FlowBlockedDialog`, the
-`requires_comment` → comment dialog, and `runTransition` with in-place mutation
-+ snackbar. Consumers only provide the **activator**. Key bits: `onSelect(t)`
-returns the `FlowEvent` on a real transition, `null` if it opened a dialog or
-failed (the caller closes its own dialog only when an event came back);
-`block(title, reasons)` opens the blocked dialog manually. It wraps `useFlow`.
+`transitions`, the `entry_rules` + children gate → `FlowBlockedDialog`, the
+confirmation/comment dialog (`requires_confirmation || comment_type !== 'none'`,
+one dialog for both), and `runTransition` with in-place mutation + snackbar.
+Consumers only provide the **activator**. Key bits: `onSelect(t)` returns the
+`FlowEvent` on a real transition, `null` if it opened a dialog or failed (the
+caller closes its own dialog only when an event came back); `block(title,
+reasons)` opens the blocked dialog manually; each entry of `transitions` carries
+`blocked` (the reasons, when any) so the menu can pre-disable it — `onSelect`
+re-checks anyway, since the record may have changed since the render.
+
+`options.onTransitioned(ev)` is awaited after the mutation and the snackbar: for
+when the mutation in place isn't enough and the consumer must refetch — e.g.
+`GoodPracticeList` reloads to get `sent_at`, `GeneralGroupList` recomputes which
+panels stay open. It wraps `useFlow`.
 
 **Record-as-model.** `FlowStatusActions` and `FlowComments` take the whole record
 via `defineModel` (not derived props); on transition/comment they **mutate it in
@@ -177,10 +193,10 @@ handlers.
 | `FlowStatusChip.vue` | display-only chip; `:status` is the **name string**, resolved via `flowStore.getStatus`. Props `label`, `onlyIcon`/`xSmall`, `disabled`; tooltip = `public_name` + `description`. Trailing `<slot/>` for appended content. |
 | `FlowStatusActions.vue` | **unified status control** — thin assembly over `useFlowActions`: chip activator (`v-menu`) + `FlowTransitionMenu` + `FlowTransitionDialogs`. `v-model` = record; props `appLabel/modelName`. On the user's turn with transitions the chip is a menu activator, else plain. Shows the status `hint` below. |
 | `FlowTransitionMenu.vue` | **presentational** `v-list` of transitions; `:transitions`, emits `@select(t)`; `:title` uses `action_name || public_name`. Reused by chip-menu and split-button carets. |
-| `FlowTransitionDialogs.vue` | **presentational** comment dialog (embeds `FlowTimeline`) + `FlowBlockedDialog`, bound via `:actions="useFlowActions(...)"`. |
+| `FlowTransitionDialogs.vue` | **presentational** confirmation/comment dialog (title from `confirm_title`, body `confirm_text`, comment label `comment_prompt`; embeds `FlowTimeline`) + `FlowBlockedDialog`, bound via `:actions="useFlowActions(...)"`. Every activator that isn't `FlowStatusActions` (split-buttons) must mount it itself. |
 | `FlowTimeline.vue` | **presentational** read-only history (status changes + comments), chronological; `:events` (no fetch). Reused by `FlowComments` and `FlowTransitionDialogs`. |
 | `FlowComments.vue` | compact yellow "sticky note" with comment count; opens a dialog with `FlowTimeline` + add-comment box. `v-model` = record; props `appLabel/modelName`, `width`. |
-| `FlowBlockedDialog.vue` | generic "transition blocked" dialog. Presentational: `v-model` (open), `title`, `reasons: string[]` (built from failed `entry_rules`). |
+| `FlowBlockedDialog.vue` | generic "transition blocked" dialog. Presentational: `v-model` (open), `title`, `reasons: string[]` (failed `entry_rules` + children not ready). |
 
 **Split-buttons (alternative activator).** Where a prominent action beats the
 chip-menu, a `v-btn-group` (primary button + caret) drives the same transitions

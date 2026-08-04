@@ -2,7 +2,7 @@
 type: task
 id: task-53
 title: Bandera de institución de prueba y secciones publicadas o internas
-state: open
+state: closed
 date: 2026-08-03
 owner: ricardo
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
@@ -23,6 +23,6 @@ Estado actual: no existe ninguno de los dos. Una búsqueda de `is_test`, `es_tes
 
 ## Criterios de aceptación
 
-- [ ] Existe una definición escrita del modelo de datos, aprobada por Ricardo
-- [ ] Un usuario de institución de prueba puede entrar a todas las secciones
-- [ ] Una institución real solo ve las secciones marcadas como publicadas
+- [x] Existe una definición escrita del modelo de datos, aprobada por Ricardo — [[adr-0009]]
+- [x] Un usuario de institución de prueba puede entrar a todas las secciones
+- [x] Una institución real solo ve las secciones marcadas como publicadas

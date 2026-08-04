@@ -2,7 +2,7 @@
 type: task
 id: task-40
 title: Levantar el TESTING.md del monorepo
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 ---

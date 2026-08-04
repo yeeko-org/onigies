@@ -2,7 +2,7 @@
 type: task
 id: task-35
 title: Confirmación visible al guardar los datos iniciales
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-6]]"

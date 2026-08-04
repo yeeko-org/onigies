@@ -4,7 +4,8 @@ import {useMainStore} from "~/store/index.js";
 import {useIesStore} from "~/store/ies.js";
 import GoodPracticeList from
     "~/components/dashboard/example/good_practice/GoodPracticeList.vue";
-import SurveyInitData from "~/components/dashboard/survey/SurveyInitData.vue";
+import GeneralGroupList from
+    "~/components/dashboard/survey/GeneralGroupList.vue";
 const mainStore = useMainStore()
 const iesStore = useIesStore()
 const route = useRoute()
@@ -39,7 +40,7 @@ const current_survey = computed(() => {
       color="deep-purple-accent-4"
     >
       <v-tab value="base">
-        Datos base
+        Información base
       </v-tab>
       <v-tab
         v-for="axis in all_axis"
@@ -76,10 +77,7 @@ const current_survey = computed(() => {
         value="base"
       >
         <v-container fluid>
-          <SurveyInitData
-            :period="period"
-            :survey_id="current_survey?.id"
-          />
+          <GeneralGroupList :survey="current_survey?.id" />
         </v-container>
 
       </v-tabs-window-item>

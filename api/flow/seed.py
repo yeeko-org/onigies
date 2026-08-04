@@ -594,13 +594,15 @@ def seed_flow() -> dict:
         cts = [_content_type(label) for label in labels]
         Status.objects.get(name=name).applicable_models.set(cts)
 
-    for name, targets in NEXT_STATUSES.items():
-        Status.objects.get(name=name).next_statuses.set(targets)
-
+    # Se recorren TODOS los status, no solo las claves de los dicts: un
+    # status que sale de NEXT_STATUSES (p.ej. al volverse terminal) debe
+    # quedar sin aristas, no conservar las de la siembra anterior.
     all_names = set(applicability)
     for name in all_names:
-        children = VALID_CHILD_STATUSES.get(name, [])
-        Status.objects.get(name=name).valid_child_statuses.set(children)
+        status = Status.objects.get(name=name)
+        status.next_statuses.set(NEXT_STATUSES.get(name, []))
+        status.valid_child_statuses.set(
+            VALID_CHILD_STATUSES.get(name, []))
 
     # Baja de status obsoletos de los grupos gestionados (p.ej. el gen
     # viejo de un solo nivel, reemplazado por el flujo con GeneralPackage).

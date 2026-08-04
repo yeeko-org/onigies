@@ -2,7 +2,7 @@
 type: task
 id: task-18
 title: "Frontend de Generales: captura de poblaciones y autoridades"
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-41]]"

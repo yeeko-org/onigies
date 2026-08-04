@@ -20,6 +20,16 @@ Es la hermana de superficie de [[task-14]]: aquella corre `load_questionnaire` e
 
 Es además el habilitador de [[task-50]]: Rubí y su equipo hacen la revisión pregunta por pregunta sobre esta misma superficie, corrigiendo ellas los textos.
 
+## Hallazgos previos (exploración 2026-08-03)
+
+La sesión del 2026-08-03 exploró el terreno antes de diferir la tarea. Estado real:
+
+- **Los cinco modelos de pregunta no existen como colecciones.** `api/question/catalog_schema.py` solo registra `AOptionSchema`, `QuestionTypeSchema` y `AOptionsFilterGroup`. `AQuestion`, `BQuestion`, `ReachQuestion`, `PlanQuestion` y `SpecialQuestion` (todos en `api/question/models.py`, todos con FK a `Observable`) no tienen registro, serializer ni viewset — hoy no hay nada navegable ni editable. El grueso del trabajo backend es registrarlas vía el skill `manage-collections`.
+- **Observable no tiene componentes propios en el dashboard** (`nuxt/app/components/dashboard/indicator/observable/` no existe): cae al fallback genérico. Solo existen `AxisEdit`, `ComponentEdit` y `ComponentHeader`. No hay carpeta `question/` en components/dashboard.
+- **Navegación:** en `nuxt/app/layouts/dashboard.vue` ni `observables` ni ninguna colección de preguntas aparece en `main_items` ni en «Gestión Catálogos»; a Observable solo se llega por el árbol de filtros `axes`. Habrá que decidir dónde entran las vistas nuevas.
+- **Decisión de diseño abierta** (nadie la ha tomado): ¿cinco colecciones independientes por tipo de pregunta, o preguntas anidadas en el detalle del Observable (un `ObservableEditSimple` que edite todo inline, al estilo de `ComponentFullSerializer` que anida observables)? Para el caso de uso real — Rubí corrigiendo textos pregunta por pregunta ([[task-50]]) — la vista por observable se acerca más a cómo ella piensa el instrumento; las colecciones planas dan búsqueda y filtros gratis. Es llamada de Ricardo.
+- **El criterio «en producción» sigue gateado por [[task-14]]**: `load_questionnaire` nunca ha corrido allá y su ventana depende de los textos abiertos del cliente. Se puede dejar todo desplegable sin correr el seed.
+
 ## Criterios de aceptación
 
 - [ ] El dashboard lista todas las preguntas, no solo los ejes, componentes y observables

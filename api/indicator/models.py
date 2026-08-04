@@ -8,11 +8,16 @@ class GeneralGroup(models.Model):
     public_name = models.CharField(max_length=150)
     fields = models.JSONField(default=list, blank=True)
     is_population = models.BooleanField(default=False)
+    # Orden del instrumento, no de captura: el grupo `autoridades` se
+    # sembró después que los demás y por id saldría al final.
+    order = models.PositiveSmallIntegerField(
+        default=0, verbose_name="Orden en el cuestionario")
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Grupo de preguntas (Generales)"
         verbose_name_plural = "Grupos de preguntas (Generales)"
 
@@ -150,6 +155,14 @@ class Sector(models.Model):
         default=True, verbose_name="Es sector principal")
     is_authority = models.BooleanField(
         default=False, verbose_name="Es autoridad")
+    # Las 2 poblaciones que completan POB-ESTÁNDAR junto a las 10
+    # `is_main`; quedan fuera de la composición del observable 1.7.
+    is_standard_extra = models.BooleanField(
+        default=False, verbose_name="Es población extra del estándar")
+    # «Titular de la IES»: se captura como total 1 con number_women 0/1
+    # (la respuesta «¿Mujer?»), no como conteo de población.
+    is_ies_head = models.BooleanField(
+        default=False, verbose_name="Es titular de la IES")
 
     def __str__(self):
         return self.name

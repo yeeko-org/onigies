@@ -19,6 +19,8 @@ STANDARD_EXTRA_SECTORS = ["Población externa", "Público en general"]
 # Grupos de la sección "Información de base" del cuestionario.
 # Esquema de cada field: name (clave interna), label (texto visible),
 # type ("integer" | "boolean").
+# El orden de esta lista ES el orden del instrumento: `_load_general_groups`
+# lo escribe en GeneralGroup.order (mismo patrón que load_sectors).
 GENERAL_GROUPS = [
     {
         "name": "estructuras",

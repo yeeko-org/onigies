@@ -17,7 +17,6 @@ from api.views.ies import InstitutionViewSet
 from ps_schema.registry import collection_registry
 # from api.views.stop import StationViewSet
 # from api.views.report import StairReportViewSet, AscertainableViewSet
-from api.views.survey import SurveyViewSet
 
 router = DefaultRouter()
 
@@ -34,10 +33,10 @@ router.register(r'evidence', EvidenceViewSet, basename='evidence')
 router.register(r'invitation', InvitationTokenViewSet, basename='invitation')
 router.register(r'user', UserViewSet, basename='user')
 router.register(r'institution', InstitutionViewSet, basename='institution')
-router.register(r'survey', SurveyViewSet, basename='survey')
 
 # Colecciones primary (CollectionSchema): good_practice_package, good_practice,
-# feature_good_practice. Reemplaza sus registros manuales de arriba.
+# feature_good_practice, survey, general_package. Reemplaza sus registros
+# manuales de arriba (DRF rechaza un basename duplicado).
 collection_registry.register_routes(router)
 
 urlpatterns = [

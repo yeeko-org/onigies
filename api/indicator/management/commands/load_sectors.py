@@ -38,6 +38,7 @@ class Command(BaseCommand):
                 "needs_name": False,
                 "is_main": False,
                 "is_authority": True,
+                "is_ies_head": True,
             },
             {
                 "name": "Máximo cuerpo colegiado de toda la IES",
@@ -131,12 +132,14 @@ class Command(BaseCommand):
                 "description": "Familias, proveedores, etcétera",
                 "needs_name": False,
                 "is_main": False,
+                "is_standard_extra": True,
             },
             {
                 "name": "Público en general",
                 "description": "Ex-alumnado y/o público asistente a actividades de extensión, artísticas, deportivas, etcétera",
                 "needs_name": False,
                 "is_main": False,
+                "is_standard_extra": True,
             },
         ]
         try:
@@ -151,6 +154,10 @@ class Command(BaseCommand):
                             "is_main": sector_data["is_main"],
                             "is_authority": sector_data.get(
                                 "is_authority", False),
+                            "is_standard_extra": sector_data.get(
+                                "is_standard_extra", False),
+                            "is_ies_head": sector_data.get(
+                                "is_ies_head", False),
                         }
                     )
             self.stdout.write(self.style.SUCCESS("Sectores poblacionales cargados exitosamente."))

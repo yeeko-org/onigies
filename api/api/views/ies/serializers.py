@@ -8,6 +8,7 @@ from api.views.common_serializers import InvitationTokenBaseSerializer
 
 class PeriodSimpleSerializer(serializers.ModelSerializer):
     is_bp_submission_closed = serializers.BooleanField(read_only=True)
+    is_gen_submission_closed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Period

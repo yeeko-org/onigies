@@ -249,6 +249,11 @@ class Period(models.Model):
         verbose_name="Fecha límite de envío", blank=True, null=True,
         help_text="Último día para enviar buenas prácticas; al día "
                   "siguiente el periodo cierra solo.")
+    gen_submission_deadline = models.DateField(
+        verbose_name="Fecha límite de envío de generales",
+        blank=True, null=True,
+        help_text="Último día para enviar las preguntas generales; al "
+                  "día siguiente el periodo cierra solo.")
 
     def __str__(self):
         return str(self.year)
@@ -263,6 +268,16 @@ class Period(models.Model):
             return True
         if self.submission_deadline:
             return timezone.localdate() > self.submission_deadline
+        return False
+
+    @property
+    def is_gen_submission_closed(self) -> bool:
+        """Cierre del envío de las preguntas generales. A diferencia de
+        bp no hay bandera manual de publicación —gen no se publica—, así
+        que solo pesa la fecha límite. El día límite cuenta como abierto.
+        """
+        if self.gen_submission_deadline:
+            return timezone.localdate() > self.gen_submission_deadline
         return False
 
     class Meta:

@@ -212,13 +212,14 @@ class Command(BaseCommand):
                 value=option["value"], defaults={"text": option["text"]})
 
     def _load_general_groups(self) -> None:
-        for group in GENERAL_GROUPS:
+        for index, group in enumerate(GENERAL_GROUPS, start=1):
             GeneralGroup.objects.update_or_create(
                 name=group["name"],
                 defaults={
                     "public_name": group["public_name"],
                     "is_population": group["is_population"],
                     "fields": group["fields"],
+                    "order": index,
                 },
             )
         self.stdout.write(

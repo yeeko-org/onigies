@@ -103,7 +103,11 @@ class PopulationQuantity(models.Model):
     sector = models.ForeignKey(
         Sector, on_delete=models.CASCADE, related_name='population_quantities')
     no_apply = models.BooleanField(default=False, verbose_name="No Aplica")
-    name = models.CharField(max_length=255, verbose_name='Nombre del sector')
+    # Opcional: solo los sectores con `needs_name` piden un texto libre;
+    # el resto se identifica por el propio sector.
+    name = models.CharField(
+        max_length=255, blank=True, null=True,
+        verbose_name='Nombre del sector')
     number_men = models.PositiveIntegerField(
         verbose_name='Número de hombres', blank=True, null=True)
     number_women = models.PositiveIntegerField(
@@ -140,6 +144,17 @@ class GeneralPackage(FlowParticipant, models.Model):
             from django.utils import timezone
             self.sent_at = timezone.now()
         super().save(*args, **kwargs)
+
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor (flow.services.validate_transition): con el
+        periodo cerrado la IES no puede transicionar el envío. La
+        revisora sí sigue revisando después del cierre."""
+        closed = self.survey.period.is_gen_submission_closed
+        if closed and not user.is_reviewer:
+            msg = ('El periodo de envío de las preguntas generales ya '
+                   'cerró; no puedes enviarlas a revisión.')
+            return [msg]
+        return []
 
     def __str__(self):
         return (f"Envío de Preguntas Generales - "

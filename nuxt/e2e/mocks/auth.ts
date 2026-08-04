@@ -87,11 +87,14 @@ export const mockIesRespuestasUser = {
   is_staff: false,
   is_full_editor: false,
   is_ies: true,
+  // `is_test: true` porque estos tests cubren las tres secciones: una IES
+  // real solo vería las publicadas (utils/sections.js).
   institution: {
     id: 5,
     name: 'Universidad de Prueba',
     acronym: 'UP',
     is_public: true,
+    is_test: true,
     logo: null,
   },
   institution_details: {

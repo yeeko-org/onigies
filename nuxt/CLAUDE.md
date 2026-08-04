@@ -29,7 +29,7 @@ NUXT_ADMIN_URL=https://...   # Django admin URL (sidebar link)
 
 Playwright on `:3019` with a mocked Django backend — every request to `:8019` is intercepted via `page.route`; unmocked hits return `501`. Tests import `test`/`expect` from `./fixtures`, not `@playwright/test`.
 
-See `.claude/skills/playwright-e2e/SKILL.md` for MCP ↔ test workflow, selector conventions, layout, and coverage.
+See `.claude/skills/playwright-e2e/SKILL.md` for MCP ↔ test workflow, selector conventions, layout, and coverage. Covered flows, fixtures and mock users: `TESTING.md`.
 
 ## Catalog-driven UI
 

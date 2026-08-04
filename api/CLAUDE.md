@@ -12,6 +12,8 @@ pytest                       # run tests
 pytest ies/tests.py          # single file
 ```
 
+Test layout, what each test class covers and the shared fixtures: `TESTING.md`.
+
 ## Environment
 
 ```env
@@ -35,6 +37,10 @@ FRONTEND_SITE_URL=https://localhost:3018
 | `flow` | Validation-flow engine: Status catalog (groups `bp`/`cp`/`gen`), FlowEvent timeline, generic Attachment. Hierarchy registry in `flow/registry.py`. `ComponentValue` does NOT participate in the flow. Replaces `ies.StatusControl` (coexisting until data verification; see `docs/records/2026-06-05-diseno-del-motor-de-flujo.md`) |
 
 Settings in `core/settings/__init__.py`; root URLs in `core/urls.py`; API routes in `api/urls.py`.
+
+**`Institution.is_test`:** test institutions see every section and ignore
+period deadlines. Any calculation, indicator or export must exclude them
+(`institution__is_test=False`). None exists yet — do not introduce one.
 
 ## Creating views
 

@@ -111,10 +111,11 @@ longer falls back silently). The glob is **relative** (`../components/...`);
 
 In `PanelCommon.vue`:
 
-- **`{Model}EditSimple` exists** → rendered inline with **only** `v-model="full_main"`.
-  It owns the whole detail/edit UI: no generic header fields, no save/delete from
-  `EditCommon`. **It is the reviewer's detail view in the dashboard.** Do not put
-  IES-survey content here (that lives in `/respuestas`).
+- **`{Model}EditSimple` exists** → rendered inline with `v-model="full_main"` (its
+  only prop) and its optional `@item-saved`. It owns the whole detail/edit UI: no
+  generic header fields, no save/delete from `EditCommon`. **It is the reviewer's
+  detail view in the dashboard.** Do not put IES-survey content here (that lives
+  in `/respuestas`).
 - **No `EditSimple`** → `EditCommon` renders generic fields (`EditCommonFields.vue`:
   name, order, status, comments, icon/color, description, help_text) + your
   `{Model}Edit` inside the `#edit` slot, with the Guardar/Eliminar buttons.
@@ -123,6 +124,15 @@ In `PanelCommon.vue`:
 > or other props — if the component declares such a prop with a default, that
 > default wins in the dashboard.
 
+**Row ↔ detail sync.** The collapsed row (`{Model}Header`) reads the *list*
+object; the panel edits the *detail* object — two different objects that do not
+sync by themselves. An `EditSimple` that changes something visible in the row
+emits `item-saved` (`{res, is_new: false}`, `res` = at least the pk plus the
+changed keys); `PanelCommon` forwards it and `PanelList.addItem` merges it into
+the list row. Same channel `EditCommon` already used; no extra wiring needed
+beyond declaring the emit. Real case: `SurveyEditSimple` re-emits the
+`general_package` after a flow transition so the row's status chip updates.
+
 ### Props each component receives
 
 | Component | Props in |
@@ -130,7 +140,7 @@ In `PanelCommon.vue`:
 | `Header` | `main` (the row object), `collection_data`, `show_details`, `parent`, `is_simple`; emits `open-panel` |
 | `Sheet` | `full_main` (fetched detail), `show_details`, `collection_data` |
 | `Edit` | `v-model` (= `full_main`/`element_to_edit`), `is_edit`, `is_massive_edit`; emits `itemSaved` |
-| `EditSimple` | `v-model` only |
+| `EditSimple` | `v-model` only; may emit `item-saved` (forwarded to the list row) |
 
 Real example — `GoodPracticeHeader.vue` wraps `HeaderCommon` and fills the
 `#details` slot with a `DisplayGroup` (axes); see
@@ -262,7 +272,8 @@ Keep them; they are not debug leftovers.
    - **Custom read-only detail / children layout** → add `{Model}Sheet.vue`.
    - **Custom form fields inside the generic frame** → add `{Model}Edit.vue`.
    - **Fully bespoke inline detail+edit** → add `{Model}EditSimple.vue` (replaces
-     the generic frame; remember it only gets `v-model`).
+     the generic frame; remember it only gets `v-model`, and emit `item-saved`
+     if the row must reflect the change).
 3. Put it under `components/dashboard/{app_label}/{snake_name}/` with the exact
    `{model_name}{Suffix}.vue` name (PascalCase model, snake folder).
 4. No import, no registration — `useDynamicComponent` finds it via the glob.

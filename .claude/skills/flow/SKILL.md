@@ -97,7 +97,10 @@ Helpers: `get_parent(obj)`, `get_children(obj)`, `is_flow_participant(model)`.
 `validate_transition(user, obj, target, comment)` checks, in order:
 `target ∈ current.next_statuses` → `target` applies to the model → `user` role
 matches `current.role` → children rule (`_check_children_rule`: all children in
-`target.valid_child_statuses`) → `requires_comment`.
+`target.valid_child_statuses`) → `requires_comment` → the model's own hook, if it
+defines one: `obj.validate_flow_transition(user, target)` returns a list of
+errors (duck typing, so the motor stays generic — e.g. the bp/gen packages veto
+the send when the period is closed).
 
 `execute_transition` validates, writes a `FlowEvent`, updates `obj.status`, then
 propagates: `_propagate_up` when `target.propagates_up`, `_propagate_down` when
@@ -106,6 +109,13 @@ only touches objects where the status applies (`applicable_models`) and that
 don't already have it. **Every parent status change goes through
 `execute_transition`** — there is no bypass — so `valid_child_statuses` is always
 enforced before propagation.
+
+Every status write — the object's own and the propagated ones — goes through
+`_save_status(obj)`, a **full `obj.save()`** on purpose: with
+`update_fields=['status']` anything the model's `save()` derives from the status
+was silently dropped (that is how `sent_at` never persisted). Hooks in `save()`
+therefore just work, with nothing to register in `flow`. Safe because the row was
+re-read under `select_for_update()` inside the transaction.
 
 `get_available_transitions` filters by role + `next_statuses` +
 `applicable_models` (NOT the children rule — that is POST-only). All three inputs
@@ -230,8 +240,9 @@ shows "Respuesta registrada" + a "Cambiar respuesta" button (→ `reopen`) whene
 `has_good_practices != null`, gated by `canEditResponse` (`!isStaff &&
 periodOpen && packageStatus.role === 'ies'`).
 
-`sent_at` is set automatically by `GoodPracticePackage.save()` when the status
-becomes `bp_sent`/`bp_resent` — don't set it from the client.
+`sent_at` is set automatically by the package's `save()` (`GoodPracticePackage`,
+`GeneralPackage`) when the status becomes `*_sent`/`*_resent` — don't set it from
+the client.
 
 ## bp catalog (worked example)
 
@@ -259,6 +270,30 @@ stay server-side.
 
 Full bp/cp/gen tables and transitions: plan §3
 (`docs/records/2026-06-05-diseno-del-motor-de-flujo.md`).
+
+## gen: the live surfaces
+
+`gen` runs end to end (`GeneralPackage` → the 5 `GeneralGroupResponse`), and both
+audiences share the **same dual-audience component**, which resolves role,
+editability and available transitions by itself:
+
+- **IES** → `/respuestas/[period]`, tab «Información base» →
+  `components/dashboard/survey/GeneralGroupList.vue` + one `GeneralGroupPanel`
+  per group: split-button "Guardar" + caret with the group's transitions, and the
+  package send gated by `valid_child_statuses` (all five groups completed) plus
+  the period lock (`Period.is_gen_submission_closed`, enforced in
+  `GeneralPackage.validate_flow_transition`).
+- **Reviewer** → dashboard collection «Cuestionarios de las IES» (`Survey`);
+  `SurveyEditSimple` mounts the very same `GeneralGroupList` read-only, with the
+  per-group and package transitions. The reviewer transitions and comments but
+  **does not edit gen content**. A menu-less collection «Envíos de preguntas
+  generales» (`GeneralPackage`) exists for direct access.
+
+Two gen specifics: `gen_approved`/`gen_finished` are terminal in every direction
+(no `next_statuses` out of them), and returning a group with `gen_need_changes`
+does **not** propagate to the package — the reviewer transitions both. The
+section's content is written against `Survey`, not the flow wrappers: skill
+`gen-general-info`.
 
 ## Coexistence
 

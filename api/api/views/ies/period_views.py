@@ -20,6 +20,7 @@ class InstitutionCatalogViewSet(BaseGenericViewSet):
 
     serializer_class = InstitutionSerializer
     search_fields = ['name', 'acronym']
+    filterset_fields = ['is_test']
 
     def get_serializer_class(self):
         action_serializer = {

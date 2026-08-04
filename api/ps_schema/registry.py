@@ -336,7 +336,8 @@ class CatalogRegistry(_CollectionDataMixin):
                     ) if flag
                 ],
                 'xls_export': False,
-                'all_filters': [],
+                'all_filters': [
+                    filter_to_dict(f) for f in schema_cls.all_filters],
             }
             yield data['app_label'], data
 

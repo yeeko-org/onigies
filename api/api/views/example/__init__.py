@@ -126,7 +126,8 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         propaga el descarte a las prácticas (``propagates_down``).
         """
         package = self.get_object()
-        if package.survey.period.is_bp_submission_closed:
+        closed = package.survey.period.is_bp_submission_closed
+        if closed and not package.survey.is_test:
             msg = 'El periodo ya cerró, no se puede modificar la respuesta.'
             return Response({'detail': msg}, status=400)
         try:
@@ -159,7 +160,8 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         if not status or status.role != 'ies':
             msg = 'No puedes reabrir el paquete en este estado.'
             return Response({'detail': msg}, status=400)
-        if package.survey.period.is_bp_submission_closed:
+        closed = package.survey.period.is_bp_submission_closed
+        if closed and not package.survey.is_test:
             msg = 'El periodo de registro ya cerró, no se puede reabrir.'
             return Response({'detail': msg}, status=400)
         if status.name != 'bp_draft':

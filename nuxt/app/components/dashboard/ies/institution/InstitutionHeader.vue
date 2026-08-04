@@ -22,6 +22,19 @@ const props = defineProps({
     <template #title>
       <strong> {{ main.acronym }}</strong>
     </template>
+    <template #details>
+      <!-- Las instituciones de prueba conviven en el mismo listado que las
+           reales; el chip evita confundirlas al revisar o al reportar. -->
+      <v-chip
+        v-if="main.is_test"
+        color="orange-darken-2"
+        size="small"
+        variant="flat"
+        prepend-icon="science"
+      >
+        Test
+      </v-chip>
+    </template>
   </HeaderCommon>
 </template>
 

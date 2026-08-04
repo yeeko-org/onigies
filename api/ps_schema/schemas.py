@@ -78,6 +78,7 @@ class BaseSchema:
     sort_fields: list = []
     cat_params: dict = {}
     viewset_class: type | None = None
+    all_filters: list = []     # List[FilterRef | ComponentFilter]
 
 
 # ---------------------------------------------------------------------------
@@ -147,7 +148,6 @@ class CollectionSchema(BaseSchema):
     open_insertion: bool = None
     color: str = None
     icon: str = None
-    all_filters: list = []     # List[FilterRef | ComponentFilter]
     xls_export: bool = False
     xls_export_class: type | None = None
     can_massive_delete: bool = False

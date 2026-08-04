@@ -5,6 +5,9 @@ import {useMainStore} from '~/store/index.js'
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import GenericDisplay from "~/components/dashboard/common/select/GenericDisplay.vue";
 import InstitutionCard from "~/components/dashboard/ies/institution/InstitutionCard.vue";
+import {
+  SECTION_BASE, SECTION_CP, SECTION_BP, isSectionVisible,
+} from "~/utils/sections.js";
 
 const iesStore = useIesStore()
 const mainStore = useMainStore()
@@ -15,7 +18,12 @@ definePageMeta({
   layout: 'ies',
 })
 
-
+const showBase = computed(
+  () => isSectionVisible(SECTION_BASE, iesStore.is_test))
+const showCp = computed(
+  () => isSectionVisible(SECTION_CP, iesStore.is_test))
+const showBp = computed(
+  () => isSectionVisible(SECTION_BP, iesStore.is_test))
 
 </script>
 
@@ -64,6 +72,7 @@ definePageMeta({
                 class="d-flex align-center flex-wrap"
               >
                 <NuxtLink
+                  v-if="showBase"
                   class="chip-link mr-6"
                   :to="{
                     path: `/respuestas/${year.year}`,
@@ -93,7 +102,8 @@ definePageMeta({
                   </v-badge>
                 </NuxtLink>
                 <NuxtLink
-                  v-for="axis_value in year.survey?.axis_values || []"
+                  v-for="axis_value in (showCp && year.survey?.axis_values)
+                    || []"
                   :key="axis_value.id"
                   class="chip-link mr-6"
                   :to="{
@@ -126,7 +136,7 @@ definePageMeta({
                   </v-badge>
                 </NuxtLink>
                 <NuxtLink
-                  v-if="year.survey?.packages.length > 0"
+                  v-if="showBp && year.survey?.packages.length > 0"
                   class="chip-link"
                   :to="{
                     path: `/respuestas/${year.year}`,

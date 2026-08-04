@@ -60,6 +60,12 @@ export const useIesStore = defineStore('ies', {
     }
   },
   getters: {
+    // Institución de prueba: levanta las restricciones de sección y los
+    // cierres de periodo. Llega en el payload de login (Institution se
+    // serializa con `__all__`).
+    is_test(state) {
+      return !!state.ies_data?.is_test
+    },
     available_years(state) {
       // console.log("state", state)
       if (!state.surveys) return [];

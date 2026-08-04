@@ -27,6 +27,11 @@ class Institution(models.Model):
     is_centralized = models.BooleanField(
         blank=True, null=True,
         help_text="Gobierno centralizado")
+    is_test = models.BooleanField(
+        default=False, verbose_name="Institución de prueba",
+        help_text="Ve todas las secciones aunque no estén publicadas y "
+                  "no la detienen los cierres de periodo. Debe quedar "
+                  "fuera de cálculos, indicadores y exportes.")
 
     def save(self, *args, **kwargs):
         from indicator.models import Axis, Sector, GeneralGroup

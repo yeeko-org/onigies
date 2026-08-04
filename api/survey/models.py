@@ -46,6 +46,13 @@ class Survey(models.Model):
     postgraduate_plans = models.IntegerField(
         verbose_name='Planes a nivel posgrado', blank=True, null=True)
 
+    @property
+    def is_test(self) -> bool:
+        """Delegación a la bandera de la institución. Los candados de
+        cierre de periodo cuelgan del survey, no de la institución, así
+        que se consulta desde aquí para no repetir el salto de FK."""
+        return self.institution.is_test
+
     def __str__(self):
         return f"Survey: {self.institution.name} - {self.period}"
 
@@ -148,13 +155,14 @@ class GeneralPackage(FlowParticipant, models.Model):
     def validate_flow_transition(self, user, target) -> list[str]:
         """Gancho del motor (flow.services.validate_transition): con el
         periodo cerrado la IES no puede transicionar el envío. La
-        revisora sí sigue revisando después del cierre."""
-        closed = self.survey.period.is_gen_submission_closed
-        if closed and not user.is_reviewer:
-            msg = ('El periodo de envío de las preguntas generales ya '
-                   'cerró; no puedes enviarlas a revisión.')
-            return [msg]
-        return []
+        revisora sí sigue revisando después del cierre, y una
+        institución de prueba nunca queda atrapada por el cierre."""
+        if not self.survey.period.is_gen_submission_closed:
+            return []
+        if user.is_reviewer or self.survey.is_test:
+            return []
+        return ['El periodo de envío de las preguntas generales ya '
+                'cerró; no puedes enviarlas a revisión.']
 
     def __str__(self):
         return (f"Envío de Preguntas Generales - "

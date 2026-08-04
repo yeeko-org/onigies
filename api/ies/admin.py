@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from ies.models import (
-    Institution, StatusControl, User, PasswordRecoveryToken,
+    Institution, Period, StatusControl, User, PasswordRecoveryToken,
 )
 from survey.models import Survey
 from example.models import GoodPracticePackage
@@ -27,6 +27,14 @@ class InstitutionAdmin(admin.ModelAdmin):
     list_display = ('name', 'acronym')
     search_fields = ('name', 'acronym')
     inlines = [SurveyInline]
+
+
+@admin.register(Period)
+class PeriodAdmin(admin.ModelAdmin):
+    list_display = (
+        'year', 'submission_deadline', 'gen_submission_deadline',
+        'good_practices_published', 'results_published',
+    )
 
 
 @admin.register(PasswordRecoveryToken)

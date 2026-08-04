@@ -1,4 +1,3 @@
-from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -29,7 +28,11 @@ if '://' not in settings.MEDIA_URL:
         re_path(rf'^{_media_prefix}(?P<path>.*)$', serve,
                 {'document_root': settings.MEDIA_ROOT}),
     ]
-urlpatterns += static(settings.STATIC_URL,
-                      document_root=settings.STATIC_ROOT)
-# if settings.STATIC_URL:
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Los estáticos (admin, DRF) con la misma ruta explícita: static() no
+# registra nada con DEBUG=False. Se omite cuando viven en S3.
+if '://' not in settings.STATIC_URL:
+    _static_prefix = settings.STATIC_URL.lstrip('/')
+    urlpatterns += [
+        re_path(rf'^{_static_prefix}(?P<path>.*)$', serve,
+                {'document_root': settings.STATIC_ROOT}),
+    ]

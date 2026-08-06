@@ -1,5 +1,5 @@
 <script setup>
-import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
+import FlowAttachments from "~/components/dashboard/flow/FlowAttachments.vue";
 import Comments from "~/components/dashboard/common/utils/Comments.vue";
 
 const props = defineProps({
@@ -12,11 +12,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update'])
 
+// Los adjuntos NO viven aquí: se escriben en sitio sobre `value`
+// (`flow_attachments`) contra su propio endpoint, fuera del ciclo
+// emit → PATCH de la característica.
 const localValue = ref({
   has_attribute: false,
   justification: '',
   final_option: null,
-  evidences: [],
   comments: '',
 })
 
@@ -29,7 +31,6 @@ const hasAttribute = computed({
     if (!val) {
       localValue.value.justification = ''
       localValue.value.final_option = null
-      localValue.value.evidences = []
     }
     saveChanges()
   }
@@ -54,12 +55,14 @@ const panelColor = computed(() => {
 
 const initValue = () => {
   if (props.value) {
+    // Array garantizado para el v-model de FlowAttachments.
+    if (!Array.isArray(props.value.flow_attachments))
+      props.value.flow_attachments = []
     localValue.value = {
       id: props.value.id,
       has_attribute: props.value.has_attribute || false,
       justification: props.value.justification || '',
       final_option: props.value.final_option?.id || props.value.final_option,
-      evidences: props.value.evidences || [],
       comments: props.value.comments || '',
     }
   }
@@ -190,9 +193,14 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           >
             Evidencias (Opcional):
           </p>
-          <Evidences
-            :full_main="localValue"
-            main_collection_name="feature_good_practice"
+          <FlowAttachments
+            v-if="value?.id"
+            v-model="value.flow_attachments"
+            app-label="example"
+            model-name="featuregoodpractice"
+            :id="value.id"
+            :editable="editable"
+            class="ml-3"
           />
         </div>
       </template>
@@ -236,16 +244,18 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
         >
           Mueve el control para asignar una calificación.
         </div>
+        <!-- La revisión solo consulta la evidencia de la IES. -->
         <div
-          v-if="localValue.evidences.length > 0"
+          v-if="value?.flow_attachments?.length"
           class="mt-4"
         >
           <p class="text-subtitle-2 mb-2">Evidencias adjuntas:</p>
-          <Evidences
-            :full_main="localValue"
-            main_collection_name="feature_good_practice"
+          <FlowAttachments
+            v-model="value.flow_attachments"
+            app-label="example"
+            model-name="featuregoodpractice"
+            :id="value.id"
           />
-
         </div>
 
         <v-divider class="my-4" />

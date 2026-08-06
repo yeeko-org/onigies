@@ -35,6 +35,27 @@ def is_flow_participant(obj_or_model) -> bool:
     return issubclass(model, FlowParticipant)
 
 
+def get_flow_delegate(obj_or_model):
+    """Nombre del FK al objeto del flujo que gobierna a un modelo que no
+    participa, o None.
+
+    Espejo de `flow_parent` para los satélites: FeatureGoodPractice no
+    tiene status propio pero admite adjuntos, y sus permisos son los de
+    su GoodPractice. Atributo de clase, sin campo: no genera migración.
+    """
+    return getattr(obj_or_model, 'flow_delegate', None)
+
+
+def resolve_flow_owner(obj: models.Model) -> models.Model:
+    """Objeto del flujo cuyos permisos gobiernan a `obj`.
+
+    Es `obj` mismo cuando participa del flujo; el objeto apuntado por
+    `flow_delegate` cuando es un satélite.
+    """
+    delegate = get_flow_delegate(obj)
+    return obj if delegate is None else getattr(obj, delegate)
+
+
 def get_parent(obj: models.Model) -> models.Model | None:
     """Padre lógico de un objeto del flujo, o None si es raíz."""
     parent_attr = getattr(obj, 'flow_parent', None)

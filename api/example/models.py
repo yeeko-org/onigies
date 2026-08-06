@@ -142,6 +142,10 @@ class GoodPractice(FlowParticipant, models.Model):
 
 
 class FeatureGoodPractice(models.Model):
+    # No participa del flujo (no tiene status propio), pero sí admite
+    # adjuntos: sus permisos son los de la práctica de la que cuelga.
+    flow_delegate = 'good_practice'
+
     good_practice = models.ForeignKey(
         GoodPractice, on_delete=models.CASCADE, related_name='feature_values')
     feature = models.ForeignKey(
@@ -154,6 +158,7 @@ class FeatureGoodPractice(models.Model):
     justification = models.TextField(blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
     reviewers = models.ManyToManyField(User, blank=True)
+    flow_attachments = GenericRelation('flow.Attachment')
 
     def __str__(self):
         return f"{self.good_practice.name} - {self.feature.name}"

@@ -22,18 +22,34 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-    """Adjunto compacto para anidar en FlowEvent."""
+    """Adjunto de un objeto del flujo.
+
+    Se anida tanto en FlowEvent como en los serializers de detalle de
+    los targets (`flow_attachments`). `uploaded_by` viaja como pk: el
+    front resuelve el nombre con su catálogo de usuarias, igual que con
+    `FlowEvent.user`.
+    """
+    name = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
 
     class Meta:
         model = Attachment
-        fields = ['id', 'url', 'created_at']
+        fields = ['id', 'name', 'url', 'uploaded_by', 'created_at']
+
+    def get_name(self, obj) -> str:
+        """Nombre visible: solo el archivo, sin la ruta de subida."""
+        return obj.file.name.rsplit('/', 1)[-1] if obj.file else ''
 
     def get_url(self, obj) -> str | None:
         request = self.context.get('request')
         if obj.file and request:
             return request.build_absolute_uri(obj.file.url)
         return obj.file.url if obj.file else None
+
+
+class AttachmentUploadSerializer(serializers.Serializer):
+    """Payload de subida de un adjunto (multipart)."""
+    file = serializers.FileField()
 
 
 class FlowEventSerializer(serializers.ModelSerializer):

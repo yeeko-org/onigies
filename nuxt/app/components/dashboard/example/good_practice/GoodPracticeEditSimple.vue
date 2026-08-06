@@ -9,7 +9,7 @@ import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 
 import { useMainStore } from '~/store/index.js'
 import { useDashboardStore } from '~/store/dash.js'
-import Evidences from "~/components/dashboard/common/utils/Evidences.vue";
+import FlowAttachments from "~/components/dashboard/flow/FlowAttachments.vue";
 import { useRules } from "~/composables/useRules.js"
 import {
   yearRules, hasAxis, hasDescription, hasResults, vigenciaOk, hasFeature,
@@ -37,6 +37,13 @@ const formRef = ref(null)
 const showErrorSummary = ref(false)
 
 const isEditing = computed(() => !!full_main.value?.id)
+
+// Garantiza el array donde escribe el v-model de FlowAttachments: una
+// práctica recién creada llega sin él hasta el siguiente fetch.
+watchEffect(() => {
+  if (full_main.value && !Array.isArray(full_main.value.flow_attachments))
+    full_main.value.flow_attachments = []
+})
 
 // onTransitioned avisa al padre para que refresque la raíz (el paquete puede
 // quedar stale si la transición del hijo propaga hacia arriba).
@@ -230,10 +237,14 @@ const remove = async () => {
           :rules="completeRules(hasResults, 'Los resultados son obligatorios')"
         />
       </v-form>
-      Evidencias:
-      <Evidences
-        :full_main="full_main"
-        main_collection_name="good_practice"
+      <p class="text-subtitle-2 mt-2 mb-1">Evidencias:</p>
+      <FlowAttachments
+        v-if="isEditing"
+        v-model="full_main.flow_attachments"
+        app-label="example"
+        model-name="goodpractice"
+        :id="full_main.id"
+        :editable="!isStaff && editable"
       />
       <v-divider class="mt-4"></v-divider>
       <v-input

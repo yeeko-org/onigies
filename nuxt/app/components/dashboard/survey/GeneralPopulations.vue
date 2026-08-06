@@ -106,6 +106,7 @@ const canCount = (sector) => props.editable && sector.is_main
                 :disabled="!canCount(sector)"
                 density="compact"
                 hide-details
+                max-width="110px"
               />
             </td>
             <td>
@@ -114,6 +115,7 @@ const canCount = (sector) => props.editable && sector.is_main
                 :disabled="!canCount(sector)"
                 density="compact"
                 hide-details
+                max-width="110px"
               />
             </td>
             <td class="text-right text-body-2 font-weight-medium">

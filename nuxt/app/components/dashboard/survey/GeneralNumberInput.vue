@@ -10,6 +10,10 @@ defineProps({
   disabled: Boolean,
   density: { type: String, default: 'comfortable' },
   hideDetails: { type: [Boolean, String], default: 'auto' },
+  // Ancho máximo opcional: para celdas de tabla (poblaciones), donde el
+  // input no debe ocupar todo el ancho de la columna. Sin este prop el
+  // input se comporta como antes (ancho completo del contenedor).
+  maxWidth: { type: String, default: null },
 })
 
 const value = defineModel({ type: Number, default: null })
@@ -29,6 +33,9 @@ const value = defineModel({ type: Number, default: null })
     control-variant="hidden"
     variant="outlined"
     class="general-number"
+    :style="maxWidth
+      ? { maxWidth, marginInlineStart: 'auto' }
+      : undefined"
   />
 </template>
 

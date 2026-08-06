@@ -20,6 +20,8 @@ import FlowTransitionDialogs from
   '~/components/dashboard/flow/FlowTransitionDialogs.vue'
 import FlowStatusActions from
   '~/components/dashboard/flow/FlowStatusActions.vue'
+import FlowAttachments from
+  '~/components/dashboard/flow/FlowAttachments.vue'
 import GeneralNumberFields from
   '~/components/dashboard/survey/GeneralNumberFields.vue'
 import GeneralPopulations from
@@ -60,6 +62,14 @@ const fields = computed(() => catalog.value.fields || [])
 
 const flowActions = useFlowActions(group, 'survey', 'generalgroupresponse')
 const { transitions, currentStatus } = flowActions
+
+// El serializer siempre manda `flow_attachments`; se garantiza el array
+// para que el v-model de FlowAttachments tenga dónde escribir aunque el
+// grupo llegue de una respuesta parcial.
+watchEffect(() => {
+  if (group.value && !Array.isArray(group.value.flow_attachments))
+    group.value.flow_attachments = []
+})
 
 // Fracción capturada: cuántas de las respuestas que este grupo espera ya
 // tienen dato. Nunca es un porcentaje de avance del flujo. Poblaciones lleva
@@ -154,6 +164,21 @@ const saveAndTransition = async (transition) => {
         :fields="fields"
         :editable="editable"
       />
+
+      <!-- Evidencia probatoria del grupo. Se ancla al GeneralGroupResponse
+           y se guarda al instante (no entra en el PATCH del Survey). -->
+      <div class="mt-6">
+        <p class="text-subtitle-2 mb-1">
+          Evidencia probatoria (opcional)
+        </p>
+        <FlowAttachments
+          v-model="group.flow_attachments"
+          app-label="survey"
+          model-name="generalgroupresponse"
+          :id="group.id"
+          :editable="editable"
+        />
+      </div>
 
       <!-- La revisión no edita contenido: corre sus transiciones directo
            desde el control de estado, sin guardado previo que encadenar. -->

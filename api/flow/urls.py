@@ -2,6 +2,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from flow.attachment_views import (
+    FlowAttachmentDetailView, FlowAttachmentView)
 from flow.views import FlowEventView, FlowTransitionView, StatusViewSet
 
 router = DefaultRouter()
@@ -19,5 +21,15 @@ urlpatterns = router.urls + [
         f'{_obj}/events/',
         FlowEventView.as_view(),
         name='flow-events',
+    ),
+    path(
+        f'{_obj}/attachments/',
+        FlowAttachmentView.as_view(),
+        name='flow-attachments',
+    ),
+    path(
+        f'{_obj}/attachments/<int:attachment_id>/',
+        FlowAttachmentDetailView.as_view(),
+        name='flow-attachment-detail',
     ),
 ]

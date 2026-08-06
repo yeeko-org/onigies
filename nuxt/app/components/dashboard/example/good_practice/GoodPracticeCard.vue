@@ -89,13 +89,13 @@ function openEdit(){
             </v-tooltip>
           </v-chip>
           <v-chip
-            v-if="practice.evidences.length > 0"
+            v-if="practice.flow_attachments?.length"
             variant="tonal"
             color="blue-grey"
             class="ml-3"
             prepend-icon="attach_file"
           >
-            {{practice.evidences.length}} archivos de evidencia
+            {{practice.flow_attachments.length}} archivos de evidencia
           </v-chip>
           <v-chip
             v-if="isStaff"

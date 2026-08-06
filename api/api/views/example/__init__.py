@@ -18,7 +18,8 @@ from flow.services import execute_transition
 class GoodPracticeViewSet(BaseGenericViewSet, ActionFileMixin):
 
     queryset = GoodPractice.objects.all().prefetch_related(
-        'flow_events__user', 'flow_events__attachments')
+        'flow_events__user', 'flow_events__attachments',
+        'flow_attachments', 'feature_values__flow_attachments')
     serializer_class = GoodPracticeFullSerializer
     action_add_file_param = 'good_practice'
     disable_protection = True
@@ -51,7 +52,8 @@ class FeatureOptionViewSet(BaseGenericViewSet):
 
 
 class FeatureGoodPracticeViewSet(BaseGenericViewSet, ActionFileMixin):
-    queryset = FeatureGoodPractice.objects.all()
+    queryset = FeatureGoodPractice.objects.all().prefetch_related(
+        'flow_attachments')
     serializer_class = FeatureGoodPracticeSerializer
     action_add_file_param = 'feature_good_practice'
 
@@ -79,7 +81,9 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         'good_practices',
         'flow_events__user', 'flow_events__attachments',
         'good_practices__flow_events__user',
-        'good_practices__flow_events__attachments')
+        'good_practices__flow_events__attachments',
+        'good_practices__flow_attachments',
+        'good_practices__feature_values__flow_attachments')
     serializer_class = GoodPracticePackageFullSerializer
     search_fields = [
         'survey__institution__name', 'survey__institution__acronym']

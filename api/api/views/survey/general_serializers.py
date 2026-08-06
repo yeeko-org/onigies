@@ -15,7 +15,7 @@ from rest_framework import serializers
 from indicator.models import GeneralGroup
 from survey.models import GeneralPackage, GeneralGroupResponse
 from api.views.example.serializers import SurveySemiFullSerializer
-from flow.serializers import FlowEventSerializer
+from flow.serializers import AttachmentSerializer, FlowEventSerializer
 
 
 class GeneralGroupSerializer(serializers.ModelSerializer):
@@ -42,6 +42,9 @@ class GeneralGroupResponseSerializer(serializers.ModelSerializer):
 
 class GeneralGroupResponseFullSerializer(GeneralGroupResponseSerializer):
     flow_events = FlowEventSerializer(many=True, read_only=True)
+    # La evidencia probatoria de la sección se ancla al grupo, no al
+    # Survey: cada grupo lleva la suya y la revisión la ve en su panel.
+    flow_attachments = AttachmentSerializer(many=True, read_only=True)
 
 
 def count_groups_by_status(package: GeneralPackage) -> dict:

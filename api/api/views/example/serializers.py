@@ -6,7 +6,7 @@ from example.models import (
     GoodPracticePackage, Evidence)
 from api.views.ies.serializers import (
     InstitutionSimpleSerializer, PeriodSimpleSerializer)
-from flow.serializers import FlowEventSerializer
+from flow.serializers import AttachmentSerializer, FlowEventSerializer
 
 
 def hide_review_fields(serializer, data: dict, names: list[str]) -> dict:
@@ -59,7 +59,10 @@ class FeatureFullSerializer(FeatureSerializer):
 
 
 class FeatureGoodPracticeSerializer(serializers.ModelSerializer):
+    # `evidences` (modelo viejo) ya no tiene consumidores en el front;
+    # sigue expuesto hasta el borrado de los modelos viejos (task-7).
     evidences = EvidenceSerializer(many=True, read_only=True)
+    flow_attachments = AttachmentSerializer(many=True, read_only=True)
 
     class Meta:
         model = FeatureGoodPractice
@@ -87,6 +90,7 @@ class GoodPracticeFullSerializer(GoodPracticeSerializer):
     feature_values = FeatureGoodPracticeSerializer(many=True, read_only=True)
     evidences = EvidenceSerializer(many=True, read_only=True)
     flow_events = FlowEventSerializer(many=True, read_only=True)
+    flow_attachments = AttachmentSerializer(many=True, read_only=True)
 
 
 class SurveySemiFullSerializer(serializers.ModelSerializer):

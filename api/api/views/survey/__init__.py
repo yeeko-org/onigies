@@ -18,8 +18,8 @@ def group_responses_prefetch(prefix: str = '') -> Prefetch:
     orden del instrumento (`GeneralGroup.order`)."""
     queryset = GeneralGroupResponse.objects.select_related(
         'general_group').prefetch_related(
-            'flow_events__user', 'flow_events__attachments').order_by(
-                'general_group__order')
+            'flow_events__user', 'flow_events__attachments',
+            'flow_attachments').order_by('general_group__order')
     return Prefetch(
         f'{prefix}general_group_responses', queryset=queryset)
 

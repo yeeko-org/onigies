@@ -25,6 +25,8 @@ Contexto aledaño para reconstruir el estado en que ocurre:
 
 Lo que hay que determinar: en qué estado exacto aparece la transición «Solicitar ajustes» cuando ya no debería, si es un `next_statuses` demasiado permisivo en `api/flow/seed.py` o una regla de turno que no se está aplicando, y si corregirlo rompe combinaciones legítimas — que es lo que él temía con «va a ser muy complicado moverlo».
 
+**No confundir con los «requiere ajustes» del 6 de agosto.** En la revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], §11) aparecieron varias IES en «requiere ajustes» sin revisión formal previa — COLEF, Sonora, otras. La causa quedó identificada: Rubí reabrió manualmente el sistema para que esas instituciones siguieran capturando porque se les acabó el tiempo, y la reapertura dejó ese estatus como efecto colateral. **No es evidencia de esta task**: son datos sucios de una excepción operativa, no una transición indebida ofrecida por el motor. Ricardo decidió no construir nada al respecto —en adelante basta con mover la fecha de cierre— y corrigió el COLEF a mano durante la llamada.
+
 ## Criterios de aceptación
 
 - [ ] Está identificado el estado exacto y la transición que lo permite

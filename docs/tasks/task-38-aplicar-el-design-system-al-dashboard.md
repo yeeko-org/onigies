@@ -303,3 +303,5 @@ del propio admin):
   ya que los clientes de correo no soportan CSS variables.
 - Status pills (`--success-tint`, `--danger-tint`) son útiles en
   notificaciones de aprobación/rechazo de evidencia.
+
+El primer caso concreto ya tiene task propia: [[task-65]] rediseña el correo de recuperación de contraseña (fondo del header y tipografía oficial), detectado en la revisión con Fernanda del 2026-08-06. El rosa de marca no se toca: es decisión de Rubí.

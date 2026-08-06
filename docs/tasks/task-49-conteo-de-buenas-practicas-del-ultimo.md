@@ -14,6 +14,8 @@ source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
 
 Sirve para el seguimiento de campo de Rubí y las revisoras: saber de un vistazo qué instituciones ya enviaron algo. Estado actual: `InstitutionSchema` en `api/ies/catalog_schema.py` no expone ningún conteo. El procedimiento para tocar el esquema de catálogo está en el skill `manage-collections`.
 
+**Hermana en el header del envío (2026-08-06):** [[task-79]] pide lo mismo con más grano —conteo por estatus, cada uno con su icono— en el header del envío de buenas prácticas. Comparten el trabajo de agregación en el serializer; conviene resolverlas juntas.
+
 ## Criterios de aceptación
 
 - [ ] La lista de instituciones indica si la institución tiene buenas prácticas en el periodo vigente

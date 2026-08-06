@@ -28,6 +28,10 @@ Esta task absorbe los hallazgos previos detectados con asistencia de IA sobre lo
 - El documento que se leyó en pantalla durante la reunión es [[2026-07-03-dudas-del-instrumento-con-el-cliente]]. Su §1 ya es [[task-16]] y su §2 es [[task-17]]; **su §3, «Otras dudas detectadas en el documento original», no tiene task propia y entra aquí**.
 - Las erratas ortográficas y las discrepancias de título de [[2026-07-03-reduccion-del-cuestionario]] (§2 y §3) figuran como resueltas el 2026-07-03; conviene confirmarlo contra la base sembrada durante esta revisión.
 
+## Hallazgo adelantado (2026-08-06)
+
+En la revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], §6 `[12:17]`–`[13:07]`) salió el primer caso de este tipo sin esperar a la revisión formal: la palabra **«existen»** en una de las preguntas no es la mejor redacción. Ricardo decidió implementar ya «Se atiende» —[[task-88]]— y dejó anotado que igual hay que corroborarlo con **Rubén**, porque es tema metodológico. Sirve como muestra del tipo de hallazgo que esta revisión va a producir en volumen.
+
 ## Criterios de aceptación
 
 - [ ] Rubí sabe corregir los textos de las preguntas desde el dashboard sin intermediación

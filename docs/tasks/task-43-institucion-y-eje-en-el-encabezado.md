@@ -15,6 +15,8 @@ En la lista de buenas prácticas, el encabezado de cada panel muestra el nombre 
 
 Estado actual: `nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue` muestra el nombre, un chip con el número de características activas, otro con los archivos de evidencia, el contador de evaluados (solo para revisoras) y el `FlowStatusChip`. El estatus ya está resuelto; faltan institución y eje.
 
+**Mismo patrón, otro objeto (2026-08-06):** [[task-82]] hace lo equivalente en el header de la **institución** —siglas visibles y nombre completo con tooltip debajo—. Conviene fijar un solo criterio de identificación en headers y aplicarlo en ambos.
+
 El eje ya viaja en el objeto (`GoodPracticeHeader.vue` lo despliega con `DisplayGroup` sobre el grupo de filtro `axes`), así que el trabajo es de presentación en la tarjeta, no de contrato de datos. La institución hay que confirmar que venga en el serializador de lista.
 
 ## Criterios de aceptación

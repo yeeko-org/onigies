@@ -17,3 +17,4 @@ Batch de preguntas surgidas al construir la sección (sesión 2026-08-03/04). 1)
 - [ ] Rubí respondió si las revisoras necesitan corregir directamente datos de las generales (hoy: 403 deliberado)
 - [ ] Rubí validó los textos introductorios de los 5 grupos, la instrucción de «mejor estimación» en poblaciones y el término «Mujer/Hombre» para la persona titular
 - [ ] Rubí definió el registro de la plataforma: tutear (preferencia de Ricardo) o trato formal de usted — hoy conviven ambos (instrumento y sección gen en usted, textos del seed de flow en tú)
+- [ ] Rubí confirmó el nivel de la evidencia probatoria ([[task-68]]): hoy se sube por grupo de preguntas (`GeneralGroupResponse` en generales; `GroupResponse` en el cuestionario por observable), y si el acuerdo del instrumento la vuelve obligatoria para enviar o queda opcional

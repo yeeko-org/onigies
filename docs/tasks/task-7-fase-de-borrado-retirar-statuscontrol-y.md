@@ -15,15 +15,16 @@ El §8 del diseño del motor, que quedó fuera de los dos deploys. Quitar `statu
 
 Precondición: haber verificado los datos migrados en producción con `verify_flow_data`. Las migraciones las corre Ricardo.
 
-## Duda abierta sobre los modelos de adjuntos (2026-08-06)
+## Duda resuelta sobre los modelos de adjuntos (2026-08-06, sesión duo)
 
-La revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], §9) reactivó el requisito de adjuntar evidencia probatoria en las preguntas base e iniciales — acuerdo con Rubí, hoy [[task-68]]. Eso choca de frente con el borrado planeado de `GroupAttachment`, `GeneralGroupAttachment` y `Evidence`.
+La duda que dejó la revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], §9) quedó desenredada en [[2026-08-06-sesion-duo-adjuntos-sobre-flow-y]] y decidida en [[adr-0010]]. La historia: la razón del borrado sí estaba escrita —una línea del §2.3 del diseño del motor: `flow.Attachment` reemplaza a los tres modelos viejos, consolidación arquitectónica análoga a la de `FlowEvent`— pero nunca se argumentó como decisión de producto. La sorpresa fue que **BP no corría sobre flow**: `Evidence` era la única subida viva. La sesión estrenó el stack sobre `flow.Attachment` y migró BP al mismo mecanismo, así que **el borrado completo procede**, ampliado: también se retiran `ActionFileMixin`/`add_file`, `EvidenceViewSet` (`/evidence/`), el campo muerto `evidences` de los serializers de BP y `mainStore.saveFile` en el frontend.
 
-**Anotación de Ricardo (2026-08-06):** revisarlo en su momento. No tiene claro **por qué** se decidió quitar `GroupAttachment` y `Evidence` —¿era para adjuntos generales?— y sospecha que **la razón de ese cambio no quedó registrada** en ningún lado. Antes de correr las migraciones de borrado hay que reconstruir esa razón o decidirla de nuevo: si la evidencia nueva se construye sobre el mecanismo de `flow` (como ya ocurre con los archivos de las buenas prácticas), el borrado sigue en pie; si no, hay que acotarlo.
+Precondiciones nuevas antes de las migraciones de borrado: re-correr `migrate_flow_data` en producción justo antes (entró evidencia al modelo viejo hasta el deploy de este cambio) y contar las `Evidence` huérfanas (sin FK), que la migración no copia — si hay, decidir su destino.
 
 ## Criterios de aceptación
 
 - [ ] `grep -r status_sending\|status_register api/` no devuelve nada
 - [ ] `ies.StatusControl` y los modelos de comentarios/adjuntos viejos ya no existen
-- [ ] Las migraciones de borrado corrieron en producción sin incidentes
-- [ ] La razón para borrar `GroupAttachment` y `Evidence` quedó reconstruida o decidida de nuevo, y es compatible con [[task-68]]
+- [ ] `ActionFileMixin`, `EvidenceViewSet`, el campo `evidences` de los serializers de BP y `mainStore.saveFile` tampoco
+- [ ] Las migraciones de borrado corrieron en producción sin incidentes (con `migrate_flow_data` re-corrido y huérfanas contadas justo antes)
+- [x] La razón para borrar `GroupAttachment` y `Evidence` quedó reconstruida o decidida de nuevo, y es compatible con [[task-68]] ([[adr-0010]])

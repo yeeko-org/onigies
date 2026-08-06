@@ -16,4 +16,4 @@ El seed declarativo (`load_questionnaire`) ya siembra el instrumento reducido, p
 
 - [ ] El seed corre en producción con el instrumento definitivo
 - [ ] Los observables tienen pesos reales, no el fallback por tipo de pregunta
-- [ ] La captura de Generales existe en el frontend
+- [x] La captura de Generales existe en el frontend ([[task-41]], sesión 2026-08-03/04)

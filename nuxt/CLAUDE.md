@@ -74,5 +74,5 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 
 - **Icons:** Material Symbols Outlined, NOT MDI. Use strings like `"search"`, `"close"`, `"add"` directly. Icon set `ms` registered in `plugins/vuetify.ts`.
 - **Axios `$api`:** injected via `plugins/api.ts`, attaches `Authorization: Token <value>` from the `auth_onigies` cookie.
-- **Vuetify theme:** `primary #8a221f` (dark red), `accent #f59322` (orange, for buttons and user actions).
+- **Vuetify theme:** `primary #2C2F6E` (indigo, institutional chrome), `accent #14A8A0` (turquoise — buttons and user actions MUST use accent, not primary). Source of truth: `app/plugins/vuetify.ts` and `design-system/`.
 - Main list+filter component: `CollectionDisplay.vue` (owns `final_filters`, `results`, `loading_fetch`; debounces search). Generic CRUD primitives in `common/generic/` and dialogs in `common/dialog/`.

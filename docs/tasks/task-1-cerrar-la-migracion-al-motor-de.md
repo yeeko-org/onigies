@@ -15,5 +15,5 @@ El motor `flow` está en producción desde 2026-06-26 y buenas prácticas ya cor
 ## Criterios de aceptación
 
 - [ ] Ningún modelo conserva `status_register`/`status_sending`
-- [ ] CP y gen se operan desde el motor en el frontend
+- [ ] CP y gen se operan desde el motor en el frontend (gen cumplido el 2026-08-04; falta CP — [[task-8]])
 - [ ] El validador de deuda del front (`filters.js`/`fetch.js`) ya no menciona los campos viejos

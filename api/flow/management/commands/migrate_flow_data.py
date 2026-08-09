@@ -9,11 +9,14 @@ Migra los datos del flujo viejo al nuevo (idempotente, re-ejecutable).
    los TextField `comments` de example → FlowEvent (comentario puro).
 3. Adjuntos: GroupAttachment, GeneralGroupAttachment, Evidence →
    Attachment (mismo path de archivo; no se recopia el archivo físico).
+   Nunca resucita un adjunto borrado tras la migración: ver
+   `_create_attachment`.
 
 Requiere haber corrido antes `migrate` y `seed_flow`.
 """
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
@@ -215,26 +218,48 @@ class Command(BaseCommand):
                 f"{model_name}.comments: {count} → FlowEvent")
 
     # ------------------------------------------------------------------
-    def _create_attachment(self, target, file_name) -> bool:
+    def _create_attachment(self, target, file_name) -> str:
+        """Crea el espejo de un adjunto viejo: 'created'/'exists'/'orphan'.
+
+        Ambas filas apuntan al MISMO archivo (no se recopia), y borrar el
+        Attachment se lo lleva del storage: sin espejo y sin archivo solo
+        puede ser un borrado posterior a la migración, no se resucita.
+        El storage solo se consulta cuando falta el espejo.
+        """
         ct = ContentType.objects.get_for_model(target)
-        _, created = Attachment.objects.get_or_create(
+        mirror_exists = Attachment.objects.filter(
+            content_type=ct, object_id=target.pk, file=file_name).exists()
+        if mirror_exists:
+            return "exists"
+        if not file_name or not default_storage.exists(file_name):
+            return "orphan"
+        Attachment.objects.create(
             content_type=ct, object_id=target.pk, file=file_name)
-        return created
+        return "created"
+
+    def _report_attachments(self, label, count, orphans) -> None:
+        self.stdout.write(f"{label}: {count} adjuntos → Attachment")
+        if orphans:
+            self.stdout.write(self.style.WARNING(
+                f"  {label}: {orphans} sin archivo en el storage "
+                f"(borrados tras la migración o huérfanos: no recreados)"))
 
     def migrate_attachments(self) -> None:
         for app_label, model_name, target_attr in ATTACHMENT_MODELS:
             model = apps.get_model(app_label, model_name)
             count = 0
+            orphans = 0
             for old in model.objects.select_related(target_attr):
                 target = getattr(old, target_attr)
-                if self._create_attachment(target, old.file.name):
-                    count += 1
-            self.stdout.write(
-                f"{model_name}: {count} adjuntos → Attachment")
+                result = self._create_attachment(target, old.file.name)
+                count += result == "created"
+                orphans += result == "orphan"
+            self._report_attachments(model_name, count, orphans)
 
     def migrate_evidences(self) -> None:
         evidence_model = apps.get_model("example", "Evidence")
         count = 0
+        orphans = 0
         skipped = 0
         rows = evidence_model.objects.select_related(
             "good_practice", "feature_good_practice")
@@ -243,9 +268,10 @@ class Command(BaseCommand):
             if target is None:
                 skipped += 1
                 continue
-            if self._create_attachment(target, old.file.name):
-                count += 1
-        self.stdout.write(f"Evidence: {count} adjuntos → Attachment")
+            result = self._create_attachment(target, old.file.name)
+            count += result == "created"
+            orphans += result == "orphan"
+        self._report_attachments("Evidence", count, orphans)
         if skipped:
             self.stdout.write(self.style.WARNING(
                 f"  Evidence: {skipped} sin target (no migradas)"))

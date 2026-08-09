@@ -1,7 +1,10 @@
 """Serializers del motor de flujo."""
+from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
 
 from flow.models import Attachment, FlowEvent, Status
+
+MAX_ATTACHMENT_SIZE = 30 * 1024 * 1024
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -48,8 +51,19 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class AttachmentUploadSerializer(serializers.Serializer):
-    """Payload de subida de un adjunto (multipart)."""
+    """Payload de subida de un adjunto (multipart).
+
+    No se valida extensión ni content-type a propósito: la evidencia de
+    una IES llega en formatos impredecibles y filtrarlos bloquearía
+    entregas legítimas. El único tope es el tamaño.
+    """
     file = serializers.FileField()
+
+    def validate_file(self, value: UploadedFile) -> UploadedFile:
+        if value.size > MAX_ATTACHMENT_SIZE:
+            raise serializers.ValidationError(
+                "El archivo supera el límite de 30 MB.")
+        return value
 
 
 class FlowEventSerializer(serializers.ModelSerializer):

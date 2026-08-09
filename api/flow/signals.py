@@ -16,13 +16,20 @@ inicial, no una transición, y no hay persona usuaria que lo ejecute
 evento). La promoción al status `auto_on_first_save` (`cp_filling`) sí es
 una transición con persona usuaria: la ejecuta la vista de captura vía
 `assign_auto_status`, no esta señal.
+
+Aquí vive también el borrado del archivo físico de los adjuntos, por el
+mismo motivo de ruta única: ver `delete_attachment_file`.
 """
+import logging
+
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import Signal
 
 from flow.registry import is_flow_participant
+
+logger = logging.getLogger(__name__)
 
 # Emitida por execute_transition tras una transición MANUAL (no por la
 # propagación up/down). kwargs: user, obj, from_status, target, comment.
@@ -48,8 +55,32 @@ def assign_default_status(sender, instance, created, **kwargs) -> None:
     instance.save(update_fields=['status'])
 
 
+def delete_attachment_file(sender, instance, **kwargs) -> None:
+    """Borra el archivo del storage al borrarse el registro del adjunto.
+
+    Va en `post_delete` y no en `Attachment.delete()` porque los targets
+    declaran `GenericRelation`: al borrar el target, el colector de
+    Django borra sus adjuntos por queryset y nunca pasa por el método
+    del modelo. Registrar este receptor además desactiva el fast-delete
+    del colector, así que la señal también llega en esa cascada.
+    """
+    if not instance.file:
+        return
+    try:
+        instance.file.delete(save=False)
+    except Exception:
+        # El archivo puede faltar o el storage fallar (S3 intermitente,
+        # datos migrados sin archivo): el registro ya se borró y la
+        # petición no debe caer por un huérfano en disco.
+        logger.warning(
+            "No se pudo borrar el archivo del adjunto %s (%s)",
+            instance.pk, instance.file.name, exc_info=True)
+
+
 def connect_flow_signals() -> None:
-    """Conecta `assign_default_status` a cada modelo participante."""
+    """Conecta las señales del flujo a sus modelos."""
+    from flow.models import Attachment
+
     for model in apps.get_models():
         if not is_flow_participant(model):
             continue
@@ -58,3 +89,8 @@ def connect_flow_signals() -> None:
             sender=model,
             dispatch_uid=f'flow_default_status_{model._meta.label}',
         )
+    post_delete.connect(
+        delete_attachment_file,
+        sender=Attachment,
+        dispatch_uid='flow_attachment_file_delete',
+    )

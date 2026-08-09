@@ -18,7 +18,8 @@ STANDARD_EXTRA_SECTORS = ["Población externa", "Público en general"]
 
 # Grupos de la sección "Información de base" del cuestionario.
 # Esquema de cada field: name (clave interna), label (texto visible),
-# type ("integer" | "boolean").
+# type ("integer" | "boolean") y, opcional en los integer, unit (unidad
+# corta que el front muestra dentro del campo: "personas", "planes").
 # El orden de esta lista ES el orden del instrumento: `_load_general_groups`
 # lo escribe en GeneralGroup.order (mismo patrón que load_sectors).
 GENERAL_GROUPS = [
@@ -32,12 +33,14 @@ GENERAL_GROUPS = [
                 "label": "Instancias académicas reconocidas en el marco "
                          "normativo u organigrama de la IES",
                 "type": "integer",
+                "unit": "instancias",
             },
             {
                 "name": "admin_instances",
                 "label": "Instancias administrativas reconocidas en el "
                          "marco normativo u organigrama de la IES",
                 "type": "integer",
+                "unit": "instancias",
             },
         ],
     },
@@ -68,18 +71,21 @@ GENERAL_GROUPS = [
                 "label": "Planes de estudio vigentes de nivel medio "
                          "superior",
                 "type": "integer",
+                "unit": "planes",
             },
             {
                 "name": "superior_plans",
                 "label": "Planes de estudio vigentes de nivel superior "
                          "(licenciatura)",
                 "type": "integer",
+                "unit": "planes",
             },
             {
                 "name": "postgraduate_plans",
                 "label": "Planes de estudio vigentes de nivel posgrado "
                          "(especialidad, maestría y doctorado)",
                 "type": "integer",
+                "unit": "planes",
             },
         ],
     },

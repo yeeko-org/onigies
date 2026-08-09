@@ -1,0 +1,4 @@
+/* Alias VCountInput (plugins/vuetify.ts) */
+.v-count-input input {
+  text-align: right;
+}

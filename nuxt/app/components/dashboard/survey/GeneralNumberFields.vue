@@ -5,8 +5,8 @@
  * etiquetas salen del esquema `GeneralGroup.fields` del catálogo, no del
  * código: la redacción de la pregunta la manda el instrumento.
  */
-import GeneralNumberInput from
-  '~/components/dashboard/survey/GeneralNumberInput.vue'
+import GeneralNumberQuestion from
+  '~/components/dashboard/survey/GeneralNumberQuestion.vue'
 
 const props = defineProps({
   fields: { type: Array, default: () => [] },
@@ -20,18 +20,14 @@ const numberFields = computed(
 </script>
 
 <template>
-  <v-row>
-    <v-col
+  <div class="d-flex flex-column ga-4">
+    <GeneralNumberQuestion
       v-for="field in numberFields"
       :key="field.name"
-      cols="12"
-      md="6"
-    >
-      <GeneralNumberInput
-        v-model="survey[field.name]"
-        :label="field.label"
-        :readonly="!editable"
-      />
-    </v-col>
-  </v-row>
+      v-model="survey[field.name]"
+      :question="field.label"
+      :unit="field.unit || ''"
+      :readonly="!editable"
+    />
+  </div>
 </template>

@@ -57,6 +57,10 @@ const catalog = computed(() => {
   return raw && typeof raw === 'object' ? raw : {}
 })
 const groupName = computed(() => catalog.value.name || '')
+
+const stripeColor = 'grey-darken-3'
+const bgColor = 'grey-lighten-5'
+
 const title = computed(() => catalog.value.public_name || catalog.value.name)
 const fields = computed(() => catalog.value.fields || [])
 
@@ -107,6 +111,9 @@ const summary = computed(() => {
   return fraction(answered, fields.value.length)
 })
 
+const keepStatusLabel = computed(
+  () => `Guardar y mantener como ${currentStatus.value?.public_name}`)
+
 const saveGroup = async () => {
   await props.persist()
 }
@@ -122,14 +129,27 @@ const saveAndTransition = async (transition) => {
 </script>
 
 <template>
-  <v-expansion-panel :value="group.id">
-    <v-expansion-panel-title>
-      <div class="d-flex align-center ga-3 w-100 pr-2">
-        <span class="text-subtitle-1 font-weight-medium">{{ title }}</span>
-        <FlowStatusChip :status="group.status" x-small />
-        <v-spacer />
-        <span class="text-caption text-grey-darken-1">{{ summary }}</span>
-        <div @click.stop>
+  <v-expansion-panel :value="group.id" class="d-flex">
+    <v-sheet :color="stripeColor" width="8" class="flex-shrink-0" />
+    <v-sheet :color="bgColor" class="flex-grow-1" style="min-width: 0">
+      <v-expansion-panel-title>
+        <div class="d-flex align-center ga-3 w-100 pr-2">
+          <span class="text-subtitle-1 font-weight-medium">{{ title }}</span>
+          <FlowStatusChip :status="group.status" x-small />
+          <v-spacer />
+          <span class="text-caption text-grey-darken-1">{{ summary }}</span>
+        </div>
+      </v-expansion-panel-title>
+
+      <v-expansion-panel-text>
+        <div class="d-flex align-center justify-end ga-2 mb-3">
+          <FlowStatusActions
+            v-if="isStaff"
+            v-model="group"
+            app-label="survey"
+            model-name="generalgroupresponse"
+            :actions="flowActions"
+          />
           <FlowComments
             v-if="group.id"
             v-model="group"
@@ -138,108 +158,97 @@ const saveAndTransition = async (transition) => {
             :width="220"
           />
         </div>
-      </div>
-    </v-expansion-panel-title>
 
-    <v-expansion-panel-text>
-      <GeneralPopulations
-        v-if="groupName === 'poblaciones'"
-        v-model="survey"
-        :editable="editable"
-      />
-      <GeneralAuthorities
-        v-else-if="groupName === 'autoridades'"
-        v-model="survey"
-        :editable="editable"
-      />
-      <GeneralGovernment
-        v-else-if="groupName === 'forma_gobierno'"
-        v-model="survey"
-        :fields="fields"
-        :editable="editable"
-      />
-      <GeneralNumberFields
-        v-else
-        v-model="survey"
-        :fields="fields"
-        :editable="editable"
-      />
-
-      <!-- Evidencia probatoria del grupo. Se ancla al GeneralGroupResponse
-           y se guarda al instante (no entra en el PATCH del Survey). -->
-      <div class="mt-6">
-        <p class="text-subtitle-2 mb-1">
-          Evidencia probatoria (opcional)
-        </p>
-        <FlowAttachments
-          v-model="group.flow_attachments"
-          app-label="survey"
-          model-name="generalgroupresponse"
-          :id="group.id"
+        <GeneralPopulations
+          v-if="groupName === 'poblaciones'"
+          v-model="survey"
           :editable="editable"
         />
-      </div>
-
-      <!-- La revisión no edita contenido: corre sus transiciones directo
-           desde el control de estado, sin guardado previo que encadenar. -->
-      <v-card-actions v-if="isStaff" class="px-0 mt-4">
-        <FlowStatusActions
-          v-model="group"
-          app-label="survey"
-          model-name="generalgroupresponse"
-          :actions="flowActions"
+        <GeneralAuthorities
+          v-else-if="groupName === 'autoridades'"
+          v-model="survey"
+          :editable="editable"
         />
-      </v-card-actions>
-      <v-card-actions v-else-if="editable" class="px-0 mt-4">
-        <v-spacer />
-        <!-- Sin transiciones disponibles: el botón solo guarda. -->
-        <v-btn
-          v-if="!transitions.length"
-          variant="flat"
-          prepend-icon="save"
-          :loading="saving"
-          @click="saveGroup"
-        >
-          Guardar
-        </v-btn>
-        <!-- Con transiciones: split-button encabezado por el guardado simple
-             y seguido de cada acción que guarda y luego transiciona. -->
-        <v-menu v-else location="bottom end">
-          <template #activator="{ props: menuProps }">
-            <v-btn
-              v-bind="menuProps"
-              variant="flat"
-              prepend-icon="save"
-              append-icon="expand_more"
-              :loading="saving"
-            >
-              Guardar
-            </v-btn>
-          </template>
-          <FlowTransitionMenu
-            :transitions="transitions"
-            @select="saveAndTransition"
-          >
-            <template #lead>
-              <v-list-item
-                :title="`Guardar y mantener como ${currentStatus?.public_name}`"
-                @click="saveGroup"
-              >
-                <template #prepend>
-                  <v-icon color="accent">save</v-icon>
-                </template>
-              </v-list-item>
-              <v-divider />
-            </template>
-          </FlowTransitionMenu>
-        </v-menu>
-      </v-card-actions>
+        <GeneralGovernment
+          v-else-if="groupName === 'forma_gobierno'"
+          v-model="survey"
+          :fields="fields"
+          :editable="editable"
+        />
+        <GeneralNumberFields
+          v-else
+          v-model="survey"
+          :fields="fields"
+          :editable="editable"
+        />
 
-      <!-- Un solo juego de diálogos por kernel, para las dos audiencias: el
-           split-button de la IES no monta ninguno, y FlowStatusActions solo
-           los monta cuando crea su propio kernel (aquí se le pasa el de
-           arriba). Sin esto la revisora elige una transición y no pasa nada. -->
-      <FlowTransitionDialogs :actions="flowActions" />
-    </v-expansion-panel-text>
+        <!-- Evidencia probatoria del grupo. Se ancla al GeneralGroupResponse
+             y se guarda al instante (no entra en el PATCH del Survey). -->
+        <div class="mt-6">
+          <p class="text-subtitle-2 mb-1">
+            Evidencia probatoria (opcional)
+          </p>
+          <FlowAttachments
+            v-model="group.flow_attachments"
+            app-label="survey"
+            model-name="generalgroupresponse"
+            :id="group.id"
+            :editable="editable"
+          />
+        </div>
+
+        <v-card-actions v-if="editable" class="px-0 mt-4">
+          <v-spacer />
+          <!-- Sin transiciones disponibles: el botón solo guarda. -->
+          <v-btn
+            v-if="!transitions.length"
+            variant="flat"
+            prepend-icon="save"
+            :loading="saving"
+            @click="saveGroup"
+          >
+            Guardar
+          </v-btn>
+          <!-- Con transiciones: split-button encabezado por el guardado simple
+               y seguido de cada acción que guarda y luego transiciona. -->
+          <v-menu v-else location="bottom end">
+            <template #activator="{ props: menuProps }">
+              <v-btn
+                v-bind="menuProps"
+                variant="flat"
+                prepend-icon="save"
+                append-icon="expand_more"
+                :loading="saving"
+              >
+                Guardar
+              </v-btn>
+            </template>
+            <FlowTransitionMenu
+              :transitions="transitions"
+              @select="saveAndTransition"
+            >
+              <template #lead>
+                <v-list-item
+                  :title="keepStatusLabel"
+                  @click="saveGroup"
+                >
+                  <template #prepend>
+                    <v-icon color="accent">save</v-icon>
+                  </template>
+                </v-list-item>
+                <v-divider />
+              </template>
+            </FlowTransitionMenu>
+          </v-menu>
+        </v-card-actions>
+
+        <!-- Un solo juego de diálogos por kernel, para las dos audiencias: el
+             split-button de la IES no monta ninguno, y FlowStatusActions solo
+             los monta cuando crea su propio kernel (aquí se le pasa el de
+             arriba). Sin esto la revisora elige una transición y no pasa
+             nada. -->
+        <FlowTransitionDialogs :actions="flowActions" />
+      </v-expansion-panel-text>
+    </v-sheet>
   </v-expansion-panel>
 </template>

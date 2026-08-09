@@ -9,9 +9,7 @@
  * estructurales (población externa y público en general) de las que la IES no
  * lleva registro nominal, así que nunca llevan conteo.
  */
-import GeneralNumberInput from
-  '~/components/dashboard/survey/GeneralNumberInput.vue'
-import { useGeneralSurvey } from '~/composables/useGeneralSurvey.js'
+ import { useGeneralSurvey } from '~/composables/useGeneralSurvey.js'
 
 const props = defineProps({
   editable: { type: Boolean, default: false },
@@ -45,6 +43,9 @@ const canCount = (sector) => props.editable && sector.is_main
       su sexo. Si no cuenta con el dato exacto, registre su mejor estimación.
     </p>
 
+    <v-defaults-provider
+      :defaults="{ VCountInput: { density: 'compact', hideDetails: true } }"
+    >
     <v-table density="comfortable" class="border rounded">
       <thead>
         <tr>
@@ -101,21 +102,21 @@ const canCount = (sector) => props.editable && sector.is_main
           </template>
           <template v-else>
             <td>
-              <GeneralNumberInput
+              <v-count-input
                 v-model="rowFor(sector.id).number_men"
                 :disabled="!canCount(sector)"
-                density="compact"
-                hide-details
-                max-width="110px"
+                :aria-label="`Hombres — ${sector.name}`"
+                inputmode="numeric"
+                class="count-cell"
               />
             </td>
             <td>
-              <GeneralNumberInput
+              <v-count-input
                 v-model="rowFor(sector.id).number_women"
                 :disabled="!canCount(sector)"
-                density="compact"
-                hide-details
-                max-width="110px"
+                :aria-label="`Mujeres — ${sector.name}`"
+                inputmode="numeric"
+                class="count-cell"
               />
             </td>
             <td class="text-right text-body-2 font-weight-medium">
@@ -125,5 +126,13 @@ const canCount = (sector) => props.editable && sector.is_main
         </tr>
       </tbody>
     </v-table>
+    </v-defaults-provider>
   </div>
 </template>
+
+<style scoped>
+.count-cell {
+  max-width: 110px;
+  margin-inline-start: auto;
+}
+</style>

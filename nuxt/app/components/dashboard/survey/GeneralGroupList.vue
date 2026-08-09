@@ -258,7 +258,6 @@ function onSendSelect(transition) {
         v-else
         v-model="panels"
         multiple
-        variant="accordion"
       >
         <GeneralGroupPanel
           v-for="(group, index) in groups"

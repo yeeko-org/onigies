@@ -11,6 +11,7 @@ import colors from 'vuetify/lib/util/colors'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { VDateInput } from "vuetify/labs/VDateInput"
+import { VNumberInput } from "vuetify/components/VNumberInput"
 
 
 const materialSymbols = {
@@ -22,6 +23,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components: {
       VDateInput
+    },
+    aliases: {
+      // Captura de cantidades enteras del instrumento.
+      VCountInput: VNumberInput,
     },
     theme: {
       themes: {
@@ -52,6 +57,19 @@ export default defineNuxtPlugin((nuxtApp) => {
         // (turquesa) por default. Si necesitas chrome institucional,
         // pasa color="primary" explícitamente.
         color: 'accent',
+      },
+      VCountInput: {
+        // La clase lleva la alineación a la derecha: `defaults` solo
+        // alcanza props declaradas, no CSS ni atributos.
+        precision: 0,
+        min: 0,
+        step: 1,
+        controlVariant: 'hidden',
+        variant: 'outlined',
+        density: 'comfortable',
+        hideDetails: 'auto',
+        prependInnerIcon: 'tag',
+        class: 'v-count-input',
       },
     },
     icons: {

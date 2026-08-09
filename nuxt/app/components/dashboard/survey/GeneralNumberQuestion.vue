@@ -1,46 +1,44 @@
 <script setup>
 /**
- * Entero no negativo con la convención de la sección «Información base»:
- * alineado a la derecha, sin decimales y sin los controles de incremento
- * (capturar 4 320 personas a golpe de flecha no tiene sentido).
+ * Un renglón-pregunta de la sección «Información base»: el texto del
+ * instrumento a la izquierda y la cantidad a la derecha.
  */
 defineProps({
-  label: { type: String, default: '' },
+  question: { type: String, required: true },
+  // Unidad corta de la cantidad («personas», «planes»), cuando el
+  // instrumento la deja implícita en la redacción de la pregunta.
+  unit: { type: String, default: '' },
   readonly: Boolean,
   disabled: Boolean,
-  density: { type: String, default: 'comfortable' },
-  hideDetails: { type: [Boolean, String], default: 'auto' },
-  // Ancho máximo opcional: para celdas de tabla (poblaciones), donde el
-  // input no debe ocupar todo el ancho de la columna. Sin este prop el
-  // input se comporta como antes (ancho completo del contenedor).
-  maxWidth: { type: String, default: null },
 })
 
 const value = defineModel({ type: Number, default: null })
+
+const questionId = useId()
 </script>
 
 <template>
-  <v-number-input
-    v-model="value"
-    :label="label"
-    :readonly="readonly"
-    :disabled="disabled"
-    :density="density"
-    :hide-details="hideDetails"
-    :precision="0"
-    :min="0"
-    :step="1"
-    control-variant="hidden"
-    variant="outlined"
-    class="general-number"
-    :style="maxWidth
-      ? { maxWidth, marginInlineStart: 'auto' }
-      : undefined"
-  />
+  <div class="d-flex align-center ga-4">
+    <span :id="questionId" class="text-body-2 general-question__text">
+      {{ question }}
+    </span>
+    <v-count-input
+      v-model="value"
+      :readonly="readonly"
+      :disabled="disabled"
+      :suffix="unit || undefined"
+      :aria-describedby="questionId"
+      inputmode="numeric"
+      width="200"
+      class="flex-shrink-0"
+    />
+  </div>
 </template>
 
 <style scoped>
-.general-number :deep(input) {
-  text-align: right;
+.general-question__text {
+  /* min-width: 0 deja que el texto se rompa en vez de empujar al input. */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 </style>

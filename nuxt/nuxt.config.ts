@@ -16,6 +16,7 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  css: ['~/assets/styles/main.css'],
   // devtools: { enabled: true }
   modules: [
     '@pinia/nuxt',

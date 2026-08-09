@@ -11,8 +11,6 @@
  * persiste como una fila de total 1 (`number_women` 0/1 y `number_men` el
  * complemento). Esa cocina no se muestra nunca en la interfaz.
  */
-import GeneralNumberInput from
-  '~/components/dashboard/survey/GeneralNumberInput.vue'
 import { useGeneralSurvey } from '~/composables/useGeneralSurvey.js'
 
 defineProps({
@@ -67,6 +65,9 @@ const headSex = computed({
       siguientes órganos y conjuntos de autoridades de su institución.
     </p>
 
+    <v-defaults-provider
+      :defaults="{ VCountInput: { density: 'compact', hideDetails: true } }"
+    >
     <v-table density="comfortable" class="border rounded">
       <thead>
         <tr>
@@ -93,19 +94,19 @@ const headSex = computed({
             </div>
           </td>
           <td>
-            <GeneralNumberInput
+            <v-count-input
               v-model="rowFor(sector.id).number_men"
               :readonly="!editable"
-              density="compact"
-              hide-details
+              :aria-label="`Hombres — ${sector.name}`"
+              inputmode="numeric"
             />
           </td>
           <td>
-            <GeneralNumberInput
+            <v-count-input
               v-model="rowFor(sector.id).number_women"
               :readonly="!editable"
-              density="compact"
-              hide-details
+              :aria-label="`Mujeres — ${sector.name}`"
+              inputmode="numeric"
             />
           </td>
           <td class="text-right text-body-2 font-weight-medium">
@@ -114,5 +115,6 @@ const headSex = computed({
         </tr>
       </tbody>
     </v-table>
+    </v-defaults-provider>
   </div>
 </template>

@@ -13,7 +13,7 @@ source: ["[[2026-08-06-temas-reunion-fer]]"]
 
 §7 de la reunión con Fernanda, `[13:34]`–`[14:14]`. Fernanda intentó escribir texto en un campo y no la dejó. Ricardo confirmó que el campo está definido como numérico, pero **nada lo indica visualmente**: no hay etiqueta ni los controles de incremento/decremento típicos de un `input type="number"`. La usuaria descubre la restricción al chocar con ella.
 
-Salió en la captura de la información base (`nuxt/app/components/dashboard/survey/GeneralNumberInput.vue`), pero la decisión de cómo señalar un campo numérico conviene tomarla una sola vez y aplicarla a toda la captura, no solo a generales.
+Salió en la captura de la información base (`nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue`), pero la decisión de cómo señalar un campo numérico conviene tomarla una sola vez y aplicarla a toda la captura, no solo a generales.
 
 ## Análisis hecho, decisión pendiente (2026-08-06)
 

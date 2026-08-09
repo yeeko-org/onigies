@@ -2,7 +2,7 @@
 type: task
 id: task-93
 title: Decidir los pendientes de la sesión de adjuntos y campos numéricos
-state: open
+state: closed
 date: 2026-08-06
 owner: ricardo
 source: ["[[2026-08-06-sesion-duo-adjuntos-sobre-flow-y]]"]
@@ -15,9 +15,9 @@ Batch de decisiones que quedaron abiertas al cierre de la sesión duo del 6 de a
 
 ## Criterios de aceptación
 
-- [ ] task-67: elegida la señal del campo numérico — recomendación: ícono `123` en prepend-inner + `inputmode="numeric"` + texto sr-only con aria-describedby; alternativa: placeholder «p. ej. 1250» con persistent-placeholder (ver con etiquetas largas)
-- [ ] task-67 anexas: ¿migrar los dos años de BP (`GoodPracticeEditSimple`) a `GeneralNumberInput` para unificar el idioma numérico? ¿agregar retroalimentación al rechazo mudo al teclear letras, o queda fuera?
-- [ ] Candado de periodo en adjuntos: hoy, con periodo cerrado pero paquete sin enviar, la IES aún puede adjuntar (consistente con el PATCH del Survey, que tampoco valida periodo — [[task-55]]). ¿Se cierra junto con task-55 o antes?
-- [ ] Validación de archivo en la subida: hoy sin límite de tamaño ni de tipo (paridad con el viejo). ¿Se define uno?
-- [ ] Borrado físico: el DELETE borra el registro, no el archivo del storage (paridad con el viejo). ¿Se queda así?
-- [ ] Menores con default por paridad (revertibles con avisar): la tarjeta de BP cuenta solo adjuntos de la práctica, sin sumar los de características; `mainStore.saveFile` muerto se borra en [[task-7]]
+- [x] task-67: elegida la señal del campo numérico — Ricardo diseñó algo mayor que las dos opciones: componente-fila con la pregunta a la izquierda e input fijo a la derecha, sobre un alias `VCountInput` de Vuetify; la primera implementación quedó mal visualmente y el rediseño sigue en [[task-96]]
+- [x] task-67 anexas: los años de BP se quedan como están, con su validación actual; la retroalimentación al rechazo mudo queda fuera; el checkbox «sigue vigente» junto al año de fin (compromiso con Rubén) se anotó en [[task-31]]
+- [x] Candado de periodo en adjuntos: se cierra **junto con** [[task-55]], un solo guard para ambos
+- [x] Validación de archivo: límite de 30 MB, sin filtro de tipo ni extensión (deliberado) — implementado en `flow/serializers.py` con sus tests
+- [x] Borrado físico: sí se borra el archivo del storage (señal `post_delete`), con anti-resurrección en `migrate_flow_data` (la ausencia del archivo funciona como lápida); la rama homóloga de comentarios quedó en [[task-97]]
+- [x] Menores con default por paridad: confirmados sin cambios

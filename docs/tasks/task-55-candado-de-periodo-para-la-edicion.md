@@ -21,6 +21,8 @@ Se separa de [[task-10]] —que cubre el mismo agujero en los viewsets de buenas
 
 **Actualización (2026-08-06, sesión duo):** el campo ya existe desde la sesión del 2026-08-04 — `Period.gen_submission_deadline` + `is_gen_submission_closed` (`api/ies/models.py`, migración `ies/0012`) — y `GeneralPackage.validate_flow_transition` ya bloquea las *transiciones* fuera de periodo. Lo que sigue faltando es el guard del contenido: `SurveyViewSet` no valida periodo ni `content_editable` en el `PATCH`, así que la edición pasa siempre. Relacionado: los adjuntos de flow tampoco aplican candado de periodo, a propósito, para ser consistentes con este mismo hueco — la decisión de cerrarlos juntos quedó en [[task-93]].
 
+**Actualización (2026-08-09, cierre de [[task-93]]):** Ricardo decidió que el candado de adjuntos se cierra **junto con esta task**, no antes: al implementar el guard de periodo del PATCH del Survey, aplicar el mismo candado a la escritura de adjuntos de flow (`_check_write` en `api/flow/attachment_views.py` / `user_can_edit_flow_content`).
+
 Es el respaldo técnico de [[adr-0007]]: si las IES pueden mover los datos base después de validados, cambian los denominadores de los indicadores.
 
 ## Criterios de aceptación

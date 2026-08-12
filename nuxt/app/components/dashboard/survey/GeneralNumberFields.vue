@@ -1,9 +1,9 @@
 <script setup>
 /**
- * Grupos de la sección «Información base» cuyas respuestas son columnas
- * enteras del Survey (`estructuras`, `planes_estudio`). Las preguntas y
- * sus rótulos salen de `GeneralGroup.questions` del catálogo, no del
- * código: la redacción del instrumento la manda el seed.
+ * Grupos de la sección «Información base» cuyas respuestas son enteros
+ * (`estructuras`, `planes_estudio`). Las preguntas y sus rótulos salen de
+ * `GeneralGroup.questions` del catálogo, no del código: la redacción del
+ * instrumento la manda el seed.
  */
 import GeneralNumberQuestion from
   '~/components/dashboard/survey/GeneralNumberQuestion.vue'
@@ -21,7 +21,8 @@ const props = defineProps({
 
 const survey = defineModel({ type: Object, required: true })
 
-const { ensureQuestionRow, isQuestionNoApply } = useGeneralSurvey(survey)
+const { ensureQuestionRow, isQuestionNoApply, questionValue,
+  setQuestionValue } = useGeneralSurvey(survey)
 
 const numberQuestions = computed(
   () => (props.catalog.questions || []).filter((q) => q.q_type === 'integer'))
@@ -34,26 +35,30 @@ const setNoApply = (question, value) => {
   const row = ensureQuestionRow(question.id)
   if (!row) return
   row.no_apply = value === true
-  // «No aplica» y un conteo no pueden convivir: el servidor anula la
-  // columna al guardar y aquí se espeja al instante.
-  if (row.no_apply) survey.value[question.name] = null
+  // «No aplica» y un conteo no pueden convivir: el servidor anula el
+  // valor al guardar y aquí se espeja al instante.
+  if (row.no_apply) setQuestionValue(question, null)
 }
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <GeneralNumberQuestion
-      v-for="question in numberQuestions"
-      :key="question.name"
-      v-model="survey[question.name]"
-      :question="question.text"
-      :hint="question.hint"
-      :label="question.effective_label"
-      :readonly="!editable"
-      :error="invalid.has(`question:${question.name}`)"
-      :no-apply-option="allowsNoApply(question)"
-      :no-apply="isNoApply(question)"
-      @update:no-apply="setNoApply(question, $event)"
-    />
+    <!-- El divider también cierra la última pregunta: separa el bloque de
+         preguntas de la evidencia probatoria que el panel pinta después. -->
+    <template v-for="question in numberQuestions" :key="question.name">
+      <GeneralNumberQuestion
+        :model-value="questionValue(question)"
+        :question="question.text"
+        :hint="question.hint"
+        :label="question.effective_label"
+        :readonly="!editable"
+        :error="invalid.has(`question:${question.name}`)"
+        :no-apply-option="allowsNoApply(question)"
+        :no-apply="isNoApply(question)"
+        @update:model-value="setQuestionValue(question, $event)"
+        @update:no-apply="setNoApply(question, $event)"
+      />
+      <v-divider />
+    </template>
   </div>
 </template>

@@ -29,7 +29,7 @@ Playwright levanta el servidor solo (`pnpm run dev:test`, puerto 3019 sobre HTTP
 | `forgot-password.test.ts` | solicitud de recuperación y error de servidor |
 | `recover-password.test.ts` | token válido e inválido, contraseñas que no coinciden, reset exitoso con auto-login, token que expira entre validar y confirmar |
 | `respuestas-tabs.test.ts` | chips del card ligados a su `?tab=`, navegación al tab correcto y deep-link que sobrevive a la recarga |
-| `gen-capture.test.ts` | «Información base»: tri-estado «Está presente» que gobierna los conteos y su total, poblaciones estructurales sin conteo, el «no» explícito que limpia y viaja como respuesta, y el «No aplica» de los planes de estudio (que las instancias no ofrecen) |
+| `gen-capture.test.ts` | «Información base»: tri-estado «Está presente» que gobierna los conteos y su total, poblaciones estructurales sin conteo, el «no» explícito que limpia y viaja como respuesta, el escalar capturado que viaja en la fila de su pregunta (`value_integer`), y el «No aplica» de los planes de estudio (que las instancias no ofrecen) |
 | `gen-non-binary.test.ts` | la pregunta previa de la categoría no binaria: agrega o retira la columna en las dos tablas y la tercera opción del radio de la titular, y apagarla borra los conteos ya capturados |
 | `gen-validation-gate.test.ts` | la compuerta de completado: bloquea enumerando qué falta y marcando los campos, no estorba al guardar sin transicionar, y deja pasar la transición con el grupo completo |
 

@@ -66,6 +66,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('no_apply', models.BooleanField(default=False, verbose_name='No Aplica')),
+                ('value_integer', models.IntegerField(blank=True, null=True, verbose_name='Respuesta numérica')),
+                ('value_boolean', models.BooleanField(blank=True, null=True, verbose_name='Respuesta booleana')),
                 ('general_question', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='responses', to='question.generalquestion')),
                 ('survey', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='question_responses', to='survey.survey')),
             ],
@@ -75,6 +77,16 @@ class Migration(migrations.Migration):
                 'unique_together': {('survey', 'general_question')},
             },
         ),
+        # Las 6 columnas escalares se van con GeneralQuestionResponse
+        # (task-117). Sin backfill: no hay datos de gen que salvar.
+        migrations.RemoveField(model_name='survey', name='is_centralized'),
+        migrations.RemoveField(
+            model_name='survey', name='academic_instances'),
+        migrations.RemoveField(model_name='survey', name='admin_instances'),
+        migrations.RemoveField(model_name='survey', name='media_plans'),
+        migrations.RemoveField(model_name='survey', name='superior_plans'),
+        migrations.RemoveField(
+            model_name='survey', name='postgraduate_plans'),
         migrations.RunPython(
             backfill_is_present, migrations.RunPython.noop),
     ]

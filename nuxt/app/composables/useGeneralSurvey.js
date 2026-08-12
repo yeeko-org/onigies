@@ -13,10 +13,9 @@ import { useMainStore } from '~/store/index.js'
  * funcionariado», de la lista custom del observable 1.13— no se capturan aquí.
  */
 /**
- * Pregunta del catálogo del grupo por su clave estable (`name`), que es
- * también la columna del Survey donde aterriza la respuesta. Los grupos
- * con comportamiento propio (forma de gobierno, la previa de poblaciones)
- * la buscan por nombre porque su render no es genérico.
+ * Pregunta del catálogo del grupo por su clave estable (`name`). Los
+ * grupos con comportamiento propio (forma de gobierno, la previa de
+ * poblaciones) la buscan por nombre porque su render no es genérico.
  */
 export const questionByName = (catalog, name) =>
   (catalog?.questions || []).find((q) => q.name === name) || null
@@ -30,16 +29,19 @@ export const isEmptyValue = (value) => value == null || value === ''
   || (typeof value === 'number' && Number.isNaN(value))
 
 /**
- * Preguntas que ofrecen «No aplica». Son las tres de planes de estudio:
- * una IES puede no impartir un nivel educativo, y sin la casilla su cero
- * sería indistinguible de «no ofrecemos ese nivel». Las instancias no la
- * llevan: toda institución tiene estructura.
+ * Quién ofrece «No aplica» lo declara el seed, no el código: hoy son las
+ * tres preguntas de planes de estudio (una IES puede no impartir un nivel,
+ * y sin la casilla su cero sería indistinguible de «no lo ofrecemos»).
  */
-export const NO_APPLY_QUESTIONS = [
-  'media_plans', 'superior_plans', 'postgraduate_plans']
-
 export const allowsNoApply = (question) =>
-  NO_APPLY_QUESTIONS.includes(question?.name)
+  question?.addl_config?.allow_no_apply === true
+
+/**
+ * Columna de la fila de respuesta donde aterriza el valor: el `q_type` de
+ * la pregunta decide cuál de las dos tipadas aplica.
+ */
+const valueField = (question) =>
+  (question?.q_type === 'boolean' ? 'value_boolean' : 'value_integer')
 
 export function useGeneralSurvey(survey) {
   const mainStore = useMainStore()
@@ -89,9 +91,9 @@ export function useGeneralSurvey(survey) {
     }
   }
 
-  // Metadatos por pregunta (hoy solo el «No aplica»): viven en filas
-  // aparte porque el valor sigue siendo una columna del Survey, y una
-  // columna en nulo no distingue «no aplica» de «sin capturar».
+  // Respuesta y metadatos de cada pregunta escalar (task-117): valor y
+  // «No aplica» viven en la misma fila, para que agregar una pregunta no
+  // exija una columna nueva en Survey.
   const questionRows = computed(
     () => survey.value?.question_responses || [])
 
@@ -106,7 +108,10 @@ export function useGeneralSurvey(survey) {
       survey.value.question_responses = []
     let row = responseFor(questionId)
     if (!row) {
-      row = { general_question: questionId, no_apply: false }
+      row = {
+        general_question: questionId, no_apply: false,
+        value_integer: null, value_boolean: null,
+      }
       survey.value.question_responses.push(row)
     }
     return row
@@ -114,6 +119,18 @@ export function useGeneralSurvey(survey) {
 
   const isQuestionNoApply = (questionId) =>
     responseFor(questionId)?.no_apply === true
+
+  const questionValue = (question) => {
+    const row = responseFor(question?.id)
+    return row ? row[valueField(question)] ?? null : null
+  }
+
+  // La fila se materializa al responder, no al pintar: solo las preguntas
+  // que alguien tocó necesitan viajar al servidor.
+  const setQuestionValue = (question, value) => {
+    const row = ensureQuestionRow(question?.id)
+    if (row) row[valueField(question)] = value ?? null
+  }
 
   // La existencia vive en la propia fila desde adr-0012; `Survey.sectors`
   // ya no se escribe (es derivado y de solo lectura en el serializer).
@@ -174,20 +191,22 @@ export function useGeneralSurvey(survey) {
     }
     // Las filas de pregunta viajan todas las materializadas: el upsert no
     // borra por omisión, así que desmarcar debe llegar como `false`.
+    // El vacío de un v-count-input borrado llega como '' o NaN y el
+    // backend solo entiende `None`: se normaliza aquí, no allá.
+    const scalar = (value) => (isEmptyValue(value) ? null : value)
     const responses = questionRows.value
       .filter((r) => r.general_question)
-      .map((r) => ({
-        general_question: r.general_question,
-        no_apply: r.no_apply === true,
-      }))
+      .map((r) => {
+        const noApply = r.no_apply === true
+        return {
+          general_question: r.general_question,
+          no_apply: noApply,
+          value_integer: noApply ? null : scalar(r.value_integer),
+          value_boolean: noApply ? null : scalar(r.value_boolean),
+        }
+      })
     return {
       id: data.id,
-      academic_instances: data.academic_instances,
-      admin_instances: data.admin_instances,
-      media_plans: data.media_plans,
-      superior_plans: data.superior_plans,
-      postgraduate_plans: data.postgraduate_plans,
-      is_centralized: data.is_centralized,
       measures_non_binary: data.measures_non_binary,
       population_quantities: quantities,
       question_responses: responses,
@@ -199,6 +218,6 @@ export function useGeneralSurvey(survey) {
     authoritySectors, iesHead, authorityBodies,
     rowFor, ensureRows, isPresent, clearCounts, clearNonBinary, rowTotal,
     hasCount, responseFor, ensureQuestionRow, isQuestionNoApply,
-    buildPayload,
+    questionValue, setQuestionValue, buildPayload,
   }
 }

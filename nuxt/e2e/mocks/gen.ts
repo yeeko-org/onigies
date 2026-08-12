@@ -19,8 +19,16 @@ export const SECTOR_UNDERGRADUATE = 10
 export const SECTOR_FACULTY = 11
 export const SECTOR_EXTERNAL = 20
 
-// Ids de GeneralQuestion, para las aserciones sobre `question_responses`.
+// Ids de GeneralQuestion: desde task-117 las respuestas escalares viven en
+// `question_responses`, así que las aserciones y el contenido completo se
+// arman por id, no por columna del Survey.
+export const QUESTION_GOVERNMENT = 1
+export const QUESTION_ACADEMIC_INSTANCES = 2
+export const QUESTION_ADMIN_INSTANCES = 3
+export const QUESTION_MEASURES_NON_BINARY = 4
 export const QUESTION_MEDIA_PLANS = 5
+export const QUESTION_SUPERIOR_PLANS = 6
+export const QUESTION_POSTGRADUATE_PLANS = 7
 
 export const mockSectors = [
   {
@@ -102,7 +110,7 @@ export const mockGenFlowStatuses = [
 ]
 
 const governmentQuestion = {
-  id: 1, name: 'is_centralized', q_type: 'boolean', order: 1,
+  id: QUESTION_GOVERNMENT, name: 'is_centralized', q_type: 'boolean', order: 1,
   text: 'Señale cuál de las siguientes descripciones corresponde a la '
     + 'forma de gobierno de su institución.',
   hint: '', label: '', effective_label: '', unit: '',
@@ -123,11 +131,15 @@ const governmentQuestion = {
   },
 }
 
+// `allowNoApply` va al `addl_config` porque es donde el seed lo declara:
+// quién ofrece el escape lo manda el catálogo, no el nombre de la pregunta.
 const integerQuestion = (
   id: number, name: string, text: string, label: string, order: number,
+  allowNoApply = false,
 ) => ({
   id, name, text, hint: '', label, effective_label: label, unit: label,
-  q_type: 'integer', order, addl_config: {},
+  q_type: 'integer', order,
+  addl_config: allowNoApply ? { allow_no_apply: true } : {},
 })
 
 // Los cinco grupos del instrumento, en el orden que fija `GeneralGroup.order`.
@@ -141,10 +153,10 @@ const genGroupCatalogs = [
     name: 'estructuras', public_name: 'Estructuras', title: 'Estructuras',
     subtitle: '', instruction: '', is_population: false, order: 2,
     questions: [
-      integerQuestion(2, 'academic_instances',
+      integerQuestion(QUESTION_ACADEMIC_INSTANCES, 'academic_instances',
         'Instancias académicas reconocidas en el marco normativo u '
         + 'organigrama de la IES', 'instancias', 1),
-      integerQuestion(3, 'admin_instances',
+      integerQuestion(QUESTION_ADMIN_INSTANCES, 'admin_instances',
         'Instancias administrativas reconocidas en el marco normativo u '
         + 'organigrama de la IES', 'instancias', 2),
     ],
@@ -158,7 +170,8 @@ const genGroupCatalogs = [
       + 'integran según su sexo y género.',
     is_population: true, order: 3,
     questions: [{
-      id: 4, name: 'measures_non_binary', q_type: 'boolean', order: 1,
+      id: QUESTION_MEASURES_NON_BINARY, name: 'measures_non_binary',
+      q_type: 'boolean', order: 1,
       text: 'En sus registros de sexo y género, ¿su institución contempla '
         + 'la categoría no binaria?',
       hint: 'Si responde Sí, las tablas de esta sección incluirán una '
@@ -180,13 +193,14 @@ const genGroupCatalogs = [
     is_population: false, order: 5,
     questions: [
       integerQuestion(QUESTION_MEDIA_PLANS, 'media_plans',
-        'Planes de estudio vigentes de nivel medio superior', 'planes', 1),
-      integerQuestion(6, 'superior_plans',
+        'Planes de estudio vigentes de nivel medio superior', 'planes', 1,
+        true),
+      integerQuestion(QUESTION_SUPERIOR_PLANS, 'superior_plans',
         'Planes de estudio vigentes de nivel superior (licenciatura)',
-        'planes', 2),
-      integerQuestion(7, 'postgraduate_plans',
+        'planes', 2, true),
+      integerQuestion(QUESTION_POSTGRADUATE_PLANS, 'postgraduate_plans',
         'Planes de estudio vigentes de nivel posgrado (especialidad, '
-        + 'maestría y doctorado)', 'planes', 3),
+        + 'maestría y doctorado)', 'planes', 3, true),
     ],
   },
 ]
@@ -235,12 +249,6 @@ export function makeGenSurvey(
       is_bp_submission_closed: false,
       submission_deadline: null,
     },
-    academic_instances: null,
-    admin_instances: null,
-    media_plans: null,
-    superior_plans: null,
-    postgraduate_plans: null,
-    is_centralized: null,
     measures_non_binary: null,
     sectors: [],
     population_quantities: [],
@@ -266,22 +274,29 @@ const countRow = (
   number_women: women, number_men: men, number_non_binary: null,
 })
 
+// Fila de respuesta escalar: el `q_type` decide cuál de las dos columnas
+// tipadas carga el dato, la otra queda nula.
+const intAnswer = (question: number, value: number) => ({
+  general_question: question, no_apply: false,
+  value_integer: value, value_boolean: null,
+})
+
+const boolAnswer = (question: number, value: boolean) => ({
+  general_question: question, no_apply: false,
+  value_integer: null, value_boolean: value,
+})
+
 /**
  * Contenido que satisface la compuerta de los cinco grupos: las dos
  * poblaciones principales presentes y contadas, la extra presente sin
  * conteo, la titular como un 1 en su conteo, los cuerpos colegiados
- * contados y las columnas escalares respondidas.
+ * contados y las preguntas escalares respondidas en sus filas.
  *
  * `measures_non_binary` va en `false` a propósito: con la columna no
- * binaria apagada la compuerta no exige ese tercer conteo.
+ * binaria apagada la compuerta no exige ese tercer conteo. Es la única
+ * respuesta que sigue viviendo en una columna del Survey (task-117).
  */
 export const completeGenContent = {
-  academic_instances: 12,
-  admin_instances: 8,
-  media_plans: 0,
-  superior_plans: 15,
-  postgraduate_plans: 6,
-  is_centralized: false,
   measures_non_binary: false,
   population_quantities: [
     countRow(SECTOR_UNDERGRADUATE, 120, 98, true),
@@ -295,5 +310,13 @@ export const completeGenContent = {
     countRow(SECTOR_BOARD, 14, 11),
     countRow(SECTOR_ACADEMIC_HEADS, 6, 7),
   ],
-  question_responses: [],
+  question_responses: [
+    boolAnswer(QUESTION_GOVERNMENT, false),
+    intAnswer(QUESTION_ACADEMIC_INSTANCES, 12),
+    intAnswer(QUESTION_ADMIN_INSTANCES, 8),
+    // El cero es un dato capturado: la compuerta no lo confunde con vacío.
+    intAnswer(QUESTION_MEDIA_PLANS, 0),
+    intAnswer(QUESTION_SUPERIOR_PLANS, 15),
+    intAnswer(QUESTION_POSTGRADUATE_PLANS, 6),
+  ],
 }

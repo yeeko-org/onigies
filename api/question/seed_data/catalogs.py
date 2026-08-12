@@ -19,10 +19,11 @@ STANDARD_EXTRA_SECTORS = ["Población externa", "Público en general"]
 # Grupos de la sección "Información de base" del cuestionario.
 # Cada grupo lleva sus textos de encabezado (title, subtitle, instruction)
 # y su lista de `questions`, que se siembra en question.GeneralQuestion:
-# name (clave estable, es la columna del Survey donde aterriza la
-# respuesta), text (la pregunta), label (rótulo corto opcional; si va
-# vacío el rótulo efectivo es `unit`), unit, q_type ("integer" |
-# "boolean"), order y addl_config (parámetros de comportamiento).
+# name (clave estable de la pregunta; el valor aterriza en
+# GeneralQuestionResponse), text (la pregunta), label (rótulo corto
+# opcional; si va vacío el rótulo efectivo es `unit`), unit, q_type
+# ("integer" | "boolean"), order y addl_config (parámetros de
+# comportamiento, entre ellos `allow_no_apply`).
 # Los grupos de checklist (poblaciones, autoridades) arman sus filas
 # desde el catálogo Sector, no desde `questions`.
 # El orden de esta lista ES el orden del instrumento: `_load_general_groups`
@@ -39,8 +40,7 @@ GENERAL_GROUPS = [
         "is_population": False,
         "questions": [
             {
-                # Una sola pregunta booleana: el Survey guarda
-                # `is_centralized` y las dos opciones son excluyentes.
+                # Una sola pregunta booleana y dos opciones excluyentes.
                 # Van en addl_config partidas en nombre del tipo (que el
                 # componente pinta en negritas) y descripción.
                 "name": "is_centralized",
@@ -145,6 +145,9 @@ GENERAL_GROUPS = [
         "subtitle": "",
         "instruction": "",
         "is_population": False,
+        # Las tres ofrecen «No aplica»: una IES puede no impartir un
+        # nivel, y sin la casilla su cero no se distinguiría de «no
+        # ofrecemos ese nivel».
         "questions": [
             {
                 "name": "media_plans",
@@ -152,6 +155,7 @@ GENERAL_GROUPS = [
                         "superior",
                 "unit": "planes",
                 "order": 1,
+                "addl_config": {"allow_no_apply": True},
             },
             {
                 "name": "superior_plans",
@@ -159,6 +163,7 @@ GENERAL_GROUPS = [
                         "(licenciatura)",
                 "unit": "planes",
                 "order": 2,
+                "addl_config": {"allow_no_apply": True},
             },
             {
                 "name": "postgraduate_plans",
@@ -166,6 +171,7 @@ GENERAL_GROUPS = [
                         "(especialidad, maestría y doctorado)",
                 "unit": "planes",
                 "order": 3,
+                "addl_config": {"allow_no_apply": True},
             },
         ],
     },

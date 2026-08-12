@@ -3,9 +3,11 @@
  * Grupo `forma_gobierno`: una sola pregunta booleana (`is_centralized`)
  * con sus dos opciones excluyentes en `addl_config.options`, cada una
  * partida en nombre del tipo y descripción. El `value` de la opción ES
- * el booleano que guarda el Survey, así que no hay traducción.
+ * el booleano que se guarda en la fila de respuesta, sin traducción.
  */
-import { questionByName } from '~/composables/useGeneralSurvey.js'
+import {
+  questionByName, useGeneralSurvey,
+} from '~/composables/useGeneralSurvey.js'
 
 const props = defineProps({
   catalog: { type: Object, default: () => ({}) },
@@ -17,9 +19,16 @@ const props = defineProps({
 
 const survey = defineModel({ type: Object, required: true })
 
+const { questionValue, setQuestionValue } = useGeneralSurvey(survey)
+
 const question = computed(
   () => questionByName(props.catalog, 'is_centralized'))
 const options = computed(() => question.value?.addl_config?.options || [])
+
+const answer = computed({
+  get: () => questionValue(question.value),
+  set: (value) => setQuestionValue(question.value, value),
+})
 </script>
 
 <template>
@@ -34,7 +43,7 @@ const options = computed(() => question.value?.addl_config?.options || [])
       {{ question.hint }}
     </p>
     <v-radio-group
-      v-model="survey.is_centralized"
+      v-model="answer"
       :readonly="!editable"
       :error="invalid.has('question:is_centralized')"
       hide-details="auto"
@@ -56,5 +65,7 @@ const options = computed(() => question.value?.addl_config?.options || [])
         </template>
       </v-radio>
     </v-radio-group>
+    <!-- Separa la pregunta de la evidencia probatoria que pinta el panel. -->
+    <v-divider class="mt-4" />
   </div>
 </template>

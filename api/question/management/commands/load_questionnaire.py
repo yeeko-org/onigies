@@ -240,8 +240,8 @@ class Command(BaseCommand):
 
     def _load_general_questions(
             self, general_group: GeneralGroup, questions: list) -> int:
-        """Clave natural (general_group, name): `name` es la columna del
-        Survey, así que reescribir la redacción no duplica la fila.
+        """Clave natural (general_group, name): la clave estable es
+        `name`, así que reescribir la redacción no duplica la fila.
 
         Los textos (text, hint, label, unit) solo se siembran al crear; en
         filas existentes el re-seed asegura estructura y respeta lo que

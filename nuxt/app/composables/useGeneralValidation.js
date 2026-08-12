@@ -30,7 +30,7 @@ const COUNT_FIELDS = [
 
 export function useGeneralValidation(survey, catalog) {
   const { populationSectors, authorityBodies, iesHead,
-    rowFor, isQuestionNoApply } = useGeneralSurvey(survey)
+    rowFor, isQuestionNoApply, questionValue } = useGeneralSurvey(survey)
 
   const group = computed(() => toValue(catalog) || {})
   const groupName = computed(() => group.value.name || '')
@@ -100,13 +100,13 @@ export function useGeneralValidation(survey, catalog) {
     return issues
   }
 
-  // Grupos que responden sobre columnas del Survey, una por pregunta del
-  // catálogo (estructuras, planes de estudio y forma de gobierno).
+  // Grupos que responden una fila por pregunta del catálogo (estructuras,
+  // planes de estudio y forma de gobierno).
   const questionIssues = () => {
     const issues = []
     for (const question of questions.value) {
       if (allowsNoApply(question) && isQuestionNoApply(question.id)) continue
-      if (isEmptyValue(survey.value?.[question.name]))
+      if (isEmptyValue(questionValue(question)))
         issues.push({
           key: `question:${question.name}`,
           label: `Falta la respuesta: ${question.text}`,

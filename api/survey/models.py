@@ -27,13 +27,6 @@ class Survey(models.Model):
         Institution, on_delete=models.CASCADE, related_name='surveys')
     period = models.ForeignKey(
         Period, on_delete=models.CASCADE, related_name='surveys')
-    is_centralized = models.BooleanField(
-        blank=True, null=True,
-        help_text="Gobierno centralizado")
-    academic_instances = models.IntegerField(
-        verbose_name='Instancias académicas', blank=True, null=True)
-    admin_instances = models.IntegerField(
-        verbose_name='Instancias administrativas', blank=True, null=True)
     instances = models.ManyToManyField(
         Instance, related_name='surveys',
         verbose_name='Instancias', blank=True)
@@ -43,12 +36,10 @@ class Survey(models.Model):
     sectors_legacy = models.ManyToManyField(
         Sector, related_name='surveys',
         verbose_name='Sectores atendidos', blank=True)
-    media_plans = models.IntegerField(
-        verbose_name='Planes a nivel medio superior', blank=True, null=True)
-    superior_plans = models.IntegerField(
-        verbose_name='Planes a nivel superior', blank=True, null=True)
-    postgraduate_plans = models.IntegerField(
-        verbose_name='Planes a nivel posgrado', blank=True, null=True)
+    # Única respuesta de pregunta general que sigue viviendo en columna:
+    # es operacional (enciende la columna no binaria de las tablas) y no
+    # alimenta indicadores, así que quedó fuera de la mudanza a
+    # GeneralQuestionResponse.
     measures_non_binary = models.BooleanField(
         blank=True, null=True,
         verbose_name='Registra o mide población no binaria')
@@ -153,10 +144,13 @@ class PopulationQuantity(models.Model):
 class GeneralQuestionResponse(models.Model):
     """Respuesta a una pregunta general por (survey, pregunta).
 
-    Hoy solo lleva el «No aplica» de las preguntas de planes: el valor
-    en sí aterriza en la columna del Survey que nombra la pregunta. Nace
-    como tabla de respuestas para que mañana los valores puedan mudarse
-    aquí sin renombrar nada.
+    Aquí vive el valor escalar: `q_type` de la pregunta dicta cuál de las
+    dos columnas tipadas aplica. Se descartó un JSON único porque los
+    indicadores y el ETL consultan estas columnas sin castear.
+
+    Agregar una pregunta al catálogo ya no exige columnas en el Survey.
+    La excepción es `measures_non_binary`, operacional, que se quedó como
+    columna del Survey.
     """
 
     survey = models.ForeignKey(
@@ -167,9 +161,21 @@ class GeneralQuestionResponse(models.Model):
         GeneralQuestion, on_delete=models.PROTECT,
         related_name='responses')
     no_apply = models.BooleanField(default=False, verbose_name="No Aplica")
+    value_integer = models.IntegerField(
+        blank=True, null=True, verbose_name='Respuesta numérica')
+    value_boolean = models.BooleanField(
+        blank=True, null=True, verbose_name='Respuesta booleana')
+
+    @property
+    def value(self):
+        """El valor que corresponde al tipo de la pregunta. El nulo es
+        «sin responder» en ambos casos."""
+        if self.general_question.q_type == 'boolean':
+            return self.value_boolean
+        return self.value_integer
 
     def __str__(self):
-        return f"{self.general_question.name}: no_apply={self.no_apply}"
+        return f"{self.general_question.name}: {self.value}"
 
     class Meta:
         unique_together = ('survey', 'general_question')

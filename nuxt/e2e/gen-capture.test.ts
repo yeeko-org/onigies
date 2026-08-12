@@ -4,8 +4,8 @@ import {
 } from './helpers'
 import { mockSurveyPatch } from './mocks/handlers'
 import {
-  makeGenSurvey, GEN_SURVEY_ID, QUESTION_MEDIA_PLANS,
-  SECTOR_UNDERGRADUATE,
+  makeGenSurvey, GEN_SURVEY_ID, QUESTION_ACADEMIC_INSTANCES,
+  QUESTION_MEDIA_PLANS, SECTOR_UNDERGRADUATE,
 } from './mocks/gen'
 
 const BASE_TAB = '/respuestas/2025?tab=base'
@@ -92,6 +92,28 @@ test.describe('Información base — captura', () => {
       await expect(plans.noApply).toBeVisible()
     })
 
+  test('el valor capturado viaja en la fila de su pregunta',
+    async ({ page, context }) => {
+      await setupGenSection(page, context, makeGenSurvey())
+      const captured = await mockSurveyPatch(page, GEN_SURVEY_ID)
+      await page.goto(BASE_TAB)
+
+      const instances = await genNumberField(page, ACADEMIC_INSTANCES)
+      await instances.count.fill('12')
+
+      await saveGenGroup(page, 'Estructuras')
+      await expect.poll(() => captured.length).toBe(1)
+
+      // Desde task-117 el escalar ya no es columna del Survey: viaja en la
+      // fila de su pregunta, en la columna que dicta su `q_type`.
+      expect(captured[0].question_responses).toContainEqual({
+        general_question: QUESTION_ACADEMIC_INSTANCES,
+        no_apply: false,
+        value_integer: 12,
+        value_boolean: null,
+      })
+    })
+
   test('marcar «No aplica» en un plan limpia y bloquea su conteo',
     async ({ page, context }) => {
       await setupGenSection(page, context, makeGenSurvey())
@@ -108,12 +130,13 @@ test.describe('Información base — captura', () => {
       await saveGenGroup(page, 'Planes de estudio')
       await expect.poll(() => captured.length).toBe(1)
 
-      // El «No aplica» viaja como metadato de la pregunta y la columna
-      // del Survey queda en nulo: un cero significaría otra cosa.
+      // «No aplica» y valor viajan en la misma fila, y el valor queda en
+      // nulo: un cero significaría otra cosa.
       expect(captured[0].question_responses).toContainEqual({
         general_question: QUESTION_MEDIA_PLANS,
         no_apply: true,
+        value_integer: null,
+        value_boolean: null,
       })
-      expect(captured[0].media_plans).toBeNull()
     })
 })

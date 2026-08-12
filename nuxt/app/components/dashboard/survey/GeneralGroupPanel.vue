@@ -23,7 +23,9 @@ import GeneralPopulations from '~/components/dashboard/survey/GeneralPopulations
 import GeneralAuthorities from '~/components/dashboard/survey/GeneralAuthorities.vue'
 import GeneralGovernment from '~/components/dashboard/survey/GeneralGovernment.vue'
 import { useFlowActions } from '~/composables/useFlowActions.js'
-import { useGeneralSurvey } from '~/composables/useGeneralSurvey.js'
+import {
+  useGeneralSurvey, isEmptyValue,
+} from '~/composables/useGeneralSurvey.js'
 import { useGeneralValidation } from '~/composables/useGeneralValidation.js'
 
 // Qué hijo pinta cada grupo. Mapa constante a nivel de módulo: no es
@@ -62,7 +64,8 @@ const group = defineModel('group', { type: Object, required: true })
 const emit = defineEmits(['collapse'])
 
 const { populationSectors, mainSectors, iesHead, authorityBodies,
-  isPresent, rowFor, hasCount } = useGeneralSurvey(survey)
+  isPresent, rowFor, hasCount, questionValue,
+  isQuestionNoApply } = useGeneralSurvey(survey)
 
 // Tolera las dos formas posibles del anidado del catálogo: la convención del
 // repo es `{campo}_full`, pero el contrato solo promete «los datos del
@@ -115,7 +118,6 @@ const fraction = (filled, expected) =>
 // Renglón-resumen del panel colapsado: cuántos renglones tiene el grupo y
 // cuántos están capturados.
 const summary = computed(() => {
-  const data = survey.value
   if (groupName.value === 'poblaciones') {
     // Las presentes se cuentan todas, pero solo las principales esperan
     // conteo: las 2 extra son estructurales y nunca se cuentan.
@@ -139,12 +141,14 @@ const summary = computed(() => {
     if (iesHead.value && hasCount(rowFor(iesHead.value.id))) filled += 1
     return `${expected} autoridades · ${fraction(filled, expected)}`
   }
-  // El resto de los grupos responde sobre columnas del Survey, una por
-  // pregunta del catálogo: `name` es justamente esa columna.
+  // El resto de los grupos responde una fila por pregunta del catálogo.
+  // La fracción mide resueltas, no con dato: «No aplica» es una respuesta,
+  // igual que en autoridades, y el grupo puede completarse con ella.
   if (!questions.value.length) return ''
-  const answered = questions.value.filter(
-    (q) => data[q.name] != null && data[q.name] !== '').length
-  return fraction(answered, questions.value.length)
+  const resolved = (q) => isQuestionNoApply(q.id)
+    || !isEmptyValue(questionValue(q))
+  return fraction(questions.value.filter(resolved).length,
+    questions.value.length)
 })
 
 const keepStatusLabel = computed(

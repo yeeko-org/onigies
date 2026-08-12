@@ -47,9 +47,7 @@ class Institution(models.Model):
         main_sectors = Sector.objects.filter(is_main=True)
         for period in periods:
             survey, s_created = self.surveys.get_or_create(period=period)
-            if s_created or survey.is_centralized is None:
-                survey.is_centralized = self.is_centralized
-                survey.save()
+            self._preload_centralized(survey, s_created)
             for axis in all_axes:
                 av, av_created = survey.axis_values.get_or_create(axis=axis)
                 # Durante la coexistencia se setean ambos flujos (viejo
@@ -88,6 +86,28 @@ class Institution(models.Model):
                         'status_register_id': 'pre_start',
                         'status_id': 'gen_draft',
                     })
+
+    def _preload_centralized(self, survey, survey_created: bool) -> None:
+        """Precarga la forma de gobierno que ya conoce el catálogo de
+        instituciones como respuesta de la IES, para que no la vuelva a
+        capturar. Solo al crear el survey o mientras nadie haya
+        contestado: una respuesta capturada jamás se pisa.
+        """
+        from question.models import GeneralQuestion
+        from survey.models import GeneralQuestionResponse
+
+        if self.is_centralized is None:
+            return
+        question = GeneralQuestion.objects.filter(
+            name='is_centralized').first()
+        if question is None:
+            return
+        response, _ = GeneralQuestionResponse.objects.get_or_create(
+            survey=survey, general_question=question)
+        if not survey_created and response.value_boolean is not None:
+            return
+        response.value_boolean = self.is_centralized
+        response.save(update_fields=['value_boolean'])
 
     def __str__(self):
         return self.acronym

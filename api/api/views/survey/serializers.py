@@ -3,9 +3,9 @@ Serializers de Survey — el contenedor donde vive el contenido de las
 preguntas generales (grupo de flujo `gen`).
 
 Las respuestas se escriben SIEMPRE contra el Survey, no contra el grupo:
-las escalares son columnas propias y las poblaciones/autoridades son
-filas de `PopulationQuantity`, donde también vive su existencia
-(`is_present`, adr-0012).
+las escalares son filas de `GeneralQuestionResponse` (task-117) y las
+poblaciones/autoridades son filas de `PopulationQuantity`, donde también
+vive su existencia (`is_present`, adr-0012).
 Los `GeneralGroupResponse` solo llevan flujo (ver `general_serializers`).
 """
 from rest_framework import serializers
@@ -33,17 +33,28 @@ class PopulationQuantitySerializer(serializers.ModelSerializer):
 
 
 class GeneralQuestionResponseSerializer(serializers.ModelSerializer):
-    """Metadatos de la respuesta a una pregunta general, anidados en el
-    Survey. Hoy solo el «No aplica»; el valor sigue viviendo en la
-    columna del Survey que nombra la pregunta.
+    """Respuesta a una pregunta general, anidada en el Survey: el «No
+    aplica» y el valor escalar en la columna que dicta su `q_type`.
 
     `survey` no se declara, por lo mismo que en las poblaciones: lo fija
     el padre en la sincronización.
     """
+    VALUE_FIELDS = ('value_integer', 'value_boolean')
 
     class Meta:
         model = GeneralQuestionResponse
-        fields = ['id', 'general_question', 'no_apply']
+        fields = ['id', 'general_question', 'no_apply',
+                  'value_integer', 'value_boolean']
+
+    def to_internal_value(self, data: dict) -> dict:
+        """La cadena vacía es un vacío, no un error de tipo: el input
+        vaciado del frontend puede llegar como `''` y significa lo mismo
+        que el nulo (sin responder)."""
+        data = dict(data)
+        for field in self.VALUE_FIELDS:
+            if data.get(field) == '':
+                data[field] = None
+        return super().to_internal_value(data)
 
 
 class SurveySerializer(serializers.ModelSerializer):
@@ -124,32 +135,20 @@ class SurveySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _sync_question_responses(survey: Survey, rows: list) -> None:
-        """Upsert de los metadatos por pregunta; nunca borra por omisión.
+        """Upsert de las respuestas por pregunta; nunca borra por omisión.
 
-        `name` es el contrato: nombra la columna del Survey donde
-        aterriza el valor, así que un «No aplica» la deja en nulo — no
-        puede quedarse un dato viejo bajo una respuesta que ya dice que
-        no aplica. Se resuelve contra los campos reales del modelo
-        porque hay `name` que no son columna (las preguntas de captura
-        derivada) y porque `sectors` o `is_test` son propiedades.
+        El valor y su exención viven en la misma fila, así que el «No
+        aplica» limpia ahí mismo: no puede quedarse un dato viejo bajo
+        una respuesta que ya dice que no aplica.
         """
-        columns = {
-            field.name for field in Survey._meta.get_fields()
-            if getattr(field, 'concrete', False)}
-        to_clear = {}
         for row in rows:
-            question = row['general_question']
-            no_apply = row.get('no_apply', False)
+            data = {k: v for k, v in row.items()
+                    if k not in ('id', 'general_question')}
+            if data.get('no_apply'):
+                data.update(value_integer=None, value_boolean=None)
             GeneralQuestionResponse.objects.update_or_create(
-                survey=survey, general_question=question,
-                defaults={'no_apply': no_apply})
-            if no_apply and question.name in columns:
-                to_clear[question.name] = None
-        if not to_clear:
-            return
-        for column, value in to_clear.items():
-            setattr(survey, column, value)
-        survey.save(update_fields=list(to_clear))
+                survey=survey, general_question=row['general_question'],
+                defaults=data)
 
     @staticmethod
     def _clear_non_binary(survey: Survey, validated_data: dict) -> None:

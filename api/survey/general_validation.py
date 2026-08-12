@@ -18,11 +18,6 @@ from django.db.models import Q
 # Guardar nunca valida: la IES captura en varias sesiones.
 VALIDATED_TARGETS = ('gen_completed', 'gen_adjusted')
 
-# Preguntas que ofrecen «No aplica»: las tres de planes de estudio. Una
-# IES puede no impartir un nivel, y sin la casilla su cero no se
-# distinguiría de «no ofrecemos ese nivel».
-NO_APPLY_QUESTIONS = ('media_plans', 'superior_plans', 'postgraduate_plans')
-
 # Los tres conteos de una fila, en el orden de captura (Mujeres antes que
 # Hombres, convención de toda la sección).
 COUNT_FIELDS = (
@@ -86,16 +81,34 @@ def _authority_issues(survey, rows: dict, sectors: list) -> list[str]:
     return issues
 
 
+def _answered_value(question, response):
+    """Valor capturado de una pregunta, en la columna tipada que dicta su
+    `q_type`. La cadena vacía cuenta como vacío igual que el nulo: es lo
+    que manda el input recién vaciado del frontend."""
+    if response is None:
+        return None
+    field = ('value_boolean' if question.q_type == 'boolean'
+             else 'value_integer')
+    value = getattr(response, field, None)
+    return None if value == '' else value
+
+
 def _question_issues(survey, questions: list, responses: dict) -> list[str]:
-    """Grupos que responden sobre columnas del Survey, una por pregunta
-    del catálogo: `name` es justamente esa columna."""
+    """Grupos de preguntas escalares: cada respuesta es una fila de
+    `GeneralQuestionResponse`, con su valor y su exención dentro.
+
+    Solo las preguntas marcadas con `allow_no_apply` en su `addl_config`
+    ofrecen el escape (hoy las tres de planes de estudio: una IES puede
+    no impartir un nivel, y sin la casilla su cero no se distinguiría de
+    «no ofrecemos ese nivel»).
+    """
     issues: list[str] = []
     for question in questions:
-        if question.name in NO_APPLY_QUESTIONS:
-            response = responses.get(question.id)
-            if response is not None and response.no_apply:
-                continue
-        if getattr(survey, question.name, None) is None:
+        response = responses.get(question.id)
+        allows_no_apply = question.addl_config.get('allow_no_apply')
+        if allows_no_apply and response is not None and response.no_apply:
+            continue
+        if _answered_value(question, response) is None:
             issues.append(f'Falta la respuesta: {question.text}')
     return issues
 

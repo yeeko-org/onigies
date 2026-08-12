@@ -26,9 +26,13 @@ Un supuesto que hay que construir antes: Ricardo se lo explicó a Rubén como «
 
 **La primera pregunta sigue abierta.** El «sin dato» en poblaciones no se respondió en esos términos; reapareció por otra puerta como el selector de tres estados de la propia captura, que Rubén y Ricardo pospusieron explícitamente y que se está resolviendo en diálogo.
 
+## Avance (2026-08-12, sesión orquestada)
+
+El AC del «No aplica» de autoridades quedó implementado vía [[task-106]] en `943c7ac`: checkbox por fila al final, después del Total (posición decidida por el coordinador con delegación de Ricardo), persistido en `no_apply`, que limpia y deshabilita los conteos de la fila y la exime en la validación — que ahora sí existe y sí bloquea. El primer nivel del «sin dato» de poblaciones quedó cubierto por el tri-estado de [[task-112]]; el segundo nivel («no» vs «no sé») sigue como lo dejó [[adr-0012]]: no resuelto y aceptado. En el cierre de la sesión Ricardo descartó explícitamente agregar `no_data` a [[task-117]] por ahora — si madura, será decisión metodológica aparte.
+
 ## Criterios de aceptación
 
 - [ ] Rubén respondió si «existe pero sin dato» debe ser capturable en poblaciones, distinto de no marcar el sector
 - [x] Resuelto si algún cuerpo de autoridad puede no existir: se asume que sí, sin preguntar
-- [ ] Las tres filas de autoridades tienen la opción «No aplica», persistida en `no_apply`
+- [x] Las tres filas de autoridades tienen la opción «No aplica», persistida en `no_apply`
 - [ ] Con la respuesta de poblaciones: se agenda el uso de `no_apply` donde aplique, o se evalúa retirar el campo del modelo

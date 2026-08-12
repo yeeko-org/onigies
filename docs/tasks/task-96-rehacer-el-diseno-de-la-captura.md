@@ -34,12 +34,16 @@ El 11 de agosto Ricardo trabajó ese rehacer a mano, sin IA de por medio, y cerr
 - **La columna Total de la tabla de poblaciones necesita ancho fijo**, idéntico al de Mujeres y Hombres.
 - [[task-67]] nombra todavía el componente por su nombre viejo en su prosa.
 
+## Avance (2026-08-12, sesión orquestada)
+
+Los «criterios exprés» que Ricardo definió para la Sesión A quedaron hechos en `943c7ac`: **reorden Mujeres antes que Hombres en autoridades**, **`text-body-1` en el módulo** (tablas, gobierno y encabezados del Panel — la segunda mitad entró tras la revisión crítica), **Total con ancho fijo de 150px igual que Mujeres/Hombres**, y **alineación encabezado/contenido homologada** (resuelta vía la clase del alias `VCountInput`, que era la única forma de que la celda mueva la caja del campo). El resto de los AC sigue abierto. Nota nueva para el rehacer: `GeneralNumberQuestion` no tiene `label` ni `aria-label` propio (solo `aria-describedby`) — agregarle nombre accesible mejoraría lectores de pantalla y simplificaría los e2e.
+
 ## Criterios de aceptación
 
 - [ ] La unidad se lee sin foco y con el campo vacío, con etiqueta visible
 - [ ] Los grupos de campos cortos se leen como tabla, no como renglones sueltos
 - [ ] El número de conteo no queda pegado al margen derecho de su celda
-- [ ] La tabla de autoridades ordena mujeres antes que hombres, igual que la de poblaciones
-- [ ] Encabezado y contenido de cada columna de conteo comparten alineación
-- [ ] La columna Total tiene el mismo ancho fijo que Mujeres y Hombres
+- [x] La tabla de autoridades ordena mujeres antes que hombres, igual que la de poblaciones
+- [x] Encabezado y contenido de cada columna de conteo comparten alineación
+- [x] La columna Total tiene el mismo ancho fijo que Mujeres y Hombres
 - [ ] Diseño de panels y captura aprobado visualmente por Ricardo

@@ -2,7 +2,7 @@
 type: task
 id: task-104
 title: El logo institucional es obligatorio al guardar y no debería serlo
-state: open
+state: closed
 date: 2026-08-11
 owner: ai
 parent: "[[task-3]]"
@@ -29,9 +29,13 @@ La cura es doble, y cada mitad arregla una cosa distinta:
 
 Sin la segunda mitad se corrige el error al guardar, pero sigue sin poderse crear una institución sin logo, que es lo que Ricardo dijo en la llamada que quería resolver.
 
+## Cierre (2026-08-12, sesión orquestada)
+
+Implementada la cura doble tal como estaba diagnosticada, commit `943c7ac`. Frontend: `saveElement()` excluye campos de archivo del payload salvo que el valor sea un `File` nuevo, vía mapa por colección en `nuxt/app/composables/save_elements.js` (no hay costura genérica honesta: el registry no distingue campos de archivo). Backend: `logo` declarado `required=False, allow_null=True` en los tres serializers de escritura. Hallazgo del cierre: la mitad backend era redundante en la práctica (el modelo ya era `blank/null=True`); el 400 venía enteramente del reenvío de la URL.
+
 ## Criterios de aceptación
 
-- [ ] Se guarda una institución que ya tiene logo, sin tocarlo, y no hay 400
-- [ ] Se guarda una institución sin logo desde el dashboard
-- [ ] El frontend no manda `logo` en el payload salvo que haya archivo nuevo
-- [ ] El serializer declara el campo opcional y anulable
+- [x] Se guarda una institución que ya tiene logo, sin tocarlo, y no hay 400
+- [x] Se guarda una institución sin logo desde el dashboard
+- [x] El frontend no manda `logo` en el payload salvo que haya archivo nuevo
+- [x] El serializer declara el campo opcional y anulable

@@ -2,7 +2,7 @@
 type: task
 id: task-107
 title: "Modelo GeneralQuestion: las preguntas base dejan de ser un JSON"
-state: open
+state: closed
 date: 2026-08-11
 owner: ai
 parent: "[[task-101]]"
@@ -33,10 +33,14 @@ Sus campos:
 
 El seed se rehace en la misma pasada, y ahí entran dos pendientes que venían de la reunión del 11 de agosto. El primero es **partir los rótulos actuales** en los campos nuevos; el caso claro es forma de gobierno, donde hoy cada opción es una frase completa y debe quedar como nombre del tipo, en negritas, más su descripción. El segundo es el **orden de los grupos**: forma de gobierno pasa a ser el primero —acuerdo con Rubén, `[27:36]`–`[29:38]`, «hasta por eso la primera»— y **poblaciones se mantiene antes que autoridades**, decisión de Ricardo tras diálogo, porque la sección va de lo general a lo específico.
 
+## Cierre (2026-08-12, sesión orquestada)
+
+Entregada en `943c7ac`, adelantada de su sesión original a la misma noche por decisión de Ricardo («hoy todo»). El modelo quedó con **ocho campos, no siete**: Ricardo agregó en el cierre `unit` (con la regla `effective_label = label or unit`) y `hint` (texto de ayuda editable, promovido desde `addl_config` cuando Ricardo detectó que ahí el equipo de Rubén no podría corregirlo). El AC de «siete campos» queda desfasado a sabiendas y así se cierra. Gobierno se modeló como una sola booleana `name=is_centralized` con los textos de opción en `addl_config`. Inventario sembrado: 7 preguntas en 5 grupos (ninguna inventada para autoridades). Decisión posterior clave: **«textos solo al crear»** en el seed (`create_defaults`) para que las ediciones del cliente sobrevivan al re-seed, con backfill de textos de grupo dentro de `indicator/0009` porque las filas de producción ya existen (hallazgo D1 de la revisión crítica). Costo documentado: cambios de redacción en la semilla ya no bajan a filas existentes — se editan vía catálogo ([[task-108]]).
+
 ## Criterios de aceptación
 
-- [ ] Existe el modelo GeneralQuestion con sus siete campos y su migración
-- [ ] GeneralGroup tiene title, subtitle e instruction
-- [ ] El JSON de campos ya no existe ni en el modelo ni en el serializer
-- [ ] El seed siembra las preguntas de los cinco grupos, con forma de gobierno primero y poblaciones antes que autoridades
-- [ ] Las dos opciones de forma de gobierno están partidas en nombre del tipo y descripción
+- [x] Existe el modelo GeneralQuestion con sus ~~siete~~ ocho campos y su migración
+- [x] GeneralGroup tiene title, subtitle e instruction
+- [x] El JSON de campos ya no existe ni en el modelo ni en el serializer
+- [x] El seed siembra las preguntas de los cinco grupos, con forma de gobierno primero y poblaciones antes que autoridades
+- [x] Las dos opciones de forma de gobierno están partidas en nombre del tipo y descripción

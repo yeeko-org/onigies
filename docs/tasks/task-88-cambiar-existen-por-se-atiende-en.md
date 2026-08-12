@@ -28,6 +28,8 @@ La razón es que la reunión del 11 de agosto ([[2026-08-11-reunion-con-ruben-so
 
 Para `cp` la corroboración de Rubén sigue debiendo: la reunión fue monográfica sobre la información base y no llegó al cuestionario por observable.
 
+**Actualización (2026-08-12):** el hilo de gen quedó consumado — [[task-112]] entregó el encabezado «Está presente» en `943c7ac` y el «Se atiende» provisional murió del frontend (verificado: cero apariciones). Esta task queda abierta solo por su parte `cp`: el seed del cuestionario por observable y la corroboración de Rubén.
+
 ## Criterios de aceptación
 
 - [ ] La pregunta del seed de `cp` usa «Se atiende» en lugar de «existen»

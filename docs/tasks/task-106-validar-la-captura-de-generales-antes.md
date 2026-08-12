@@ -2,7 +2,7 @@
 type: task
 id: task-106
 title: Validar la captura de Generales antes de guardar y enviar
-state: open
+state: closed
 date: 2026-08-11
 owner: ai
 parent: "[[task-41]]"
@@ -18,8 +18,12 @@ Urgente por dos razones. La primera es la ventana: la sección se abre a las IES
 
 La segunda es que esta validación es **el supuesto sobre el que descansa el «No aplica» de autoridades** decidido el 11 de agosto ([[task-56]]). Ricardo se lo explicó a Rubén como «para que se pueda marcar y así pasar la validación, que hoy no permite guardar con campos vacíos». Sin la validación, «No aplica» no desbloquea nada, porque nada estaba bloqueado.
 
+## Cierre (2026-08-12, sesión orquestada)
+
+Entregada en `943c7ac` con las reglas madre dialogadas por Ricardo: **null = sin responder = bloquea; false y «No aplica» eximen; el 0 es 0** (todo valor numérico cero se captura explícito, nunca como vacío). La compuerta vive solo en la transición — guardar es libre — y cubre `gen_completed` y `gen_adjusted` (el reenvío de segunda ronda, decisión posterior de Ricardo). Doble capa tras la revisión crítica: `useGeneralValidation.js` señala por fila/campo con alerta que enumera faltantes, y `api/survey/general_validation.py` es el espejo de integridad en el servidor (400 con los mismos textos), enganchado al hook del motor de flujo sin tocarlo. Reglas por grupo en esos dos archivos; `needs_name` no exige el nombre. Los planes de estudio ganaron «No aplica» por fila vía [[task-117]] (`GeneralQuestionResponse`); las instancias no lo llevan (ahí 0 sí significa 0). Verificada con 15 escenarios sobre el código real, sonda HTTP y smoke en navegador.
+
 ## Criterios de aceptación
 
-- [ ] Un grupo con campos vacíos no puede marcarse como completado
-- [ ] La interfaz señala qué falta, no solo que falta
-- [ ] «No aplica» en una fila de autoridades hace pasar la validación de esa fila
+- [x] Un grupo con campos vacíos no puede marcarse como completado
+- [x] La interfaz señala qué falta, no solo que falta
+- [x] «No aplica» en una fila de autoridades hace pasar la validación de esa fila

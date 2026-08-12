@@ -2,7 +2,7 @@
 type: task
 id: task-110
 title: Columna no binaria con respaldo completo, y su pregunta previa
-state: open
+state: closed
 date: 2026-08-11
 owner: ai
 parent: "[[task-41]]"
@@ -28,10 +28,14 @@ Una, no dos, y la razón importa: **es una capacidad de medición de la instituc
 
 **Ojo con [[adr-0004]]:** el cálculo del observable 1.7 asume composición binaria. Que exista un tercer conteo no dice cómo se puntúa — eso es [[task-111]], y sin esa definición el dato se captura pero no se mide.
 
+## Cierre (2026-08-12, sesión orquestada)
+
+Todo entregado en el commit `943c7ac`, verificado con smoke de navegador y e2e (`eb2ecc1`). Decisiones del cierre: rótulo de columna **«No binarie»**; la columna se **oculta** (no se deshabilita) cuando el flag no está activo; la persona titular gana tercera opción «No binaria» solo con el flag activo; la pregunta previa nació directamente como `GeneralQuestion` porque [[task-107]] se adelantó a la misma noche. Redacción final (dialogada, Rubén la revisará): «En sus registros de sexo y género, ¿su institución contempla la categoría no binaria?», con hint sobre el efecto de responder Sí. Regla adicional de Ricardo: el toggle Sí→No limpia los conteos no binarios ya capturados, en front y back. El conteo es obligatorio en filas presentes cuando el flag está activo (ratificado tras revisión). La puntuación del observable 1.7 sigue siendo [[task-111]].
+
 ## Criterios de aceptación
 
-- [ ] `PopulationQuantity` tiene `number_non_binary` y su migración
-- [ ] `Survey.measures_non_binary` existe y se captura como pregunta booleana del grupo poblaciones
-- [ ] La columna aparece en poblaciones y en autoridades, habilitada por ese único flag
-- [ ] El conteo se guarda y se suma al total de la fila
-- [ ] Cada celda de conteo tiene su propio rótulo accesible y un solo criterio de tipo de entrada
+- [x] `PopulationQuantity` tiene `number_non_binary` y su migración
+- [x] `Survey.measures_non_binary` existe y se captura como pregunta booleana del grupo poblaciones
+- [x] La columna aparece en poblaciones y en autoridades, habilitada por ese único flag
+- [x] El conteo se guarda y se suma al total de la fila
+- [x] Cada celda de conteo tiene su propio rótulo accesible y un solo criterio de tipo de entrada

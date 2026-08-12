@@ -26,7 +26,15 @@ Runbook for deploying `api/` to production (`apionigies.yeeko.org`, Yeeko server
 
    > **Incident 2026-07-29:** `Observable.reach_instances_question` was committed in June without its migration; the migration arrived a month later in a commit excluded from production. The deploy passed pytest and a root-URL smoke test, then every endpoint touching `Observable` returned 500 (`UndefinedColumn`). See `docs/records/2026-07-29-incidente-500-migracion-faltante.md`.
 
-3. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock.
+3. **Amended-migration check** — if the range being deployed *modifies* an existing migration file instead of adding a new one, verify on the server that it has not already run:
+
+   ```bash
+   psql ... -c "SELECT app, name FROM django_migrations WHERE app='survey';"
+   ```
+
+   A migration already recorded there will **not** re-run: the amended operations never touch the schema, `migrate` says nothing and `makemigrations --check` still reports "No changes detected" (it compares models against migration *files*, not against the database). The schema diverges in silence — old columns still alive, new fields missing. Amending is only safe while nothing is deployed; if the row is already there, the fix is manual DDL or a follow-up migration, and it is decided with Ricardo before touching anything.
+
+4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock.
 
 ## Server runbook
 

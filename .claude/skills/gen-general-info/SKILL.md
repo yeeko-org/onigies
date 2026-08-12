@@ -2,8 +2,8 @@
 name: gen-general-info
 description: The «Información de base» / Generales section of the ONIGIES
   survey (flow group `gen`) — the GeneralGroup catalog and its fields
-  schema, where each answer is actually stored (Survey columns,
-  Survey.sectors, PopulationQuantity), the Sector flags (is_main,
+  schema, where each answer is actually stored (GeneralQuestionResponse
+  rows, Survey.sectors, PopulationQuantity), the Sector flags (is_main,
   is_authority, is_standard_extra, is_ies_head), the capture surface
   (GeneralGroupList and friends) and the period lock, and how observable
   1.7's sex-gender composition is captured here but scored on the
@@ -31,11 +31,29 @@ themselves are NOT stored on the group response:
 
 | Group | fields | Values stored in |
 |---|---|---|
-| `estructuras` | `academic_instances`, `admin_instances` (integer) | Same-named `Survey` columns |
+| `estructuras` | `academic_instances`, `admin_instances` (integer) | `GeneralQuestionResponse` rows (`value_integer`) |
 | `poblaciones` | `[]` — checklist from Sector catalog (POB-ESTÁNDAR: 10 `is_main` + «Población externa», «Público en general») | Selection → `Survey.sectors` M2M; men/women counts → `PopulationQuantity` |
 | `autoridades` | `[]` — checklist from Sectors with `is_authority=True` | `PopulationQuantity` |
-| `planes_estudio` | `media_plans`, `superior_plans`, `postgraduate_plans` (integer) | Same-named `Survey` columns |
-| `forma_gobierno` | `decentralized`, `centralized` (boolean) | **Gotcha:** `Survey` has a single `is_centralized` boolean — the two UI options map to one field; the frontend must translate |
+| `planes_estudio` | `media_plans`, `superior_plans`, `postgraduate_plans` (integer) | `GeneralQuestionResponse` rows (`value_integer`), each with per-row «No aplica» |
+| `forma_gobierno` | `decentralized`, `centralized` (boolean) | **Gotcha:** a single question `name=is_centralized` — the two UI options map to one `value_boolean` row; the frontend must translate |
+
+### GeneralQuestionResponse: where scalar answers live (task-117)
+
+Since the 2026-08-12 move, every scalar answer lives in a
+`GeneralQuestionResponse` row per (survey, question): `value_integer`
+or `value_boolean` — the question's `q_type` dictates which — plus
+`no_apply`. The old same-named `Survey` columns were dropped in the
+same window; `Survey.measures_non_binary` is the ONE deliberate
+exception, an operational column that feeds no indicator, whose
+toggle-cleanup rule (false → nulls `number_non_binary`) is untouched.
+Per-row «No aplica» is governed by `addl_config.allow_no_apply` on the
+`GeneralQuestion` (seeded true only for the 3 plan questions); the old
+hardcoded `NO_APPLY_QUESTIONS` lists are gone. `GeneralQuestion.name`
+is no longer a Survey column name: it is the question's stable key
+(seed identity, UI error keys like `question:{name}`). Government
+preload: `Institution.save()` no longer writes a Survey column — it
+creates/updates the `is_centralized` response row (`value_boolean`),
+only when the survey is created or the row has no answer yet.
 
 `GeneralGroupResponse` (`survey/models.py`) is the flow wrapper per
 (survey, group): status, `flow_events`, `flow_attachments`. It carries
@@ -85,8 +103,9 @@ other authorities derive from men/women.
 
 ## Where the content is written (adr-0008)
 
-Everything goes in one **PATCH `/survey/{id}/`** — scalars, `sectors`
-and nested `population_quantities` (`api/api/views/survey/serializers.py`);
+Everything goes in one **PATCH `/survey/{id}/`** — nested
+`question_responses` (the scalar rows), `sectors` and nested
+`population_quantities` (`api/api/views/survey/serializers.py`);
 the flow wrappers accept no content and flow travels through the generic
 `/flow/` endpoints. Saving from any group persists the whole section.
 
@@ -106,7 +125,7 @@ means crossing `sectors` (existence) with `population_quantities`
 | `.../survey/GeneralGroupPanel.vue` | one expansion panel per group: its body + split-button "Guardar" / group transitions |
 | `.../survey/General{Populations,Authorities,NumberFields,NumberInput,Government}.vue` | the per-group bodies |
 | `.../survey/survey/Survey{Header,Sheet,EditSimple}.vue` | the reviewer's collection «Cuestionarios de las IES» |
-| `composables/useGeneralSurvey.js` | sector lists by flag, `PopulationQuantity` rows, `buildPayload()` |
+| `composables/useGeneralSurvey.js` | sector lists by flag, `PopulationQuantity` rows, `GeneralQuestionResponse` rows (`questionValue`/`setQuestionValue`, `allowsNoApply`), `buildPayload()` (`''` → `null`) |
 
 `GeneralGroupList` is **dual-audience**: it resolves role, editability
 (`flowStore.canEditContent(group, general_package)`) and the available

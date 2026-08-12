@@ -5,6 +5,7 @@ title: Nombre completo con tooltip en el header de instituciones
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-84]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-43]]", "[[task-84]]"]
 ---

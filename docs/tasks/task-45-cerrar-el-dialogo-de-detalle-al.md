@@ -5,6 +5,7 @@ title: Cerrar el diálogo de detalle al concluir la acción de flujo
 state: open
 date: 2026-08-03
 owner: ai
+parent: "[[task-98]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
 ---
 

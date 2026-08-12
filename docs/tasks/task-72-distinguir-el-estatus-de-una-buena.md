@@ -5,6 +5,7 @@ title: Distinguir el estatus de una buena práctica del estatus del paquete
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-98]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-58]]", "[[task-36]]"]
 ---

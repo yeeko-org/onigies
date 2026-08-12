@@ -5,6 +5,7 @@ title: Editar y mover comentarios desde el admin de Django
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-99]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 ---
 

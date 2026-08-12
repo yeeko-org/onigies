@@ -5,6 +5,7 @@ title: Filtro por defecto «todas» en la lista de invitaciones
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-3]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 ---
 

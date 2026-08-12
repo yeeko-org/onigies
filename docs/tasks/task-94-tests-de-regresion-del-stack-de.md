@@ -5,6 +5,7 @@ title: Tests de regresión del stack de adjuntos sobre flow
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-61]]"
 source: ["[[2026-08-06-sesion-duo-adjuntos-sobre-flow-y]]"]
 depends-on: ["[[task-93]]"]
 related: ["[[task-68]]", "[[adr-0010]]"]

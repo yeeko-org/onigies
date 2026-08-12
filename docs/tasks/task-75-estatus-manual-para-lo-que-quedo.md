@@ -5,6 +5,7 @@ title: Estatus manual para lo que quedó abierto tras el cierre del periodo
 state: open
 date: 2026-08-06
 owner: ricardo
+parent: "[[task-98]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-26]]"]
 ---

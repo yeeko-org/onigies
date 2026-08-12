@@ -5,6 +5,7 @@ title: "Guiar a la revisora en la doble transición al devolver: grupo y paquete
 state: open
 date: 2026-08-04
 owner: ai
+parent: "[[task-98]]"
 source: ["[[task-41]]"]
 ---
 

@@ -5,6 +5,7 @@ title: Reglas de las transiciones de la revisora después de la fecha límite
 state: open
 date: 2026-08-06
 owner: ricardo
+parent: "[[task-98]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-75]]", "[[task-10]]"]
 ---

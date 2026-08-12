@@ -2,11 +2,12 @@
 type: task
 id: task-68
 title: Evidencia probatoria en las preguntas base e iniciales
-state: open
+state: closed
 date: 2026-08-06
 owner: ai
+parent: "[[task-41]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
-related: ["[[task-41]]", "[[task-7]]"]
+related: ["[[task-7]]", "[[adr-0010]]", "[[adr-0011]]"]
 ---
 
 # Evidencia probatoria en las preguntas base e iniciales
@@ -25,9 +26,20 @@ La sesión duo ([[2026-08-06-sesion-duo-adjuntos-sobre-flow-y]], [[adr-0010]]) e
 
 **Fuera de este alcance, deliberado:** la *obligatoriedad* (bloquear el envío si falta evidencia) es un requisito distinto de la *capacidad* de adjuntar y no está pedida en ninguna task; si se confirma con Rubí, abrir task propia. La confirmación de granularidad se sumó a [[task-57]].
 
+## Cierre (2026-08-11)
+
+La reunión con Rubén del 11 de agosto ([[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]) resolvió las dos piezas que faltaban, y en direcciones distintas.
+
+**El nivel quedó confirmado tal como estaba construido:** «la evidencia probatoria aplicará a todo el bloque, no por ítem». Es exactamente el anclaje al `GeneralGroupResponse` que [[adr-0010]] ya había fijado, así que no hay nada que cambiar. Esto responde también el cuarto criterio de [[task-57]].
+
+**La obligatoriedad no va a existir.** Rubén pidió quitar la opcionalidad y Ricardo retiró el rótulo «(opcional)» en el momento, pero decidió el mismo día que no habrá candado técnico: si a la revisión le falta evidencia, el camino es retachar el envío en el proceso de revisión, no impedir a la IES entregar lo que sí tiene. Razonado en [[adr-0011]]. **No se abre la task propia que este cuerpo anticipaba** — el requisito se resolvió en contra.
+
+Con eso la task queda cerrada: lo construido es todo lo que había que construir.
+
 ## Criterios de aceptación
 
 - [x] La IES puede adjuntar evidencia en las preguntas base e iniciales
-- [ ] Está confirmado con Rubí el nivel del adjunto (por grupo de preguntas; hoy `GeneralGroupResponse`/`GroupResponse`) — pregunta sumada a [[task-57]]
+- [x] Está confirmado con Rubí el nivel del adjunto: por grupo de preguntas (`GeneralGroupResponse` en generales, `GroupResponse` en el cuestionario por observable), ratificado en la reunión del 11 de agosto
 - [x] La revisora ve los adjuntos en la vista de revisión
 - [x] La relación con el borrado planeado en [[task-7]] quedó resuelta ([[adr-0010]]: BP migró, el borrado completo procede)
+- [x] Resuelto el carácter obligatorio del adjunto: no lo es ([[adr-0011]])

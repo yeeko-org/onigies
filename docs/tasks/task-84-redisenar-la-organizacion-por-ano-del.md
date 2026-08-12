@@ -5,6 +5,7 @@ title: Rediseñar la organización por año del detalle de institución
 state: open
 date: 2026-08-06
 owner: ricardo
+parent: "[[task-3]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-82]]", "[[task-83]]"]
 ---

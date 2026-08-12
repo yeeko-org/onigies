@@ -5,6 +5,7 @@ title: Unificar todos los lugares donde aparecen comentarios
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-99]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-44]]"]
 ---

@@ -5,6 +5,7 @@ title: Rediseñar el correo de recuperación de contraseña
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-3]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-38]]"]
 ---

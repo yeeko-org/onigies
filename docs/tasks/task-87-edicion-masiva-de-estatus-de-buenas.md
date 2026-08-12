@@ -5,6 +5,7 @@ title: Edición masiva de estatus de buenas prácticas y de envíos
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-6]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 ---
 

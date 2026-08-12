@@ -5,6 +5,7 @@ title: Avisar en la interfaz que el periodo cerró y ya no se puede editar
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-98]]"
 source: ["[[2026-08-06-temas-reunion-fer]]"]
 related: ["[[task-10]]"]
 ---

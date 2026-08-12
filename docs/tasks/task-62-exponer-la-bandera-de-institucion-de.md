@@ -17,7 +17,16 @@ El modelo ya existe y está decidido: `Institution.is_test` en `api/ies/models.p
 
 No cuelga de [[task-53]] porque esa ya está cerrada; es un hueco de implementación detectado después, no una reapertura.
 
+## Construido, y por qué no se cierra todavía (2026-08-11)
+
+La casilla ya existe: el trabajo sin commitear de Ricardo la agregó a la edición de institución del dashboard, y el campo es escribible sin pasar por el admin porque el serializer de institución expone todos los campos y no lo marca de solo lectura. Los dos criterios originales están cumplidos ([[2026-08-11-auditoria-del-arbol-de-trabajo-y-reorganizacion]]).
+
+Lo que la mantiene abierta es el lenguaje. La convención del repositorio, ya anotada en el `CLAUDE.md` raíz, es **«De prueba», nunca «test»**, para instituciones de prueba y toda etiqueta relacionada. Hoy conviven dos infracciones, ambas del mismo trabajo sin commitear: la casilla nueva dice «¿Es para tests internos?» y el filtro del esquema de catálogo del API pasó de «De prueba» a «Es test» — este último, en dirección contraria a la convención.
+
+El error al guardar desde el dashboard de institución que se le había anotado aquí el 11 de agosto **se confirmó como el mismo bug del logo** y vive completo en [[task-104]], con su diagnóstico y su cura. Aquí no queda nada de eso.
+
 ## Criterios de aceptación
 
-- [ ] La edición de una institución desde el dashboard permite marcarla y desmarcarla como institución de prueba
-- [ ] El cambio se refleja sin pasar por el admin de Django
+- [x] La edición de una institución desde el dashboard permite marcarla y desmarcarla como institución de prueba
+- [x] El cambio se refleja sin pasar por el admin de Django
+- [ ] Ninguna etiqueta de la interfaz ni del esquema de catálogo dice «test»: la casilla y el filtro usan «De prueba»

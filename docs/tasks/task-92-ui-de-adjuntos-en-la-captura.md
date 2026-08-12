@@ -5,6 +5,7 @@ title: UI de adjuntos en la captura del cuestionario por observable (cp)
 state: open
 date: 2026-08-06
 owner: ai
+parent: "[[task-2]]"
 related: ["[[task-68]]", "[[task-42]]"]
 ---
 

@@ -5,6 +5,7 @@ title: Candado de periodo para la edición de los datos base del Survey
 state: open
 date: 2026-08-03
 owner: ricardo
+parent: "[[task-41]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
 related: ["[[task-10]]", "[[adr-0007]]"]
 ---

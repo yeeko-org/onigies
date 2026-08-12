@@ -5,6 +5,7 @@ title: Renombrar «características» y «aspectos» a «criterios» en la capa 
 state: open
 date: 2026-08-03
 owner: ai
+parent: "[[task-6]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
 ---
 

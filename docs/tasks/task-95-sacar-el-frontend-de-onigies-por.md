@@ -5,6 +5,7 @@ title: Sacar el frontend de onigies por completo del servidor EC2 de yeeko
 state: open
 date: 2026-08-08
 owner: ricardo
+parent: "[[task-100]]"
 ---
 
 # Sacar el frontend de onigies por completo del servidor EC2 de yeeko

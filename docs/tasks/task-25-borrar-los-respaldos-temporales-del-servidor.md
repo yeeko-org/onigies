@@ -5,7 +5,7 @@ title: Borrar los respaldos temporales del servidor
 state: open
 date: 2026-08-03
 owner: ricardo
-parent: "[[task-4]]"
+parent: "[[task-100]]"
 source: ["[[2026-07-29-commits-tematicos-y-deploy-flow]]"]
 ---
 

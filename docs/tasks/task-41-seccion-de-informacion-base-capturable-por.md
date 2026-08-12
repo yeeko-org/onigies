@@ -23,8 +23,25 @@ El modelo de datos existe y está descrito en el skill `gen-general-info`; lo qu
 
 Dentro de este alcance entra también la composición sexo-genérica y el sexo de la máxima autoridad, que se preguntan aquí aunque alimenten el indicador del observable 1.7 — ver [[adr-0004]], ratificado en la reunión `[28:17]`.
 
+## Calendario vigente (2026-08-11)
+
+Las fechas de arriba quedaron rebasadas. La reunión del 11 de agosto ([[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]) fijó otras, y conviene distinguir qué comprometió quién:
+
+- **Jueves 13 de agosto: la sección visible para todas las IES.** Es lo único que puso Rubén, junto con el anuncio.
+- **Viernes 14 de agosto: anuncio en la reunión con los enlaces** (las personas enlace de las IES).
+- El ofrecimiento de Ricardo de subir los cambios el miércoles por la noche **quedó sin respuesta de Rubén**: es plan interno, no compromiso acordado.
+
+Plan interno de Ricardo para llegar: trabajar hoy y la madrugada para subir la noche previa a la presentación los cambios fundamentales, y poco antes dejar lista la edición de `GeneralGroup` y `GeneralQuestion` ([[task-101]]) para que el equipo de Rubén edite lo fino sin tocar el seed.
+
+Rubén revisará los cambios de redacción antes de la publicación definitiva y pidió que su equipo haga una prueba adicional antes de publicar en producción.
+
+Hacer visible la sección es cambiar la constante de secciones publicadas del frontend, el mecanismo transicional que fija [[adr-0009]]; toma unos minutos y se dispara cuando Rubén lo indique.
+
+Bugs que bloquean la presentación: [[task-105]] (el colapso de panels falló en vivo en la demo) y [[task-104]] (el logo exigido al guardar). Y [[task-106]], la validación de campos vacíos, es prerrequisito del «No aplica» de autoridades decidido el mismo día.
+
 ## Criterios de aceptación
 
 - [x] La IES captura la sección completa de información base desde /respuestas
-- [ ] Rubí y su equipo validaron la sección antes de abrirla
-- [ ] La sección está abierta a las IES en producción
+- [ ] Rubí y su equipo validaron la sección antes de abrirla, con la prueba adicional que pidió
+- [ ] La sección está visible para todas las IES en producción el jueves 13
+- [ ] La sección quedó anunciada a los enlaces el viernes 14

@@ -20,6 +20,10 @@ Ricardo decidió: **es un test temporal y se borra, no se promueve**. Protege un
 
 Se queda donde está, fuera de la suite, mientras la verificación siga abierta.
 
+## Riesgo aceptado para el deploy del 2026-08-12
+
+Ricardo decidió correr `migrate_flow_data` completo en el re-run comprometido por [[adr-0010]] ([[2026-08-12-deploy-gen-a-produccion-migraciones-seeds]]): no se ha borrado ningún comentario en producción, así que la resurrección no tenía qué resucitar. El bug sigue vivo para cualquier re-run futuro — esta task no se cierra con ese deploy.
+
 ## Criterios de aceptación
 
 - [ ] Un comentario borrado en el sistema nuevo no reaparece al re-correr migrate_flow_data

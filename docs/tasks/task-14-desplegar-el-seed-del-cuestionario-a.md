@@ -13,6 +13,8 @@ source: ["[[2026-07-29-commits-tematicos-y-deploy-flow]]", "[[2026-07-04-seed-de
 
 El código y el esquema del seed ya llegaron a producción con el fast-forward que resolvió el incidente del 500, pero `load_questionnaire` nunca se ha corrido allá. La ventana de despliegue depende de que el cliente resuelva los textos abiertos: sembrar antes obliga a re-sembrar después.
 
+**2026-08-12**: el seed volvió a correr en producción con el modelo nuevo de preguntas base ([[2026-08-12-deploy-gen-a-produccion-migraciones-seeds]]): 41 observables actualizados, 5 grupos generales y 7 GeneralQuestions. El criterio pendiente sigue igual: los textos definitivos dependen de Rubén, y con «textos solo al crear» sus futuras correcciones se aplican vía catálogo, no por re-seed.
+
 ## Criterios de aceptación
 
 - [x] `load_questionnaire` corrió en producción

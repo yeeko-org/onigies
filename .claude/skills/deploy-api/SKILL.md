@@ -11,6 +11,8 @@ Runbook for deploying `api/` to production (`apionigies.yeeko.org`, Yeeko server
 
 `production` is always **strictly behind `main`** and only advances with `git merge --ff-only` (never cherry-picks) — see `docs/decisions/adr-0001-flow-primero-fast-forward.md`. Commits meant for production go first on `main`; the fast-forward point is the last of them.
 
+When the working tree is dirty (e.g. `.claude/settings.local.json`), skip the checkout: `git push origin main:production` fast-forwards the remote directly, then `git branch -f production origin/production` realigns the local branch.
+
 **A model change and its migration must land in the same commit.** A field committed without its migration poisons every later commit as a deploy target until the migration lands (see incident below).
 
 ## Pre-deploy checklist (local)
@@ -34,7 +36,7 @@ Runbook for deploying `api/` to production (`apionigies.yeeko.org`, Yeeko server
 
    A migration already recorded there will **not** re-run: the amended operations never touch the schema, `migrate` says nothing and `makemigrations --check` still reports "No changes detected" (it compares models against migration *files*, not against the database). The schema diverges in silence — old columns still alive, new fields missing. Amending is only safe while nothing is deployed; if the row is already there, the fix is manual DDL or a follow-up migration, and it is decided with Ricardo before touching anything.
 
-4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock.
+4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock. When the change breaks in **both** directions (frontend and API each need the other's new version), no order is safe — accept the window and minimize it: push, then run the server runbook immediately in one continuous sequence (~6 min achieved on 2026-08-12).
 
 ## Server runbook
 

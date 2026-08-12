@@ -21,6 +21,10 @@ La duda que dejó la revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], �
 
 Precondiciones nuevas antes de las migraciones de borrado: re-correr `migrate_flow_data` en producción justo antes (entró evidencia al modelo viejo hasta el deploy de este cambio) y contar las `Evidence` huérfanas (sin FK), que la migración no copia — si hay, decidir su destino.
 
+## Re-run en producción (2026-08-12)
+
+El deploy de [[2026-08-12-deploy-gen-a-produccion-migraciones-seeds]] corrió `migrate_flow_data` completo: 609 evidencias espejadas, `verify_flow_data` cerró **661 = 661 [ok] sin huérfanas**. La precondición está cumplida al día de hoy; si el borrado tarda en llegar, el re-run «justo antes» sigue aplicando porque puede seguir entrando evidencia al modelo viejo mientras coexistan.
+
 ## Criterios de aceptación
 
 - [ ] `grep -r status_sending\|status_register api/` no devuelve nada

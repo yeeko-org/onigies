@@ -16,6 +16,8 @@ Al degradar `Survey.sectors` a propiedad derivada ([[task-112]]), el M2M se reno
 
 Cuándo: después de [[task-117]] y de que el deploy del viernes se asiente. El borrado es una operación más de migración (o la primera de una `0010` si la `0009` ya se deployó), más el barrido de esos tres residuos.
 
+**2026-08-12**: `survey/0009` ya está deployada en producción ([[2026-08-12-deploy-gen-a-produccion-migraciones-seeds]]) — el borrado queda fijado como primera operación de una futura `survey/0010`.
+
 ## Criterios de aceptación
 
 - [ ] El campo `sectors_legacy` y su tabla intermedia no existen

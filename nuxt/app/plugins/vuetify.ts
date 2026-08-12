@@ -68,10 +68,11 @@ export default defineNuxtPlugin((nuxtApp) => {
         // hideDetails: true,
         width: 120,
         maxWidth: 120,
-        // `d-inline-flex` deja que el `text-align` de la celda coloque el
-        // campo: en las tablas matriz encabezado y campo comparten
-        // alineación sin repetir reglas por celda.
-        class: 'v-count-input d-inline-flex',
+        // El layout inline (para que el `text-align` de la celda coloque
+        // el campo en las tablas matriz) vive en main.css como
+        // `inline-grid`: una utilidad `d-inline-flex` destruiría el grid
+        // interno de .v-input y colapsaría el control.
+        class: 'v-count-input',
       },
     },
     icons: {

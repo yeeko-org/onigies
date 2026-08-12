@@ -8,7 +8,8 @@ defineProps({
   // Texto de ayuda del catálogo, si la pregunta lo trae.
   hint: { type: String, default: '' },
   // Rótulo corto de la cantidad («planes», «instancias»), que el
-  // catálogo resuelve como `effective_label`. Va como sufijo del campo.
+  // catálogo resuelve como `effective_label`. Se pinta como etiqueta
+  // flotante del campo.
   label: { type: String, default: '' },
   readonly: Boolean,
   disabled: Boolean,
@@ -40,10 +41,10 @@ const questionId = useId()
         :readonly="readonly"
         :disabled="disabled || noApply"
         :error="error"
-        :suffix="label || undefined"
+        :label="label || undefined"
         :aria-describedby="questionId"
         inputmode="numeric"
-        width="160"
+        min-width="160"
         max-width="160"
       />
       <v-checkbox

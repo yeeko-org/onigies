@@ -1,4 +1,11 @@
 /* Alias VCountInput (plugins/vuetify.ts) */
+.v-count-input {
+  /* Caja inline para que el `text-align` de la celda posicione el campo
+     en las tablas matriz. Debe ser inline-GRID: .v-input funciona por
+     grid (el control llena el ancho vía `minmax(0,1fr)`); un
+     inline-flex lo rompe y el campo colapsa al contenido. */
+  display: inline-grid;
+}
 .v-count-input input {
   text-align: right;
 }

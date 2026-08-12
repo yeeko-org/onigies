@@ -10,6 +10,8 @@
  * (población externa y público en general) de las que la IES no lleva
  * registro nominal, así que nunca llevan conteo.
  */
+ import GeneralCountCells from
+   '~/components/dashboard/survey/GeneralCountCells.vue'
  import { useGeneralSurvey, questionByName } from
    '~/composables/useGeneralSurvey.js'
 
@@ -60,9 +62,6 @@ const onPresenceChange = (sector) => {
 const onNonBinaryChange = (value) => {
   if (value === false) clearNonBinary()
 }
-
-const countError = (sector, field) =>
-  props.invalid.has(`count:${sector.id}:${field}`)
 </script>
 
 <template>
@@ -100,15 +99,15 @@ const countError = (sector, field) =>
             <th class="text-center text-body-1" style="width: 130px">
               Está presente
             </th>
-            <th class="text-right text-body-1" style="width: 150px">
+            <th class="text-center text-body-1" style="width: 150px">
               Mujeres
             </th>
-            <th class="text-right text-body-1" style="width: 150px">
+            <th class="text-center text-body-1" style="width: 150px">
               Hombres
             </th>
             <th
               v-if="showNonBinary"
-              class="text-right text-body-1"
+              class="text-center text-body-1"
               style="width: 150px"
             >
               No binarie
@@ -166,41 +165,16 @@ const countError = (sector, field) =>
                 No requiere conteo
               </td>
             </template>
-            <template v-else>
-              <td class="text-right">
-                <v-count-input
-                  v-model="rowFor(sector.id).number_women"
-                  :readonly="!editable"
-                  :disabled="!isCountable(sector)"
-                  :error="countError(sector, 'number_women')"
-                  :aria-label="`Mujeres — ${sector.name}`"
-                  inputmode="numeric"
-                />
-              </td>
-              <td class="text-right">
-                <v-count-input
-                  v-model="rowFor(sector.id).number_men"
-                  :readonly="!editable"
-                  :disabled="!isCountable(sector)"
-                  :error="countError(sector, 'number_men')"
-                  :aria-label="`Hombres — ${sector.name}`"
-                  inputmode="numeric"
-                />
-              </td>
-              <td v-if="showNonBinary" class="text-right">
-                <v-count-input
-                  v-model="rowFor(sector.id).number_non_binary"
-                  :readonly="!editable"
-                  :disabled="!isCountable(sector)"
-                  :error="countError(sector, 'number_non_binary')"
-                  :aria-label="`No binarie — ${sector.name}`"
-                  inputmode="numeric"
-                />
-              </td>
-              <td class="text-right text-body-1 font-weight-medium">
-                {{ rowTotal(sector.id) ?? '—' }}
-              </td>
-            </template>
+            <GeneralCountCells
+              v-else
+              :row="rowFor(sector.id)"
+              :sector="sector"
+              :editable="editable"
+              :disabled="!isCountable(sector)"
+              :show-non-binary="showNonBinary"
+              :invalid="invalid"
+              :total="rowTotal(sector.id)"
+            />
           </tr>
         </tbody>
       </v-table>

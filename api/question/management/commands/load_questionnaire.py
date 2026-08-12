@@ -16,8 +16,8 @@ from django.db import transaction
 from indicator.models import (
     Axis, Component, GeneralGroup, Observable, Sector)
 from question.models import (
-    AOption, AQuestion, BQuestion, PlanQuestion, ReachQuestion,
-    SpecialQuestion)
+    AOption, AQuestion, BQuestion, GeneralQuestion, PlanQuestion,
+    ReachQuestion, SpecialQuestion)
 from question.seed_data import ALL_AXES
 from question.seed_data.catalogs import (
     A_OPTIONS, GENERAL_GROUPS, STANDARD_EXTRA_SECTORS)
@@ -212,18 +212,69 @@ class Command(BaseCommand):
                 value=option["value"], defaults={"text": option["text"]})
 
     def _load_general_groups(self) -> None:
+        total_questions = 0
         for index, group in enumerate(GENERAL_GROUPS, start=1):
-            GeneralGroup.objects.update_or_create(
+            # Los textos solo se siembran al crear: en filas existentes
+            # el re-seed asegura estructura y respeta la redacción que
+            # el cliente haya editado desde el catálogo.
+            general_group, _ = GeneralGroup.objects.update_or_create(
                 name=group["name"],
                 defaults={
-                    "public_name": group["public_name"],
                     "is_population": group["is_population"],
-                    "fields": group["fields"],
                     "order": index,
                 },
+                create_defaults={
+                    "is_population": group["is_population"],
+                    "order": index,
+                    "public_name": group["public_name"],
+                    "title": group["title"],
+                    "subtitle": group["subtitle"],
+                    "instruction": group["instruction"],
+                },
             )
+            total_questions += self._load_general_questions(
+                general_group, group["questions"])
         self.stdout.write(
-            f"Grupos generales: {len(GENERAL_GROUPS)} asegurados.")
+            f"Grupos generales: {len(GENERAL_GROUPS)} asegurados, "
+            f"{total_questions} preguntas.")
+
+    def _load_general_questions(
+            self, general_group: GeneralGroup, questions: list) -> int:
+        """Clave natural (general_group, name): `name` es la columna del
+        Survey, así que reescribir la redacción no duplica la fila.
+
+        Los textos (text, hint, label, unit) solo se siembran al crear; en
+        filas existentes el re-seed asegura estructura y respeta lo que
+        el cliente haya editado desde el catálogo. `q_type`, `order` y
+        `addl_config` sí se reescriben: anclan comportamiento que vive
+        en código y no son editables.
+        """
+        names = [question["name"] for question in questions]
+        for question in questions:
+            structure = {
+                "q_type": question.get("q_type", "integer"),
+                "order": question["order"],
+                "addl_config": question.get("addl_config", {}),
+            }
+            GeneralQuestion.objects.update_or_create(
+                general_group=general_group, name=question["name"],
+                defaults=structure,
+                create_defaults={
+                    **structure,
+                    "text": question["text"],
+                    "hint": question.get("hint", ""),
+                    "label": question.get("label", ""),
+                    "unit": question.get("unit", ""),
+                },
+            )
+        stale = GeneralQuestion.objects.filter(
+            general_group=general_group).exclude(name__in=names)
+        if stale.exists():
+            self.stdout.write(self.style.WARNING(
+                f"{general_group.name}: borrando {stale.count()} "
+                "GeneralQuestion sobrantes."))
+            stale.delete()
+        return len(questions)
 
     def _sync_institutions(self) -> None:
         from ies.models import Institution

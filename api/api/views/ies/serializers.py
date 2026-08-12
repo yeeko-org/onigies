@@ -47,6 +47,10 @@ class SurveyFullSerializer(SurveySerializer):
 
 
 class InstitutionSimpleSerializer(serializers.ModelSerializer):
+    # El logo se sube aparte (acción upload_logo): al guardar el resto de
+    # la institución nunca viaja un archivo, así que no puede exigirse.
+    logo = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Institution
         fields = '__all__'
@@ -55,6 +59,7 @@ class InstitutionSimpleSerializer(serializers.ModelSerializer):
 class InstitutionDetailSerializer(serializers.ModelSerializer):
     invitation_tokens = InvitationTokenBaseSerializer(
         many=True, read_only=True)
+    logo = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Institution
@@ -71,6 +76,7 @@ class InstitutionDetailSerializer(serializers.ModelSerializer):
 class InstitutionSerializer(serializers.ModelSerializer):
     good_practice_packages_count = serializers.ReadOnlyField()
     good_practices_count = serializers.ReadOnlyField()
+    logo = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Institution

@@ -1,50 +1,58 @@
 <script setup>
 /**
- * Grupo `forma_gobierno`: el catálogo lo declara como dos campos booleanos
- * (`decentralized` / `centralized`) porque así se lee en el instrumento, pero
- * el Survey guarda un solo booleano `is_centralized`. Las dos opciones son
- * excluyentes, así que aquí se presentan como un radio y se traducen al
- * booleano; nunca se envían dos campos.
+ * Grupo `forma_gobierno`: una sola pregunta booleana (`is_centralized`)
+ * con sus dos opciones excluyentes en `addl_config.options`, cada una
+ * partida en nombre del tipo y descripción. El `value` de la opción ES
+ * el booleano que guarda el Survey, así que no hay traducción.
  */
+import { questionByName } from '~/composables/useGeneralSurvey.js'
+
 const props = defineProps({
-  fields: { type: Array, default: () => [] },
+  catalog: { type: Object, default: () => ({}) },
   editable: { type: Boolean, default: false },
+  // Claves de los campos que la compuerta de completado marcó como
+  // faltantes (useGeneralValidation).
+  invalid: { type: Set, default: () => new Set() },
 })
 
 const survey = defineModel({ type: Object, required: true })
 
-const labelOf = (name) => props.fields.find((f) => f.name === name)?.label || ''
-
-const government = computed({
-  get() {
-    if (survey.value.is_centralized == null) return null
-    return survey.value.is_centralized ? 'centralized' : 'decentralized'
-  },
-  set(value) {
-    survey.value.is_centralized = value === 'centralized'
-  },
-})
+const question = computed(
+  () => questionByName(props.catalog, 'is_centralized'))
+const options = computed(() => question.value?.addl_config?.options || [])
 </script>
 
 <template>
   <div>
-    <p class="text-body-2 mb-3">
-      Señale cuál de las siguientes descripciones corresponde a la forma de
-      gobierno de su institución.
+    <p v-if="question" class="text-body-1 mb-3">
+      {{ question.text }}
+    </p>
+    <p
+      v-if="question?.hint"
+      class="text-caption text-grey-darken-1 mb-3"
+    >
+      {{ question.hint }}
     </p>
     <v-radio-group
-      v-model="government"
+      v-model="survey.is_centralized"
       :readonly="!editable"
+      :error="invalid.has('question:is_centralized')"
       hide-details="auto"
     >
-      <v-radio value="decentralized" color="accent">
+      <v-radio
+        v-for="option in options"
+        :key="String(option.value)"
+        :value="option.value"
+        color="accent"
+        class="mt-2"
+      >
         <template #label>
-          <span class="text-body-2">{{ labelOf('decentralized') }}</span>
-        </template>
-      </v-radio>
-      <v-radio value="centralized" color="accent" class="mt-2">
-        <template #label>
-          <span class="text-body-2">{{ labelOf('centralized') }}</span>
+          <span class="text-body-1">
+            <strong>{{ option.name }}</strong>
+            <template v-if="option.description">
+              — {{ option.description }}
+            </template>
+          </span>
         </template>
       </v-radio>
     </v-radio-group>

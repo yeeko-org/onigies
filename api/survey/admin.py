@@ -40,4 +40,4 @@ class SurveyAdmin(ModelAdmin):
     list_display = ('institution', 'period', 'is_centralized')
     list_filter = ('period', 'is_centralized')
     search_fields = ('institution__name', 'period__year')
-    filter_horizontal = ('instances', 'sectors')
+    filter_horizontal = ('instances', 'sectors_legacy')

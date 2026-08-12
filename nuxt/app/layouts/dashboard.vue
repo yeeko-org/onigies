@@ -90,8 +90,10 @@ const main_collections = [
         snake_name: 'axes',
       },
       {
-        plural_name: 'Grupos de preguntas',
-        snake_name: 'question_groups',
+        plural_name: 'Preguntas base',
+        snake_name: 'general_group',
+        // No es un grupo de filtros multinivel: se entra por colección.
+        path: '/dashboard/general_group',
       },
       {
         plural_name: 'Opciones de respuesta',
@@ -254,7 +256,7 @@ watch(
                 exact
                 :title="cat.plural_name"
                 :value="cat.snake_name"
-                :to="`/dashboard/catalog/${cat.snake_name}`"
+                :to="cat.path || `/dashboard/catalog/${cat.snake_name}`"
               ></v-list-item>
             </v-list-group>
           </template>

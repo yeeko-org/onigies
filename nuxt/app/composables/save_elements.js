@@ -2,6 +2,25 @@ import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";
 import { devWarn } from "~/utils/log.js";
 
+// Campos de archivo que el GET devuelve como URL (o como objeto que la
+// envuelve): reenviarlos al guardar provoca un 400 «The submitted data was
+// not a file». Solo deben viajar cuando hay un archivo nuevo; el logo, de
+// hecho, se sube por su propio endpoint (upload_logo).
+const FILE_FIELDS_BY_COLLECTION = {
+  institution: ['logo'],
+}
+
+function withoutUnchangedFiles(snake_name, element) {
+  const file_fields = FILE_FIELDS_BY_COLLECTION[snake_name]
+  if (!file_fields) return element
+  const clean_element = {...element}
+  file_fields.forEach(field_name => {
+    if (!(clean_element[field_name] instanceof File))
+      delete clean_element[field_name]
+  })
+  return clean_element
+}
+
 function final_snake_name(collection_data) {
   const is_category = collection_data.is_category
   const snake_name = collection_data.snake_name
@@ -12,10 +31,11 @@ export async function saveElement(collection_data, element, error_msg = null) {
   const mainStore = useMainStore()
   const { saveSimple, saveCatalog } = mainStore
   const { snake_name, is_category } = final_snake_name(collection_data)
+  const clean_element = withoutUnchangedFiles(snake_name, element)
   if (is_category)
-    return await saveCatalog([collection_data, element], error_msg)
+    return await saveCatalog([collection_data, clean_element], error_msg)
   else
-    return await saveSimple([snake_name, element], error_msg)
+    return await saveSimple([snake_name, clean_element], error_msg)
 }
 
 export async function patchElement(

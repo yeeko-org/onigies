@@ -6,7 +6,12 @@ from ies.models import StatusControl, User
 class GeneralGroup(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
     public_name = models.CharField(max_length=150)
-    fields = models.JSONField(default=list, blank=True)
+    title = models.CharField(
+        max_length=255, blank=True, verbose_name="Título del bloque")
+    subtitle = models.CharField(
+        max_length=255, blank=True, verbose_name="Subtítulo")
+    instruction = models.TextField(
+        blank=True, verbose_name="Instrucción para la IES")
     is_population = models.BooleanField(default=False)
     # Orden del instrumento, no de captura: el grupo `autoridades` se
     # sembró después que los demás y por id saldría al final.

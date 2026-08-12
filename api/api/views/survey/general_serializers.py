@@ -2,32 +2,49 @@
 Serializers del flujo `gen` (preguntas generales): GeneralPackage y sus
 GeneralGroupResponse.
 
-Espejo de los de GoodPracticePackage (`api/views/example/serializers.py`):
+Espejo de los de GoodPracticePackage (`api/api/views/example/serializers.py`):
 un serializer de lista (paquete + survey resumido + conteo de grupos) y
 un Full que anida los hijos con su `status` y sus `flow_events`.
 
 El contenido de las respuestas NO vive aquí: se escribe contra `Survey`
-(columnas escalares, M2M `sectors` y `population_quantities`). Estos
+(columnas escalares y `population_quantities`). Estos
 wrappers solo llevan flujo, por eso son de solo lectura.
 """
 from rest_framework import serializers
 
 from indicator.models import GeneralGroup
+from question.models import GeneralQuestion
 from survey.models import GeneralPackage, GeneralGroupResponse
 from api.views.example.serializers import SurveySemiFullSerializer
 from flow.serializers import AttachmentSerializer, FlowEventSerializer
 
 
+class GeneralQuestionSerializer(serializers.ModelSerializer):
+    """Pregunta del grupo. `effective_label` resuelve el rótulo que se
+    pinta (el propio o, si va vacío, la unidad) para que el front no
+    repita la regla; `label` sigue expuesto crudo porque es el que se
+    edita desde el catálogo.
+    """
+    effective_label = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = GeneralQuestion
+        fields = ['id', 'name', 'text', 'hint', 'label', 'effective_label',
+                  'unit', 'q_type', 'order', 'addl_config']
+
+
 class GeneralGroupSerializer(serializers.ModelSerializer):
     """Catálogo del grupo, embebido para que el front pinte el grupo
     sin un fetch adicional. `name` es la PK (el código: `estructuras`,
-    `poblaciones`, …), `fields` el esquema de UI y `order` el lugar que
-    ocupa en el instrumento.
+    `poblaciones`, …), `questions` las preguntas en su orden y `order`
+    el lugar que ocupa en el instrumento.
     """
+    questions = GeneralQuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = GeneralGroup
-        fields = ['name', 'public_name', 'fields', 'is_population', 'order']
+        fields = ['name', 'public_name', 'title', 'subtitle', 'instruction',
+                  'is_population', 'order', 'questions']
 
 
 class GeneralGroupResponseSerializer(serializers.ModelSerializer):

@@ -5,11 +5,19 @@ Jerarquía Axis (group) → Component (type) → Observable (subtype), más Sect
 Todos se auto-generan. Component lleva full_serializer (retrieve anida
 observables; la list cae al auto-gen plano) y filtra por axis; Observable
 filtra por component. El filter group `axes` es multinivel.
+
+GeneralGroup (sección «Información de base») también es catálogo: su
+pregunta hija vive en question/catalog_schema.py. No lleva filter group
+porque su PK es un slug, no un id, y el árbol D3 de filtros estratifica
+por id; se llega a él por colección, no por `/dashboard/catalog/`.
 """
 from ps_schema.registry import (
     catalog_registry, CatalogSchema, FilterGroupSchema)
-from indicator.models import Axis, Component, Observable, Sector
-from api.views.indicator.serializers import ComponentFullSerializer
+from indicator.models import (
+    Axis, Component, GeneralGroup, Observable, Sector)
+from api.views.confirm_delete import NoDeleteMixin
+from api.views.indicator.serializers import (
+    ComponentFullSerializer, GeneralGroupCatalogSerializer)
 
 
 @catalog_registry.register
@@ -44,6 +52,19 @@ class SectorSchema(CatalogSchema):
     name = "Sector Poblacional"
     plural_name = "Sectores Poblacionales"
     filter_group_key = "sectors"
+
+
+@catalog_registry.register
+class GeneralGroupSchema(CatalogSchema):
+    model = GeneralGroup
+    level = "category_type"
+    name = "Grupo de preguntas base"
+    plural_name = "Preguntas base"
+    full_serializer_class = GeneralGroupCatalogSerializer
+    # Los grupos los crea el seed (load_questionnaire); desde el
+    # dashboard solo se editan sus textos y no se borra ninguno.
+    extra_mixins = [NoDeleteMixin]
+    cat_params = {"hide_create": True}
 
 
 @catalog_registry.register_filter_group

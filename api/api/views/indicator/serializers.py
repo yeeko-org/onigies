@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from indicator.models import  Axis, Component, Observable, Sector
+from indicator.models import Axis, Component, GeneralGroup, Observable, Sector
+from api.views.question.serializers import GeneralQuestionCatalogSerializer
 
 
 
@@ -38,6 +39,22 @@ class SectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sector
         fields = '__all__'
+
+
+class GeneralGroupCatalogSerializer(serializers.ModelSerializer):
+    """Grupo de preguntas base con sus preguntas anidadas.
+
+    El alias `general_questions` (el accessor del modelo es `questions`)
+    es lo que el Sheet genérico busca para listar la colección hija sin
+    un fetch extra. `name` es la PK y la clave del código: solo lectura.
+    """
+    general_questions = GeneralQuestionCatalogSerializer(
+        many=True, read_only=True, source='questions')
+
+    class Meta:
+        model = GeneralGroup
+        fields = '__all__'
+        read_only_fields = ['name']
 
 
 

@@ -3,6 +3,7 @@ from django.db import models
 
 from indicator.models import Axis, Component, Sector, GeneralGroup
 from ies.models import Institution, Period, StatusControl, Instance, User
+from question.models import GeneralQuestion
 from flow.registry import FlowParticipant
 
 
@@ -36,7 +37,10 @@ class Survey(models.Model):
     instances = models.ManyToManyField(
         Instance, related_name='surveys',
         verbose_name='Instancias', blank=True)
-    sectors = models.ManyToManyField(
+    # Fuente histórica de la existencia de poblaciones (adr-0008). Ya no
+    # se escribe: la existencia vive en PopulationQuantity.is_present
+    # (adr-0012) y esta columna está en vías de borrarse.
+    sectors_legacy = models.ManyToManyField(
         Sector, related_name='surveys',
         verbose_name='Sectores atendidos', blank=True)
     media_plans = models.IntegerField(
@@ -45,6 +49,17 @@ class Survey(models.Model):
         verbose_name='Planes a nivel superior', blank=True, null=True)
     postgraduate_plans = models.IntegerField(
         verbose_name='Planes a nivel posgrado', blank=True, null=True)
+    measures_non_binary = models.BooleanField(
+        blank=True, null=True,
+        verbose_name='Registra o mide población no binaria')
+
+    @property
+    def sectors(self) -> list[int]:
+        """Ids de los sectores presentes, derivados de las filas con
+        `is_present` verdadero (adr-0012). Itera en Python para no
+        romper el prefetch de `population_quantities`."""
+        return [pq.sector_id for pq in self.population_quantities.all()
+                if pq.is_present]
 
     @property
     def is_test(self) -> bool:
@@ -115,10 +130,17 @@ class PopulationQuantity(models.Model):
     name = models.CharField(
         max_length=255, blank=True, null=True,
         verbose_name='Nombre del sector')
-    number_men = models.PositiveIntegerField(
-        verbose_name='Número de hombres', blank=True, null=True)
+    # Tri-estado: verdadero «está presente», falso un «no» explícito y
+    # nulo la fila que nadie tocó (adr-0012).
+    is_present = models.BooleanField(
+        blank=True, null=True, verbose_name='Está presente')
     number_women = models.PositiveIntegerField(
         verbose_name='Número de mujeres', blank=True, null=True)
+    number_men = models.PositiveIntegerField(
+        verbose_name='Número de hombres', blank=True, null=True)
+    number_non_binary = models.PositiveIntegerField(
+        verbose_name='Número de personas no binarias',
+        blank=True, null=True)
 
     def __str__(self):
         return f"{self.sector.name}: {self.number_men} hombres, {self.number_women} mujeres"
@@ -126,6 +148,33 @@ class PopulationQuantity(models.Model):
     class Meta:
         verbose_name = 'Cantidad de población por sector'
         verbose_name_plural = 'Cantidades de población por sector'
+
+
+class GeneralQuestionResponse(models.Model):
+    """Respuesta a una pregunta general por (survey, pregunta).
+
+    Hoy solo lleva el «No aplica» de las preguntas de planes: el valor
+    en sí aterriza en la columna del Survey que nombra la pregunta. Nace
+    como tabla de respuestas para que mañana los valores puedan mudarse
+    aquí sin renombrar nada.
+    """
+
+    survey = models.ForeignKey(
+        Survey, on_delete=models.CASCADE, related_name='question_responses')
+    # PROTECT: una pregunta viva jamás se borra; si alguien lo intenta
+    # con respuestas capturadas, tiene que doler y ser explícito.
+    general_question = models.ForeignKey(
+        GeneralQuestion, on_delete=models.PROTECT,
+        related_name='responses')
+    no_apply = models.BooleanField(default=False, verbose_name="No Aplica")
+
+    def __str__(self):
+        return f"{self.general_question.name}: no_apply={self.no_apply}"
+
+    class Meta:
+        unique_together = ('survey', 'general_question')
+        verbose_name = 'Respuesta a pregunta general'
+        verbose_name_plural = 'Respuestas a preguntas generales'
 
 
 class GeneralPackage(FlowParticipant, models.Model):
@@ -193,6 +242,14 @@ class GeneralGroupResponse(FlowParticipant, models.Model):
         related_name='+')
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
+
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor (flow.services.validate_transition): un grupo
+        con respuestas faltantes no puede darse por completado, ni
+        siquiera por API directa. Reglas en `survey.general_validation`,
+        espejo de la compuerta del frontend."""
+        from survey.general_validation import completion_errors
+        return completion_errors(self, target)
 
     def __str__(self):
         return (f"Respuesta del grupo general "

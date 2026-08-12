@@ -18,6 +18,7 @@ def group_responses_prefetch(prefix: str = '') -> Prefetch:
     orden del instrumento (`GeneralGroup.order`)."""
     queryset = GeneralGroupResponse.objects.select_related(
         'general_group').prefetch_related(
+            'general_group__questions',
             'flow_events__user', 'flow_events__attachments',
             'flow_attachments').order_by('general_group__order')
     return Prefetch(
@@ -40,11 +41,13 @@ class SurveyViewSet(BaseGenericViewSet):
     superuser. POST is superuser-only.
 
     The PATCH carries the whole content of the `gen` section: the scalar
-    columns, the `sectors` M2M and the nested `population_quantities`.
+    columns and the nested `population_quantities` (which now also carry
+    each population's existence, `is_present`).
     """
     queryset = Survey.objects.all().select_related(
         'institution', 'period').prefetch_related(
-            'population_quantities', 'sectors', 'instances')
+            'population_quantities', 'sectors_legacy', 'instances',
+            'question_responses')
     serializer_class = SurveySerializer
     permission_classes = [IsAuthenticated, IsInstitutionOwnerOrSuperuser]
     search_fields = ['institution__name', 'institution__acronym']

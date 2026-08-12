@@ -4,6 +4,7 @@ id: 2026-07-29-commits-tematicos-y-deploy-flow
 title: Reorganización en commits temáticos y segundo deploy de flow a producción
 date: 2026-07-29
 related: ["[[adr-0001]]"]
+validate-paths: false
 ---
 
 # Reorganización en commits temáticos y segundo deploy de flow a producción

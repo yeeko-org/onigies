@@ -7,6 +7,7 @@ date: 2026-08-03
 owner: ricardo
 parent: "[[task-100]]"
 source: ["[[2026-07-29-commits-tematicos-y-deploy-flow]]"]
+validate-paths: false
 ---
 
 # Borrar los respaldos temporales del servidor

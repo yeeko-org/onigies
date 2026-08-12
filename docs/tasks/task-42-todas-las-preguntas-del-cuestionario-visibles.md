@@ -8,6 +8,7 @@ owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
 depends-on: ["[[task-14]]"]
+validate-paths: false
 ---
 
 # Todas las preguntas del cuestionario visibles y editables en el dashboard

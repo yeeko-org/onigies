@@ -30,7 +30,7 @@ Dos superficies separadas:
 
 - ✅ Skill `flow` (modelo, catálogo, separación IES/revisora, componentes y
   endpoints). **Sin** la convención de auto-carga del dashboard.
-- ✅ `nuxt/.../flow/FlowComments.vue` (nuevo): timeline + comentarios,
+- ✅ `nuxt/app/components/dashboard/flow/FlowComments.vue` (nuevo): timeline + comentarios,
   `GET/POST /flow/{app}/{model}/{pk}/events/`. Reutilizable paquete y práctica.
 - ✅ Reusados: `flow/FlowStatusChip.vue`, `flow/FlowTransitions.vue`.
 - ✅ IES `GoodPracticeList.vue`: `editionAvailable`/alerta por `status.role`;

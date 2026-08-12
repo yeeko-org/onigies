@@ -104,7 +104,7 @@ const edit_component   = useDynamicComponent(props.collection_data, 'Edit')
 ```
 
 In dev it `console.warn`s when a per-model component is missing (so a typo no
-longer falls back silently). The glob is **relative** (`../components/...`);
+longer falls back silently). The glob is **relative** (`../components/dashboard/**/*.vue`);
 `import.meta.glob` does not resolve the `~/` alias.
 
 ### Edit vs EditSimple (the decision that bit you on `flow`)

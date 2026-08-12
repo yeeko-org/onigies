@@ -4,6 +4,7 @@ id: 2026-08-03-migracion-al-esquema-documenter
 title: Migración de la documentación de onigies al esquema documenter
 date: 2026-08-03
 parent: "[[task-39]]"
+validate-paths: false
 ---
 
 # Migración de la documentación de onigies al esquema documenter

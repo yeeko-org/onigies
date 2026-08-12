@@ -141,12 +141,12 @@ no UI to set them, but if strict write-locking is needed, gate it separately.
 
 | Concern | File |
 |---|---|
-| Reviewer control center | `nuxt/.../example/good_practice_package/GoodPracticePackageEditSimple.vue` |
-| Empty Sheet (suppress dup list) | `nuxt/.../example/good_practice_package/GoodPracticePackageSheet.vue` |
-| IES list | `nuxt/.../example/good_practice/GoodPracticeList.vue` |
-| Práctica card (both) | `nuxt/.../example/good_practice/GoodPracticeCard.vue` |
-| Práctica dialog detail (both) | `nuxt/.../example/good_practice/GoodPracticeEditSimple.vue` |
-| Feature scoring/marking | `nuxt/.../example/good_practice/FeatureList.vue`, `FeatureItem.vue` |
+| Reviewer control center | `nuxt/app/components/dashboard/example/good_practice_package/GoodPracticePackageEditSimple.vue` |
+| Empty Sheet (suppress dup list) | `nuxt/app/components/dashboard/example/good_practice_package/GoodPracticePackageSheet.vue` |
+| IES list | `nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue` |
+| Práctica card (both) | `nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue` |
+| Práctica dialog detail (both) | `nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue` |
+| Feature scoring/marking | `nuxt/app/components/dashboard/example/good_practice/FeatureList.vue`, `FeatureItem.vue` |
 | Payload privacy + serializers | `api/api/views/example/serializers.py` |
 | Collection name / schema | `api/example/catalog_schema.py` |
 | Status engine, roles, transitions | skill [`flow`](../flow/SKILL.md) |

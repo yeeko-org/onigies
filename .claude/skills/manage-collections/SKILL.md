@@ -17,10 +17,10 @@ in `ps_schema/registry.py`. This skill covers design decisions only.
 
 | Level | Schema | Registry | Router |
 |-------|--------|----------|--------|
-| `category_group/type/subtype` | `CatalogSchema` | `catalog_registry` | `api/views/catalogs/urls.py` |
-| `primary/secondary/relational` | `CollectionSchema` | `collection_registry` | `api/urls.py` |
+| `category_group/type/subtype` | `CatalogSchema` | `catalog_registry` | `api/api/views/catalogs/urls.py` |
+| `primary/secondary/relational` | `CollectionSchema` | `collection_registry` | `api/api/urls.py` |
 
-Still registered manually in `api/urls.py`: `collection`, `evidence`,
+Still registered manually in `api/api/urls.py`: `collection`, `evidence`,
 `invitation`, `user`, `institution` (survey flow), `survey`.
 
 **Two `institution` endpoints by design — do not collapse them:**

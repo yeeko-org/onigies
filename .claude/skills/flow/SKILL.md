@@ -4,7 +4,7 @@ description: validation-flow engine (`flow` app) — Status roles, transitions,
   propagation, content-edit permissions, the IES-vs-reviewer model, and the
   frontend flow components (`useFlow`/`useFlowActions`, FlowStatusActions). Use
   for status changes, the review workflow, comments/timeline, who-can-edit, or
-  anything under `api/flow/` or `nuxt/.../dashboard/flow/`.
+  anything under `api/flow/` or `nuxt/app/components/dashboard/flow/`.
 ---
 
 # flow — ONIGIES validation-flow engine

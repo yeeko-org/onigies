@@ -56,7 +56,7 @@ export function useDynamicComponent(collectionData, suffix) {
 ```
 
 Detalles que importan al replicar:
-- El glob es **relativo** (`../components/...`): `import.meta.glob` **no**
+- El glob es **relativo** (`../components/dashboard/**/*.vue`): `import.meta.glob` **no**
   resuelve el alias `~/`. Si la ruta de `composables/` a `components/` difiere
   en otro proyecto, ajusta el patrón.
 - Distingue "el archivo propio no existe" de "error de carga" → avisa en dev

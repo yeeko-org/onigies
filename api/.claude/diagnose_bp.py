@@ -1,7 +1,7 @@
 """Sonda de diagnóstico de Buenas Prácticas anómalas (correr en PRODUCCIÓN).
 
-Uso en el servidor:
-    python manage.py shell < .claude/diagnose_bp.py
+Uso en el servidor, desde la raíz del monorepo:
+    python api/manage.py shell < api/.claude/diagnose_bp.py
 
 Busca prácticas con status que el catálogo no resuelve (NULL o nombre no
 sembrado), que es lo que hace que la card no muestre chip "borrador" y que

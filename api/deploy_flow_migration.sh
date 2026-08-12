@@ -5,7 +5,7 @@
 # Lleva el backend del commit de producción al último de main. Todo el cambio
 # es ADITIVO (coexistencia): la fase de borrado §8 del plan NO está en main,
 # así que ningún dato viejo se toca. Doc de referencia:
-#   api/ies/flux_rules/PLAN_flujo_validacion.md  (§6 mapeo, §9 secuencia)
+#   docs/records/2026-06-05-diseno-del-motor-de-flujo.md  (§6 mapeo, §9 secuencia)
 #
 # USO  (siempre desde el directorio api/, con el venv del proyecto):
 #   1) ENSAYO sobre el clon local (schema public):   ./deploy_flow_migration.sh local

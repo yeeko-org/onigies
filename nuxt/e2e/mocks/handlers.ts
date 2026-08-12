@@ -84,6 +84,51 @@ export async function mockFlowStatuses(
   await fulfillMethod(page, `${API_BASE}/flow/statuses/`, 'GET', 200, statuses)
 }
 
+// ── Survey / flujo `gen` ─────────────────────────────────────────────
+
+export async function mockSurveyDetail(
+  page: Page, id: number, survey: Record<string, unknown>,
+): Promise<void> {
+  await fulfillMethod(page, `${API_BASE}/survey/${id}/`, 'GET', 200, survey)
+}
+
+/**
+ * PATCH del Survey: devuelve el array donde se van acumulando los cuerpos
+ * enviados, para que el test afirme sobre la forma del payload (el
+ * contrato de `buildPayload`). Responde con el mismo cuerpo, igual que el
+ * serializer real, que regresa el contenido ya guardado.
+ */
+export async function mockSurveyPatch(
+  page: Page, id: number,
+): Promise<Record<string, unknown>[]> {
+  const captured: Record<string, unknown>[] = []
+  await page.route(`${API_BASE}/survey/${id}/`, async (route: Route) => {
+    if (route.request().method() !== 'PATCH') {
+      await route.fallback()
+      return
+    }
+    const body = route.request().postDataJSON()
+    captured.push(body)
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    })
+  })
+  return captured
+}
+
+// Transición del motor de flujo sobre un objeto concreto. Devuelve el
+// FlowEvent creado, que es lo que el kernel usa para mutar el registro.
+export async function mockFlowTransition(
+  page: Page, appLabel: string, modelName: string, id: number,
+  event: Record<string, unknown>,
+): Promise<void> {
+  await fulfillMethod(
+    page, `${API_BASE}/flow/${appLabel}/${modelName}/${id}/transitions/`,
+    'POST', 201, event)
+}
+
 // ── Invitation / register ────────────────────────────────────────────
 
 export async function mockInvitationValid(

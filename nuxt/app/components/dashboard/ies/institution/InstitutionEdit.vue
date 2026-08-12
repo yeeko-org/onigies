@@ -24,6 +24,12 @@ const full_main = defineModel({type: Object, required: true})
       class="mr-2"
       variant="outlined"
     ></v-checkbox>
+    <v-checkbox
+      v-model="full_main.is_test"
+      label="¿Es para tests internos?"
+      class="mr-2"
+      variant="outlined"
+    ></v-checkbox>
 
   </v-col>
 </template>

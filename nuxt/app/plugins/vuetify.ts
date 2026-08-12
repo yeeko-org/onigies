@@ -25,7 +25,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       VDateInput
     },
     aliases: {
-      // Captura de cantidades enteras del instrumento.
       VCountInput: VNumberInput,
     },
     theme: {
@@ -59,16 +58,16 @@ export default defineNuxtPlugin((nuxtApp) => {
         color: 'accent',
       },
       VCountInput: {
-        // La clase lleva la alineación a la derecha: `defaults` solo
-        // alcanza props declaradas, no CSS ni atributos.
         precision: 0,
         min: 0,
         step: 1,
         controlVariant: 'hidden',
         variant: 'outlined',
-        density: 'comfortable',
+        // density: 'comfortable',
         hideDetails: 'auto',
-        prependInnerIcon: 'tag',
+        // hideDetails: true,
+        width: 120,
+        maxWidth: 120,
         class: 'v-count-input',
       },
     },

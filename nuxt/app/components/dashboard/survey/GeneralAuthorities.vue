@@ -5,7 +5,7 @@
  *
  * Las autoridades NO se agregan a `Survey.sectors` (no son poblaciones
  * objetivo): solo generan filas de PopulationQuantity, y las tres colegiadas
- * existen siempre, así que la tabla no lleva columna «Existe».
+ * existen siempre, así que la tabla no lleva columna «Se atiende».
  *
  * La titular es unipersonal: se pregunta por su sexo con un radio y se
  * persiste como una fila de total 1 (`number_women` 0/1 y `number_men` el

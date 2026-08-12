@@ -18,8 +18,8 @@ const questionId = useId()
 </script>
 
 <template>
-  <div class="d-flex align-center ga-4">
-    <span :id="questionId" class="text-body-2 general-question__text">
+  <div class="d-flex  flex-column ga-4">
+    <span :id="questionId" class="text-body-1 general-question__text">
       {{ question }}
     </span>
     <v-count-input
@@ -29,8 +29,8 @@ const questionId = useId()
       :suffix="unit || undefined"
       :aria-describedby="questionId"
       inputmode="numeric"
-      width="200"
-      class="flex-shrink-0"
+      width="160"
+      max-width="160"
     />
   </div>
 </template>

@@ -63,6 +63,23 @@ async function onFileChosen(event) {
   }
 }
 
+async function openFile(item) {
+  // La pestaña se abre ANTES del await para que el navegador la ligue al
+  // clic y no la bloquee como popup.
+  const win = window.open('', '_blank')
+  if (win) win.opener = null
+  try {
+    const res = await $api.get(`${base.value}${item.id}/download/`, {
+      params: { redirect: false },
+    })
+    if (win) win.location = res.data.url
+    else window.location.href = res.data.url
+  } catch (e) {
+    win?.close()
+    notifyApiError(e, 'No se pudo abrir el archivo.')
+  }
+}
+
 async function removeFile() {
   const item = confirmTarget.value
   if (!item) return
@@ -89,9 +106,8 @@ async function removeFile() {
       color="accent"
       variant="tonal"
       prepend-icon="description"
-      :href="item.url"
-      target="_blank"
-      rel="noopener"
+      link
+      @click="openFile(item)"
     >
       {{ item.name }}
       <template v-if="editable" #append>

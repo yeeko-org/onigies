@@ -3,7 +3,7 @@ from rest_framework import serializers
 from survey.models import Survey
 from example.models import (
     Feature, GoodPractice, FeatureOption, FeatureGoodPractice,
-    GoodPracticePackage, Evidence)
+    GoodPracticePackage)
 from api.views.ies.serializers import (
     InstitutionSimpleSerializer, PeriodSimpleSerializer)
 from flow.serializers import AttachmentSerializer, FlowEventSerializer
@@ -26,21 +26,6 @@ def hide_review_fields(serializer, data: dict, names: list[str]) -> dict:
     return data
 
 
-class EvidenceSerializer(serializers.ModelSerializer):
-    name = serializers.ReadOnlyField(source="file.name")
-    url = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Evidence
-        fields = ['id', 'file', 'name', 'url']
-
-    def get_url(self, obj) -> str | None:
-        request = self.context.get('request')
-        if obj.file and request:
-            return request.build_absolute_uri(obj.file.url)
-        return obj.file.url if obj.file else None
-
-
 class FeatureOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeatureOption
@@ -59,9 +44,6 @@ class FeatureFullSerializer(FeatureSerializer):
 
 
 class FeatureGoodPracticeSerializer(serializers.ModelSerializer):
-    # `evidences` (modelo viejo) ya no tiene consumidores en el front;
-    # sigue expuesto hasta el borrado de los modelos viejos (task-7).
-    evidences = EvidenceSerializer(many=True, read_only=True)
     flow_attachments = AttachmentSerializer(many=True, read_only=True)
 
     class Meta:
@@ -88,7 +70,6 @@ class GoodPracticeSerializer(serializers.ModelSerializer):
 
 class GoodPracticeFullSerializer(GoodPracticeSerializer):
     feature_values = FeatureGoodPracticeSerializer(many=True, read_only=True)
-    evidences = EvidenceSerializer(many=True, read_only=True)
     flow_events = FlowEventSerializer(many=True, read_only=True)
     flow_attachments = AttachmentSerializer(many=True, read_only=True)
 

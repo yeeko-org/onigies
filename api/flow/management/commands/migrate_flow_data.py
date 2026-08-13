@@ -7,8 +7,8 @@ Migra los datos del flujo viejo al nuevo (idempotente, re-ejecutable).
    mapeo se reportan sin migrarse.
 2. Comentarios: ObservableComment, GroupComment, GeneralGroupComment y
    los TextField `comments` de example → FlowEvent (comentario puro).
-3. Adjuntos: GroupAttachment, GeneralGroupAttachment, Evidence →
-   Attachment (mismo path de archivo; no se recopia el archivo físico).
+3. Adjuntos: Evidence → Attachment (mismo path de archivo; no se
+   recopia el archivo físico).
    Nunca resucita un adjunto borrado tras la migración: ver
    `_create_attachment`.
 
@@ -93,12 +93,6 @@ COMMENT_FIELD_MODELS = [
     ("example", "FeatureGoodPractice"),
 ]
 
-# (app, modelo de adjunto, FK al target)
-ATTACHMENT_MODELS = [
-    ("answer", "GroupAttachment", "group_response"),
-    ("survey", "GeneralGroupAttachment", "general_group_response"),
-]
-
 
 class Command(BaseCommand):
     help = ("Copia status, comentarios y adjuntos del flujo viejo a "
@@ -131,7 +125,6 @@ class Command(BaseCommand):
             self.reconcile_gen_packages()
             self.migrate_comments()
             self.migrate_comment_fields(comments_user)
-            self.migrate_attachments()
             self.migrate_evidences()
         self.stdout.write(self.style.SUCCESS("Migración completa."))
 
@@ -243,18 +236,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(
                 f"  {label}: {orphans} sin archivo en el storage "
                 f"(borrados tras la migración o huérfanos: no recreados)"))
-
-    def migrate_attachments(self) -> None:
-        for app_label, model_name, target_attr in ATTACHMENT_MODELS:
-            model = apps.get_model(app_label, model_name)
-            count = 0
-            orphans = 0
-            for old in model.objects.select_related(target_attr):
-                target = getattr(old, target_attr)
-                result = self._create_attachment(target, old.file.name)
-                count += result == "created"
-                orphans += result == "orphan"
-            self._report_attachments(model_name, count, orphans)
 
     def migrate_evidences(self) -> None:
         evidence_model = apps.get_model("example", "Evidence")

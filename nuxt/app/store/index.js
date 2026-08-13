@@ -255,18 +255,6 @@ export const useMainStore = defineStore('main', {
           })
       })
     },
-    async saveFile([elem_id, file_data, coll_name], error_msg = null) {
-      const { $api } = useNuxtApp()
-      try {
-        let response = await $api.post(
-          `/${coll_name}/${elem_id}/add_file/`, file_data,
-          {headers: {'Content-Type': 'multipart/form-data'
-          }});
-        return ok(response)
-      } catch (error) {
-        return fail(error, error_msg)
-      }
-    },
     async saveCollection(data, error_msg = null) {
       const { $api } = useNuxtApp()
       try {

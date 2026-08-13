@@ -5,6 +5,7 @@ Endpoints genéricos, un solo juego para todos los targets:
   GET    /flow/<app>/<model>/<pk>/attachments/       — lista
   POST   /flow/<app>/<model>/<pk>/attachments/       — sube (multipart)
   DELETE /flow/<app>/<model>/<pk>/attachments/<id>/  — borra
+  GET    /flow/<app>/<model>/<pk>/attachments/<id>/download/ — descarga
 
 El adjunto se ancla AL OBJETO (GenericFK `target`), nunca al evento del
 timeline: `event` queda en null. Quién puede escribir se deriva del
@@ -12,10 +13,11 @@ flujo (turno de la raíz + `content_editable` del status propio), así que
 la revisión solo lee y una IES nunca toca archivos de otra institución.
 """
 from django.apps import apps
+from django.http import HttpResponseRedirect
 from rest_framework import status as http_status
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -54,6 +56,17 @@ class AttachmentTargetMixin:
             return qs.get(pk=pk)
         except model.DoesNotExist:
             raise NotFound(f"Objeto {pk} no encontrado.")
+
+    def _get_attachment(self, target, attachment_id: int) -> Attachment:
+        """Adjunto del target, o 404.
+
+        Se busca dentro de la relación del target, no por id suelto:
+        así un id ajeno es 404 y no hay acceso cruzado.
+        """
+        try:
+            return target.flow_attachments.get(pk=attachment_id)
+        except Attachment.DoesNotExist:
+            raise NotFound(f"Adjunto {attachment_id} no encontrado.")
 
     def _check_read(self, request, target) -> None:
         """403 si quien consulta no es de la institución dueña."""
@@ -124,12 +137,33 @@ class FlowAttachmentDetailView(AttachmentTargetMixin, APIView):
         target = self._get_target(app_label, model_name, pk)
         self._check_write(request, target)
 
-        # Se busca dentro de la relación del target, no por id suelto:
-        # así un id ajeno es 404 y no hay borrado cruzado.
-        try:
-            attachment = target.flow_attachments.get(pk=attachment_id)
-        except Attachment.DoesNotExist:
-            raise NotFound(f"Adjunto {attachment_id} no encontrado.")
-
+        attachment = self._get_attachment(target, attachment_id)
         attachment.delete()
         return Response(status=http_status.HTTP_204_NO_CONTENT)
+
+
+class FlowAttachmentDownloadView(AttachmentTargetMixin, APIView):
+    """GET — entrega el archivo del adjunto."""
+    permission_classes = [AllowAny]
+
+    def get(
+        self, request, app_label: str, model_name: str, pk: int,
+        attachment_id: int,
+    ) -> HttpResponseRedirect | Response:
+        """Entrega el archivo por redirección, no por proxy."""
+        target = self._get_target(app_label, model_name, pk)
+        attachment = self._get_attachment(target, attachment_id)
+        if not attachment.is_public:
+            # Sin sesión, un adjunto privado no existe: distinguir 401
+            # de 404 permitiría enumerar ids válidos desde fuera.
+            if not request.user.is_authenticated:
+                raise NotFound(f"Adjunto {attachment_id} no encontrado.")
+            self._check_read(request, target)
+
+        if not attachment.file:
+            raise NotFound(f"Adjunto {attachment_id} sin archivo.")
+
+        url = attachment.file.url
+        if request.query_params.get('redirect') in ('false', '0'):
+            return Response({'url': url})
+        return HttpResponseRedirect(url)

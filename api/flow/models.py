@@ -210,6 +210,9 @@ class Attachment(models.Model):
     uploaded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
         blank=True, null=True, related_name='flow_attachments')
+    is_public = models.BooleanField(
+        default=False, verbose_name="Público",
+        help_text="Descargable sin verificar la institución dueña")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -7,12 +7,12 @@ FlowEvent, Attachment). No modifica datos: re-ejecutable en producción
 antes de la fase de borrado (§8).
 """
 from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
 from flow.management.commands.migrate_flow_data import (
-    MODEL_STATUS_MAPS, COMMENT_MODELS, COMMENT_FIELD_MODELS,
-    ATTACHMENT_MODELS)
+    MODEL_STATUS_MAPS, COMMENT_MODELS, COMMENT_FIELD_MODELS)
 from flow.models import Status, FlowEvent, Attachment
 
 
@@ -85,11 +85,6 @@ class Command(BaseCommand):
 
     def check_attachments(self) -> None:
         self.stdout.write(self.style.MIGRATE_HEADING("Adjuntos"))
-        old_total = 0
-        for app_label, model_name, _ in ATTACHMENT_MODELS:
-            count = apps.get_model(app_label, model_name).objects.count()
-            old_total += count
-            self.stdout.write(f"  {model_name}: {count}")
         evidence = apps.get_model("example", "Evidence")
         with_target = evidence.objects.filter(
             good_practice__isnull=False).count() + \
@@ -97,12 +92,31 @@ class Command(BaseCommand):
                 good_practice__isnull=True,
                 feature_good_practice__isnull=False).count()
         orphan = evidence.objects.count() - with_target
-        old_total += with_target
         self.stdout.write(
             f"  Evidence: {with_target} con target"
             + (f" ({orphan} sin target, no migran)" if orphan else ""))
-        new_total = Attachment.objects.count()
-        mark = "ok" if new_total >= old_total else "REVISAR"
+        mirrored = self.count_evidence_mirrors(evidence)
+        mark = "ok" if mirrored >= with_target else "REVISAR"
         self.stdout.write(
-            f"  Total viejo: {old_total} → Attachment: {new_total}  "
+            f"  Evidence con espejo: {mirrored} de {with_target}  "
             f"[{mark}]")
+        self.stdout.write(
+            f"  Attachment (total, incluye los nuevos): "
+            f"{Attachment.objects.count()}")
+
+    def count_evidence_mirrors(self, evidence) -> int:
+        """Cuenta las Evidence que tienen un Attachment con el mismo
+        target y el mismo archivo (el criterio de `_create_attachment`)."""
+        rows = evidence.objects.select_related(
+            "good_practice", "feature_good_practice")
+        mirrored = 0
+        for old in rows:
+            target = old.good_practice or old.feature_good_practice
+            if target is None:
+                continue
+            ct = ContentType.objects.get_for_model(target)
+            if Attachment.objects.filter(
+                    content_type=ct, object_id=target.pk,
+                    file=old.file.name).exists():
+                mirrored += 1
+        return mirrored

@@ -1,33 +1,28 @@
-from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    IsAuthenticated, IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django_filters import FilterSet, CharFilter, NumberFilter
-from api.views.action_file import ActionFileMixin
+from django_filters import FilterSet, NumberFilter
 from api.views.common_views import BaseGenericViewSet
 from flow.permissions import IsFlowInstitutionOwnerOrReviewer
-from api.views.example.serializers import GoodPracticeFullSerializer, GoodPracticeSerializer, EvidenceSerializer, \
+from api.views.example.serializers import GoodPracticeFullSerializer, GoodPracticeSerializer, \
     FeatureSerializer, FeatureFullSerializer, FeatureOptionSerializer, FeatureGoodPracticeSerializer, \
     GoodPracticePackageFullSerializer, GoodPracticePackageSerializer
-from example.models import GoodPractice, Feature, FeatureOption, FeatureGoodPractice, GoodPracticePackage, Evidence
+from example.models import GoodPractice, Feature, FeatureOption, FeatureGoodPractice, GoodPracticePackage
 from flow.models import Status
 from flow.services import execute_transition
 
 
-class GoodPracticeViewSet(BaseGenericViewSet, ActionFileMixin):
+class GoodPracticeViewSet(BaseGenericViewSet):
 
     queryset = GoodPractice.objects.all().prefetch_related(
         'flow_events__user', 'flow_events__attachments',
         'flow_attachments', 'feature_values__flow_attachments')
     serializer_class = GoodPracticeFullSerializer
-    action_add_file_param = 'good_practice'
     disable_protection = True
 
     def get_serializer_class(self):
         action_serializer = {
             'list': GoodPracticeSerializer,
-            'add_file': EvidenceSerializer,
         }
         return action_serializer.get(self.action, self.serializer_class)
 
@@ -51,17 +46,10 @@ class FeatureOptionViewSet(BaseGenericViewSet):
     serializer_class = FeatureOptionSerializer
 
 
-class FeatureGoodPracticeViewSet(BaseGenericViewSet, ActionFileMixin):
+class FeatureGoodPracticeViewSet(BaseGenericViewSet):
     queryset = FeatureGoodPractice.objects.all().prefetch_related(
         'flow_attachments')
     serializer_class = FeatureGoodPracticeSerializer
-    action_add_file_param = 'feature_good_practice'
-
-    def get_serializer_class(self):
-        action_serializer = {
-            'add_file': EvidenceSerializer,
-        }
-        return action_serializer.get(self.action, self.serializer_class)
 
 
 class PackageFilter(FilterSet):
@@ -181,9 +169,3 @@ class GoodPracticePackageViewSet(BaseGenericViewSet):
         package.save(update_fields=['has_good_practices'])
         serializer = self.get_serializer(package)
         return Response(serializer.data)
-
-
-class EvidenceViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Evidence.objects.all()
-    serializer_class = EvidenceSerializer

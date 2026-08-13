@@ -64,8 +64,8 @@ class Survey(models.Model):
 
     class Meta:
         unique_together = ('institution', 'period')
-        verbose_name = 'Conjunto de respuestas IES-Año'
-        verbose_name_plural = 'Conjuntos de respuestas IES-Año'
+        verbose_name = 'Respuestas anuales de una IES'
+        verbose_name_plural = 'Respuestas anuales de las IES'
 
 
 class AxisValue(FlowParticipant, models.Model):
@@ -274,33 +274,3 @@ class GeneralGroupComment(Comment):
     class Meta:
         verbose_name = 'Comentario a grupo de respuestas (General)'
         verbose_name_plural = 'Comentarios a grupos de respuestas (General)'
-
-
-def set_upload_general_attachment_path(instance, filename):
-    from utils.files import join_path
-
-    elems = ['attachments']
-    gg_response: GeneralGroupResponse = instance.general_group_response
-
-    survey = gg_response.survey
-    elems.append(survey.institution.acronym)
-    year = str(survey.period_id)
-    elems.append(f'{year}_general')
-    general_group = gg_response.general_group.name
-    elems.append(f'group_{general_group}')
-    return join_path(elems, filename)
-
-
-class GeneralGroupAttachment(models.Model):
-    general_group_response = models.ForeignKey(
-        GeneralGroupResponse, on_delete=models.CASCADE,
-        related_name='attachments')
-    file = models.FileField(
-        upload_to=set_upload_general_attachment_path, verbose_name="Archivo")
-
-    def __str__(self):
-        return "%s - %s" % (self.general_group_response, self.file.name)
-
-    class Meta:
-        verbose_name = "Comprobable de grupo general de respuestas"
-        verbose_name_plural = "Comprobables de grupos generales de respuestas"

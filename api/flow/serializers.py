@@ -1,5 +1,7 @@
 """Serializers del motor de flujo."""
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import UploadedFile
+from django.urls import reverse
 from rest_framework import serializers
 
 from flow.models import Attachment, FlowEvent, Status
@@ -44,10 +46,21 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return obj.file.name.rsplit('/', 1)[-1] if obj.file else ''
 
     def get_url(self, obj) -> str | None:
+        """URL del endpoint de descarga, nunca la del archivo.
+
+        En S3 el bucket es privado y `file.url` es una URL firmada que
+        caduca; el endpoint la vuelve a firmar en cada descarga y de
+        paso revalida quién puede leer el adjunto.
+        """
+        if not obj.file:
+            return None
+        content_type = ContentType.objects.get_for_id(obj.content_type_id)
+        path = reverse('flow-attachment-download', args=[
+            content_type.app_label, content_type.model,
+            obj.object_id, obj.pk,
+        ])
         request = self.context.get('request')
-        if obj.file and request:
-            return request.build_absolute_uri(obj.file.url)
-        return obj.file.url if obj.file else None
+        return request.build_absolute_uri(path) if request else path
 
 
 class AttachmentUploadSerializer(serializers.Serializer):

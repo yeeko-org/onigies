@@ -64,8 +64,6 @@ class BaseHardPermission(BaseObjectPermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-        if view.action == "add_file":
-            return True
         if request.user.is_anonymous:
             return False
         if not request.user.is_reviewer:

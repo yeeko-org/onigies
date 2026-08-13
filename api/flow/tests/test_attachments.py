@@ -47,6 +47,12 @@ class AttachmentTests(FlowSecurityTestCase):
             'flow-attachment-detail',
             args=['example', model_name, obj.pk, attachment_id])
 
+    def _download_url(self, obj, attachment_id,
+                      model_name='goodpracticepackage'):
+        return reverse(
+            'flow-attachment-download',
+            args=['example', model_name, obj.pk, attachment_id])
+
     def _upload(self, obj, name='evidencia.pdf', content=b'contenido',
                 model_name='goodpracticepackage'):
         upload = SimpleUploadedFile(name, content)
@@ -56,7 +62,7 @@ class AttachmentTests(FlowSecurityTestCase):
 
     # --- tope de tamaño --------------------------------------------
 
-    def test_subida_mayor_a_30mb_se_rechaza(self):
+    def test_upload_over_30mb_is_rejected(self):
         resp = self._upload(
             self.package_a, name='pesado.pdf',
             content=b'\0' * (MAX_ATTACHMENT_SIZE + 1))
@@ -64,7 +70,7 @@ class AttachmentTests(FlowSecurityTestCase):
         self.assertIn('file', resp.data)
         self.assertEqual(Attachment.objects.count(), 0)
 
-    def test_subida_en_el_limite_se_acepta(self):
+    def test_upload_at_the_limit_is_accepted(self):
         # Exactamente el tope: el único tamaño donde `>` y `>=` difieren.
         resp = self._upload(
             self.package_a, name='justo.pdf',
@@ -72,7 +78,7 @@ class AttachmentTests(FlowSecurityTestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Attachment.objects.count(), 1)
 
-    def test_subida_de_tipo_raro_se_acepta(self):
+    def test_upload_of_odd_type_is_accepted(self):
         # No hay validación de extensión ni de content-type a propósito.
         resp = self._upload(
             self.package_a, name='instalador.exe', content=b'MZ\x90\0')
@@ -80,7 +86,7 @@ class AttachmentTests(FlowSecurityTestCase):
 
     # --- borrado del archivo físico --------------------------------
 
-    def test_delete_borra_registro_y_archivo(self):
+    def test_delete_removes_record_and_file(self):
         resp = self._upload(self.package_a)
         attachment = Attachment.objects.get(pk=resp.data['id'])
         name = attachment.file.name
@@ -93,7 +99,7 @@ class AttachmentTests(FlowSecurityTestCase):
             Attachment.objects.filter(pk=attachment.pk).exists())
         self.assertFalse(default_storage.exists(name))
 
-    def test_borrar_el_target_borra_los_archivos_en_cascada(self):
+    def test_deleting_target_cascades_file_deletion(self):
         practice = GoodPractice.objects.create(
             package=self.package_a, name='Práctica con adjuntos')
         names = []
@@ -113,7 +119,7 @@ class AttachmentTests(FlowSecurityTestCase):
         for name in names:
             self.assertFalse(default_storage.exists(name))
 
-    def test_delete_con_archivo_ya_ausente_no_falla(self):
+    def test_delete_with_missing_file_does_not_fail(self):
         resp = self._upload(self.package_a)
         attachment = Attachment.objects.get(pk=resp.data['id'])
         name = attachment.file.name
@@ -125,3 +131,75 @@ class AttachmentTests(FlowSecurityTestCase):
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
             Attachment.objects.filter(pk=attachment.pk).exists())
+
+    # --- descarga ---------------------------------------------------
+
+    def test_download_redirects_to_file(self):
+        # El endpoint nunca sirve el archivo: redirige a la URL del
+        # storage, que en S3 es firmada y efímera.
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+
+        resp = self.client.get(
+            self._download_url(self.package_a, attachment.pk))
+        self.assertEqual(resp.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(resp.headers['Location'], attachment.file.url)
+
+    def test_download_without_redirect_returns_the_url(self):
+        # El front manda el token por XHR y no puede seguir el 302 con
+        # la cabecera Authorization: pide la URL y la abre.
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+
+        resp = self.client.get(
+            self._download_url(self.package_a, attachment.pk),
+            {'redirect': 'false'})
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data['url'], attachment.file.url)
+
+    def test_download_from_other_ies_is_rejected(self):
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+
+        self.client.force_authenticate(self.ies_b)
+        resp = self.client.get(
+            self._download_url(self.package_a, attachment.pk))
+        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_public_download_is_open_to_anyone(self):
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+        Attachment.objects.filter(pk=attachment.pk).update(is_public=True)
+        url = self._download_url(self.package_a, attachment.pk)
+
+        self.client.force_authenticate(self.ies_b)
+        self.assertEqual(
+            self.client.get(url).status_code, status.HTTP_302_FOUND)
+
+        # Público de verdad: sin sesión también se descarga.
+        self.client.force_authenticate(None)
+        self.assertEqual(
+            self.client.get(url).status_code, status.HTTP_302_FOUND)
+
+    def test_private_download_hides_existence_from_anonymous(self):
+        # 404 y no 401: un id válido y uno inventado deben responder
+        # igual, o desde fuera se pueden enumerar los adjuntos.
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+
+        self.client.force_authenticate(None)
+        resp = self.client.get(
+            self._download_url(self.package_a, attachment.pk))
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_serializer_url_points_to_endpoint(self):
+        # Nunca la URL del storage: la firmada caduca y no revalida
+        # quién puede leer el adjunto.
+        resp = self._upload(self.package_a)
+        attachment = Attachment.objects.get(pk=resp.data['id'])
+
+        resp = self.client.get(self._list_url(self.package_a))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        expected = self._download_url(self.package_a, attachment.pk)
+        self.assertEqual(
+            resp.data[0]['url'], f'http://testserver{expected}')

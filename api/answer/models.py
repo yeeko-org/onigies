@@ -2,7 +2,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from indicator.models import Observable, Sector
-from ies.models import User, StatusControl
+from ies.models import StatusControl
 from question.models import (
     QuestionType, ReachQuestion, AQuestion, AOption, PlanQuestion,
     BQuestion, SpecialQuestion)
@@ -84,36 +84,6 @@ class GroupComment(Comment):
     class Meta:
         verbose_name = 'Comentario de encuesta'
         verbose_name_plural = 'Comentarios de encuestas'
-
-
-def set_upload_attachment_path(instance, filename):
-    from utils.files import join_path
-
-    elems = ['attachments']
-    group_response: GroupResponse = instance.group_response
-    observable_response = group_response.observable_response
-    survey = observable_response.survey
-    elems.append(survey.institution.acronym)
-    year = str(survey.period_id)
-    observable = observable_response.observable
-    axis = observable.component.axis.short_name
-    elems.append(f'{year}_{axis}')
-    elems.append(f'observable_{observable.number}')
-    return join_path(elems, filename)
-
-
-class GroupAttachment(models.Model):
-    group_response = models.ForeignKey(
-        GroupResponse, on_delete=models.CASCADE, related_name='attachments')
-    file = models.FileField(
-        upload_to=set_upload_attachment_path, verbose_name="Archivo")
-
-    def __str__(self):
-        return "%s - %s" % (self.group_response, self.file.name)
-
-    class Meta:
-        verbose_name = "Comprobable de grupo de respuestas"
-        verbose_name_plural = "Comprobables de grupos de respuestas"
 
 
 class AResponse(models.Model):

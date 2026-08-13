@@ -1,4 +1,5 @@
 import os
+from django.core.exceptions import ImproperlyConfigured
 from core.settings.get_env import getenv_bool, getenv_list
 from dotenv import load_dotenv
 load_dotenv()
@@ -216,60 +217,72 @@ PS_SCHEMA = {
 COMPRESS_ENABLED = getenv_bool("COMPRESS_ENABLED", True)
 COMPRESS_OFFLINE = getenv_bool("COMPRESS_OFFLINE", True)
 
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
-AWS_PRELOAD_METADATA = getenv_bool('AWS_PRELOAD_METADATA', True)
+# Los estáticos (admin, DRF) siempre son locales: los sirve nginx o
+# WhiteNoise. Solo los archivos subidos pueden migrar a S3.
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+# Puente temporal a un bucket privado de S3 mientras llega el servidor
+# de la UNAM. Apagado por defecto: en local los archivos siguen en disco.
+USE_S3_FILES = getenv_bool('USE_S3_FILES', False)
 
-AWS_DEFAULT_ACL = os.getenv('AWS_DEFAULT_ACL', 'public-read')
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
+# Siempre definido, incluso con S3 encendido: es el origen de la
+# migración de archivos y el respaldo en disco del servidor.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 
-AWS_STATIC_LOCATION = os.getenv('AWS_STATIC_LOCATION', 'static_compressed')
-# AWS_MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
-AWS_MEDIA_LOCATION = os.getenv('AWS_MEDIA_LOCATION', 'files')
-
-AWS_S3_FILE_OVERWRITE = getenv_bool('AWS_S3_FILE_OVERWRITE', False)
-AWS_IS_GZIPPED = getenv_bool('AWS_IS_GZIPPED', False)
-GZIP_CONTENT_TYPES = set(getenv_list('GZIP_CONTENT_TYPES', []))
-
-# Use S3 storage if bucket name is configured
-if AWS_STORAGE_BUCKET_NAME:
+if USE_S3_FILES:
     INSTALLED_APPS += ("storages",)
+
+    _s3_bucket = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    _s3_region = os.getenv('AWS_S3_REGION_NAME')
+    _s3_location = os.getenv('AWS_LOCATION', 'files')
+    # Sin región no hay firma válida y sin bucket no hay a dónde
+    # escribir: mejor reventar al arrancar que servir 404s o 307s.
+    if not _s3_bucket or not _s3_region:
+        raise ImproperlyConfigured(
+            "USE_S3_FILES exige AWS_STORAGE_BUCKET_NAME y "
+            "AWS_S3_REGION_NAME en el entorno.")
+    _s3_domain = f'{_s3_bucket}.s3.{_s3_region}.amazonaws.com'
 
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
-                "location": AWS_MEDIA_LOCATION,
-            }
+                "bucket_name": _s3_bucket,
+                "region_name": _s3_region,
+                # NO agregar custom_domain: en django-storages 1.14
+                # activa una rama de url() que devuelve la URL SIN
+                # firmar, y el bucket es privado.
+                # Sin signature_version explícita botocore presigna con
+                # SigV2, que los buckets nuevos ya no aceptan; sin
+                # addressing_style el host pierde la región
+                # (bucket.s3.amazonaws.com) y S3 contesta 307.
+                "signature_version": "s3v4",
+                "addressing_style": "virtual",
+                "location": _s3_location,
+                # Explícitas para no caer en silencio al perfil de la
+                # instancia EC2 si el .env viene mal: el acceso al
+                # bucket es de un usuario IAM acotado.
+                "access_key": os.getenv('AWS_ACCESS_KEY_ID'),
+                "secret_key": os.getenv('AWS_SECRET_ACCESS_KEY'),
+                # El bucket tiene las ACL deshabilitadas.
+                "default_acl": None,
+                # Bucket privado: file.url devuelve una URL firmada.
+                "querystring_auth": True,
+                "file_overwrite": False,
+            },
         },
         "staticfiles": {
-            "BACKEND": "core.storage_backends.StaticStorage",
-            "OPTIONS": {
-                "location": AWS_STATIC_LOCATION,
-            }
+            "BACKEND": (
+                "django.contrib.staticfiles.storage.StaticFilesStorage"),
         },
     }
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/'
-
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/'
+    # Absoluta a propósito: el guard de core/urls.py apaga la ruta
+    # abierta /files/ en cuanto MEDIA_URL trae esquema.
+    MEDIA_URL = f'https://{_s3_domain}/{_s3_location}/'
 else:
-    # Local file storage (development)
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
     MEDIA_URL = '/files/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
-
-
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-# URL_AMAZON_S3_FILES_UPLOADED = os.getenv('URL_AMAZON_S3_FILES_UPLOADED')
-
-# AWS_LOCATION = os.getenv('AWS_LOCATION')
 
 
 # -------------------------------END STORAGE---------------------------------

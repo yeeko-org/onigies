@@ -1,10 +1,9 @@
 """
 Rutas de subida para flow.Attachment.
 
-Reconstruye la ruta según el tipo del target, conservando la estructura
-de carpetas de los modelos viejos (GroupAttachment,
-GeneralGroupAttachment, Evidence) para que los archivos migrados y los
-nuevos convivan en los mismos directorios.
+Reconstruye la ruta según el tipo del target, conservando el esquema de
+carpetas que usaban los adjuntos viejos, para que los archivos migrados
+y los nuevos convivan en los mismos directorios.
 """
 
 

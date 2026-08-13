@@ -13,7 +13,6 @@ else:
 
 
 class ExportXlsMixin(ModelViewSet):
-    action_add_file_param: str = ""
     # xls_name: str = "Export"
     xls_attrs: list = []
     max_decimal: int = 2

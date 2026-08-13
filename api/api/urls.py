@@ -12,7 +12,6 @@ from api.views.auth.recovery_views import (
 )
 
 from .views.ps_schemas import CollectionViewSet
-from .views.example import EvidenceViewSet
 from api.views.ies import InstitutionViewSet
 from ps_schema.registry import collection_registry
 # from api.views.stop import StationViewSet
@@ -29,7 +28,6 @@ router = DefaultRouter()
 # )
 # )
 router.register(r'collection', CollectionViewSet, basename='collection')
-router.register(r'evidence', EvidenceViewSet, basename='evidence')
 router.register(r'invitation', InvitationTokenViewSet, basename='invitation')
 router.register(r'user', UserViewSet, basename='user')
 router.register(r'institution', InstitutionViewSet, basename='institution')

@@ -4,6 +4,7 @@ id: 2026-08-11-auditoria-del-arbol-de-trabajo-y-reorganizacion
 title: "Auditoría del árbol de trabajo sin commitear y reorganización jerárquica de las tareas"
 date: 2026-08-11
 related: ["[[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]"]
+validate-paths: false
 ---
 
 # Auditoría del árbol de trabajo sin commitear y reorganización jerárquica de las tareas

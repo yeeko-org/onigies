@@ -38,6 +38,16 @@ When the working tree is dirty (e.g. `.claude/settings.local.json`), skip the ch
 
 4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock. When the change breaks in **both** directions (frontend and API each need the other's new version), no order is safe — accept the window and minimize it: push, then run the server runbook immediately in one continuous sequence (~6 min achieved on 2026-08-12).
 
+## Data-writing management commands
+
+Any command in the deploy plan that writes rows (seeds included, migrations aside) requires, **before Ricardo approves it**:
+
+1. **Write inventory** — enumerate every model.column the command writes, read from its code, not from its docstring or from what a past record says about it. The decision is presented with the full inventory, never with just the one risk currently under discussion. A written safety claim («idempotente, re-ejecutable») is a snapshot with an expiry condition: it must be re-verified against today's code, not cited.
+2. **Pre/post data probe** — grouped counts over the affected columns (`SELECT <col>, COUNT(*) ... GROUP BY <col>`) taken before the run, with the expected after-counts written down in advance, and compared after. A number in the output means nothing without a prior expectation — that is how a damage fingerprint reads as success.
+3. **Re-runnable commands follow the `repair_sent_at` pattern** (`api/flow/management/commands/repair_sent_at.py`): dry-run by default, explicit `--apply`, filters that only touch uninitialized rows. Never an unconditional write from a source that stopped being authoritative.
+
+> **Incident 2026-08-12:** re-running `migrate_flow_data` (retired since) silently reset 179 advanced flow statuses to their frozen legacy values — no FlowEvents, smoke all green. The deploy decision had assessed only comment resurrection; the status branch was never enumerated. Its own output carried the fingerprint («1 reconciliación bp_draft → bp_completed») and was read as success. See `docs/records/2026-08-12-incidente-migrate-flow-data.md`.
+
 ## Server runbook
 
 SSH: `ssh -i ~/.ssh/servers/yeeko.pem ubuntu@api.yeeko.org` — repo at `~/unam/onigies`, venv at `api/venv`, passwordless sudo.
@@ -45,7 +55,7 @@ SSH: `ssh -i ~/.ssh/servers/yeeko.pem ubuntu@api.yeeko.org` — repo at `~/unam/
 ```bash
 cd ~/unam/onigies && git status --short     # 1. working tree must be clean
 cd api && mkdir -p _backups                 # 2. backup before schema changes
-# pg_dump with the .env creds (same pattern as deploy_flow_migration.sh),
+# pg_dump -Fc with the .env creds (lines carry \r — read them with tr -d '\r'),
 # or take an RDS snapshot instead for big changes
 git pull origin production                  # 3. bring the code
 venv/bin/pip install -r requirements.txt    # 4. only if requirements changed

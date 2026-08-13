@@ -3,6 +3,7 @@ type: record
 id: 2026-06-05-diseno-del-motor-de-flujo
 title: Diseño del motor de flujo de validación (especificación v2, ejecutada)
 date: 2026-06-05
+validate-paths: false
 ---
 
 # Plan — Motor de flujo de validación (sesión backend)

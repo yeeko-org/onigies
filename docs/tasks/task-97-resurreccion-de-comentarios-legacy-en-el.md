@@ -24,6 +24,10 @@ Se queda donde está, fuera de la suite, mientras la verificación siga abierta.
 
 Ricardo decidió correr `migrate_flow_data` completo en el re-run comprometido por [[adr-0010]] ([[2026-08-12-deploy-gen-a-produccion-migraciones-seeds]]): no se ha borrado ningún comentario en producción, así que la resurrección no tenía qué resucitar. El bug sigue vivo para cualquier re-run futuro — esta task no se cierra con ese deploy.
 
+## El comando fue retirado (2026-08-12)
+
+Tras el incidente de [[2026-08-12-incidente-migrate-flow-data]] (el re-run aplastó 179 estatus avanzados), `migrate_flow_data` y `verify_flow_data` se retiraron del repo: el bug de resurrección ya no puede ocurrir y el primer criterio quedó sin objeto. La task queda abierta deliberadamente para que una sesión futura decida su destino: cerrarla como sin objeto o rescatar sus pendientes propios (el séptimo test, ya decidido como temporal — su vida útil terminó con el retiro—, y la propuesta de Playwright para la cadena unit, aún sin decisión de Ricardo).
+
 ## Criterios de aceptación
 
 - [ ] Un comentario borrado en el sistema nuevo no reaparece al re-correr migrate_flow_data

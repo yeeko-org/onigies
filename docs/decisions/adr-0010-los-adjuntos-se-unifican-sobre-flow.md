@@ -40,7 +40,7 @@ Ricardo eligió **(b)**. Decisiones de diseño que la acompañan, todas suyas: l
 
 ### Cómo se comprueba
 
-`grep -rn "add_file\|/evidence/\|Evidences" nuxt/app` solo devuelve el action muerto `saveFile`; `verify_flow_data` reporta la sección de adjuntos `[ok]`; los tests de regresión propuestos viven en [[task-94]].
+`grep -rn "add_file\|/evidence/\|Evidences" nuxt/app` solo devuelve el action muerto `saveFile`; `verify_flow_data` reporta la sección de adjuntos `[ok]`; los tests de regresión propuestos viven en [[task-94]]. (La evidencia fue válida en su momento: el re-run comprometido aquí se ejecutó el 2026-08-12 y cerró 661 = 661, pero ese mismo re-run causó el incidente de estatus de [[2026-08-12-incidente-migrate-flow-data]], tras el cual `migrate_flow_data` y `verify_flow_data` se retiraron del repo.)
 
 ## Más información
 

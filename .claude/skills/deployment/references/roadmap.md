@@ -12,12 +12,14 @@ _Last updated: 2026-07-29_
 - [x] New dashboard deployed on Netlify (`onigies.netlify.app`)
 - [x] nginx on the UNAM server proxies the six dashboard routes + `/_nuxt/` to Netlify
 - [x] Uploads served under `/files/` — server cutover `media/` → `files/` done 2026-07-29 (old partial copy kept in `api/_backups/files_stale_jul04`)
+- [x] Uploads moved to the private S3 bucket `onigies-v3-temporal` (bridge; `USE_S3_FILES=1`, 692/692 files, deploy 2026-08-12 — `adr-0013`); EC2 disk copy kept as backup
 
 ## Phase 1 — UNAM virtual machine
 
 - [ ] VM provisioning approved and delivered (trámite in process)
 - [ ] Provision the VM: OS, Python, Node + pnpm, PostgreSQL access, nginx
 - [ ] Deploy the `api/` backend on the VM
+- [ ] Bring the files back to VM disk (`migrate_files_to_s3 --download`, then `USE_S3_FILES=0`) and retire the bridge bucket
 - [ ] Decide where the `nuxt/` app runs long-term (VM vs. stay on Netlify)
 - [ ] Repoint `NUXT_API_URL` / `NUXT_ADMIN_URL` to the final API host
 - [ ] Replace the nginx bridge with direct serving; remove the Netlify proxy blocks

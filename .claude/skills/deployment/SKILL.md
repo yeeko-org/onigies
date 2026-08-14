@@ -90,21 +90,23 @@ The dashboard calls `apionigies.yeeko.org` cross-origin, and it works without CO
 
 **Hardening pending:** `CORS_ORIGIN_ALLOW_ALL = True` is wide open. Tighten it to an explicit `CORS_ALLOWED_ORIGINS` allowlist once the topology stabilizes — tracked in the roadmap.
 
-## Uploaded files — served under `/files/`, not `/media/`
+## Uploaded files — private S3 bucket, `/files/` namespace
 
-The new API stores user uploads (good-practice evidences, flow attachments) on its **own server disk** — not S3 — and serves them itself. `AWS_STORAGE_BUCKET_NAME` is unset in production, so `core/settings` takes the local-storage branch. Production currently runs `DEBUG=True` (hardening pending).
+Production stores user uploads in the private S3 bucket `onigies-v3-temporal`, gated by `USE_S3_FILES=1` in the server `.env` — a bridge until the UNAM server, where files return to disk (`migrate_files_to_s3 --download`); decisions and rationale in `adr-0013`. Flag off (local dev, or rollback) → local-disk behavior returns unchanged; the pre-migration files remain on the EC2 disk as backup. `USE_S3_FILES=1` requires `AWS_STORAGE_BUCKET_NAME` and `AWS_S3_REGION_NAME` in the `.env` (startup fails loudly without them), plus `AWS_LOCATION` and the key pair.
 
-The namespace is `/files/`, **renamed from `/media/`** to avoid a collision with the legacy site: the UNAM nginx routes `onigies.unam.mx/media/...` to the legacy Django, and some serializers emitted file URLs the browser resolves against the frontend origin. Under the `onigies.unam.mx` bridge, a new-system file referenced as `/media/...` therefore hit the legacy backend and 404'd.
+Downloads go through a permission-checked endpoint (`/api/flow/<app>/<model>/<pk>/attachments/<id>/download/`): 302 to an ephemeral signed URL; `?redirect=false` returns it as JSON for the authenticated frontend; `Attachment.is_public=True` opens the file to anonymous users. The open `/files/` route dies automatically when the flag is on (`core/urls.py` guards on `MEDIA_URL` containing `://`). Production currently runs `DEBUG=True` (hardening pending).
+
+The `/files/` namespace survives in S3 as the bucket prefix (`AWS_LOCATION=files`), so `FileField` values in the DB never changed. It was **renamed from `/media/`** to avoid a collision with the legacy site: the UNAM nginx routes `onigies.unam.mx/media/...` to the legacy Django, and some serializers emitted file URLs the browser resolves against the frontend origin. Under the `onigies.unam.mx` bridge, a new-system file referenced as `/media/...` therefore hit the legacy backend and 404'd.
 
 The fix (§5 in `docs/records/2026-06-26-seguimiento-pendientes-ruben.md`):
 
 - `MEDIA_URL = '/files/'`, `MEDIA_ROOT = BASE_DIR/'files'` (`core/settings/__init__.py`).
 - `core/urls.py` serves `/files/` with an explicit `re_path(..., django.views.static.serve, ...)` instead of `static()`. `static()` registers no routes when `DEBUG=False`; the explicit route serves **regardless of DEBUG**, so it survives the pending `DEBUG=False` hardening.
-- Every file-URL serializer emits **absolute** URLs via `request.build_absolute_uri` (`example`, `flow`). The browser fetches straight from `apionigies.yeeko.org/files/...`, so the UNAM nginx is never in the path — no `/files/` nginx block is needed.
+- File URLs stay **absolute** via `request.build_absolute_uri` (`flow` now emits the download-endpoint URL; the browser then follows the 302 to S3). The UNAM nginx is never in the path — no `/files/` nginx block is needed.
 
-Cutover on the server: move the on-disk folder `media/` → `files/` and restart the API. **No DB migration** — `FileField` values are storage-relative (e.g. `evidences/foo.pdf`), so they resolve unchanged against the new root.
+Cutover on the server (2026-06, flag-off era): the on-disk folder moved `media/` → `files/`. **No DB migration** — `FileField` values are storage-relative (e.g. `evidences/foo.pdf`), so they resolved unchanged against the new root, and later against the S3 prefix.
 
-**Trade-off:** serving media through Django's `serve` view is less efficient than an nginx `alias` (every file goes through a WSGI worker, no caching/ranges). Acceptable at ONIGIES's scale, and deliberate — it keeps file serving out of nginx, so nothing needs reconfiguring when the API moves to the UNAM VM.
+**Trade-off (applies when the flag is off):** serving media through Django's `serve` view is less efficient than an nginx `alias`. Acceptable at ONIGIES's scale, and deliberate — it keeps file serving out of nginx, so nothing needs reconfiguring when the API moves to the UNAM VM. With S3 on, the browser downloads straight from the bucket and no WSGI worker touches file bytes.
 
 ## Migration roadmap
 

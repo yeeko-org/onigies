@@ -82,8 +82,11 @@ A root-URL check proves nothing — hit endpoints that exercise real models:
 |---|---|
 | `curl https://apionigies.yeeko.org/api/catalogs/all/` | 200 — touches most catalog models; this is the endpoint that exposed the 2026-07-29 incident |
 | `curl https://apionigies.yeeko.org/api/` | 200 |
-| An evidence file under `/files/evidences/<name>` (ASCII name; accents double-encode through the shell) | 200 |
+| Anonymous GET on a real private attachment's download endpoint (`/api/flow/<app>/<model>/<pk>/attachments/<id>/download/`) | 404 (existence hidden) |
+| From `manage.py shell`: `Attachment.objects.exclude(file="").first().file.url` fetched with urllib | 200 — proves S3 signing works end-to-end (with `USE_S3_FILES=0`, the old `/files/<name>` → 200 check applies instead) |
 | `tail ~/unam/logs/onigies_api/error.log` | no new tracebacks |
 | Manual: login on the dashboard, open /respuestas and a BP package | works |
 
 Old workers keep serving during the HUP handoff, so a failed smoke means the new code is bad, not a mid-restart blip — fix forward or `git checkout <previous-ref>` + HUP to roll back.
+
+Production runs `USE_S3_FILES=1`: the AWS env block (`AWS_STORAGE_BUCKET_NAME`, `AWS_S3_REGION_NAME`, `AWS_LOCATION`, key pair) lives in the server `.env`; bucket and region are mandatory — the API refuses to start without them. Storage details and rollback in the `deployment` skill.

@@ -42,6 +42,6 @@ Bugs que bloquean la presentación: [[task-105]] (el colapso de panels falló en
 ## Criterios de aceptación
 
 - [x] La IES captura la sección completa de información base desde /respuestas
-- [ ] Rubí y su equipo validaron la sección antes de abrirla, con la prueba adicional que pidió
-- [ ] La sección está visible para todas las IES en producción el jueves 13
-- [ ] La sección quedó anunciada a los enlaces el viernes 14
+- [x] Rubí y su equipo validaron la sección antes de abrirla, con la prueba adicional que pidió
+- [x] La sección está visible para todas las IES en producción (deploy 2026-08-14, un día después del jueves 13 comprometido; ver [[2026-08-14-deploy-publicacion-de-la-seccion-de]])
+- [x] La sección quedó anunciada a los enlaces el viernes 14

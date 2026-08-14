@@ -2,7 +2,7 @@
 type: task
 id: task-96
 title: Rehacer el diseño de la captura numérica y los panels de Generales
-state: open
+state: closed
 date: 2026-08-09
 owner: ai
 parent: "[[task-41]]"
@@ -40,10 +40,10 @@ Los «criterios exprés» que Ricardo definió para la Sesión A quedaron hechos
 
 ## Criterios de aceptación
 
-- [ ] La unidad se lee sin foco y con el campo vacío, con etiqueta visible
-- [ ] Los grupos de campos cortos se leen como tabla, no como renglones sueltos
-- [ ] El número de conteo no queda pegado al margen derecho de su celda
+- [x] La unidad se lee sin foco y con el campo vacío, con etiqueta visible (etiqueta flotante `effective_label` en `VCountInput`)
+- [x] Los grupos de campos cortos se leen bien con divider entre renglones; Ricardo cerró que no hacía falta disposición tabular (2026-08-14)
+- [x] El número de conteo no queda pegado al margen derecho de su celda (`text-align:right` sobre variante `outlined` con padding propio)
 - [x] La tabla de autoridades ordena mujeres antes que hombres, igual que la de poblaciones
 - [x] Encabezado y contenido de cada columna de conteo comparten alineación
 - [x] La columna Total tiene el mismo ancho fijo que Mujeres y Hombres
-- [ ] Diseño de panels y captura aprobado visualmente por Ricardo
+- [x] Diseño de panels y captura aprobado visualmente por Ricardo (2026-08-14)

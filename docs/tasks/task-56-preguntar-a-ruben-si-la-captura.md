@@ -2,7 +2,7 @@
 type: task
 id: task-56
 title: Preguntar a Rubén si la captura de poblaciones requiere el estado «sin dato» (no_apply)
-state: open
+state: closed
 date: 2026-08-04
 owner: ricardo
 parent: "[[task-41]]"
@@ -30,9 +30,13 @@ Un supuesto que hay que construir antes: Ricardo se lo explicó a Rubén como «
 
 El AC del «No aplica» de autoridades quedó implementado vía [[task-106]] en `943c7ac`: checkbox por fila al final, después del Total (posición decidida por el coordinador con delegación de Ricardo), persistido en `no_apply`, que limpia y deshabilita los conteos de la fila y la exime en la validación — que ahora sí existe y sí bloquea. El primer nivel del «sin dato» de poblaciones quedó cubierto por el tri-estado de [[task-112]]; el segundo nivel («no» vs «no sé») sigue como lo dejó [[adr-0012]]: no resuelto y aceptado. En el cierre de la sesión Ricardo descartó explícitamente agregar `no_data` a [[task-117]] por ahora — si madura, será decisión metodológica aparte.
 
+## Resolución de la primera pregunta (2026-08-14)
+
+Ricardo cerró que **poblaciones no requiere el estado «sin dato» capturable**: el tri-estado de presencia de [[task-112]] cubre el primer nivel, y el segundo nivel («no» vs «no sé») queda como lo dejó [[adr-0012]] —no resuelto y aceptado—. No se usa `no_apply` en poblaciones; si el retiro del campo del modelo llega a valer la pena, será decisión metodológica aparte.
+
 ## Criterios de aceptación
 
-- [ ] Rubén respondió si «existe pero sin dato» debe ser capturable en poblaciones, distinto de no marcar el sector
+- [x] Resuelto: «existe pero sin dato» NO se captura aparte en poblaciones; el tri-estado lo cubre y el segundo nivel queda en [[adr-0012]]
 - [x] Resuelto si algún cuerpo de autoridad puede no existir: se asume que sí, sin preguntar
 - [x] Las tres filas de autoridades tienen la opción «No aplica», persistida en `no_apply`
-- [ ] Con la respuesta de poblaciones: se agenda el uso de `no_apply` donde aplique, o se evalúa retirar el campo del modelo
+- [x] Poblaciones no agenda uso de `no_apply`; el posible retiro del campo queda como decisión metodológica futura

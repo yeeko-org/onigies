@@ -23,7 +23,7 @@ export const SECTION_BP = 'bp'
 // En el orden en que se presentan a la IES.
 export const ALL_SECTIONS = [SECTION_BASE, SECTION_CP, SECTION_BP]
 
-export const PUBLISHED_SECTIONS = [SECTION_BP]
+export const PUBLISHED_SECTIONS = [SECTION_BASE, SECTION_BP]
 
 /**
  * Sección a la que pertenece un valor de pestaña. Los ejes usan pestañas

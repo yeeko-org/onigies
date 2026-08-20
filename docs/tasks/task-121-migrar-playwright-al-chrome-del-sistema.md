@@ -2,7 +2,7 @@
 type: task
 id: task-121
 title: Migrar playwright al Chrome del sistema (channel chrome)
-state: open
+state: closed
 date: 2026-08-12
 owner: ai
 parent: "[[task-94]]"

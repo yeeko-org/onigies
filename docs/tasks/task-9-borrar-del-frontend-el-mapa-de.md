@@ -2,7 +2,7 @@
 type: task
 id: task-9
 title: Borrar del frontend el mapa de status viejo
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-1]]"

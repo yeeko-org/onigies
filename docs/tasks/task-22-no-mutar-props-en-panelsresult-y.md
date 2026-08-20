@@ -2,7 +2,7 @@
 type: task
 id: task-22
 title: No mutar props en PanelsResult y PanelList
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-3]]"

@@ -2,7 +2,7 @@
 type: task
 id: task-119
 title: Bug latente de patchCatalog con PK de texto
-state: open
+state: closed
 date: 2026-08-12
 owner: ai
 parent: "[[task-3]]"

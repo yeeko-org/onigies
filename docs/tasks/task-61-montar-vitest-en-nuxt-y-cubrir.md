@@ -18,6 +18,10 @@ Además de su propio alcance, esta task encabeza el mini-bloque de testing del m
 
 Las dos se agrupan porque comparten la misma dependencia y el mismo destino documental — la parte de frontend de [[task-94]] espera precisamente a que Vitest exista, y las dos actualizan el `TESTING.md` que las cubre.
 
+## Estado (19-ago-2026)
+
+Sus cuatro criterios están cumplidos y comiteados, y su otra hija [[task-121]] quedó cerrada. **No se cierra porque [[task-94]] sigue abierta**, y esa espera a que Ricardo acote la lista de tests propuesta — cerrar el padre en `--recursive` la arrastraría de refilón. Queda abierta solo como raíz del bloque de testing: en cuanto task-94 se resuelva (o se reasigne a otro padre), esta se cierra sin más trabajo.
+
 ## Criterios de aceptación
 
 - [x] Vitest configurado en nuxt/ (dependencia aprobada por Ricardo en la sesión de task-53)

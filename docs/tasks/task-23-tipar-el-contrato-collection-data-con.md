@@ -2,7 +2,7 @@
 type: task
 id: task-23
 title: Tipar el contrato collection_data con JSDoc
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-3]]"

@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read",
-      "Skill(duo)"
+      "Skill(duo)",
+      "Bash(node /home/rick/.claude/skills/documenter/scripts/validate.mjs)"
     ]
   }
 }

@@ -56,7 +56,7 @@ longer recomputes it):
 | `pk` | primary-key field name (fallback `'id'`) |
 | `name_field` | first of `name`/`title` present — used as the row title |
 | `has.{comments,description,help_text,order,color,icon}` | booleans: does the model have that field |
-| `status_groups` | field names whose `related_model === 'StatusControl'` |
+| `status_groups` | field names whose `related_model === 'StatusControl'` — still in the payload, no longer rendered (UI retired 2026-08-20; removed in task-7) |
 
 Computed front-side by `calculateSchemas` (UI-only / needs full field objects):
 
@@ -177,14 +177,15 @@ The filters shown at the top of every list are assembled in `cats.js` into
    `ComponentFilter` (no `filter_name`) keeps `is_custom: true`.
 2. **Category filter group** — if `is_category`, the matching `FilterGroupSchema`
    is pushed (multi-level group/type/subtype select).
-3. **Status groups** — for each `StatusControl` field, the matching entry from
-   `status_filters` (`composables/filters.js`) is pushed.
+3. ~~**Status groups**~~ — no longer pushed (UI retired 2026-08-20). The
+   `status_groups` key still travels in the payload but nothing renders it;
+   it dies entirely with `StatusControl` in task-7.
 
 `FiltersList.vue` dispatches each filter to a widget by shape:
 
 | Filter shape | Widget |
 |---|---|
-| has `collection` | `StatusDetail` (status select) |
+| has `collection` | `StatusDetail` (status select) — unreachable since 2026-08-20; dies in task-7 |
 | has `key_name` | `SelectGroup` (hierarchical D3-tree select from `all_nodes`) |
 | has `component` | custom: `TripleBooleanFilter`, `RangeDates`, `UserSelect`, `OnlyByFilter` |
 

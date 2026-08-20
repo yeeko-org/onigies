@@ -15,4 +15,4 @@ source: ["[[2026-08-12-sesion-orquestada-a-b-captura-correcta]]"]
 
 ## Criterios de aceptación
 
-- [ ] La config usa `channel: 'chrome'` y la suite completa pasa
+- [x] La config usa `channel: 'chrome'` y la suite completa pasa

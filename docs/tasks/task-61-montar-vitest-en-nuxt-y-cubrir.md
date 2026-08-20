@@ -20,7 +20,7 @@ Las dos se agrupan porque comparten la misma dependencia y el mismo destino docu
 
 ## Criterios de aceptación
 
-- [ ] Vitest configurado en nuxt/ (dependencia aprobada por Ricardo en la sesión de task-53)
-- [ ] Test unitario de utils/sections.js: sectionOfTab (axis-{id} → cp, valores inválidos → null) y visibleSections/isSectionVisible para IES real y de prueba
-- [ ] Cubierto el caso de la IES real: solo ve bp y un ?tab=base cae en la primera sección publicada
-- [ ] TESTING.md de nuxt actualizado con el nivel unitario
+- [x] Vitest configurado en nuxt/ (dependencia aprobada por Ricardo en la sesión de task-53)
+- [x] Test unitario de utils/sections.js: sectionOfTab (axis-{id} → cp, valores inválidos → null) y visibleSections/isSectionVisible para IES real y de prueba
+- [x] Cubierto el caso de la IES real: solo ve bp y un ?tab=base cae en la primera sección publicada
+- [x] TESTING.md de nuxt actualizado con el nivel unitario

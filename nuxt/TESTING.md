@@ -2,13 +2,13 @@
 
 ## Niveles montados
 
-Solo end-to-end con Playwright, contra el backend **mockeado** (`page.route`): la app corre de verdad, la API no. Ver el skill `playwright-e2e` para el flujo de trabajo MCP ↔ tests.
-
-**No hay Vitest.** La lógica pura (`app/utils/sections.js` y compañía) hoy queda cubierta solo de refilón por los e2e; montarlo está pendiente como task.
+- **Unitario con Vitest** (`vitest.config.ts`, tests en `tests/unit/`): lógica pura sin Nuxt ni DOM. Hoy cubre `app/utils/sections.js` — `sectionOfTab`, `visibleSections`/`isSectionVisible` para IES real y de prueba, y la regla de la IES real: no ve `cp` y un deep-link a una sección no publicada cae en la primera publicada.
+- **End-to-end con Playwright**, contra el backend **mockeado** (`page.route`): la app corre de verdad, la API no. Ver el skill `playwright-e2e` para el flujo de trabajo MCP ↔ tests.
 
 ## Comandos
 
 ```bash
+pnpm run test:unit           # unitarios (Vitest, solo tests/unit/)
 pnpm run test:e2e            # suite completa
 pnpm run test:e2e:ui         # modo interactivo
 pnpm run test:e2e:debug      # paso a paso

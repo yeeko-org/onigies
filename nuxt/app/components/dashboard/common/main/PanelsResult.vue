@@ -118,7 +118,6 @@ function closeDialog() {
   element_to_edit.value = null
 }
 
-// El dueño de `results` (p. ej. CollectionDisplay) aplica la mutación.
 function saveNewElement({res, is_new}) {
   emits('item-saved', {res, is_new})
   closeDialog()
@@ -167,8 +166,6 @@ function selectItem(item) {
   emits('select-item', item)
 }
 
-// `selected_results` sí es propio: se actualiza aquí y se reenvía el
-// evento para que el dueño de `results` haga lo suyo.
 function saveDialogItem({res, is_new}) {
   const pk = props.collection_data.pk
   if (!is_new) {

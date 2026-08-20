@@ -1,8 +1,6 @@
 <script setup>
 
-import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import Comments from "~/components/dashboard/common/utils/Comments.vue";
-import { patchElement } from "~/composables/save_elements.js";
 
 const props = defineProps({
   final_collection_data: Object,
@@ -22,29 +20,7 @@ function openLink(type) {
     window.open('https://vuetifyjs.com/en/styles/colors/#material-colors', '_blank')
 }
 
-const loading_edition = ref(false)
-
 const emits = defineEmits(['update-status', 'update-comments'])
-
-function saveStatus(new_status, status_group) {
-  if (!full_main.value.id)
-    return
-
-  loading_edition.value = true
-  let params = {[status_group]: new_status}
-  const msg_error = 'No se pudo actualizar el status.'
-  patchElement(props.final_collection_data, full_main.value.id, params,
-    msg_error).then((res)=>{
-      if (res.errors) {
-        loading_edition.value = false
-        return
-      }
-      emits('update-status', {status_group, new_status, res: res.data})
-      setTimeout(() => {
-        loading_edition.value = false
-      }, 800)
-    })
-}
 
 </script>
 
@@ -73,18 +49,6 @@ function saveStatus(new_status, status_group) {
         :rules="[rules.required]"
       />
       <v-spacer></v-spacer>
-      <template v-if="final_collection_data.status_groups">
-        <StatusDetail
-          v-for="status_group in final_collection_data.status_groups"
-          v-model="full_main"
-          :collection="status_group"
-          style="max-width: 300px;"
-          density="default"
-          class="mr-1"
-          :loading="loading_edition"
-          @change-status="saveStatus($event, status_group)"
-        />
-      </template>
       <Comments
         v-if="final_collection_data.has.comments"
         :main="full_main"

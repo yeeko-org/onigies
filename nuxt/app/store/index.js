@@ -146,8 +146,6 @@ export const useMainStore = defineStore('main', {
     async patchCatalog([collection_data, id, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const collection = collection_data.snake_name
-      // PK real de la colección: hay catálogos con PK de texto (slug),
-      // donde `el.id` es undefined y findIndex acertaría en el índice 0.
       const pk = collection_data.pk || 'id'
       const full_url = `catalogs/${collection}/${id}/`
       try {
@@ -289,13 +287,9 @@ export const useMainStore = defineStore('main', {
       })
       return status_dict
     },
-
-    // Metadata por grupo de status, indexada por nombre de campo
-    // (status_sending, ...); viaja en /catalogs/all/ (task-9).
     status_filters(state) {
       return state.schemas?.status_filters || {}
     },
-
     collections_summary(state) {
       return state.schemas.collections.reduce((obj, coll) => {
         obj[coll.snake_name] = {

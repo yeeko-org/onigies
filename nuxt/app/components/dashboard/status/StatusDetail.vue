@@ -2,6 +2,7 @@
 import { useMainStore } from '~/store'
 import { storeToRefs } from 'pinia'
 import {useAuthStore} from "~/store/auth.js";
+import {statusGroupLabel} from "~/composables/filters.js";
 const authStore = useAuthStore()
 const mainStore = useMainStore()
 // export default defineComponent({
@@ -30,7 +31,7 @@ const props = defineProps({
 
 const final_filters = defineModel({type: Object, required: true})
 
-const { status, status_filters } = storeToRefs(mainStore)
+const { status } = storeToRefs(mainStore)
 
 const simple_name = computed(() => {
   return props.collection.replace('status_', '');
@@ -40,10 +41,7 @@ const items_built = computed(() => {
   return status.value[simple_name.value]
 })
 
-const label = computed(() => {
-  const status_info = status_filters.value[field.value]
-  return `Status ${status_info?.name || ''}`.trim()
-})
+const label = computed(() => statusGroupLabel(field.value))
 
 const field = computed(() => {
   if (props.collection.includes('status_'))

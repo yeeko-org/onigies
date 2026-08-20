@@ -65,8 +65,6 @@ const is_group = computed(() =>
 const saveOrder = (val) => {
   if (!val) return
   const params = {order: props.main.order}
-  // PK real, no `id`: en catálogos con PK de texto (p. ej. general_group)
-  // `main.id` es undefined y el PATCH iría a `/undefined/`.
   const elem_id = props.main[props.collection_data.pk]
 
   patchElement(props.collection_data, elem_id, params,
@@ -77,7 +75,10 @@ const saveOrder = (val) => {
 </script>
 
 <template>
-  <v-expansion-panel class="d-flex">
+  <v-expansion-panel
+    class="d-flex"
+    :value="main[collection_data.pk]"
+  >
     <v-sheet
       :color="background_color"
       class="d-flex align-start flex-shrink-0 justify-center"

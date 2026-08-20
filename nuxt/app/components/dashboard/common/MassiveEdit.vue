@@ -1,6 +1,5 @@
 <script setup>
 
-import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 import { saveElement } from "~/composables/save_elements.js";
 
@@ -114,19 +113,8 @@ function sendMassiveEdit() {
         <template
           v-if="active_fields.includes(field.name)"
         >
-          <StatusDetail
-            v-if="field.collection"
-            v-model="full_main"
-            :collection="field.key_name"
-            clearable
-            hide-details
-            style="max-width: 320px; min-width: 200px;"
-            @change-status="applyFilters"
-            is_filter
-            class="pr-3 pl-0 py-1"
-          />
           <div
-            v-else-if="field.key_name"
+            v-if="field.key_name"
             class="pr-3 pl-0 py-1 d-flex"
           >
             <SelectGroup

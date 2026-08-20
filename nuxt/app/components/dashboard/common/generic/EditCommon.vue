@@ -11,7 +11,8 @@ import AlertInfo from "~/components/dashboard/common/utils/AlertInfo.vue";
 const mainStore = useMainStore()
 const dashboardStore = useDashboardStore()
 import { saveElement, deleteElement } from "~/composables/save_elements.js";
-const { schemas, status_dict, status_filters } = storeToRefs(mainStore)
+import { statusGroupLabel } from "~/composables/filters.js";
+const { schemas, status_dict } = storeToRefs(mainStore)
 const { showSnackbar } = dashboardStore
 
 const props = defineProps({
@@ -83,8 +84,7 @@ function finishSave(snackbar_msg='Se ha guardado el registro'){
 function updateStatus({status_group, new_status, res}){
   const status_key = status_group.replace('status_', '')
   const new_status_obj = status_dict.value[status_key][new_status]
-  const status_info = status_filters.value[status_group]
-  const msg = `Status ${status_info?.name || ''} actualizado
+  const msg = `${statusGroupLabel(status_group)} actualizado
     a "${new_status_obj.public_name}"`
   finishSave(msg)
   emits('item-saved', {res, is_new: false})

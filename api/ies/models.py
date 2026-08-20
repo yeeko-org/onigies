@@ -320,12 +320,8 @@ ROLE_CHOICES = [
     ("ies", "Institución"),
 ]
 
-# Complemento por grupo para la metadata que /catalogs/all/ entrega al
-# front: orden en el panel de filtros y status inicial al crear registros
-# (los mismos defaults que siembra Institution.save). Antes vivía
-# duplicado y hardcodeado en nuxt/app/composables/filters.js (task-9).
 STATUS_GROUP_PARAMS = {
-    "register": {"order": 4, "default_value": "pre_start"},
+    "register": {"order": 3, "default_value": "pre_start"},
     "sending": {"order": 4, "default_value": "draft"},
     "validation": {"order": 5, "default_value": "proposed"},
 }

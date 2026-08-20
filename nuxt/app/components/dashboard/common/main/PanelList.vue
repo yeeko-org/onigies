@@ -26,10 +26,8 @@ const emits = defineEmits(['select-item', 'item-saved', 'item-deleted'])
 const header_component = useDynamicComponent(props.collection_data, 'Header')
 const sheet_component = useDynamicComponent(props.collection_data, 'Sheet')
 
-// El dueño de `results` aplica la mutación; aquí solo se cierra el panel
-// abierto (estado local) y se reenvía el evento.
 function deleteItem(elem_id) {
-  open_panels.value = []
+  open_panels.value = open_panels.value.filter(id => id !== elem_id)
   emits('item-deleted', elem_id)
 }
 

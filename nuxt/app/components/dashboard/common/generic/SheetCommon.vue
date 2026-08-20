@@ -97,12 +97,6 @@ function applyItemDeleted(child, del_id) {
       </span>
     </v-card-title>
     <v-card-text>
-<!--      <PanelList-->
-<!--        v-if="false"-->
-<!--        :results="child_collection.results"-->
-<!--        :collection_data="child_collection.collection_data"-->
-<!--        :show_details="show_details"-->
-<!--      />-->
       <PanelsResult
         v-if="child_collection.results"
         :results="child_collection.results"

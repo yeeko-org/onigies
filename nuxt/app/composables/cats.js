@@ -10,9 +10,6 @@ import { devWarn } from "~/utils/log.js";
  * @returns {import('~/types/collection.js').Schemas}
  */
 export function calculateSchemas(data) {
-  // Metadata por grupo de status (nombres, orden, default): la entrega
-  // /catalogs/all/ (ies.models.status_groups_data); aquí solo se indexa
-  // por nombre de campo (status_sending, ...).
   const status_filters = (data.status_groups || []).reduce((obj, sg) => {
     obj[sg.collection] = sg
     return obj
@@ -87,18 +84,6 @@ export function calculateSchemas(data) {
       }
     }
 
-    coll.status_groups.forEach(sg => {
-      const status = status_filters[sg]
-      if (!status){
-        devWarn("cats: sin metadata de status para", sg)
-        return
-      }
-      collection_filters.push(status)
-      available_sorts.push({
-        value: `${status.collection}__order`,
-        title: `Status ${status.name}`
-      })
-    })
     if (coll.name_field)
       available_sorts.push({
         title: "Nombre / Título",

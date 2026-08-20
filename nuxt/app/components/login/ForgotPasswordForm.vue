@@ -37,7 +37,11 @@ async function requestReset() {
     >
       Si el correo existe, recibirás un enlace en breve.
     </v-alert>
-    <v-form ref="form_ref" class="d-flex flex-column align-center">
+    <v-form
+      ref="form_ref"
+      class="d-flex flex-column align-center"
+      @submit.prevent="requestReset"
+    >
       <v-text-field
         v-model="email"
         label="Correo electrónico"

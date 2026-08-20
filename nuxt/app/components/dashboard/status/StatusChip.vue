@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { useMainStore } from '~/store'
 import { storeToRefs } from 'pinia'
-import {status_filters} from "~/composables/filters.js";
 
 const props = defineProps({
   main: {
@@ -34,7 +33,7 @@ const mainStore = useMainStore();
 
 const want_edit_note = ref(false);
 
-const { status_dict } = storeToRefs(mainStore);
+const { status_dict, status_filters } = storeToRefs(mainStore);
 
 // Compute item_built using the status_dict and props
 const field = computed(() => {
@@ -66,10 +65,8 @@ const item_built = computed(() => {
 });
 
 const label = computed(() => {
-  if (status_filters[props.collection] === undefined)
-    return 'Status:';
-
-  return `${status_filters[props.collection].short_name}:`;
+  const status_info = status_filters.value[props.collection]
+  return status_info ? `${status_info.short_name}:` : 'Status:';
 })
 
 </script>

@@ -1,6 +1,5 @@
 <script setup>
 import {computed, nextTick, watch} from "vue";
-import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import { useFlowStore } from "~/store/flow.js";
 import CommentIcon from "~/components/dashboard/common/utils/CommentIcon.vue";
@@ -143,29 +142,16 @@ const emits = defineEmits(['open-panel'])
       </div>
     </v-toolbar-title>
     <template v-if="real_show_details" >
-      <!-- Flujo nuevo: si `main.status` resuelve en el catálogo de flujo, ese
-           chip manda y reemplaza a los chips viejos por status_group. -->
+      <!-- Único camino de estado: el catálogo del motor de flujo. Los chips
+           viejos por status_group se retiraron (task-9): toda colección con
+           status es participante del flujo y su `status` siempre se siembra,
+           mientras que los campos StatusControl quedan stale al transicionar. -->
       <FlowStatusChip
         v-if="mainFlowStatus && !is_map_viz"
         :status="main.status"
         size="small"
         class="ml-1"
       />
-      <template v-else-if="collection_data.status_groups && !is_map_viz">
-        <div
-          v-for="status_group in collection_data.status_groups"
-          :key="status_group"
-        >
-          <StatusChip
-            v-if="status_group !== 'status_retro' || main[status_group]"
-            :main="main"
-            :collection="status_group"
-            small
-            class="ml-1"
-            :bold_text="false"
-          />
-        </div>
-      </template>
       <div
         v-if="collection_data.has.comments && !is_map_viz"
         style="width: 35px;"

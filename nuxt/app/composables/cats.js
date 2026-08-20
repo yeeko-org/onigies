@@ -1,7 +1,22 @@
-import {status_filters} from "~/composables/filters.js";
 import { devWarn } from "~/utils/log.js";
 
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
+/** @typedef {import('~/types/collection.js').FilterGroup} FilterGroup */
+
+/**
+ * Enriches the raw `/catalogs/all/` payload into the dashboard schemas.
+ * @param {Object} data Raw payload from `/catalogs/all/`.
+ * @returns {import('~/types/collection.js').Schemas}
+ */
 export function calculateSchemas(data) {
+  // Metadata por grupo de status (nombres, orden, default): la entrega
+  // /catalogs/all/ (ies.models.status_groups_data); aquí solo se indexa
+  // por nombre de campo (status_sending, ...).
+  const status_filters = (data.status_groups || []).reduce((obj, sg) => {
+    obj[sg.collection] = sg
+    return obj
+  }, {})
   let filter_groups = data.filter_groups.map(fg => {
     let new_fg =  {...fg, ...fg.addl_config}
     const cat_group = new_fg.category_group || new_fg.special_group
@@ -13,7 +28,8 @@ export function calculateSchemas(data) {
     obj[fg.key_name] = fg
     return obj
   }, {})
-  let collections = data.collections.map(coll => {
+  let collections = data.collections.map(
+      (/** @type {CollectionData} */ coll) => {
     const valid_relations = ['one_to_many', 'many_to_many']
     coll.child_relation_fields = coll.fields.filter(field => {
       return valid_relations.includes(field.relation_type)
@@ -73,6 +89,10 @@ export function calculateSchemas(data) {
 
     coll.status_groups.forEach(sg => {
       const status = status_filters[sg]
+      if (!status){
+        devWarn("cats: sin metadata de status para", sg)
+        return
+      }
       collection_filters.push(status)
       available_sorts.push({
         value: `${status.collection}__order`,
@@ -107,5 +127,6 @@ export function calculateSchemas(data) {
     "filter_groups": filter_groups,
     "levels": data.levels,
     "filters_dict": filters_dict,
+    "status_filters": status_filters,
   }
 }

@@ -21,27 +21,16 @@ const props = defineProps({
 const open_panels = ref([])
 const main_show_details = ref(false)
 
-const emits = defineEmits(['select-item'])
+const emits = defineEmits(['select-item', 'item-saved', 'item-deleted'])
 
 const header_component = useDynamicComponent(props.collection_data, 'Header')
 const sheet_component = useDynamicComponent(props.collection_data, 'Sheet')
 
-function addItem({res, is_new}) {
-  if (is_new)
-    props.results.unshift(res)
-  else {
-    const pk = props.collection_data.pk
-    const index = props.results.findIndex(result => result[pk] === res[pk])
-    props.results[index] = {...props.results[index], ...res}
-  }
-}
-
+// El dueño de `results` aplica la mutación; aquí solo se cierra el panel
+// abierto (estado local) y se reenvía el evento.
 function deleteItem(elem_id) {
-  // console.log("deleteItem", res)
   open_panels.value = []
-  const index = props.results.findIndex(
-      result => result[props.collection_data.pk] === elem_id)
-  props.results.splice(index, 1)
+  emits('item-deleted', elem_id)
 }
 
 function changeShowDetails() {
@@ -73,7 +62,7 @@ const elem_id = computed(() => props.collection_data.pk)
       :sel="sel"
       :main_action="main_action"
       @finish-open="changeShowDetails"
-      @item-saved="addItem"
+      @item-saved="emits('item-saved', $event)"
       @item-deleted="deleteItem"
       @select-item="emits('select-item', $event)"
     >

@@ -56,6 +56,26 @@ const elem_id = computed(() => {
   return props.collection_data.pk
 })
 
+// Los Panel* ya no mutan sus props (task-22); el dueño de la lista aplica
+// el cambio. Aquí la lista es el array anidado en `full_main`.
+function applyItemSaved(child, {res, is_new}) {
+  if (is_new) {
+    child.results.unshift(res)
+    return
+  }
+  const pk = child.collection_data.pk
+  const idx = child.results.findIndex(r => r[pk] === res[pk])
+  if (idx !== -1)
+    child.results[idx] = {...child.results[idx], ...res}
+}
+
+function applyItemDeleted(child, del_id) {
+  const pk = child.collection_data.pk
+  const idx = child.results.findIndex(r => r[pk] === del_id)
+  if (idx !== -1)
+    child.results.splice(idx, 1)
+}
+
 </script>
 
 <template>
@@ -90,6 +110,8 @@ const elem_id = computed(() => {
         :show_details="show_details"
         :total_count="child_collection.results.length"
         in_sheet
+        @item-saved="applyItemSaved(child_collection, $event)"
+        @item-deleted="applyItemDeleted(child_collection, $event)"
       />
       <CollectionDisplay
         v-else

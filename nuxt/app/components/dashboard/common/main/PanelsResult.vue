@@ -1,4 +1,6 @@
 <script setup>
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
 
 import PanelList from "~/components/dashboard/common/main/PanelList.vue";
 import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
@@ -7,14 +9,15 @@ import EditCommon from "~/components/dashboard/common/generic/EditCommon.vue";
 import MassiveActions from "~/components/dashboard/common/utils/MassiveActions.vue";
 import {useMainStore} from "~/store/index.js";
 import MassiveEdit from "~/components/dashboard/common/MassiveEdit.vue";
-import {status_filters} from "~/composables/filters.js";
 
 const mainStore = useMainStore()
 const { mergeSimple } = mainStore
 
 const props = defineProps({
   results: Array,
-  collection_data: Object,
+  collection_data: {
+    type: /** @type {import('vue').PropType<CollectionData>} */ (Object),
+  },
   show_details: {
     type: Boolean,
     default: false,
@@ -42,7 +45,8 @@ const page_number = ref(1)
 const showing = ref(15)
 
 defineExpose({ addItem, resetPage })
-const emits = defineEmits(['select-item', 'update-page-number'])
+const emits = defineEmits([
+    'select-item', 'update-page-number', 'item-saved', 'item-deleted'])
 
 const edit_component = useDynamicComponent(props.collection_data, 'Edit')
 
@@ -97,9 +101,9 @@ function addItem() {
     if (field.default !== undefined && field.default !== null)
       element_to_edit.value[field.name] = field.default
     else if (field.related_model === 'StatusControl'){
-      const status_control = status_filters[field.name]
-      if (status_control && status_control.default_value)
-        element_to_edit.value[field.name] = status_control.default_value
+      const status_info = mainStore.status_filters[field.name]
+      if (status_info && status_info.default_value)
+        element_to_edit.value[field.name] = status_info.default_value
     }
   })
   dialog_edit.value = true
@@ -114,14 +118,9 @@ function closeDialog() {
   element_to_edit.value = null
 }
 
+// El dueño de `results` (p. ej. CollectionDisplay) aplica la mutación.
 function saveNewElement({res, is_new}) {
-  if (is_new)
-    props.results.unshift(res)
-  else{
-    const elem_id = props.collection_data.pk
-    const idx = props.results.findIndex(r => r[elem_id] === res[elem_id])
-    props.results.splice(idx, 1, res)
-  }
+  emits('item-saved', {res, is_new})
   closeDialog()
 }
 
@@ -150,9 +149,7 @@ function mergeItems(res_main) {
           `Error al fusionar ${merge_id}: ${res.error_data.errors}`)
         return
       }
-      const idx = props.results.findIndex(
-          result => result[elem_id] === merge_id)
-      props.results.splice(idx, 1)
+      emits('item-deleted', merge_id)
     })
   })
   if (editRef.value)
@@ -168,6 +165,26 @@ function massiveFinish(){
 
 function selectItem(item) {
   emits('select-item', item)
+}
+
+// `selected_results` sí es propio: se actualiza aquí y se reenvía el
+// evento para que el dueño de `results` haga lo suyo.
+function saveDialogItem({res, is_new}) {
+  const pk = props.collection_data.pk
+  if (!is_new) {
+    const idx = selected_results.value.findIndex(r => r[pk] === res[pk])
+    if (idx !== -1)
+      selected_results.value[idx] = {...selected_results.value[idx], ...res}
+  }
+  emits('item-saved', {res, is_new})
+}
+
+function deleteDialogItem(elem_id) {
+  const pk = props.collection_data.pk
+  const idx = selected_results.value.findIndex(r => r[pk] === elem_id)
+  if (idx !== -1)
+    selected_results.value.splice(idx, 1)
+  emits('item-deleted', elem_id)
 }
 
 </script>
@@ -270,6 +287,8 @@ function selectItem(item) {
         :is_simple="is_simple"
         :main_action="final_main_action"
         @select-item="selectItem"
+        @item-saved="emits('item-saved', $event)"
+        @item-deleted="emits('item-deleted', $event)"
       />
       <v-card-actions
         v-if="in_sheet && showing < results.length"
@@ -348,6 +367,8 @@ function selectItem(item) {
             :collection_data="collection_data"
             :show_details="show_details"
             :sel="sel"
+            @item-saved="saveDialogItem"
+            @item-deleted="deleteDialogItem"
           />
         </template>
       </v-card-text>

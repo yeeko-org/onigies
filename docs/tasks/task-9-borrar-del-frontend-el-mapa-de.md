@@ -17,5 +17,5 @@ source: ["[[2026-06-23-progreso-frontend-del-flujo]]", "[[2026-06-19-recomendaci
 
 ## Criterios de aceptación
 
-- [ ] `status_filters` ya no vive hardcodeado en el frontend
-- [ ] `HeaderCommon` tiene un solo camino de estado
+- [x] `status_filters` ya no vive hardcodeado en el frontend
+- [x] `HeaderCommon` tiene un solo camino de estado

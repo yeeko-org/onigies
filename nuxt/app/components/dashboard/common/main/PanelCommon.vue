@@ -1,4 +1,6 @@
 <script setup>
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
 import { getElement } from "~/composables/save_elements.js";
 import EditCommon from "~/components/dashboard/common/generic/EditCommon.vue";
 import { patchElement } from "~/composables/save_elements.js";
@@ -7,7 +9,7 @@ import { useDynamicComponent } from "~/composables/useDynamicComponent.js";
 const props = defineProps({
   main: Object,
   collection_data: {
-    type: Object,
+    type: /** @type {import('vue').PropType<CollectionData>} */ (Object),
     required: true,
   },
   sel: Object,
@@ -63,8 +65,11 @@ const is_group = computed(() =>
 const saveOrder = (val) => {
   if (!val) return
   const params = {order: props.main.order}
+  // PK real, no `id`: en catálogos con PK de texto (p. ej. general_group)
+  // `main.id` es undefined y el PATCH iría a `/undefined/`.
+  const elem_id = props.main[props.collection_data.pk]
 
-  patchElement(props.collection_data, props.main.id, params,
+  patchElement(props.collection_data, elem_id, params,
       'No se pudo guardar el orden.')
 }
 

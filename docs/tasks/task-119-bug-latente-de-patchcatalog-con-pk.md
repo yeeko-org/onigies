@@ -18,5 +18,5 @@ Hoy no se dispara: los `EditSimple` de los catálogos nuevos guardan por `saveEl
 
 ## Criterios de aceptación
 
-- [ ] `patchCatalog` localiza por la PK real de la colección, no por `id` a secas
-- [ ] El modo reordenar sobre `general_group` no corrompe el store
+- [x] `patchCatalog` localiza por la PK real de la colección, no por `id` a secas
+- [x] El modo reordenar sobre `general_group` no corrompe el store

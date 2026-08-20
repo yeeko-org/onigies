@@ -17,4 +17,4 @@ Recomendación 7 de la auditoría. Ambos componentes mutan `props.results` direc
 
 ## Criterios de aceptación
 
-- [ ] Ningún Panel* muta `props.results`
+- [x] Ningún Panel* muta `props.results`

@@ -15,4 +15,4 @@ Recomendación 11. `collection_data` es el corazón del dashboard schema-driven 
 
 ## Criterios de aceptación
 
-- [ ] `collection_data` y `field` tienen typedef y el IDE avisa de propiedades inexistentes
+- [x] `collection_data` y `field` tienen typedef y el IDE avisa de propiedades inexistentes

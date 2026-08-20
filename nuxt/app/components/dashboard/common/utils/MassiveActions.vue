@@ -1,4 +1,6 @@
 <script setup>
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
 
 const props = defineProps({
   results: {
@@ -10,7 +12,7 @@ const props = defineProps({
     required: true,
   },
   collection_data: {
-    type: Object,
+    type: /** @type {import('vue').PropType<CollectionData>} */ (Object),
     required: true,
   },
 })

@@ -2,6 +2,9 @@ import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";
 import { devWarn } from "~/utils/log.js";
 
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
+
 // Campos de archivo que el GET devuelve como URL (o como objeto que la
 // envuelve): reenviarlos al guardar provoca un 400 «The submitted data was
 // not a file». Solo deben viajar cuando hay un archivo nuevo; el logo, de
@@ -21,12 +24,14 @@ function withoutUnchangedFiles(snake_name, element) {
   return clean_element
 }
 
+/** @param {CollectionData} collection_data */
 function final_snake_name(collection_data) {
   const is_category = collection_data.is_category
   const snake_name = collection_data.snake_name
   return { snake_name, is_category }
 }
 
+/** @param {CollectionData} collection_data */
 export async function saveElement(collection_data, element, error_msg = null) {
   const mainStore = useMainStore()
   const { saveSimple, saveCatalog } = mainStore
@@ -38,6 +43,7 @@ export async function saveElement(collection_data, element, error_msg = null) {
     return await saveSimple([snake_name, clean_element], error_msg)
 }
 
+/** @param {CollectionData} collection_data */
 export async function patchElement(
     collection_data, elem_id, params, error_msg = null) {
   const mainStore = useMainStore()
@@ -49,6 +55,7 @@ export async function patchElement(
     return await patchSimple([snake_name, elem_id, params], error_msg)
 }
 
+/** @param {CollectionData} collection_data */
 export async function deleteElement(collection_data, obj_id, error_msg = null) {
   const mainStore = useMainStore()
   const { deleteSimple, deleteCatalog } = mainStore
@@ -59,6 +66,7 @@ export async function deleteElement(collection_data, obj_id, error_msg = null) {
     return await deleteSimple([snake_name, obj_id], error_msg)
 }
 
+/** @param {CollectionData} collection_data */
 export async function getElement(collection_data, el_id, error_msg = null) {
   const mainStore = useMainStore()
   const { getSimple } = mainStore

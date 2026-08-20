@@ -1,4 +1,6 @@
 <script setup>
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
 
 import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import { VSelect, VAutocomplete } from "vuetify/components"
@@ -7,7 +9,9 @@ const { rules } = useRules()
 
 const props = defineProps({
   level_name: String,
-  collection_data: Object,
+  collection_data: {
+    type: /** @type {import('vue').PropType<CollectionData>} */ (Object),
+  },
 
   is_filter: Boolean,
   filter_null: Boolean,

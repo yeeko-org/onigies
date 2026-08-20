@@ -1,9 +1,10 @@
 <script setup>
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
 import {useMainStore} from '~/store/index'
 const mainStore = useMainStore()
 import FiltersList from "~/components/dashboard/common/select/FiltersList.vue";
 import PanelsResult from "~/components/dashboard/common/main/PanelsResult.vue";
-// import { status_filters } from "~/composables/filters.js";
 
 import {storeToRefs} from "pinia";
 import ExportButton from "~/components/dashboard/common/utils/ExportButton.vue";
@@ -15,7 +16,9 @@ const { current_collection_data } = storeToRefs(mainStore)
 const { fetchElements, cancelFetch, exportData } = mainStore
 
 const props = defineProps({
-  parent_collection: Object,
+  parent_collection: {
+    type: /** @type {import('vue').PropType<CollectionData>} */ (Object),
+  },
 
   level_name: String,
   filter_group: Object,
@@ -262,6 +265,29 @@ function selectItem(item) {
   emits('select-item', item)
 }
 
+// Dueño de `results`: aplica aquí las mutaciones que los Panel* solo
+// anuncian por evento (task-22: no mutar props).
+function applyItemSaved({res, is_new}) {
+  if (is_new) {
+    results.value.unshift(res)
+    return
+  }
+  const pk = collection_data.value.pk
+  const idx = results.value.findIndex(r => r[pk] === res[pk])
+  if (idx === -1)
+    return
+  // Se fusiona (no reemplaza): la fila de lista puede traer campos
+  // calculados (counts) que el detalle guardado no incluye.
+  results.value[idx] = {...results.value[idx], ...res}
+}
+
+function applyItemDeleted(elem_id) {
+  const pk = collection_data.value.pk
+  const idx = results.value.findIndex(r => r[pk] === elem_id)
+  if (idx !== -1)
+    results.value.splice(idx, 1)
+}
+
 
 </script>
 
@@ -426,6 +452,8 @@ function selectItem(item) {
       :main_action="main_action"
       @update-page-number="applyFilters($event)"
       @select-item="selectItem"
+      @item-saved="applyItemSaved"
+      @item-deleted="applyItemDeleted"
     />
   </v-card>
 </template>

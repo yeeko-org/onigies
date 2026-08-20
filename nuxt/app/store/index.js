@@ -9,6 +9,10 @@ import { devWarn } from "~/utils/log.js";
 import { ok, fail } from "~/utils/api.js";
 let request = axios.CancelToken.source();
 
+/** @typedef {import('~/types/collection.js').CollectionData
+ *   } CollectionData */
+/** @typedef {import('~/types/collection.js').Schemas} Schemas */
+
 function getLastId(data, pk='id') {
   if (data.elems_ids){
     return { method: 'patch', last_id: `${data.elems_ids[0]}/massive_patch/` }
@@ -24,13 +28,13 @@ export const useMainStore = defineStore('main', {
   state: () => ({
     cats: null,
     all_nodes: {},
-    schemas: {},
+    schemas: /** @type {Schemas|Object} */ ({}),
     cats_ready: false,
     status: {},
     current_filter_group: null,
     current_filter_group_data: null,
     current_collection: null,
-    current_collection_data: null,
+    current_collection_data: /** @type {?CollectionData} */ (null),
   }),
   actions: {
     setFilterGroup(group) {
@@ -107,6 +111,7 @@ export const useMainStore = defineStore('main', {
         return fail(error, error_msg)
       }
     },
+    /** @param {[CollectionData, Object]} args */
     async saveCatalog([collection_data, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const { pk } = collection_data
@@ -137,17 +142,22 @@ export const useMainStore = defineStore('main', {
         return fail(error, error_msg)
       }
     },
+    /** @param {[CollectionData, number|string, Object]} args */
     async patchCatalog([collection_data, id, data], error_msg = null) {
       const { $api } = useNuxtApp()
       const collection = collection_data.snake_name
+      // PK real de la colección: hay catálogos con PK de texto (slug),
+      // donde `el.id` es undefined y findIndex acertaría en el índice 0.
+      const pk = collection_data.pk || 'id'
       const full_url = `catalogs/${collection}/${id}/`
       try {
         let response = await $api.patch(`${full_url}`, data);
         const index = this.cats[collection].findIndex(
-          el => el.id === response.data.id)
-        Object.keys(data).forEach(key => {
-          this.cats[collection][index][key] = response.data[key]
-        })
+          el => el[pk] === response.data[pk])
+        if (index !== -1)
+          Object.keys(data).forEach(key => {
+            this.cats[collection][index][key] = response.data[key]
+          })
         const filter_group = collection_data.filter_group
         if (filter_group){
           this.all_nodes[filter_group.key_name] = hydrateFilterGroup(
@@ -168,6 +178,7 @@ export const useMainStore = defineStore('main', {
         return fail(error, error_msg)
       }
     },
+    /** @param {[CollectionData, number|string]} args */
     async deleteCatalog([collection_data, id], error_msg = null) {
       const { $api } = useNuxtApp()
       const collection = collection_data.snake_name
@@ -277,6 +288,12 @@ export const useMainStore = defineStore('main', {
         })
       })
       return status_dict
+    },
+
+    // Metadata por grupo de status, indexada por nombre de campo
+    // (status_sending, ...); viaja en /catalogs/all/ (task-9).
+    status_filters(state) {
+      return state.schemas?.status_filters || {}
     },
 
     collections_summary(state) {

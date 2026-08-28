@@ -10,7 +10,7 @@ Sesión del 20 de agosto de 2026, coordinada en modo duo. Nace de la revisión q
 
 ## La dinámica de marcadores, estrenada
 
-Ricardo dejó sus dudas en el código con el prefijo `TO-AI:` (6 comentarios) y sus mini-encargos con `AI-TASK:` (3). Todos se aclararon en diálogo y se resolvieron; la convención quedó establecida —detonado el diálogo de aclaración, los `TO-AI` se borran— y capturada con propuesta de estandarización en [[learning-8]], junto al `TO-RICK:` propuesto en [[learning-1]] y al skill de piloto automático de [[learning-2]].
+Ricardo dejó sus dudas en el código con el prefijo `TO-AI:` (6 comentarios) y sus mini-encargos con `AI-TASK:` (3). Todos se aclararon en diálogo y se resolvieron; la convención quedó establecida —detonado el diálogo de aclaración, los `TO-AI` se borran— y capturada con propuesta de estandarización en [[global:fb-48]], junto al `TO-RICK:` propuesto en [[global:fb-42]] y al skill de piloto automático de [[global:fb-43]].
 
 ## Resoluciones de código
 
@@ -27,7 +27,7 @@ Decisiones de Ricardo de hoy: **(1)** la superficie visible de «Status de Enví
 
 ## El episodio de alcances y la colisión de tasks
 
-Tres nodos nacieron en el grafo del proyecto cuando su alcance era global; se reubicaron (las dos ideas como learnings `scope: global`, la task cross-proyecto al grafo global). De la mudanza se quemó el id `task-127` ([[learning-4]]) y el barrido que no miró el grafo global dejó la task ciega a la `task-43` global que ya cubría lo mismo ([[learning-6]]); la resolución fue subordinarla como su fase de inventario. El learning de la regla de alcance se descartó y se borró del disco a petición expresa de Ricardo («es un learning para mí que ya incorporé»). Los bugs de tooling encontrados de paso quedaron como tasks globales (los `\n` literales de `learn --body`).
+Tres nodos nacieron en el grafo del proyecto cuando su alcance era global; se reubicaron (las dos ideas como learnings `scope: global`, la task cross-proyecto al grafo global). De la mudanza se quemó el id `task-127` ([[global:fb-44]]) y el barrido que no miró el grafo global dejó la task ciega a la `task-43` global que ya cubría lo mismo ([[global:fb-46]]); la resolución fue subordinarla como su fase de inventario. El learning de la regla de alcance se descartó y se borró del disco a petición expresa de Ricardo («es un learning para mí que ya incorporé»). Los bugs de tooling encontrados de paso quedaron como tasks globales (los `\n` literales de `learn --body`).
 
 ## Deuda de verificación
 

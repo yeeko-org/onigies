@@ -38,6 +38,8 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - `composables/cats.js` — enriches each collection with field metadata, filters, sorts, `has.*` and `is_category` flags
 - `composables/nodes.js` — builds D3 `stratify()` trees for hierarchical selects; rebuilds on catalog mutation
 - List fetching (debounced search, `results`, `loading_fetch`, `final_filters`) lives **locally** in `CollectionDisplay.vue`
+- Files named `{Model}{Header|Sheet|Edit|EditSimple|Card}.vue` under `app/components/dashboard/{app_label}/{snake_name}/` are loaded by name convention (`app/composables/useDynamicComponent.js`, an `import.meta.glob`): **nothing imports them, and that is normal**.
+- **Warning**: a grep with zero importers on those files does NOT mean dead code. Never rename, move, delete or refactor them without reading the `dashboard-collections` skill first, which holds the full detail (suffixes, fallbacks, props, emits).
 
 ### Collection vs category
 

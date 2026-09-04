@@ -233,6 +233,7 @@ node_modules
 
 # Local env files
 *-lock.yaml
+!nuxt/pnpm-lock.yaml
 
 *.pem
 

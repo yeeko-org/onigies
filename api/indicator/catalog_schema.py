@@ -4,7 +4,10 @@ Declaraciones de catálogo de la app indicator.
 Jerarquía Axis (group) → Component (type) → Observable (subtype), más Sector.
 Todos se auto-generan. Component lleva full_serializer (retrieve anida
 observables; la list cae al auto-gen plano) y filtra por axis; Observable
-filtra por component. El filter group `axes` es multinivel.
+filtra por component y anida sus cinco familias de preguntas
+(question/catalog_schema.py) en el retrieve. El filter group `axes` es
+multinivel: eje → componente → observable → preguntas se recorre entero
+desde `/dashboard/catalog/axes`.
 
 GeneralGroup (sección «Información de base») también es catálogo: su
 pregunta hija vive en question/catalog_schema.py. No lleva filter group
@@ -17,7 +20,8 @@ from indicator.models import (
     Axis, Component, GeneralGroup, Observable, Sector)
 from api.views.confirm_delete import NoDeleteMixin
 from api.views.indicator.serializers import (
-    ComponentFullSerializer, GeneralGroupCatalogSerializer)
+    ComponentFullSerializer, GeneralGroupCatalogSerializer,
+    ObservableFullSerializer)
 
 
 @catalog_registry.register
@@ -43,6 +47,13 @@ class ObservableSchema(CatalogSchema):
     name = "Observable"             # Meta.verbose_name trae sufijo largo
     plural_name = "Observables"
     filterset_fields = ['component']
+    # El retrieve anida las cinco familias de preguntas: el detalle del
+    # observable es la superficie donde se corrige el instrumento.
+    full_serializer_class = ObservableFullSerializer
+    # Los observables los numera y ordena load_questionnaire; desde el
+    # dashboard solo se corrigen sus textos.
+    extra_mixins = [NoDeleteMixin]
+    cat_params = {"hide_create": True}
 
 
 @catalog_registry.register

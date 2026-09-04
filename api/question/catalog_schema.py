@@ -8,15 +8,39 @@ porque su nombre difiere del verbose_name del modelo AOption.
 GeneralQuestion (sección «Información de base») cuelga de
 indicator.GeneralGroup y se edita desde el detalle de su grupo.
 
+Las cinco preguntas por observable (A, B, alcance, planes, especial)
+siguen el mismo patrón contra indicator.Observable: catálogo por tipo,
+filtradas por observable y anidadas en el detalle del observable. Se
+editan sus textos, nunca se crean ni se borran: las siembra
+load_questionnaire y sus respuestas ya capturadas cuelgan de ellas.
+
 Nota: AOption no tiene campo `name`; el endpoint CRUD auto-generado es nuevo
 (antes no existía ruta), así que sólo fallaría una búsqueda por `name`, que
 hoy no ocurría. Sin regresión respecto al estado previo.
 """
 from ps_schema.registry import (
     catalog_registry, CatalogSchema, FilterGroupSchema)
-from question.models import AOption, GeneralQuestion, QuestionType
+from question.models import (
+    AOption, AQuestion, BQuestion, GeneralQuestion, PlanQuestion,
+    QuestionType, ReachQuestion, SpecialQuestion)
 from api.views.confirm_delete import NoDeleteMixin
-from api.views.question.serializers import GeneralQuestionCatalogSerializer
+from api.views.question.serializers import (
+    AQuestionCatalogSerializer, BQuestionCatalogSerializer,
+    GeneralQuestionCatalogSerializer, PlanQuestionCatalogSerializer,
+    ReachQuestionCatalogSerializer, SpecialQuestionCatalogSerializer)
+
+
+class ObservableQuestionSchema(CatalogSchema):
+    """Base de las cinco preguntas por observable.
+
+    No se registra: solo comparte el nivel, el filtro por observable y
+    la doble cerradura de alta y baja. Cada subclase pone su modelo, su
+    serializer y sus nombres.
+    """
+    level = "category_subtype"
+    filterset_fields = ['observable']
+    extra_mixins = [NoDeleteMixin]
+    cat_params = {"hide_create": True}
 
 
 @catalog_registry.register
@@ -45,6 +69,46 @@ class GeneralQuestionSchema(CatalogSchema):
     # capturadas (la FK de GeneralQuestionResponse es PROTECT).
     extra_mixins = [NoDeleteMixin]
     cat_params = {"hide_create": True}
+
+
+@catalog_registry.register
+class AQuestionSchema(ObservableQuestionSchema):
+    model = AQuestion
+    name = "Opción de institucionalización"
+    plural_name = "Opciones de institucionalización"
+    serializer_class = AQuestionCatalogSerializer
+
+
+@catalog_registry.register
+class BQuestionSchema(ObservableQuestionSchema):
+    model = BQuestion
+    name = "Pregunta de transversalización"
+    plural_name = "Preguntas de transversalización"
+    serializer_class = BQuestionCatalogSerializer
+
+
+@catalog_registry.register
+class ReachQuestionSchema(ObservableQuestionSchema):
+    model = ReachQuestion
+    name = "Pregunta de alcance"
+    plural_name = "Preguntas de alcance de población"
+    serializer_class = ReachQuestionCatalogSerializer
+
+
+@catalog_registry.register
+class PlanQuestionSchema(ObservableQuestionSchema):
+    model = PlanQuestion
+    name = "Pregunta de planes"
+    plural_name = "Preguntas de planes de estudio"
+    serializer_class = PlanQuestionCatalogSerializer
+
+
+@catalog_registry.register
+class SpecialQuestionSchema(ObservableQuestionSchema):
+    model = SpecialQuestion
+    name = "Pregunta especial"
+    plural_name = "Preguntas especiales"
+    serializer_class = SpecialQuestionCatalogSerializer
 
 
 @catalog_registry.register_filter_group

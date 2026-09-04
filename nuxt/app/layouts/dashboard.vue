@@ -86,7 +86,9 @@ const main_collections = [
         snake_name: 'sectors',
       },
       {
-        plural_name: 'Ejes y Componentes',
+        // Es la puerta al cuestionario entero: la pestaña de observables
+        // abre en su detalle las preguntas de cada tipo.
+        plural_name: 'Cuestionario: ejes, observables y preguntas',
         snake_name: 'axes',
       },
       {

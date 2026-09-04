@@ -21,7 +21,7 @@ onigies.unam.mx/ · /api · /admin · /media · /static
    └─► nginx (UNAM) ──► legacy Django 127.0.0.1:6000   legacy public site
 ```
 
-The new dashboard is a **self-contained stack** — frontend on Netlify, API on Yeeko. The nginx bridge only forwards the frontend; it never touches the API. The dashboard behaves identically at `onigies.netlify.app` or `onigies.unam.mx` because `NUXT_API_URL` is baked into the build.
+The new dashboard is a **self-contained stack** — frontend on Netlify, API on Yeeko. How the Netlify build runs, its lockfile, and how to verify a publication live in the `deploy-api` skill (section «Frontend build on Netlify»). The nginx bridge only forwards the frontend; it never touches the API. The dashboard behaves identically at `onigies.netlify.app` or `onigies.unam.mx` because `NUXT_API_URL` is baked into the build.
 
 ## Hosts
 

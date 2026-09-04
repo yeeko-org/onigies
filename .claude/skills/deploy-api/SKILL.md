@@ -1,6 +1,6 @@
 ---
 name: deploy-api
-description: "[api] Deploy the Django API to production (Yeeko server): pre-deploy migration-drift checklist, server runbook (pull, backup, migrate, seeds, gunicorn reload) and post-deploy smoke tests. Use whenever deploying the API, pushing the production branch, running migrations on the server, or debugging a 500 that appeared right after a deploy."
+description: "Deploy the ONIGIES monorepo to production: the Django API on the Yeeko server (migration-drift checklist, server runbook, smoke tests) and the Nuxt frontend build on Netlify (pnpm lockfile, local emulation of the build, verifying publication by build id). Use whenever deploying, pushing the production branch, running migrations on the server, debugging a 500 right after a deploy, or when a Netlify build fails or never publishes."
 ---
 
 # deploy-api
@@ -36,7 +36,7 @@ When the working tree is dirty (e.g. `.claude/settings.local.json`), skip the ch
 
    A migration already recorded there will **not** re-run: the amended operations never touch the schema, `migrate` says nothing and `makemigrations --check` still reports "No changes detected" (it compares models against migration *files*, not against the database). The schema diverges in silence — old columns still alive, new fields missing. Amending is only safe while nothing is deployed; if the row is already there, the fix is manual DDL or a follow-up migration, and it is decided with Ricardo before touching anything.
 
-4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock. When the change breaks in **both** directions (frontend and API each need the other's new version), no order is safe — accept the window and minimize it: push, then run the server runbook immediately in one continuous sequence (~6 min achieved on 2026-08-12).
+4. If the frontend also changes: push order matters. Pushing `production` triggers the Netlify build (~2-3 min). Safe direction is **new API + old frontend**; if the skew window matters, lock publishing in the Netlify UI (Deploys → "Lock to stop auto publishing"), deploy the API, then unlock. When the change breaks in **both** directions (frontend and API each need the other's new version), no order is safe — accept the window and minimize it: push, then run the server runbook immediately in one continuous sequence (~6 min achieved on 2026-08-12). Before pushing, run the local emulation of the Netlify build (see [Frontend build on Netlify](#frontend-build-on-netlify)) — a failed Netlify build leaves production on the old frontend with no signal other than an unchanged build id.
 
 ## Data-writing management commands
 
@@ -88,5 +88,34 @@ A root-URL check proves nothing — hit endpoints that exercise real models:
 | Manual: login on the dashboard, open /respuestas and a BP package | works |
 
 Old workers keep serving during the HUP handoff, so a failed smoke means the new code is bad, not a mid-restart blip — fix forward or `git checkout <previous-ref>` + HUP to roll back.
+
+## Frontend build on Netlify
+
+Netlify builds `nuxt/` on every push to `production` (base `nuxt/`, publish `nuxt/dist`, `NODE_ENV=production`). It runs `nuxt build`, **not** `nuxt generate`: Nitro auto-selects the `netlify` preset, which writes to `dist/`. Topology, env vars and the nginx bridge live in the `deployment` skill; this section is the procedure and its failure modes.
+
+**Dependencies are locked with `nuxt/pnpm-lock.yaml`** (versioned since 2026-09-04, with a `!nuxt/pnpm-lock.yaml` exception under the root `.gitignore`'s `*-lock.yaml` rule). Netlify picks pnpm because the lockfile is there; keep it current — after any `pnpm add`/`update`, the lockfile goes in the same commit as `package.json`.
+
+> **Incident 2026-09-04:** with no lockfile in the repo, Netlify resolved the tree from scratch with npm on every build. A transitive release published between deploys made npm 10.9.8 crash during install (`Cannot read properties of null (reading 'edgesOut')`, an npm arborist bug in peer-set resolution under `nuxt`), with and without Netlify's cache. Nothing in the commit touched `package.json`; the same command failed locally from `package.json` alone. Versioning the pnpm lockfile fixed it in one build.
+
+**Emulate the Netlify build locally before pushing** — `nuxt dev` proves nothing about a production build:
+
+```bash
+cd nuxt && rm -rf dist .output && NODE_ENV=production NITRO_PRESET=netlify pnpm run build
+ls dist/_nuxt | wc -l        # chunks present
+rm -rf .netlify              # the preset drops a scratch dir; don't commit it
+```
+
+`pnpm run generate` currently fails at prerender of `/` (`vue/index.mjs does not provide an export named 'default'`, seen 2026-09-04). It is not the Netlify path, so it doesn't block deploys — but it means the build command must stay `nuxt build` until that is fixed.
+
+**Verify publication by build id, not by clock.** Netlify has no webhook back to us; the only signal is the Nuxt app manifest:
+
+```bash
+curl -s https://onigies.netlify.app/_nuxt/builds/latest.json   # {"id": ..., "timestamp": ms}
+curl -s https://onigies.unam.mx/_nuxt/builds/latest.json       # same id ⇒ the UNAM proxy serves it too
+```
+
+Note the id before pushing; a deploy that failed leaves the old id in place with no other trace. Confirming a specific change by grepping `/_nuxt/*.js` only works if you follow the entry chunk's imports — layout and page chunks are lazy and never appear in the HTML.
+
+**When the build fails**, the Netlify log (Deploys → the failed deploy) is the only source; Ricardo pastes it. "Retry" reuses the cache; "Clear cache and retry deploy" is the honest retry. If it fails clean too, reproduce locally from a bare `package.json` + lockfile in a temp dir before touching code.
 
 Production runs `USE_S3_FILES=1`: the AWS env block (`AWS_STORAGE_BUCKET_NAME`, `AWS_S3_REGION_NAME`, `AWS_LOCATION`, key pair) lives in the server `.env`; bucket and region are mandatory — the API refuses to start without them. Storage details and rollback in the `deployment` skill.

@@ -3,11 +3,12 @@ type: record
 id: 2026-08-11-reunion-con-ruben-sobre-la-informacion-base
 title: "Reunión con Rubén: la sección de información base antes de abrirla a las IES"
 date: 2026-08-11
+related: ["[[2026-08-11-reunion-con-ruben]]", "[[2026-08-11-reunion-con-ruben_raw]]"]
 ---
 
 # Reunión con Rubén: la sección de información base antes de abrirla a las IES
 
-Reunión de 59 minutos entre Ricardo y Rubén (Rubí), responsable de ONIGIES, el 11 de agosto de 2026. La transcripción cruda y una versión organizada por tema viven en el repositorio written.django, en su carpeta de records, con el id `2026-08-11-transcripcion-organizada-reunion-con-ruben-onigies`; los proyectos no se enlazan entre sí, así que se cita en texto plano. Los timestamps de esta acta referencian la transcripción cruda.
+Reunión de 59 minutos entre Ricardo y Rubén (Rubí), responsable de ONIGIES, el 11 de agosto de 2026. La transcripción cruda, [[2026-08-11-reunion-con-ruben_raw]], y la versión limpia organizada por tema, [[2026-08-11-reunion-con-ruben]], viven en este mismo repositorio. Los timestamps de esta acta referencian la transcripción cruda.
 
 Esta acta separa a propósito tres cosas que la conversación mezcla: **acuerdos** (lo que Rubén aprobó o pidió), **decisiones de Ricardo** (lo que él resolvió, con o sin venia de Rubén) y **aperturas** (lo que quedó sin cerrar). La distinción no es cosmética: una primera lectura del acta organizada convirtió en acuerdos varias cosas que en el raw son descripciones, autocríticas o propuestas sin respuesta, y una auditoría de fidelidad las corrigió. Donde ocurrió, se anota.
 

@@ -3,6 +3,8 @@ type: record
 id: 2026-07-03-instrumento-cuestionario-2026
 title: Instrumento original del levantamiento 2026 (entrega del cliente)
 date: 2026-07-03
+related: ["[[2026-09-07-cotejo-del-instrumento-maquetado]]"]
+note: La versión maquetada y final que el cliente entregó el 2026-09-07 es textualmente equivalente a este documento; el cotejo está en el record enlazado.
 ---
 
 **Observatorio Nacional**

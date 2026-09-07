@@ -27,6 +27,8 @@ Dos hallazgos son nuevos, producto de un barrido programático del seed y no de 
 
 Si Rubén lo recibió en la reunión se confirma en la sesión que procese el audio.
 
+**2026-09-07:** la versión maquetada y final del instrumento que entregó el cliente **no incorpora ninguna** de las correcciones de este documento ([[2026-09-07-cotejo-del-instrumento-maquetado]]) — esperable, porque la maquetación es anterior a la entrega, pero conviene no leer el .docx como si ya las respondiera. El cotejo destapó además una **errata nueva para este documento**: los dos documentos del cliente —el original de julio y el maquetado final— dicen «Permisos o licencias **mensturales**» en el observable 3.2, opción A n.º 9, mientras que el seed y la base ya dicen «menstruales». El bloque B.5 la daba por corregida y fuera de decisión; corregida está en la plataforma, pero el documento del cliente la conserva y quien vuelva a maquetar desde ahí la reintroduce. **Llamada de Ricardo:** si añade el punto al documento de correcciones —no se editó, es documento que recibe un humano.
+
 ## Criterios de aceptación
 
 - [x] El documento existe, con los textos a corregir reunidos y ubicados en el instrumento

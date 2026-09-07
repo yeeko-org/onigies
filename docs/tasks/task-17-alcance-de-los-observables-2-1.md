@@ -17,6 +17,8 @@ Al resolverse: corregir el instrumento reducido y el seed, y ajustar `includes_a
 
 **Ventana acordada: semana del 2026-08-03.** Sale del mismo documento que se revisó en la reunión del 28 de julio, y aplica el mismo acuerdo que [[task-16]]: se resuelve sobre la base de producción, no por correo. `[36:41]` «Mejor el lunes. El lunes para que ya se haga directo sobre la base final [...]. Y ya si lo hacemos con la base real real pues no va a haber problema, no se va a volar». Entra en el recorrido de [[task-50]].
 
+**2026-09-07:** la versión maquetada y final del instrumento **sigue diciendo solo «instancias académicas»** en 2.1 y 2.2 ([[2026-09-07-cotejo-del-instrumento-maquetado]]). Que el documento definitivo lo conserve no zanja la duda —puede ser el mismo descuido arrastrado o una restricción deliberada—, así que la task sigue abierta a la espera de la definición de la CIGU, hoy en el punto A.3 del documento de correcciones.
+
 ## Criterios de aceptación
 
 - [ ] El cliente definió el alcance

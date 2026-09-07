@@ -17,6 +17,8 @@ Al resolverse: corregir [[cuestionario-2026-reducido]], luego `api/question/seed
 
 **Ventana acordada: semana del 2026-08-03.** En la reunión del 28 de julio este hallazgo se leyó en pantalla `[36:12]` y el cliente lo confirmó en el acto («Claro, sí, está mal redactada»), pero se acordó no resolverlo por correo sino sobre la base de producción, junto con la revisión general de [[task-50]]. `[36:41]` «Mejor el lunes. El lunes para que ya se haga directo sobre la base final, o sea, porque si te la mando yo voy a tener que meterme al script y no sé qué, y se va a perder, como que es más difícil trazabilidad. Y ya si lo hacemos con la base real real pues no va a haber problema, no se va a volar».
 
+**2026-09-07:** la versión maquetada y final del instrumento **no corrige** este texto —el 4.4 sigue preguntando por «este proceso de armonización»— ([[2026-09-07-cotejo-del-instrumento-maquetado]]). La task sigue abierta y sigue esperando lo mismo: la decisión de la CIGU, hoy en el punto A.1 del documento de correcciones.
+
 ## Criterios de aceptación
 
 - [ ] El cliente confirmó el texto

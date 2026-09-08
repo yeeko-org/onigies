@@ -22,8 +22,9 @@ const props = defineProps({
     :class="card_class"
     variant="flat"
     color="transparent"
-    style="text-wrap: pretty; max-height: 54px; overflow: hidden;"
     :style="`width: ${title_width}px;`"
+    style="white-space: normal; text-wrap: pretty; max-height: 54px;
+      overflow: hidden;"
   >
     {{ title_text }}
     <v-tooltip

@@ -29,10 +29,12 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en la política para la "
-                        "corresponsabilidad de los cuidados? (Mencione "
-                        "todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en la política para la corresponsabilidad "
+                        "de los cuidados?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -128,10 +130,12 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en las licencias y permisos con "
-                        "perspectiva de género y cuidados? (Mencione "
-                        "todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en las licencias y permisos con perspectiva "
+                        "de género y cuidados?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         "Licencia de maternidad superior a la ley para "
@@ -194,9 +198,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en la infraestructura para el acceso y "
-                        "ejercicio de los cuidados en corresponsabilidad? "
-                        "(Mencione todas las características o elementos "
-                        "que resulten aplicables)"
+                        "ejercicio de los cuidados en corresponsabilidad?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         "Se cuenta con salas de lactancia acondicionadas.",
@@ -265,8 +271,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en los convenios y servicios para los "
-                        "cuidados? (Mencione todas las características o "
-                        "elementos que resulten aplicables)"
+                        "cuidados?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (

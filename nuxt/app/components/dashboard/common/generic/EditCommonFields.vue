@@ -12,6 +12,13 @@ const rules = ref({
   defined: value => value !== undefined || "Debes seleccionar una opción",
 })
 
+const name_field_is_pk = computed(
+  () => props.final_collection_data.pk
+    === props.final_collection_data.name_field)
+
+const name_field_locked = computed(
+  () => name_field_is_pk.value && full_main.value.is_new !== true)
+
 function openLink(type) {
   if (type === 'icon')
     window.open('https://fonts.google.com/icons', '_blank')
@@ -42,11 +49,12 @@ const emits = defineEmits(['update-status', 'update-comments'])
       <v-text-field
         v-if="final_collection_data.name_field"
         v-model="full_main[final_collection_data.name_field]"
-        label="Nombre/Título"
+        :label="name_field_is_pk ? 'Clave interna' : 'Nombre/Título'"
+        :disabled="name_field_locked"
         class="mr-2"
         variant="outlined"
         style="width: 300px;"
-        :rules="[rules.required]"
+        :rules="name_field_locked ? [] : [rules.required]"
       />
       <v-spacer></v-spacer>
       <Comments

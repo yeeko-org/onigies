@@ -70,6 +70,11 @@ class BaseSchema:
     level: str = None           # tipo estricto definido en cada subclase
     name: str = None            # fallback: model._meta.verbose_name
     plural_name: str = None     # fallback: model._meta.verbose_name_plural
+    # Sin override el registry toma "name", que en un modelo con PK de
+    # texto es la clave interna y no el rótulo a leer.
+    name_field: str = None
+    color: str = None
+    icon: str = None
     can_merge: bool = False
     can_massive_edit: bool = False
     # Campos NO-filtro a habilitar en edición masiva (los filtros usan
@@ -146,8 +151,6 @@ class CollectionSchema(BaseSchema):
 
     # --- UI metadata (exclusivo de colecciones no-catálogo) -----------------
     open_insertion: bool = None
-    color: str = None
-    icon: str = None
     xls_export: bool = False
     xls_export_class: type | None = None
     can_massive_delete: bool = False

@@ -1,10 +1,4 @@
 <script setup>
-/**
- * Renglón de pregunta especial.
- *
- * El título es el texto de la pregunta: el modelo no tiene
- * `name_field` y el genérico pintaría «SIN NOMBRE/TÍTULO».
- */
 import ObservableQuestionHeader from
   "~/components/dashboard/question/common/ObservableQuestionHeader.vue";
 

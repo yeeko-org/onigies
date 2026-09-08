@@ -139,13 +139,14 @@ def _model_fields(model_cls: type) -> list:
 NAME_FIELDS = ("name", "title")
 HAS_FIELDS = ("comments", "description", "help_text", "order", "color", "icon")
 
-def _derive_field_meta(fields: list) -> dict:
+def _derive_field_meta(fields: list, name_field: str = None) -> dict:
     """pk, name_field, has y status_groups derivados de la metadata de campos.
     """
     names = {f["name"] for f in fields}
     return {
         "pk": next((f["name"] for f in fields if f["primary_key"]), "id"),
-        "name_field": next((n for n in NAME_FIELDS if n in names), None),
+        "name_field": name_field or next(
+            (n for n in NAME_FIELDS if n in names), None),
         "has": {h: h in names for h in HAS_FIELDS},
         "status_groups": [f["name"] for f in fields
                           if f.get("related_model") == "StatusControl"],
@@ -246,13 +247,15 @@ class _CollectionDataMixin:
         result = []
         for _app, data in self.iter_collection_data():
             snake = data['snake_name']
+            schema_cls = self._schemas[snake]
             ov = overrides.get(snake, {})
             merged = {
                 **data,
                 **{k: v for k, v in ov.items() if v is not None},
-                'fields': _model_fields(self._schemas[snake].model)
+                'fields': _model_fields(schema_cls.model)
             }
-            merged.update(_derive_field_meta(merged['fields']))
+            merged.update(
+                _derive_field_meta(merged['fields'], schema_cls.name_field))
             result.append(merged)
         return result
 
@@ -325,8 +328,8 @@ class CatalogRegistry(_CollectionDataMixin):
         for snake_name, schema_cls in self._schemas.items():
             data = {
                 **_base_collection_dict(snake_name, schema_cls),
-                'icon': None,
-                'color': None,
+                'icon': schema_cls.icon,
+                'color': schema_cls.color,
                 'open_insertion': schema_cls.open_insertion,
                 'optional_category': schema_cls.optional_category,
                 'available_actions': [

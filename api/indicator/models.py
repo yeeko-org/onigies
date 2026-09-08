@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 
 from ies.models import StatusControl, User
@@ -79,68 +81,17 @@ class Observable(models.Model):
     init_question = models.TextField(blank=True, null=True)
     a_main_question = models.TextField(
         blank=True, null=True,
-        verbose_name="Pregunta institucionalización")
+        verbose_name="Pregunta de armonización e institucionalización")
     a_main_subtitle = models.TextField(
         blank=True, null=True,
-        verbose_name="Subtítulo institucionalización")
-    reach_instances_question = models.TextField(
-        blank=True, null=True,
-        verbose_name="Pregunta de instancias (alcance)")
+        verbose_name="Subtítulo de armonización e institucionalización")
 
-    a_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación institucionalización")
-    b_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación cumplimiento")
-    reach_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación alcance de población")
-    plan_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación de planes")
-    special_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación especial")
-    pop_weight = models.DecimalField(
-        max_digits=5, decimal_places=2,
-        blank=True, null=True,
-        verbose_name="Ponderación población")
-
-    def get_default_weight(self, weight_field):
-        from question.models import QuestionType
-        weight_value = getattr(self, weight_field)
-        if weight_value is not None:
-            return weight_value
-        try:
-            question_type = QuestionType.objects.get(weight_name=weight_field)
-            return question_type.default_weight
-        except QuestionType.DoesNotExist:
-            return None
-
-    @property
-    def final_a_weight(self):
-        return self.get_default_weight('a_weight')
-
-    def final_b_weight(self):
-        return self.get_default_weight('b_weight')
-
-    def final_reach_weight(self):
-        return self.get_default_weight('reach_weight')
-
-    def final_plan_weight(self):
-        return self.get_default_weight('plan_weight')
-
-    def final_special_weight(self):
-        return self.get_default_weight('special_weight')
-
-    def final_pop_weight(self):
-        return self.get_default_weight('pop_weight')
+    def weight_for(self, type_name: str) -> Decimal | None:
+        """Pasa por el accesor inverso de la tabla puente para no
+        importar `question` desde aquí: ya importa este módulo."""
+        row = self.type_weights.filter(
+            question_type_id=type_name).first()
+        return row.final_weight if row else None
 
     def __str__(self):
         return f"{self.name} ({self.component.name})"

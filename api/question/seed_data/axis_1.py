@@ -26,9 +26,11 @@ AXIS = {
                         "a la Ley General de Educación Superior?"
                     ),
                     "a_main_question": (
-                        "¿En qué términos se ha realizado este proceso? "
-                        "(Marque todas las características o elementos que "
-                        "resulten aplicables a este instrumento)"
+                        "¿En qué términos se ha realizado este proceso?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables a este instrumento:"
                     ),
                     "a_options": [
                         (
@@ -89,9 +91,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         '¿En qué términos se reconoce o integra a la "igualdad '
-                        'de género" en dicho documento? (Marque todas las '
-                        'características o elementos que resulten aplicables a '
-                        'este instrumento)'
+                        'de género" en dicho documento?'
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables a este instrumento:"
                     ),
                     "a_options": [
                         (
@@ -162,8 +166,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características forman "
                         "parte de su normatividad interna en materia de "
-                        "igualdad de género? (Marque todas las características "
-                        "o elementos que resulten aplicables)"
+                        "igualdad de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -234,8 +241,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características forman "
                         "parte de la planeación institucional y programática "
-                        "en materia de igualdad de género? (Mencione todas las "
-                        "características o elementos que resulten aplicables)"
+                        "en materia de igualdad de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -302,8 +312,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en dicha instancia? (Marque todas las "
-                        "características o elementos que resulten aplicables)"
+                        "presentes en dicha instancia?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -375,8 +388,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en las disposiciones en materia de paridad "
-                        "de género de la IES? (Marque todas las "
-                        "características o elementos que resulten aplicables)"
+                        "de género de la IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -450,8 +466,11 @@ AXIS = {
                         "¿Cuáles de las siguientes características están "
                         "presentes en la o las políticas para aumento de "
                         "mujeres y grupos históricamente discriminados en la "
-                        "IES? (Marque todas las características o elementos "
-                        "que resulten aplicables)"
+                        "IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -501,6 +520,9 @@ AXIS = {
                     # Generales (GeneralGroup autoridades + poblaciones);
                     # captura en PopulationQuantity (ver
                     # docs/records/2026-07-04-seed-del-cuestionario.md).
+                    # Sin preguntas propias: el puente con `population`
+                    # se declara aquí.
+                    "population": True,
                 },
             ],
         },
@@ -525,8 +547,11 @@ AXIS = {
                         "¿Cuáles de las siguientes características están "
                         "presentes en los mecanismos institucionales para "
                         "generar estadísticas y diagnósticos con perspectiva "
-                        "de género? (Marque todas las características o "
-                        "elementos que resulten aplicables)"
+                        "de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -610,8 +635,11 @@ AXIS = {
                         "¿Cuáles de las siguientes características están "
                         "presentes en los programas específicos y actividades "
                         "para la sensibilización, concientización y "
-                        "capacitación en igualdad de género? (Marque todas las "
-                        "características o elementos que resulten aplicables)"
+                        "capacitación en igualdad de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -672,9 +700,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en la asignación de presupuesto de la IES? "
-                        "(Marque todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en la asignación de presupuesto de la IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -753,8 +783,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en las evaluaciones institucionales en "
-                        "materia de igualdad de género? (Marque todas las "
-                        "características o elementos que resulten aplicables)"
+                        "materia de igualdad de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -817,8 +850,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en los planes y programas de estudio de la "
-                        "IES? (Mencione todas las características o elementos "
-                        "que resulten aplicables)"
+                        "IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -912,8 +948,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en la formación del personal académico y "
-                        "administrativo de su IES? (Mencione todas las "
-                        "características o elementos que resulten aplicables)"
+                        "administrativo de su IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -991,9 +1030,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en la investigación académica de su IES? "
-                        "(Mencione todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en la investigación académica de su IES?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -1076,8 +1117,11 @@ AXIS = {
                         "¿Cuáles de las siguientes características están "
                         "presentes en los mecanismos y criterios en materia de "
                         "igualdad y no discriminación en las evaluaciones y "
-                        "promociones académicas? (Mencione todas las "
-                        "características o elementos que resulten aplicables)"
+                        "promociones académicas?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -1136,9 +1180,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en tales los mecanismos y criterios? "
-                        "(Mencione todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en tales los mecanismos y criterios?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -1224,8 +1270,11 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en las evaluaciones académicas en materia "
-                        "de igualdad de género? (Marque todas las "
-                        "características o elementos que resulten aplicables)"
+                        "de igualdad de género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (

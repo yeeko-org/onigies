@@ -1,9 +1,10 @@
 """Siembra idempotente del cuestionario 2026 completo.
 
-Fuente de verdad: question/seed_data/ (transcrito de
-docs/reference/cuestionario-2026-reducido.md). Re-correr el comando actualiza
-textos y borra opciones/planes sobrantes; los ajustes hechos por admin se
-pierden a propósito.
+Fuente de verdad de la *estructura*: question/seed_data/ (transcrito de
+docs/reference/cuestionario-2026-reducido.md). De los *textos* manda el
+dashboard: el re-seed solo los escribe al crear la fila, salvo que se corra
+con --overwrite-texts. Los textos de Axis y Component nunca se reescriben,
+ni con la bandera: los edita el equipo del observatorio.
 
 Prerrequisitos: load_sectors (sectores custom) y migrate_initial_data
 (QuestionType). Supersede a load_main_axis para la jerarquía
@@ -16,8 +17,8 @@ from django.db import transaction
 from indicator.models import (
     Axis, Component, GeneralGroup, Observable, Sector)
 from question.models import (
-    AOption, AQuestion, BQuestion, GeneralQuestion, PlanQuestion,
-    ReachQuestion, SpecialQuestion)
+    AOption, AQuestion, BQuestion, GeneralQuestion, ObservableQuestionType,
+    PlanQuestion, QuestionType, ReachQuestion, SpecialQuestion)
 from question.seed_data import ALL_AXES
 from question.seed_data.catalogs import (
     A_OPTIONS, GENERAL_GROUPS, STANDARD_EXTRA_SECTORS)
@@ -29,7 +30,7 @@ class Command(BaseCommand):
     help = (
         "Carga el cuestionario 2026 completo: ejes, componentes, "
         "observables, preguntas A con opciones, preguntas de alcance, "
-        "de transversalización (B), de planes, especiales, escala "
+        "de transversalidad orgánica (B), de planes, especiales, escala "
         "AOption y grupos generales."
     )
 
@@ -40,8 +41,19 @@ class Command(BaseCommand):
                  "GeneralGroupResponse de grupos nuevos en surveys "
                  "existentes.",
         )
+        parser.add_argument(
+            '--overwrite-texts', action='store_true',
+            help="Reescribe los textos de observables y preguntas con "
+                 "los del seed, pisando lo editado desde el dashboard.",
+        )
 
     def handle(self, *args, **options) -> None:
+        self.overwrite_texts = options['overwrite_texts']
+        self.type_names = set(
+            QuestionType.objects.values_list('name', flat=True))
+        self.required_types = set(
+            QuestionType.objects.filter(required=True)
+            .values_list('name', flat=True))
         self._validate()
         with transaction.atomic():
             self._load_hierarchy()
@@ -54,6 +66,10 @@ class Command(BaseCommand):
                 "Pendiente: correr con --sync-institutions para crear "
                 "los GeneralGroupResponse en surveys existentes."))
         self.stdout.write(self.style.SUCCESS("Cuestionario cargado."))
+
+    def _text_defaults(self, texts: dict) -> dict:
+        """Textos que van en `defaults`: ninguno, salvo con la bandera."""
+        return texts if self.overwrite_texts else {}
 
     def _validate(self) -> None:
         """Falla antes de escribir si los datos están incompletos."""
@@ -78,6 +94,31 @@ class Command(BaseCommand):
             raise CommandError(
                 "Sectores inexistentes (¿corriste load_sectors?): "
                 f"{sorted(missing_sectors)}")
+        self._validate_hierarchy_keys()
+
+    def _validate_hierarchy_keys(self) -> None:
+        # Axis.order y Component.name son las claves naturales del seed y
+        # se editan desde el dashboard: un rename duplicaría el árbol
+        # entero (componentes, observables y preguntas) en vez de
+        # actualizarlo.
+        renamed = []
+        for axis_data in ALL_AXES:
+            axis = Axis.objects.filter(order=axis_data["order"]).first()
+            if axis is None or not axis.component_set.exists():
+                continue
+            names = set(axis.component_set.values_list('name', flat=True))
+            missing = {
+                comp["name"] for comp in axis_data["components"]
+            } - names
+            if missing:
+                renamed.append(
+                    f"eje {axis_data['order']}: faltan {sorted(missing)}; "
+                    f"existen {sorted(names)}")
+        if renamed:
+            raise CommandError(
+                "Componentes renombrados desde el dashboard; corrige el "
+                "seed o el nombre antes de resembrar:\n"
+                + "\n".join(renamed))
 
     def _load_hierarchy(self) -> None:
         created = updated = 0
@@ -87,7 +128,8 @@ class Command(BaseCommand):
             # load_main_axis y no vienen en el cuestionario.
             axis, _ = Axis.objects.update_or_create(
                 order=axis_data["order"],
-                defaults={
+                defaults={},
+                create_defaults={
                     "name": axis_data["name"],
                     "description": axis_data["description"],
                 },
@@ -110,23 +152,24 @@ class Command(BaseCommand):
         # Clave (component, number): number es el string del seed («1.1»,
         # «1.10» no colisionan porque nunca coexisten en el mismo
         # componente; ver el registro del seed del cuestionario).
+        texts = {
+            "name": obs_data["name"],
+            "description": obs_data["description"],
+            "init_question": obs_data["init_question"],
+            "a_main_question": obs_data["a_main_question"],
+            "a_main_subtitle": obs_data.get("a_main_subtitle"),
+        }
         observable, created = Observable.objects.update_or_create(
             component=component,
             number=obs_data["number"],
-            defaults={
-                "order": order,
-                "name": obs_data["name"],
-                "description": obs_data["description"],
-                "init_question": obs_data["init_question"],
-                "a_main_question": obs_data["a_main_question"],
-                "reach_instances_question":
-                    obs_data["reach_instances_question"],
-            },
+            defaults={"order": order, **self._text_defaults(texts)},
+            create_defaults={"order": order, **texts},
         )
         for index, text in enumerate(obs_data["a_options"], start=1):
             AQuestion.objects.update_or_create(
                 observable=observable, order=index,
-                defaults={"text": text},
+                defaults=self._text_defaults({"text": text}),
+                create_defaults={"text": text},
             )
         stale = AQuestion.objects.filter(
             observable=observable, order__gt=len(obs_data["a_options"]))
@@ -139,6 +182,7 @@ class Command(BaseCommand):
         self._load_b_question(observable, obs_data)
         self._load_plan_questions(observable, obs_data)
         self._load_special_question(observable, obs_data)
+        self._load_type_weights(observable, obs_data)
         return created
 
     def _load_reach(self, observable: Observable, obs_data: dict) -> None:
@@ -148,13 +192,15 @@ class Command(BaseCommand):
             # no se crea ReachQuestion todavía.
             return
         standard = reach["populations"] == "standard"
+        structure = {
+            "has_main_sectors": standard,
+            "has_general_planning": obs_data["has_general_planning"],
+        }
+        text = {"text": reach["text"]}
         question, _ = ReachQuestion.objects.update_or_create(
             observable=observable,
-            defaults={
-                "text": reach["text"],
-                "has_main_sectors": standard,
-                "has_general_planning": obs_data["has_general_planning"],
-            },
+            defaults={**structure, **self._text_defaults(text)},
+            create_defaults={**structure, **text},
         )
         # POB-ESTÁNDAR = sectores is_main + los 2 extra; las listas
         # custom van completas en others_sectors (has_main_sectors=False).
@@ -170,22 +216,25 @@ class Command(BaseCommand):
             return
         includes_academic, includes_admin = obs_data.get(
             "b_includes", (True, True))
+        structure = {
+            "includes_academic": includes_academic,
+            "includes_admin": includes_admin,
+        }
         BQuestion.objects.update_or_create(
             observable=observable, order=1,
-            defaults={
-                "text": text,
-                "includes_academic": includes_academic,
-                "includes_admin": includes_admin,
-            },
+            defaults={**structure, **self._text_defaults({"text": text})},
+            create_defaults={**structure, "text": text},
         )
 
     def _load_plan_questions(
             self, observable: Observable, obs_data: dict) -> None:
         plan_questions = obs_data.get("plan_questions", [])
         for plan_data in plan_questions:
+            text = {"text": plan_data["text"]}
             PlanQuestion.objects.update_or_create(
                 observable=observable, order=plan_data["order"],
-                defaults={"text": plan_data["text"]},
+                defaults=self._text_defaults(text),
+                create_defaults=text,
             )
         stale = PlanQuestion.objects.filter(
             observable=observable, order__gt=len(plan_questions))
@@ -201,10 +250,30 @@ class Command(BaseCommand):
         if not special_questions:
             return
         # Una sola SpecialQuestion por observable (sin clave order propia).
+        text = {"text": special_questions[0]["text"]}
         SpecialQuestion.objects.update_or_create(
             observable=observable,
-            defaults={"text": special_questions[0]["text"]},
+            defaults=self._text_defaults(text),
+            create_defaults=text,
         )
+
+    def _load_type_weights(
+            self, observable: Observable, obs_data: dict) -> None:
+        """Solo crea: la ponderación es del cliente y el dashboard pudo
+        ampliar la aplicabilidad, así que ni se pisa `weight` ni se
+        borran filas que el seed no conoce."""
+        applicable = set(self.required_types)
+        if obs_data["reach"] is not None:
+            applicable.add('reach')
+        if obs_data.get("plan_questions"):
+            applicable.add('plans')
+        if obs_data.get("special_questions"):
+            applicable.add('special')
+        if obs_data.get("population"):
+            applicable.add('population')
+        for name in sorted(applicable & self.type_names):
+            ObservableQuestionType.objects.get_or_create(
+                observable=observable, question_type_id=name)
 
     def _load_a_options(self) -> None:
         for option in A_OPTIONS:

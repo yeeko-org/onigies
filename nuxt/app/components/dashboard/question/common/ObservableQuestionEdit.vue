@@ -1,32 +1,20 @@
 <script setup>
-/**
- * Editor de texto compartido por las cinco familias de preguntas por
- * observable. No se carga por convención: lo envuelve un
- * `{Model}EditSimple.vue` por cada tipo, que es lo que la convención de
- * nombre sí resuelve.
- *
- * Reemplaza el marco genérico (EditCommon) porque ninguno de estos
- * modelos tiene `name_field`: el marco pintaría un «Nombre/Título»
- * vacío y un «Orden» que la API no acepta —en A, B y planes el orden
- * es, con el observable, la clave natural del seed—.
- */
+// Compartido por las cinco familias: lo envuelve un `{Model}EditSimple`
+// porque la convención de nombre no resuelve un componente común.
+// Reemplaza a EditCommon, que sin `name_field` pintaría un título vacío
+// y un «Orden» que la API rechaza (es clave natural del seed).
+
 import { storeToRefs } from "pinia";
 import { useMainStore } from "~/store/index.js";
 import { useDashboardStore } from "~/store/dash.js";
 import { saveElement } from "~/composables/save_elements.js";
+import { useQuestionTypes } from "~/composables/useQuestionTypes.js";
 
 const props = defineProps({
   collection_snake: {
     type: String,
     required: true,
   },
-  // Etiqueta del textarea: cada tipo de pregunta se lee distinto.
-  text_label: {
-    type: String,
-    default: 'Texto de la pregunta',
-  },
-  // Datos estructurales que se muestran para ubicar la fila, nunca
-  // para editarla.
   chips: {
     type: Array,
     default: () => [],
@@ -38,6 +26,7 @@ const full_main = defineModel({type: Object, required: true})
 const emits = defineEmits(['item-saved'])
 
 const { schemas } = storeToRefs(useMainStore())
+const { types_by_model } = useQuestionTypes()
 const { showSnackbar } = useDashboardStore()
 
 const saving = ref(false)
@@ -45,6 +34,10 @@ const errors = ref(null)
 
 const collection_data = computed(
   () => schemas.value.collections_dict[props.collection_snake])
+
+const text_label = computed(() =>
+  types_by_model.value[collection_data.value?.model_name]?.public_name
+  || 'Texto de la pregunta')
 
 function saveRecord() {
   errors.value = null

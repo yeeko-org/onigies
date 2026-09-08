@@ -24,9 +24,9 @@ AXIS = {
                         "históricamente discriminados?"
                     ),
                     "a_main_question": (
-                        "Mencione todas las características o elementos "
-                        "que están presentes en tales políticas de "
-                        "inclusión y no discriminación:"
+                        "Mencione todas las características o elementos que "
+                        "están presentes en tales políticas de inclusión y no "
+                        "discriminación:"
                     ),
                     "a_options": [
                         (
@@ -101,11 +101,13 @@ AXIS = {
                         "diversidades sexuales y de género (LGBTIQ+)?"
                     ),
                     "a_main_question": (
-                        "¿Cuáles de las siguientes características "
-                        "están presentes en políticas institucionales y "
-                        "académicas de inclusión y no discriminación? "
-                        "(Mencione todas las características o "
-                        "elementos que resulten aplicables)"
+                        "¿Cuáles de las siguientes características están "
+                        "presentes en políticas institucionales y académicas "
+                        "de inclusión y no discriminación?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         "Se tratan de normas y políticas oficiales y "
@@ -180,11 +182,12 @@ AXIS = {
                         "binarie?"
                     ),
                     "a_main_question": (
-                        "¿Cuáles de las siguientes características "
-                        "están presentes en los mecanismos "
-                        "institucionales? (Mencione todas las "
-                        "características o elementos que resulten "
-                        "aplicables)"
+                        "¿Cuáles de las siguientes características están "
+                        "presentes en los mecanismos institucionales?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -255,12 +258,14 @@ AXIS = {
                         "documentación oficial?"
                     ),
                     "a_main_question": (
-                        "¿Cuáles de las siguientes características "
-                        "están presentes en los criterios "
-                        "institucionales para el uso del lenguaje "
-                        "incluyente, no discriminatorio y no sexista? "
-                        "(Mencione todas las características o "
-                        "elementos que resulten aplicables)"
+                        "¿Cuáles de las siguientes características están "
+                        "presentes en los criterios institucionales para el "
+                        "uso del lenguaje incluyente, no discriminatorio y no "
+                        "sexista?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -347,11 +352,13 @@ AXIS = {
                         "género?"
                     ),
                     "a_main_question": (
-                        "¿Cuáles de las siguientes características "
-                        "están presentes en los programas y acciones "
-                        "institucionales de prevención primaria? "
-                        "(Mencione todas las características o "
-                        "elementos que resulten aplicables)"
+                        "¿Cuáles de las siguientes características están "
+                        "presentes en los programas y acciones institucionales "
+                        "de prevención primaria?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -424,11 +431,13 @@ AXIS = {
                         "violencias y construir igualdad de género?"
                     ),
                     "a_main_question": (
-                        "¿Cuáles de las siguientes características "
-                        "están presentes en los programas y acciones "
-                        "institucionales de trabajo con hombres? "
-                        "(Mencione todas las características o "
-                        "elementos que resulten aplicables)"
+                        "¿Cuáles de las siguientes características están "
+                        "presentes en los programas y acciones institucionales "
+                        "de trabajo con hombres?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (

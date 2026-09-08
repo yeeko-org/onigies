@@ -94,12 +94,16 @@ const main_collections = [
       {
         plural_name: 'Preguntas base',
         snake_name: 'general_group',
-        // No es un grupo de filtros multinivel: se entra por colección.
         path: '/dashboard/general_group',
       },
       {
         plural_name: 'Opciones de respuesta',
         snake_name: 'a_options',
+      },
+      {
+        plural_name: 'Tipos de pregunta',
+        snake_name: 'question_type',
+        path: '/dashboard/question_type',
       },
     ],
   },

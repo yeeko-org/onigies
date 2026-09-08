@@ -28,9 +28,11 @@ AXIS = {
                         "otra normatividad vigente en la misma materia?"
                     ),
                     "a_main_question": (
-                        "¿En qué términos se ha realizado este proceso? "
-                        "(Marque todas las características o elementos "
-                        "que resulten aplicables a este instrumento)"
+                        "¿En qué términos se ha realizado este proceso?"
+                    ),
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables a este instrumento:"
                     ),
                     "a_options": [
                         (
@@ -103,9 +105,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en dicha legislación? (Mencione todas "
-                        "las características o elementos que resulten "
-                        "aplicables)"
+                        "presentes en dicha legislación?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -188,9 +192,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en dicho instrumento? (Mencione todas "
-                        "las características o elementos que resulten "
-                        "aplicables)"
+                        "presentes en dicho instrumento?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -275,10 +281,10 @@ AXIS = {
                         "sido víctimas de violencia por razones de "
                         "género?"
                     ),
-                    "a_main_question": (
-                        "¿En qué términos? (Marque todas las "
-                        "características o elementos que resulten "
-                        "aplicables a este instrumento)"
+                    "a_main_question": "¿En qué términos?",
+                    "a_main_subtitle": (
+                        "Marque todas las características o elementos que "
+                        "resulten aplicables a este instrumento:"
                     ),
                     "a_options": [
                         (
@@ -387,11 +393,13 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en las políticas y medidas de "
-                        "protección inmediata de las discriminaciones / "
-                        "violencias basadas en el género? (Mencione "
-                        "todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en las políticas y medidas de protección "
+                        "inmediata de las discriminaciones / violencias "
+                        "basadas en el género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -456,11 +464,13 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en las estructuras especializadas "
-                        "para atender casos de discriminación / violencia "
-                        "basada en el género? (Mencione todas las "
-                        "características o elementos que resulten "
-                        "aplicables)"
+                        "presentes en las estructuras especializadas para "
+                        "atender casos de discriminación / violencia basada en "
+                        "el género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -558,9 +568,11 @@ AXIS = {
                         "¿Cuáles de las siguientes características están "
                         "presentes en las descripciones de puesto "
                         "profesionales especializados en materia de "
-                        "discriminación / violencia basada en el género? "
-                        "(Mencione todas las características o elementos "
-                        "que resulten aplicables)"
+                        "discriminación / violencia basada en el género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -651,11 +663,13 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en los servicios especializados que "
-                        "ofrece la IES en el marco de la atención de "
-                        "casos de discriminación / violencia basada en "
-                        "el género? (Mencione todas las características "
-                        "o elementos que resulten aplicables)"
+                        "presentes en los servicios especializados que ofrece "
+                        "la IES en el marco de la atención de casos de "
+                        "discriminación / violencia basada en el género?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -717,10 +731,12 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en la vinculación interinstitucional "
-                        "para la atención de las violencias? (Mencione "
-                        "todas las características o elementos que "
-                        "resulten aplicables)"
+                        "presentes en la vinculación interinstitucional para "
+                        "la atención de las violencias?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -789,10 +805,12 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en las medidas de justicia "
-                        "restaurativa y/o garantías de no repetición? "
-                        "(Mencione todas las características o elementos "
-                        "que resulten aplicables)"
+                        "presentes en las medidas de justicia restaurativa y/o "
+                        "garantías de no repetición?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -891,11 +909,13 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes en los mecanismos de seguimiento de "
-                        "casos y sus resoluciones emitidas en el ámbito "
-                        "de su competencia? (Mencione todas las "
-                        "características o elementos que resulten "
-                        "aplicables)"
+                        "presentes en los mecanismos de seguimiento de casos y "
+                        "sus resoluciones emitidas en el ámbito de su "
+                        "competencia?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -959,12 +979,14 @@ AXIS = {
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
                         "presentes en mecanismos de documentación, "
-                        "sistematización de información y transparencia "
-                        "sobre los casos y resoluciones emitidas por "
-                        "discriminación / violencia basada en el género, "
-                        "en su ámbito de competencia? (Mencione todas "
-                        "las características o elementos que resulten "
-                        "aplicables)"
+                        "sistematización de información y transparencia sobre "
+                        "los casos y resoluciones emitidas por discriminación "
+                        "/ violencia basada en el género, en su ámbito de "
+                        "competencia?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -1031,8 +1053,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes? (Mencione todas las características "
-                        "o elementos que resulten aplicables)"
+                        "presentes?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (
@@ -1118,8 +1143,11 @@ AXIS = {
                     ),
                     "a_main_question": (
                         "¿Cuáles de las siguientes características están "
-                        "presentes? (Mencione todas las características "
-                        "o elementos que resulten aplicables)"
+                        "presentes?"
+                    ),
+                    "a_main_subtitle": (
+                        "Mencione todas las características o elementos que "
+                        "resulten aplicables:"
                     ),
                     "a_options": [
                         (

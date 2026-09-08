@@ -1,10 +1,14 @@
+from functools import cached_property
+
+from django.db.models import Count
 from rest_framework import serializers
 
 from indicator.models import Axis, Component, GeneralGroup, Observable, Sector
 from api.views.question.serializers import (
     AQuestionCatalogSerializer, BQuestionCatalogSerializer,
-    GeneralQuestionCatalogSerializer, PlanQuestionCatalogSerializer,
-    ReachQuestionCatalogSerializer, SpecialQuestionCatalogSerializer)
+    GeneralQuestionCatalogSerializer, ObservableQuestionTypeSerializer,
+    PlanQuestionCatalogSerializer, ReachQuestionCatalogSerializer,
+    SpecialQuestionCatalogSerializer)
 
 
 class ObservableSerializer(serializers.ModelSerializer):
@@ -14,16 +18,10 @@ class ObservableSerializer(serializers.ModelSerializer):
 
 
 class ObservableFullSerializer(serializers.ModelSerializer):
-    """Observable con sus cinco familias de preguntas anidadas.
-
-    Los alias en plural (`a_questions`, `b_questions`, …) son lo que el
-    Sheet genérico busca para listar cada colección hija sin un fetch
-    extra; los accessors del modelo son los `*_set` por defecto.
-
-    Editable solo el texto del instrumento. `number` y `order` numeran
-    el cuestionario y `component` lo cuelga de su rama: los mueve el
-    seed. Las ponderaciones son metodología, no redacción.
-    """
+    """Los alias en plural son lo que el Sheet genérico busca para listar
+    cada colección hija sin un fetch extra."""
+    observable_question_types = ObservableQuestionTypeSerializer(
+        many=True, read_only=True, source='type_weights')
     a_questions = AQuestionCatalogSerializer(
         many=True, read_only=True, source='aquestion_set')
     b_questions = BQuestionCatalogSerializer(
@@ -38,11 +36,7 @@ class ObservableFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Observable
         fields = '__all__'
-        read_only_fields = [
-            'component', 'number', 'order',
-            'a_weight', 'b_weight', 'reach_weight', 'plan_weight',
-            'special_weight', 'pop_weight',
-        ]
+        read_only_fields = ['component', 'number', 'order']
 
 
 class ComponentSerializer(serializers.ModelSerializer):
@@ -51,12 +45,66 @@ class ComponentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ObservableCountsSerializer(ObservableSerializer):
+    """Los conteos vienen anotados en el queryset y se declaran a mano
+    porque un serializer escrito no los inyecta como el auto-generado."""
+    a_questions_count = serializers.IntegerField(read_only=True)
+    b_questions_count = serializers.IntegerField(read_only=True)
+    reach_questions_count = serializers.IntegerField(read_only=True)
+    plan_questions_count = serializers.IntegerField(read_only=True)
+    special_questions_count = serializers.IntegerField(read_only=True)
+    question_types = serializers.SlugRelatedField(
+        source='type_weights', slug_field='question_type_id',
+        many=True, read_only=True)
+    reach_sectors_count = serializers.SerializerMethodField()
+    # Hay a lo más una BQuestion por observable: las banderas suben
+    # planas en vez de anidar la pregunta entera.
+    b_includes_academic = serializers.SerializerMethodField()
+    b_includes_admin = serializers.SerializerMethodField()
+
+    def _b_question(self, obj: Observable):
+        return next(iter(obj.bquestion_set.all()), None)
+
+    def get_b_includes_academic(self, obj: Observable) -> bool:
+        b_question = self._b_question(obj)
+        return bool(b_question and b_question.includes_academic)
+
+    def get_b_includes_admin(self, obj: Observable) -> bool:
+        b_question = self._b_question(obj)
+        return bool(b_question and b_question.includes_admin)
+
+    @cached_property
+    def _main_sectors_count(self) -> int:
+        # `many=True` reusa una sola instancia hija para toda la lista:
+        # el cache la resuelve en una consulta por request.
+        return Sector.objects.filter(is_main=True).count()
+
+    def get_reach_sectors_count(self, obj: Observable) -> int:
+        """Los sectores propios más el bloque principal si lo incluye."""
+        reach = next(iter(obj.reachquestion_set.all()), None)
+        if reach is None:
+            return 0
+        total = len(reach.others_sectors.all())
+        if reach.has_main_sectors:
+            total += self._main_sectors_count
+        return total
+
+
 class ComponentFullSerializer(serializers.ModelSerializer):
-    observables = ObservableSerializer(many=True, read_only=True)
-    # observables_count = serializers.SerializerMethodField()
-    #
-    # def get_observables_count(self, obj: Component):
-    #     return obj.observables.count()
+    observables = serializers.SerializerMethodField()
+
+    def get_observables(self, obj: Component) -> list:
+        # El import vive aquí porque indicator.catalog_schema importa
+        # este módulo: a nivel de módulo sería un ciclo.
+        from indicator.catalog_schema import OBSERVABLE_COUNT_FIELDS
+
+        queryset = obj.observables.annotate(**{
+            name: Count(path, distinct=True)
+            for name, path in OBSERVABLE_COUNT_FIELDS.items()
+        }).prefetch_related(
+            'type_weights', 'reachquestion_set__others_sectors',
+            'bquestion_set')
+        return ObservableCountsSerializer(queryset, many=True).data
 
     class Meta:
         model = Component
@@ -76,12 +124,8 @@ class SectorSerializer(serializers.ModelSerializer):
 
 
 class GeneralGroupCatalogSerializer(serializers.ModelSerializer):
-    """Grupo de preguntas base con sus preguntas anidadas.
-
-    El alias `general_questions` (el accessor del modelo es `questions`)
-    es lo que el Sheet genérico busca para listar la colección hija sin
-    un fetch extra. `name` es la PK y la clave del código: solo lectura.
-    """
+    """El alias `general_questions` (el accessor es `questions`) es lo
+    que el Sheet genérico busca para listar la colección hija."""
     general_questions = GeneralQuestionCatalogSerializer(
         many=True, read_only=True, source='questions')
 
@@ -89,9 +133,3 @@ class GeneralGroupCatalogSerializer(serializers.ModelSerializer):
         model = GeneralGroup
         fields = '__all__'
         read_only_fields = ['name']
-
-
-
-
-
-

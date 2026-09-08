@@ -21,7 +21,25 @@ from indicator.models import (
 from api.views.confirm_delete import NoDeleteMixin
 from api.views.indicator.serializers import (
     ComponentFullSerializer, GeneralGroupCatalogSerializer,
-    ObservableFullSerializer)
+    ObservableCountsSerializer, ObservableFullSerializer)
+
+# Los reversos van sin related_name, de ahí el accesor plano.
+OBSERVABLE_COUNT_FIELDS = {
+    "a_questions_count": "aquestion",
+    "b_questions_count": "bquestion",
+    "reach_questions_count": "reachquestion",
+    "plan_questions_count": "planquestion",
+    "special_questions_count": "specialquestion",
+}
+
+
+class PrefetchObservableRowMixin:
+    """Sin esto, tres consultas extra por observable en la lista."""
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related(
+            'type_weights', 'reachquestion_set__others_sectors',
+            'bquestion_set')
 
 
 @catalog_registry.register
@@ -36,6 +54,7 @@ class AxisSchema(CatalogSchema):
 class ComponentSchema(CatalogSchema):
     model = Component
     level = "category_type"
+    icon = "category"
     filterset_fields = ['axis']
     full_serializer_class = ComponentFullSerializer
 
@@ -46,13 +65,16 @@ class ObservableSchema(CatalogSchema):
     level = "category_subtype"
     name = "Observable"             # Meta.verbose_name trae sufijo largo
     plural_name = "Observables"
+    icon = "visibility"
     filterset_fields = ['component']
+    count_fields = OBSERVABLE_COUNT_FIELDS
     # El retrieve anida las cinco familias de preguntas: el detalle del
     # observable es la superficie donde se corrige el instrumento.
     full_serializer_class = ObservableFullSerializer
+    list_serializer_class = ObservableCountsSerializer
     # Los observables los numera y ordena load_questionnaire; desde el
     # dashboard solo se corrigen sus textos.
-    extra_mixins = [NoDeleteMixin]
+    extra_mixins = [PrefetchObservableRowMixin, NoDeleteMixin]
     cat_params = {"hide_create": True}
 
 

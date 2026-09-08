@@ -1,8 +1,10 @@
 <script setup>
-
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
+import { useMainStore } from "~/store/index.js";
 import HeaderCommon from "~/components/dashboard/common/generic/HeaderCommon.vue";
-import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
+import HeaderChip from "~/components/dashboard/common/utils/HeaderChip.vue";
 
 const props = defineProps({
   main: Object,
@@ -12,6 +14,17 @@ const props = defineProps({
     default: false,
   },
 })
+
+const { all_nodes } = storeToRefs(useMainStore())
+
+const observables_count = computed(() => {
+  const root = all_nodes.value?.axes
+  if (!root)
+    return 0
+  const node = root.find(n => n.id === `type_${props.main.id}`)
+  return node?.children ? node.children.length : 0
+})
+
 </script>
 
 <template>
@@ -37,7 +50,10 @@ const props = defineProps({
       </v-card>
     </template>
     <template #details>
-      ??
+      <HeaderChip
+        :count="observables_count"
+        collection_name="observable"
+      />
     </template>
   </HeaderCommon>
 </template>

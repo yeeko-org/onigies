@@ -12,11 +12,15 @@ const props = defineProps({
   label: String,
   label_plural: String,
   color: String,
+  tooltip_title: String,
   tooltip_complement: String,
   is_simple: Boolean,
   horizontal: Boolean,
   is_reverse: Boolean,
+  hide_count: Boolean,
 })
+
+const show_count = computed(() => !props.hide_count || !props.count)
 
 const collection_data = computed(() => {
   if (!props.collection_name)
@@ -51,37 +55,37 @@ const final_icon = computed(() => {
       class="d-flex align-center justify-center"
       :class="horizontal ? 'flex-row' : 'flex-column'"
     >
-      <div class="px-1">
-        <v-icon
-          v-if="!count && is_reverse"
-          size="18"
-          color="green"
-        >
-          check_circle
-        </v-icon>
-        <v-icon
-          v-else-if="!count"
-          size="18"
-          color="warning"
-        >
-          warning_amber
-        </v-icon>
-        <div
-          v-else
-        >
-          {{count}}
-          <span v-if="is_simple">
-            /&nbsp;∞
-          </span>
+      <slot name="content">
+        <div v-if="show_count" class="px-1">
+          <v-icon
+            v-if="!count && is_reverse"
+            size="18"
+            color="green"
+          >
+            check_circle
+          </v-icon>
+          <v-icon
+            v-else-if="!count"
+            size="18"
+            color="warning"
+          >
+            warning_amber
+          </v-icon>
+          <div v-else>
+            {{count}}
+            <span v-if="is_simple">
+              /&nbsp;∞
+            </span>
+          </div>
         </div>
-      </div>
-      <v-icon
-        :size="horizontal ? 18 : 20"
-        :color="final_color"
-        :class="{ 'mt-1': !horizontal }"
-      >
-        {{ final_icon }}
-      </v-icon>
+        <v-icon
+          :size="horizontal ? 18 : 20"
+          :color="final_color"
+          :class="{ 'mt-1': !horizontal && show_count }"
+        >
+          {{ final_icon }}
+        </v-icon>
+      </slot>
     </div>
     <v-tooltip
       activator="parent"
@@ -90,22 +94,23 @@ const final_icon = computed(() => {
       :color="final_color"
       _style="`background-color: ${color};`"
     >
-      <div class="font-weight-bold">
-        {{count}} {{ final_label }}
-        <span v-if="is_simple">
-          con relación <br>
-        </span>
-        <span v-if="is_simple" class="text-caption text-warning">
-          (El total real puede ser mayor)
-        </span>
-      </div>
-      <!--style with break-word-->
-      <div
-        v-if="tooltip_complement"
-        v-html="tooltip_complement"
-        style="max-width: 500px; word-wrap: break-word;"
-      ></div>
-
+      <slot name="tooltip">
+        <div class="font-weight-bold">
+          <span v-if="tooltip_title">{{ tooltip_title }}:</span>
+          {{count}} {{ final_label }}
+          <span v-if="is_simple">
+            con relación <br>
+          </span>
+          <span v-if="is_simple" class="text-caption text-warning">
+            (El total real puede ser mayor)
+          </span>
+        </div>
+        <div
+          v-if="tooltip_complement"
+          v-html="tooltip_complement"
+          style="max-width: 500px; word-wrap: break-word;"
+        ></div>
+      </slot>
     </v-tooltip>
   </v-card>
 

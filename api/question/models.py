@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 
 from indicator.models import GeneralGroup, Observable, Sector
@@ -9,20 +11,57 @@ GENERAL_Q_TYPES = [
 
 
 class QuestionType(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
-    weight_name = models.CharField(max_length=40)
-    public_name = models.CharField(max_length=150)
+    name = models.CharField(
+        max_length=100, primary_key=True, verbose_name="Clave interna")
+    public_name = models.CharField(
+        max_length=150, verbose_name="Nombre público")
     model_question = models.CharField(max_length=50, blank=True, null=True)
     default_weight = models.DecimalField(
-        max_digits=5, decimal_places=2, blank=True, null=True)
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        verbose_name="Ponderación por defecto")
     model_response = models.CharField(max_length=50, blank=True, null=True)
+    order = models.PositiveSmallIntegerField(
+        default=0, verbose_name="Orden del bloque")
+    required = models.BooleanField(
+        default=False, verbose_name="Aplica a todo observable")
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Tipo de preguntas"
         verbose_name_plural = "Tipos de preguntas"
+
+
+class ObservableQuestionType(models.Model):
+    """La fila existe cuando el tipo aplica; `weight` solo se llena
+    cuando el observable se aparta del default del tipo."""
+
+    observable = models.ForeignKey(
+        'indicator.Observable', on_delete=models.CASCADE,
+        related_name='type_weights')
+    question_type = models.ForeignKey(
+        QuestionType, on_delete=models.CASCADE,
+        related_name='observable_weights')
+    weight = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        verbose_name="Ponderación")
+
+    @property
+    def final_weight(self) -> Decimal | None:
+        if self.weight is not None:
+            return self.weight
+        return self.question_type.default_weight
+
+    def __str__(self):
+        return f"{self.observable_id} · {self.question_type_id}"
+
+    class Meta:
+        ordering = ['question_type__order']
+        unique_together = ('observable', 'question_type')
+        verbose_name = "Ponderación por tipo de pregunta"
+        verbose_name_plural = "Ponderaciones por tipo de pregunta"
 
 
 class AQuestion(models.Model):
@@ -38,8 +77,9 @@ class AQuestion(models.Model):
 
     class Meta:
         ordering = ['order']
-        verbose_name = "Pregunta de institucionalización"
-        verbose_name_plural = "Preguntas de institucionalización"
+        verbose_name = "Pregunta de armonización e institucionalización"
+        verbose_name_plural = (
+            "Preguntas de armonización e institucionalización")
 
 
 class AOption(models.Model):
@@ -50,8 +90,10 @@ class AOption(models.Model):
         return f"Opción de respuesta: {self.text} (Valor: {self.value})"
 
     class Meta:
-        verbose_name = "Opción de respuesta de institucionalización"
-        verbose_name_plural = "Opciones de respuesta de institucionalización"
+        verbose_name = (
+            "Opción de respuesta de armonización e institucionalización")
+        verbose_name_plural = (
+            "Opciones de respuesta de armonización e institucionalización")
 
 
 class ReachQuestion(models.Model):
@@ -68,8 +110,8 @@ class ReachQuestion(models.Model):
         return f"{self.text} ({self.observable.name})"
 
     class Meta:
-        verbose_name = "Pregunta de alcance de población"
-        verbose_name_plural = "Preguntas de alcance de población"
+        verbose_name = "Pregunta de transversalidad sectorial"
+        verbose_name_plural = "Preguntas de transversalidad sectorial"
 
 
 class PlanQuestion(models.Model):
@@ -104,8 +146,8 @@ class BQuestion(models.Model):
         return f"Pregunta cuerpo: {self.text} ({self.observable.name})"
 
     class Meta:
-        verbose_name = "Pregunta de transversalización"
-        verbose_name_plural = "Preguntas de transversalización"
+        verbose_name = "Pregunta de transversalidad orgánica"
+        verbose_name_plural = "Preguntas de transversalidad orgánica"
 
 
 class GeneralQuestion(models.Model):

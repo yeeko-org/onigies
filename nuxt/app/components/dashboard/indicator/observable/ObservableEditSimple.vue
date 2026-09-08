@@ -1,26 +1,16 @@
 <script setup>
-/**
- * Edición de los textos de un observable del cuestionario.
- *
- * Reemplaza el marco genérico (EditCommon) porque ese pinta siempre el
- * «Orden», y aquí el orden es el recorrido global 1..41 que asigna
- * load_questionnaire. Tampoco aparecen las ponderaciones: son
- * metodología, no redacción. El número y el componente ubican la fila
- * en el instrumento y viajan como referencia, no como campo.
- *
- * Las preguntas de este observable no se editan aquí: las lista el
- * Sheet genérico debajo, una colección hija por familia.
- */
 import { storeToRefs } from "pinia";
 import { useMainStore } from "~/store/index.js";
 import { useDashboardStore } from "~/store/dash.js";
 import { saveElement } from "~/composables/save_elements.js";
+import { useQuestionTypes } from "~/composables/useQuestionTypes.js";
 
 const full_main = defineModel({type: Object, required: true})
 
 const emits = defineEmits(['item-saved'])
 
 const { schemas } = storeToRefs(useMainStore())
+const { types_by_model } = useQuestionTypes()
 const { showSnackbar } = useDashboardStore()
 
 const saving = ref(false)
@@ -28,6 +18,12 @@ const errors = ref(null)
 
 const collection_data = computed(
   () => schemas.value.collections_dict.observable)
+
+// Minúscula inicial porque va dentro del rótulo.
+const a_block_name = computed(() => {
+  const name = types_by_model.value.AQuestion?.public_name
+  return name ? name.charAt(0).toLowerCase() + name.slice(1) : 'este bloque'
+})
 
 function saveRecord() {
   errors.value = null
@@ -85,8 +81,8 @@ function saveRecord() {
     />
     <v-textarea
       v-model="full_main.a_main_question"
-      label="Enunciado de institucionalización"
-      hint="Encabeza el checklist de opciones que va abajo"
+      :label="`Enunciado de ${a_block_name}`"
+      hint="Encabeza el checklist de preguntas que va abajo"
       persistent-hint
       variant="outlined"
       rows="2"
@@ -95,18 +91,11 @@ function saveRecord() {
     />
     <v-textarea
       v-model="full_main.a_main_subtitle"
-      label="Subtítulo de institucionalización"
+      :label="`Subtítulo de ${a_block_name}`"
       variant="outlined"
       rows="1"
       auto-grow
       class="mb-4"
-    />
-    <v-textarea
-      v-model="full_main.reach_instances_question"
-      label="Pregunta de instancias (alcance)"
-      variant="outlined"
-      rows="2"
-      auto-grow
     />
     <v-card-actions>
       <v-spacer></v-spacer>

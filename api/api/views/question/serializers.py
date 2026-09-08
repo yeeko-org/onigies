@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 from question.models import (
-    AOption, AQuestion, BQuestion, GeneralQuestion, PlanQuestion,
-    ReachQuestion, SpecialQuestion)
+    AOption, AQuestion, BQuestion, GeneralQuestion, ObservableQuestionType,
+    PlanQuestion, QuestionType, ReachQuestion, SpecialQuestion)
 
 
 class AOptionSerializer(serializers.ModelSerializer):
@@ -11,19 +11,40 @@ class AOptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class QuestionTypeCatalogSerializer(serializers.ModelSerializer):
+    observables_count = serializers.IntegerField(
+        read_only=True)
+
+    class Meta:
+        model = QuestionType
+        fields = '__all__'
+        # Claves que el código busca y amarres a los modelos de captura:
+        # viajan para leerse, nunca para escribirse.
+        read_only_fields = [
+            'name', 'model_question', 'model_response', 'required']
+
+
+class ObservableQuestionTypeSerializer(serializers.ModelSerializer):
+    """Solo `weight` se escribe: qué tipos aplican a un observable lo
+    fija la siembra. `final_weight` es la propia si existe, si no la del
+    tipo."""
+    final_weight = serializers.DecimalField(
+        max_digits=5, decimal_places=2, read_only=True)
+    public_name = serializers.CharField(
+        source='question_type.public_name', read_only=True)
+
+    class Meta:
+        model = ObservableQuestionType
+        fields = [
+            'id', 'observable', 'question_type', 'weight', 'final_weight',
+            'public_name']
+        read_only_fields = ['observable', 'question_type']
+
+
 class ObservableQuestionSerializer(serializers.ModelSerializer):
-    """Base de las preguntas por observable como catálogo del dashboard.
-
-    El equipo del observatorio corrige redacción; la estructura del
-    instrumento (a qué observable cuelga, en qué orden se re-siembra,
-    qué banderas de comportamiento lleva) no se toca desde aquí. Cada
-    subclase declara su modelo y agrega a `read_only_fields` lo suyo.
-
-    `order` es de solo lectura porque en AQuestion, BQuestion y
-    PlanQuestion forma con `observable` la clave natural del seed:
-    cambiarlo haría que `load_questionnaire` duplique la fila en vez de
-    actualizarla.
-    """
+    """`order` no se edita porque forma con `observable` la clave
+    natural del seed: cambiarlo haría que `load_questionnaire` duplique
+    la fila en vez de actualizarla."""
 
     class Meta:
         fields = '__all__'
@@ -36,9 +57,6 @@ class AQuestionCatalogSerializer(ObservableQuestionSerializer):
 
 
 class BQuestionCatalogSerializer(ObservableQuestionSerializer):
-    """`includes_academic` / `includes_admin` deciden qué tablas de
-    captura se pintan: son estructura, no texto."""
-
     class Meta(ObservableQuestionSerializer.Meta):
         model = BQuestion
         read_only_fields = ObservableQuestionSerializer.Meta.read_only_fields \
@@ -46,8 +64,6 @@ class BQuestionCatalogSerializer(ObservableQuestionSerializer):
 
 
 class ReachQuestionCatalogSerializer(ObservableQuestionSerializer):
-    """Las banderas de sectores arman el checklist de población."""
-
     class Meta(ObservableQuestionSerializer.Meta):
         model = ReachQuestion
         read_only_fields = ObservableQuestionSerializer.Meta.read_only_fields \
@@ -65,13 +81,9 @@ class SpecialQuestionCatalogSerializer(ObservableQuestionSerializer):
 
 
 class GeneralQuestionCatalogSerializer(serializers.ModelSerializer):
-    """Pregunta base como catálogo editable del dashboard.
-
-    `name` mapea la columna del Survey donde aterriza la respuesta y
-    `addl_config` / `q_type` anclan comportamiento que vive en código:
-    viajan para poder leerlos, nunca para escribirlos.
-    """
     class Meta:
         model = GeneralQuestion
         fields = '__all__'
+        # `name` mapea la columna del Survey donde aterriza la respuesta;
+        # `q_type` / `addl_config` anclan comportamiento que vive en código.
         read_only_fields = ['name', 'q_type', 'addl_config']

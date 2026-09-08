@@ -8,6 +8,7 @@ origin: ricardo
 deliberation: dialogued
 rationale: recorded
 source: ["[[2026-07-04-seed-del-cuestionario]]"]
+related: ["[[adr-0014]]"]
 affects: ["api/question/seed_data/axis_1.py", "api/survey/models.py", "api/indicator/models.py"]
 ---
 
@@ -25,6 +26,8 @@ El observable 1.7 (integración paritaria) trae un bloque adicional en el instru
 ## Resultado
 
 Se captura en Generales: **la composición sexo-genérica es un dato institucional del periodo**, no una respuesta al observable. Aterriza en `PopulationQuantity`, que ya tenía `number_men`/`number_women`. Las cuatro autoridades se modelan como `Sector` con el flag nuevo `is_authority=True` — dos ya existían (Titular de la IES, Máximo cuerpo colegiado) y se agregaron «Titulares de instancias académicas» y «Titulares de instancias administrativas» — bajo un `GeneralGroup` nuevo, «autoridades». El indicador del 1.7 se calcula desde `PopulationQuantity` vía `pop_weight`, y el observable conserva únicamente su parte A.
+
+**Enmienda 2026-09-07:** `Observable.pop_weight` ya no existe; el peso del 1.7 vive en la fila `population` de `ObservableQuestionType` (propio o `QuestionType.default_weight`), ver [[adr-0014]]. El resto de esta decisión no cambia.
 
 ### Consecuencias
 

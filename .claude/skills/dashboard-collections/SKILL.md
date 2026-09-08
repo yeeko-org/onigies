@@ -54,7 +54,7 @@ longer recomputes it):
 | Property | Meaning |
 |---|---|
 | `pk` | primary-key field name (fallback `'id'`) |
-| `name_field` | first of `name`/`title` present — used as the row title |
+| `name_field` | first of `name`/`title` present, unless the schema declares `name_field` (e.g. `QuestionTypeSchema.name_field = "public_name"`, whose `name` is an internal pk) — used as the row title |
 | `has.{comments,description,help_text,order,color,icon}` | booleans: does the model have that field |
 | `status_groups` | field names whose `related_model === 'StatusControl'` — still in the payload, no longer rendered (UI retired 2026-08-20; removed in task-7) |
 
@@ -86,7 +86,7 @@ If the file does not exist, a generic fallback loads instead (except
 
 | Suffix | Resolved in | Fallback | Role |
 |---|---|---|---|
-| `Header` | `PanelList.vue` | `HeaderGeneric.vue` | collapsed row: icon, title, status chips, comment icon, `#details` slot |
+| `Header` | `PanelList.vue` | `HeaderGeneric.vue` | collapsed row with three slots: `#icon`, `#title` (default `TitleCommon`), `#details` — plus status chips and the description tooltip icon, which `HeaderCommon` renders itself |
 | `Sheet` | `PanelList.vue`, `DialogEdit.vue` | `SheetCommon.vue` | expanded read-only detail + **child collections** (§5) |
 | `Edit` | `PanelCommon.vue`, `PanelsResult.vue`, `DialogEdit.vue` | `EditGeneric.vue` | form fields, mounted inside `EditCommon`'s `#edit` slot |
 | `EditSimple` | `PanelCommon.vue` | *(none)* | full inline editor that **replaces** `EditCommon` entirely |
@@ -211,7 +211,15 @@ renders one of two ways:
 
 This is how a parent's detail panel shows its children with working filters and
 pagination, with zero per-model code. To customize, write a `{Model}Sheet.vue`
-that does something other than the default child-iteration.
+that does something other than the default child-iteration. There is no
+per-child switch: a child collection is hidden only by owning the Sheet.
+
+- **Suppress every child list**: an empty-template `{Model}Sheet.vue` (`GoodPracticePackageSheet.vue`, `QuestionTypeSheet.vue`). Deleting the file brings the automatic lists back.
+- **Keep some children, drop others** (`GoodPractice` has FKs to `Axis` and `Component`, so both sheets listed good practices): `ComponentSheet.vue` renders only `full_main.observables` — nested by the detail serializer — with `PanelsResult … in_sheet`; `AxisSheet.vue` builds the components from the in-memory tree `all_nodes.axes`, because `category_group` rows never fetch a detail (`PanelCommon.openMain` short-circuits) and the Sheet only sees the list row.
+
+Counts in a collapsed row use `HeaderChip` (`common/utils/HeaderChip.vue`): `count` + `collection_name` give icon, color and label from the catalog; `hide_count` shows the icon only; `tooltip_title` prefixes the bold tooltip line; slots `content` and `tooltip` override the rendering (the orgánica chip in `ObservableHeader` shows two icons instead of a number). Catalogs can now carry `icon`/`color` in their schema (`manage-collections`), which is what makes `HeaderChip` work for question families. Per-type counts on list rows come from `count_fields` (`ObservableSchema`, constant `OBSERVABLE_COUNT_FIELDS` shared with the component detail serializer).
+
+Design rule when adding a collection view: decide up front what goes in each part — the Header's three slots, `Edit` (inside the generic frame) or `EditSimple` (replaces it), and the Sheet — instead of accepting the generic fallbacks and patching later. The primary key is never an editable input: `EditCommonFields` disables it unless the element `is_new`.
 
 ## 6. CRUD routing: collection vs category
 
@@ -278,6 +286,8 @@ Keep them; they are not debug leftovers.
 3. Put it under `components/dashboard/{app_label}/{snake_name}/` with the exact
    `{model_name}{Suffix}.vue` name (PascalCase model, snake folder).
 4. No import, no registration — `useDynamicComponent` finds it via the glob.
+
+`TitleCommon` clips titles at two lines (54 px) on purpose; the full title is in its tooltip. It needs `white-space: normal` next to `text-wrap: pretty`: Vuetify's `v-toolbar-title` is `nowrap`, and `text-wrap: pretty` alone is ignored by Firefox (fixed 2026-09-07 here and in ocsa). A row that stacks a caption above the title needs a taller row (`HeaderCommon` `height` prop; `ObservableHeader` uses 78).
 
 ## Key files
 

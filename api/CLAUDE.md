@@ -28,7 +28,7 @@ FRONTEND_SITE_URL=https://localhost:3018
 |-----|---------------|
 | `ies` | User (custom AbstractUser), Institution, Period, StatusControl, InvitationToken, PasswordRecoveryToken |
 | `indicator` | Axis → Component → Observable hierarchy; Sector, GeneralGroup |
-| `question` | Question definitions by type (A, B, Reach, Plan, Special) with weights |
+| `question` | Question definitions by type; `QuestionType` catalog and the observable↔type bridge with weights |
 | `survey` | Survey per Institution-Period; AxisValue, ComponentValue, PopulationQuantity |
 | `answer` | ObservableResponse, GroupResponse, attachments, comments |
 | `example` | Good practices: GoodPracticePackage → GoodPractice → Feature → FeatureGoodPractice, Evidence |

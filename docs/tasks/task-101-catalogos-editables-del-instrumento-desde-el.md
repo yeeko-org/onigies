@@ -26,6 +26,8 @@ La adaptación del frontend al contrato nuevo va aparte, en [[task-113]], porque
 
 Compromiso operativo de esta semana: dejar lista la edición de `GeneralGroup` y `GeneralQuestion` poco antes de la presentación del viernes, para que el equipo de Rubén edite lo fino sin tocar el seed ni el admin.
 
+**2026-09-07:** `QuestionType` entró al dashboard como catálogo editable con guardas (nombre público, ponderación por defecto y orden; entrada de menú «Tipos de pregunta»), y sus nombres son la fuente de las etiquetas del cuestionario ([[adr-0014]]). Pendiente conectarlo a `/respuestas` cuando se rehaga esa captura ([[task-132]]).
+
 ## Criterios de aceptación
 
 - [ ] El equipo de Rubén edita los textos de la información base desde el dashboard, sin pasar por el seed ni por el admin de Django

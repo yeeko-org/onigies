@@ -30,9 +30,16 @@ date: 2026-07-29
 - **`reach_question`** — pregunta de alcance poblacional "Variable B"
   (`ReachQuestion.text`), seguida de las poblaciones aplicables.
 - **`reach_instances_question`** — segunda pregunta de "Variable B", sobre
-  número de instancias académicas/administrativas (nuevo campo
-  `Observable.reach_instances_question`). En el original iba seguida de un
-  valor dummy ("1 instancias académicas"); se omite el placeholder.
+  número de instancias académicas/administrativas. Desde el 2026-09-07 es
+  solo llave del seed: el texto vive en `BQuestion.text` y ya no existe
+  `Observable.reach_instances_question` ([[adr-0014]]). En el original iba
+  seguida de un valor dummy ("1 instancias académicas"); se omite el
+  placeholder.
+- **`a_main_subtitle`** — la instrucción del bloque A («Mencione/Marque
+  todas las características o elementos que resulten aplicables[ a este
+  instrumento]:»), que aquí aparece entre paréntesis al final de
+  `a_question` y en el seed es llave propia con las tres redacciones
+  literales; 2.1 no la tiene.
 - **POB-ESTÁNDAR** — lista de 12 poblaciones que se repite en la mayoría de
   las preguntas de alcance (ver sección "Poblaciones" abajo). Cuando un
   observable usa una lista distinta, se enumera explícitamente.

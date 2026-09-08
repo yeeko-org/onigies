@@ -90,8 +90,9 @@ section; a sector with none of them is not captured here:
 `survey 0008`; `no_apply` is not captured today, pending `docs/tasks/task-56`).
 
 1. **Population visualizations** — direct men/women data per sector.
-2. **Scores observable 1.7** (integración paritaria) via
-   `Observable.pop_weight`. Decision 2026-07-04: 1.7's sex-gender
+2. **Scores observable 1.7** (integración paritaria) via its
+   `population` row in `ObservableQuestionType` (weight null → the
+   type's `default_weight`; see `cp-questionnaire`). Decision 2026-07-04: 1.7's sex-gender
    composition block was moved OUT of the observable and is asked here
    (autoridades + poblaciones groups); the observable keeps only its
    part A.

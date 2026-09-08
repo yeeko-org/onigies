@@ -2,11 +2,11 @@
 
 ## Niveles montados
 
-Solo pruebas de backend con `pytest` + `pytest-django`, sobre `TestCase` / `APITestCase` de Django. No hay tests de unidad puros separados: cada clase toca base de datos porque lo que se prueba son reglas de flujo, permisos y serialización. Los e2e viven en `nuxt/` (ver `nuxt/TESTING.md`).
+Solo backend: `pytest` + `pytest-django` sobre `TestCase` / `APITestCase`. Toda clase toca base de datos porque lo que se prueba son reglas de flujo, permisos y serialización. Los e2e viven en `nuxt/` (ver `nuxt/TESTING.md`).
 
 ## Comandos
 
-El intérprete es el del virtualenv (`venv/bin/python` en `api/`); la configuración está en `pytest.ini`.
+Intérprete del virtualenv (`venv/bin/python` en `api/`); configuración en `pytest.ini`.
 
 ```bash
 pytest                                        # suite completa
@@ -19,25 +19,29 @@ pytest -q -k periodo                          # por nombre
 
 | Archivo · clase | Cubre |
 |---|---|
-| `flow/tests/test_ownership.py` · `TransitionOwnershipTests` | una IES ajena no transiciona objetos de otra institución; la dueña y la revisora sí |
-| `flow/tests/test_ownership.py` · `EventOwnershipTests` | mismo cerco sobre comentarios y timeline |
-| `flow/tests/test_ownership.py` · `PackageActionOwnershipTests` | `discard` y listado no filtran paquetes de otras instituciones |
-| `flow/tests/test_status_wiring.py` · `InitialStatusWiringTests` | todo participante creado sin status recibe el default de su grupo; `assign_auto_status` promueve en la primera captura y no revierte objetos avanzados |
-| `flow/tests/test_status_wiring.py` · `SentAtPersistenceTests` | regresión: el envío persiste `sent_at` en base y el reenvío no lo pisa |
-| `flow/tests/test_period_lock.py` · `TestInstitutionPeriodLockTests` | con el periodo cerrado, el envío se rechaza para una IES real y pasa para una IES `is_test` (ganchos bp y gen, más los guards de vista `discard`/`reopen`); la revisora dictamina después del cierre |
-| `flow/tests/test_notifications.py` · `TurnNotificationTests` | correo a la IES cuando el turno de un objeto raíz vuelve a ella o llega a un status final; nunca a revisoras ni por transiciones de hijo |
-| `flow/tests/test_attachments.py` · `AttachmentTests` | adjuntos: el tope de 30 MB (rechazo por encima, aceptación justo en el límite) y la ausencia deliberada de validación de tipo; el borrado del archivo físico al borrar el adjunto, en cascada al borrar el objeto, y sin reventar si el archivo ya no está; la descarga vía endpoint (302 al storage, 403 para otra IES, `is_public` abierto a anónimos, 404 anti-enumeración para anónimos sobre privados, modo `?redirect=false` con la URL en JSON) y que el serializer emite la URL del endpoint, no la del storage |
-| `survey/tests.py` · `GeneralValidationTests` | compuerta de contenido de las preguntas generales leyendo la fila de respuesta: la fila ausente y el valor nulo bloquean; el `0` y el `false` son respuestas; el `''` cuenta como vacío; el «No aplica» exime solo si la pregunta trae `allow_no_apply` en su `addl_config` |
-| `survey/tests.py` · `GeneralQuestionResponseSyncTests` | upsert de `question_responses` anidado en el Survey: el valor aterriza en la columna que dicta su `q_type`, el `''` se normaliza a nulo sin 400, el «No aplica» anula ambos valores de la fila y una segunda escritura actualiza sin duplicar |
-| `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones: crea la fila con el valor de la IES, respeta una respuesta ya capturada al volver a guardar y no crea fila si la institución no lo declara |
-| `ies/tests.py` · `LoginPayloadInstitutionTests` | `is_test` viaja en el payload de `/login/` por `institution` e `institution_details` (red contra un cambio de `fields='__all__'` a lista explícita) |
-| `ies/tests_recovery.py` | modelo del token de recuperación y las tres vistas del flujo de contraseña |
-| `email_send/tests.py` | perfiles y plantillas de correo, `send_template_email` / `send_simple_email`, `EmailRecord` |
+| `flow/tests/test_ownership.py` · `TransitionOwnershipTests` | una IES ajena no transiciona objetos de otra institución |
+| `flow/tests/test_ownership.py` · `EventOwnershipTests` | el mismo cerco sobre comentarios y timeline |
+| `flow/tests/test_ownership.py` · `PackageActionOwnershipTests` | `discard` y listado no filtran paquetes ajenos |
+| `flow/tests/test_status_wiring.py` · `InitialStatusWiringTests` | status default al crear; `assign_auto_status` promueve en la primera captura y no revierte |
+| `flow/tests/test_status_wiring.py` · `SentAtPersistenceTests` | regresión: el reenvío no pisa `sent_at` |
+| `flow/tests/test_period_lock.py` · `TestInstitutionPeriodLockTests` | periodo cerrado: bloquea a la IES real, exime a la `is_test`, deja dictaminar a la revisora |
+| `flow/tests/test_notifications.py` · `TurnNotificationTests` | correo a la IES cuando el turno vuelve a ella o llega a status final; nunca a revisoras ni por hijos |
+| `flow/tests/test_attachments.py` · `AttachmentTests` | tope de 30 MB, borrado del archivo físico, y la descarga vía endpoint (permisos, `is_public`, 404 anti-enumeración, `?redirect=false`) |
+| `survey/tests.py` · `GeneralValidationTests` | compuerta de contenido de las generales: qué cuenta como respuesta y cuándo exime «No aplica» |
+| `survey/tests.py` · `GeneralQuestionResponseSyncTests` | upsert de `question_responses` anidado: columna por `q_type`, normalización del `''`, sin duplicar |
+| `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones |
+| `question/tests.py` · `SeedTextOwnershipTests` | de los textos manda el dashboard; `--overwrite-texts` los repone, salvo `Axis.name` |
+| `question/tests.py` · `TypeWeightSyncTests` | el re-seed repone la fila puente borrada, no pisa un `weight` capturado, y deja los conteos 2026 (41/41/35/1/1/1) |
+| `question/tests.py` · `FinalWeightTests` | ponderación efectiva: la propia, si no la del tipo, `None` sin fila puente |
+| `ies/tests.py` · `LoginPayloadInstitutionTests` | `is_test` viaja en el payload de `/login/` |
+| `ies/tests_recovery.py` | token de recuperación y las tres vistas del flujo de contraseña |
+| `email_send/tests.py` | perfiles y plantillas, `send_template_email` / `send_simple_email`, `EmailRecord` |
 
 ## Fixtures y credenciales
 
-No hay credenciales compartidas: cada clase construye sus datos en `setUpTestData`. Dos patrones a conocer antes de escribir tests nuevos:
+No hay credenciales compartidas: cada clase construye sus datos en `setUpTestData`.
 
-- `FlowSecurityTestCase` (`flow/tests/base.py`) es la base reutilizable: siembra el catálogo de status (`InitStatus()` + `seed_flow()`), un periodo abierto y dos instituciones con sus paquetes y usuarios. Hereda de ahí si no necesitas condiciones de periodo distintas.
-- `GeneralQuestionTestCase` (`survey/tests.py`) es la base de las tres clases de generales: arma a mano un catálogo mínimo de `GeneralGroup` y `GeneralQuestion` en vez de correr `load_questionnaire`, porque lo que se prueba es el comportamiento por `addl_config` y `q_type`, no la redacción sembrada. Los grupos y preguntas se crean **antes** que la institución: `Institution.save` aprovisiona los `GeneralGroupResponse` y precarga `is_centralized` sobre lo que exista en ese momento.
-- `TestInstitutionPeriodLockTests` (`flow/tests/test_period_lock.py`) **no** hereda de esa base a propósito: necesita el periodo ya cerrado antes de crear las instituciones, porque `Institution.save` aprovisiona los surveys sobre los periodos que existen en ese momento.
+- `FlowSecurityTestCase` (`flow/tests/base.py`) — base reutilizable: catálogo de status, periodo abierto, dos instituciones con paquetes y usuarios.
+- `GeneralQuestionTestCase` (`survey/tests.py`) — catálogo mínimo a mano en vez de `load_questionnaire`. Los grupos y preguntas se crean **antes** que la institución: `Institution.save` aprovisiona los `GeneralGroupResponse` sobre lo que exista en ese momento.
+- `seed_questionnaire()` (`question/tests.py`) — `InitQuestionTypes()` + `load_sectors` + `load_questionnaire` completo; el contrato del re-seed solo se ve con el cuestionario entero.
+- `TestInstitutionPeriodLockTests` no hereda de `FlowSecurityTestCase` a propósito: necesita el periodo ya cerrado antes de crear las instituciones.

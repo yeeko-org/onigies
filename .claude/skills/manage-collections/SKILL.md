@@ -71,6 +71,12 @@ siblings), declare `filter_group_key` on the schema itself
 
 ---
 
+## Attributes shared by both schemas
+
+`name_field` overrides the derived row title (default: first of `name`/`title`); set it when `name` is an internal key, as in `QuestionTypeSchema` (`name_field = "public_name"`). `icon` and `color` are accepted by catalogs too (since 2026-09-07) and travel in `collections_data`; `HeaderChip` uses them, so give them to any catalog that will be counted in a parent's header (the five question families: `icon="gavel"`, `color="indigo"`, …).
+
+`count_fields` — real example, `ObservableSchema`: `{"a_questions_count": "aquestion", …}` annotates `Count(<reverse accessor>, distinct=True)` on the list queryset and injects a `ReadOnlyField` per key into the auto serializer; with a hand-written `list_serializer_class` declare those fields yourself. The catalog dump in `/catalogs/all/` is annotation-free by design.
+
 ## CollectionSchema
 
 `viewset_class` is required. `mini_viewset_class` auto-registers a

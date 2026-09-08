@@ -15,6 +15,8 @@ source: ["[[2026-06-23-progreso-frontend-del-flujo]]"]
 
 **Acotada a CP (2026-08-06):** la sesión de generales del 2026-08-04 dejó `gen` corriendo entero sobre el motor (captura de la IES, revisión, envío gateado), verificado en la sesión duo ([[2026-08-06-sesion-duo-adjuntos-sobre-flow-y]]). Lo que queda de esta task es únicamente el cuestionario principal (cp), ligado a la superficie de [[task-42]].
 
+**2026-09-07:** los rótulos de los bloques de la captura cp leen `public_name` de `cats.question_type` (composable `useQuestionTypes`), nunca hardcodeados ([[adr-0014]] §2). Instrucción de Ricardo: «hay que conectar QuestionType al dashboard y en su momento a `/respuestas` (cuando se haga esa tarea)».
+
 ## Criterios de aceptación
 
 - [ ] La IES opera CP por transiciones del motor, sin status hardcodeados (generales ya cumplido, 2026-08-04)

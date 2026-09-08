@@ -62,6 +62,7 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - `utils/api.js` — `ok`/`fail`, the `{data}|{errors}` contract helpers for store actions.
 - `utils/log.js` — `devWarn`/`devLog`: dev-only logging (no-op in prod). Use instead of bare `console.*` for diagnostics.
 - `composables/useDates.js` — `formatDate(dateStr)` (dayjs, locale `es`).
+- `composables/useQuestionTypes.js` — `QuestionType` rows from `cats` indexed by `name` and by `model_question`; the source of block labels, never hardcode them.
 - `components/dashboard/common/dialog/DialogDelete.vue` — confirm dialog with `title`/`subtitle`/`loading`/default slot; reusable beyond delete.
 
 ## Layouts

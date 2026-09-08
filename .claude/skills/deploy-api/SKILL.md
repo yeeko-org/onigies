@@ -66,6 +66,14 @@ venv/bin/python manage.py makemigrations --check --dry-run   # 6. MUST say "No c
 #    load_questionnaire --sync-institutions (backfills the new wrappers).
 #    load_sectors FIRST: load_questionnaire aborts with "Sectores
 #    inexistentes" if a sector it references is missing (deploy 2026-08-04).
+#    Since 2026-09-07 load_questionnaire writes texts only on create
+#    (the dashboard rules over them, adr-0014); add --overwrite-texts ONLY
+#    for the one planned reseed right after that change (nobody has edited
+#    texts yet). QuestionType names changed the same day: run
+#    migrate_initial_data once (it seeds order/required; names/weights
+#    only on create — the data migration already renamed existing rows).
+#    load_questionnaire aborts if a Component was renamed from the
+#    dashboard (natural key); fix the name or the seed before reseeding.
 sudo supervisorctl restart apionigies       # 8. reload (brief downtime, seconds)
 ```
 

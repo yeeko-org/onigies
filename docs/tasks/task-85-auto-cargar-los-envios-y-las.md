@@ -15,6 +15,8 @@ source: ["[[2026-08-06-temas-reunion-fer]]"]
 
 Toca las dos capas: que el serializer de `Institution` traiga los objetos relacionados (ver skill `manage-collections` para el contrato del catálogo y de las colecciones hijas) y que `nuxt/app/components/dashboard/ies/institution/InstitutionSheet.vue` los despliegue de entrada. El mecanismo de listas de objetos relacionados está descrito en el skill `dashboard-collections`.
 
+**2026-09-07:** hay precedente exacto del patrón en el cuestionario: `ComponentSheet.vue` pinta los observables que ya vienen anidados en el detalle (`PanelsResult` con `in_sheet`, sin fetch) y `AxisSheet.vue` construye la lista desde el árbol en memoria porque los ejes no piden detalle. Para Institución conviene la primera vía: anidar envíos y prácticas en el serializer de detalle y un `InstitutionSheet` que los reciba. Documentado en el skill `dashboard-collections`.
+
 ## Criterios de aceptación
 
 - [ ] Al abrir una institución se ven sus envíos de buenas prácticas sin acción adicional

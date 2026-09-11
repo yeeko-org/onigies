@@ -24,8 +24,12 @@ EXPECTED_TYPE_COUNTS = {
 
 
 def run_seed(overwrite_texts: bool = False) -> None:
-    """Corre load_questionnaire silenciando su salida."""
-    args = ['--overwrite-texts'] if overwrite_texts else []
+    """Corre load_questionnaire silenciando su salida. `--force` porque
+    el comando se cierra solo tras la primera siembra y lo que estas
+    clases prueban es justamente la resiembra."""
+    args = ['--force']
+    if overwrite_texts:
+        args.append('--overwrite-texts')
     call_command(
         'load_questionnaire', *args, stdout=StringIO(), stderr=StringIO())
 
@@ -125,7 +129,15 @@ class TypeWeightSyncTests(TestCase):
 
 
 class FinalWeightTests(TestCase):
-    """Ponderación efectiva: la propia, si no la del tipo, si no nada."""
+    """Ponderación efectiva: la propia; la del tipo solo en el
+    observable estándar; si no, nada."""
+
+    DEFAULTS = {
+        'a_questions': Decimal('5.00'),
+        'b_questions': Decimal('2.50'),
+        'reach': Decimal('2.50'),
+        'plans': None,
+    }
 
     @classmethod
     def setUpTestData(cls) -> None:
@@ -134,9 +146,25 @@ class FinalWeightTests(TestCase):
             axis=axis, name="Componente de prueba")
         cls.observable = Observable.objects.create(
             component=component, number="1.1", name="Observable de prueba")
-        cls.question_type = QuestionType.objects.create(
-            name='a_questions', public_name="Tipo de prueba",
-            default_weight=Decimal('60.00'), order=1, required=True)
+        cls.types = {
+            name: QuestionType.objects.create(
+                name=name, public_name=f"Tipo {name}",
+                default_weight=weight, order=order,
+                required=name in ('a_questions', 'b_questions'))
+            for order, (name, weight) in enumerate(
+                cls.DEFAULTS.items(), start=1)
+        }
+        cls.question_type = cls.types['a_questions']
+
+    def _standard_rows(self) -> ObservableQuestionType:
+        """El trío estándar (A, orgánica, sectorial): la única
+        combinación que hereda los defaults del tipo."""
+        rows = {
+            name: ObservableQuestionType.objects.create(
+                observable=self.observable, question_type=self.types[name])
+            for name in ('a_questions', 'b_questions', 'reach')
+        }
+        return rows['a_questions']
 
     def test_own_weight_wins(self) -> None:
         row = ObservableQuestionType.objects.create(
@@ -145,9 +173,8 @@ class FinalWeightTests(TestCase):
         self.assertEqual(row.final_weight, Decimal('25.00'))
 
     def test_falls_back_to_type_default(self) -> None:
-        row = ObservableQuestionType.objects.create(
-            observable=self.observable, question_type=self.question_type)
-        self.assertEqual(row.final_weight, Decimal('60.00'))
+        row = self._standard_rows()
+        self.assertEqual(row.final_weight, Decimal('5.00'))
 
     def test_weight_for_without_row_is_none(self) -> None:
         self.assertIsNone(self.observable.weight_for('plans'))

@@ -14,10 +14,13 @@ pregunta hija vive en question/catalog_schema.py. No lleva filter group
 porque su PK es un slug, no un id, y el árbol D3 de filtros estratifica
 por id; se llega a él por colección, no por `/dashboard/catalog/`.
 """
+from django.db.models import Prefetch
+
 from ps_schema.registry import (
     catalog_registry, CatalogSchema, FilterGroupSchema)
 from indicator.models import (
     Axis, Component, GeneralGroup, Observable, Sector)
+from question.models import ObservableQuestionType
 from api.views.confirm_delete import NoDeleteMixin
 from api.views.indicator.serializers import (
     ComponentFullSerializer, GeneralGroupCatalogSerializer,
@@ -33,12 +36,17 @@ OBSERVABLE_COUNT_FIELDS = {
 }
 
 
+TYPE_WEIGHTS_PREFETCH = Prefetch(
+    'type_weights',
+    queryset=ObservableQuestionType.objects.select_related('question_type'))
+
+
 class PrefetchObservableRowMixin:
     """Sin esto, tres consultas extra por observable en la lista."""
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related(
-            'type_weights', 'reachquestion_set__others_sectors',
+            TYPE_WEIGHTS_PREFETCH, 'reachquestion_set__others_sectors',
             'bquestion_set')
 
 
@@ -85,6 +93,9 @@ class SectorSchema(CatalogSchema):
     name = "Sector Poblacional"
     plural_name = "Sectores Poblacionales"
     filter_group_key = "sectors"
+    # De cada sector cuelgan en cascada las cifras de población de
+    # todas las IES: nunca se borra desde el dashboard.
+    extra_mixins = [NoDeleteMixin]
 
 
 @catalog_registry.register

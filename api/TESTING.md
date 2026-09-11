@@ -15,6 +15,8 @@ pytest flow/tests/test_notifications.py::TurnNotificationTests   # una clase
 pytest -q -k periodo                          # por nombre
 ```
 
+Fuera de la suite, desde la raíz del monorepo: `api/venv/bin/pytest -c api/pytest.ini api/.claude/smoke_content_gate.py -q` — sonda de la compuerta del cuestionario (13 comprobaciones contra los endpoints reales: alta y baja abiertas, 403 cerradas, orden y fila puente automáticos, banderas, cierre de ida, 405 del catálogo de ajustes).
+
 ## Qué cubre cada clase
 
 | Archivo · clase | Cubre |
@@ -32,7 +34,7 @@ pytest -q -k periodo                          # por nombre
 | `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones |
 | `question/tests.py` · `SeedTextOwnershipTests` | de los textos manda el dashboard; `--overwrite-texts` los repone, salvo `Axis.name` |
 | `question/tests.py` · `TypeWeightSyncTests` | el re-seed repone la fila puente borrada, no pisa un `weight` capturado, y deja los conteos 2026 (41/41/35/1/1/1) |
-| `question/tests.py` · `FinalWeightTests` | ponderación efectiva: la propia, si no la del tipo, `None` sin fila puente |
+| `question/tests.py` · `FinalWeightTests` | ponderación efectiva: la propia; la del tipo solo cuando el observable tiene exactamente el trío estándar (A + orgánica + sectorial); `None` sin fila puente |
 | `ies/tests.py` · `LoginPayloadInstitutionTests` | `is_test` viaja en el payload de `/login/` |
 | `ies/tests_recovery.py` | token de recuperación y las tres vistas del flujo de contraseña |
 | `email_send/tests.py` | perfiles y plantillas, `send_template_email` / `send_simple_email`, `EmailRecord` |
@@ -43,5 +45,5 @@ No hay credenciales compartidas: cada clase construye sus datos en `setUpTestDat
 
 - `FlowSecurityTestCase` (`flow/tests/base.py`) — base reutilizable: catálogo de status, periodo abierto, dos instituciones con paquetes y usuarios.
 - `GeneralQuestionTestCase` (`survey/tests.py`) — catálogo mínimo a mano en vez de `load_questionnaire`. Los grupos y preguntas se crean **antes** que la institución: `Institution.save` aprovisiona los `GeneralGroupResponse` sobre lo que exista en ese momento.
-- `seed_questionnaire()` (`question/tests.py`) — `InitQuestionTypes()` + `load_sectors` + `load_questionnaire` completo; el contrato del re-seed solo se ve con el cuestionario entero.
+- `seed_questionnaire()` (`question/tests.py`) — `InitQuestionTypes()` + `load_sectors` + `load_questionnaire` completo; el contrato del re-seed solo se ve con el cuestionario entero. Su helper `run_seed()` pasa `--force`: desde el candado de siembra, `load_questionnaire` aborta si `QuestionnaireSettings.seeded_at` ya tiene fecha.
 - `TestInstitutionPeriodLockTests` no hereda de `FlowSecurityTestCase` a propósito: necesita el periodo ya cerrado antes de crear las instituciones.

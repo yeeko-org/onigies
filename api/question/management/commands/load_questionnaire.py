@@ -13,12 +13,14 @@ icon/color/short_name/hex_color).
 """
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 
 from indicator.models import (
     Axis, Component, GeneralGroup, Observable, Sector)
 from question.models import (
     AOption, AQuestion, BQuestion, GeneralQuestion, ObservableQuestionType,
-    PlanQuestion, QuestionType, ReachQuestion, SpecialQuestion)
+    PlanQuestion, QuestionType, QuestionnaireSettings, ReachQuestion,
+    SpecialQuestion)
 from question.seed_data import ALL_AXES
 from question.seed_data.catalogs import (
     A_OPTIONS, GENERAL_GROUPS, STANDARD_EXTRA_SECTORS)
@@ -46,9 +48,15 @@ class Command(BaseCommand):
             help="Reescribe los textos de observables y preguntas con "
                  "los del seed, pisando lo editado desde el dashboard.",
         )
+        parser.add_argument(
+            '--force', action='store_true',
+            help="Resiembra aunque el cuestionario ya se haya sembrado "
+                 "(ignora el candado de `seeded_at`).",
+        )
 
     def handle(self, *args, **options) -> None:
         self.overwrite_texts = options['overwrite_texts']
+        settings_row = self._check_seed_lock(options['force'])
         self.type_names = set(
             QuestionType.objects.values_list('name', flat=True))
         self.required_types = set(
@@ -65,7 +73,22 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(
                 "Pendiente: correr con --sync-institutions para crear "
                 "los GeneralGroupResponse en surveys existentes."))
+        settings_row.seeded_at = timezone.now()
+        settings_row.save()
         self.stdout.write(self.style.SUCCESS("Cuestionario cargado."))
+
+    def _check_seed_lock(self, force: bool) -> QuestionnaireSettings:
+        """El instrumento se siembra una vez: después manda el dashboard
+        y una resiembra devolvería la estructura al estado del seed."""
+        settings_row = QuestionnaireSettings.load()
+        if settings_row.seeded_at and not force:
+            fecha = timezone.localtime(
+                settings_row.seeded_at).strftime('%d/%m/%Y %H:%M')
+            raise CommandError(
+                f"El cuestionario ya se sembró el {fecha}. Resembrar "
+                "pisaría la estructura editada desde el dashboard; si "
+                "de veras hace falta, corre con --force.")
+        return settings_row
 
     def _text_defaults(self, texts: dict) -> dict:
         """Textos que van en `defaults`: ninguno, salvo con la bandera."""

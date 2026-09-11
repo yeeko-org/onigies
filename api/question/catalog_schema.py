@@ -5,22 +5,26 @@ from ps_schema.registry import (
     catalog_registry, CatalogSchema, FilterGroupSchema)
 from question.models import (
     AOption, AQuestion, BQuestion, GeneralQuestion, ObservableQuestionType,
-    PlanQuestion, QuestionType, ReachQuestion, SpecialQuestion)
+    PlanQuestion, QuestionType, QuestionnaireSettings, ReachQuestion,
+    SpecialQuestion)
 from api.views.confirm_delete import NoDeleteMixin
+from api.views.content_gate import ContentGateMixin, SingleRowMixin
 from api.views.question.serializers import (
     AQuestionCatalogSerializer, BQuestionCatalogSerializer,
     GeneralQuestionCatalogSerializer, ObservableQuestionTypeSerializer,
     PlanQuestionCatalogSerializer, QuestionTypeCatalogSerializer,
-    ReachQuestionCatalogSerializer, SpecialQuestionCatalogSerializer)
+    QuestionnaireSettingsSerializer, ReachQuestionCatalogSerializer,
+    SpecialQuestionCatalogSerializer)
 
 
 class ObservableQuestionSchema(CatalogSchema):
-    """Base sin registrar de las cinco preguntas por observable: se
-    siembran y nunca se crean ni se borran desde la API, porque sus
-    respuestas ya capturadas cuelgan de ellas."""
+    """Base sin registrar de las cinco preguntas por observable; el alta
+    y la baja dependen del interruptor del cuestionario."""
     level = "category_subtype"
     filterset_fields = ['observable']
-    extra_mixins = [NoDeleteMixin]
+    extra_mixins = [ContentGateMixin]
+    # Las altas van por el editor del observable, que ya pone el
+    # observable; la lista suelta no tiene a qué colgarlas.
     cat_params = {"hide_create": True}
 
 
@@ -54,7 +58,21 @@ class ObservableQuestionTypeSchema(CatalogSchema):
     level = "category_subtype"
     filterset_fields = ['observable', 'question_type']
     serializer_class = ObservableQuestionTypeSerializer
-    extra_mixins = [NoDeleteMixin]
+    extra_mixins = [ContentGateMixin]
+    cat_params = {"hide_create": True}
+
+
+@catalog_registry.register
+class QuestionnaireSettingsSchema(CatalogSchema):
+    model = QuestionnaireSettings
+    level = "category_subtype"
+    name = "Ajustes del cuestionario"
+    plural_name = "Ajustes del cuestionario"
+    name_field = "title"
+    icon = "tune"
+    color = "deep-purple"
+    serializer_class = QuestionnaireSettingsSerializer
+    extra_mixins = [SingleRowMixin]
     cat_params = {"hide_create": True}
 
 

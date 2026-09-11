@@ -1,8 +1,11 @@
 from decimal import Decimal
+from functools import cached_property
 
 from django.db import models
 
 from ies.models import StatusControl, User
+
+STANDARD_TYPE_NAMES = frozenset({'a_questions', 'b_questions', 'reach'})
 
 
 class GeneralGroup(models.Model):
@@ -85,6 +88,19 @@ class Observable(models.Model):
     a_main_subtitle = models.TextField(
         blank=True, null=True,
         verbose_name="Subtítulo de armonización e institucionalización")
+
+    @cached_property
+    def uses_default_weights(self) -> bool:
+        """Los defaults del tipo se calibraron para el trío estándar; en
+        cualquier otra combinación se captura fila por fila."""
+        names = {row.question_type_id for row in self.type_weights.all()}
+        return names == STANDARD_TYPE_NAMES
+
+    @property
+    def weights_pending(self) -> bool:
+        """Aviso, nunca bloqueo."""
+        return any(
+            row.final_weight is None for row in self.type_weights.all())
 
     def weight_for(self, type_name: str) -> Decimal | None:
         """Pasa por el accesor inverso de la tabla puente para no

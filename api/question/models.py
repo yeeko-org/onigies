@@ -10,6 +10,39 @@ GENERAL_Q_TYPES = [
 ]
 
 
+class QuestionnaireSettings(models.Model):
+    """Fila única (pk=1) con los interruptores del instrumento."""
+
+    content_open = models.BooleanField(
+        default=True, verbose_name="Cuestionario abierto a edición")
+    seeded_at = models.DateTimeField(
+        blank=True, null=True, verbose_name="Última siembra")
+
+    @classmethod
+    def load(cls) -> "QuestionnaireSettings":
+        row, _ = cls.objects.get_or_create(pk=1)
+        return row
+
+    @classmethod
+    def is_open(cls) -> bool:
+        return cls.load().content_open
+
+    def save(self, *args, **kwargs):
+        # Un POST que se cuele no fabrica una segunda fila con otro estado.
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return (
+            "Cuestionario abierto a edición" if self.content_open
+            else "Cuestionario cerrado a edición")
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "Ajustes del cuestionario"
+        verbose_name_plural = "Ajustes del cuestionario"
+
+
 class QuestionType(models.Model):
     name = models.CharField(
         max_length=100, primary_key=True, verbose_name="Clave interna")
@@ -24,6 +57,14 @@ class QuestionType(models.Model):
         default=0, verbose_name="Orden del bloque")
     required = models.BooleanField(
         default=False, verbose_name="Aplica a todo observable")
+    icon = models.CharField(
+        max_length=50, blank=True, null=True, verbose_name="Ícono")
+    color = models.CharField(
+        max_length=50, blank=True, null=True, verbose_name="Color")
+
+    @classmethod
+    def for_model(cls, model_cls: type) -> "QuestionType":
+        return cls.objects.get(model_question=model_cls.__name__)
 
     def __str__(self):
         return self.name
@@ -50,8 +91,12 @@ class ObservableQuestionType(models.Model):
 
     @property
     def final_weight(self) -> Decimal | None:
+        """El default del tipo solo se hereda en el observable estándar
+        (ver `Observable.uses_default_weights`)."""
         if self.weight is not None:
             return self.weight
+        if not self.observable.uses_default_weights:
+            return None
         return self.question_type.default_weight
 
     def __str__(self):
@@ -137,10 +182,10 @@ class BQuestion(models.Model):
     text = models.TextField()
     includes_academic = models.BooleanField(
         blank=True, null=True,
-        verbose_name="Incluye entidades académicas")
+        verbose_name="Incluye instancias académicas")
     includes_admin = models.BooleanField(
         blank=True, null=True,
-        verbose_name="Incluye dependencias administrativas")
+        verbose_name="Incluye instancias administrativas")
 
     def __str__(self):
         return f"Pregunta cuerpo: {self.text} ({self.observable.name})"

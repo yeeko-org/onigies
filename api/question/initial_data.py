@@ -2,27 +2,32 @@ from .models import QuestionType
 
 
 class InitQuestionTypes:
-    """`public_name` y `default_weight` solo se escriben al crear: el
-    dashboard es dueño de ambos. El resto se re-afirma cada corrida."""
+    """`public_name`, `default_weight`, `icon` y `color` solo se
+    escriben al crear: el dashboard es dueño de los cuatro. El resto se
+    re-afirma cada corrida."""
 
     def __init__(self):
         initial_data = [
             ('a_questions', 'Armonización e institucionalización',
-             'AQuestion', 'AResponse', 60, 1, True),
+             'AQuestion', 'AResponse', 5, 1, True, 'gavel', 'indigo'),
             ('reach', 'Transversalidad sectorial',
-             'ReachQuestion', 'ReachResponse', 0, 2, False),
+             'ReachQuestion', 'ReachResponse', 2.5, 2, False,
+             'groups', 'indigo'),
             ('b_questions', 'Transversalidad orgánica',
-             'BQuestion', 'BResponse', 40, 3, True),
+             'BQuestion', 'BResponse', 2.5, 3, True,
+             'account_tree', 'indigo'),
             ('plans', 'Planes de estudio',
-             'PlanQuestion', 'PlanResponse', 0, 4, False),
+             'PlanQuestion', 'PlanResponse', None, 4, False,
+             'menu_book', 'deep-purple'),
             ('special', 'Pregunta especial',
-             'SpecialQuestion', 'SpecialResponse', 0, 5, False),
+             'SpecialQuestion', 'SpecialResponse', None, 5, False,
+             'star', 'deep-purple'),
             ('population', 'Distribución de población',
-             None, None, 0, 6, False),
+             None, None, None, 6, False, 'diversity_3', 'deep-purple'),
         ]
 
         for (name, public, m_question, m_response, weight_value, order,
-             required) in initial_data:
+             required, icon, color) in initial_data:
             structure = {
                 'model_question': m_question,
                 'model_response': m_response,
@@ -36,5 +41,7 @@ class InitQuestionTypes:
                     **structure,
                     'public_name': public,
                     'default_weight': weight_value,
+                    'icon': icon,
+                    'color': color,
                 },
             )

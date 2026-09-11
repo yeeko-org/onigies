@@ -17,7 +17,13 @@ class ObservableSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ObservableFullSerializer(serializers.ModelSerializer):
+class WeightFlagsMixin(metaclass=serializers.SerializerMetaclass):
+    """Avisos del editor: ninguna de las dos bloquea el guardado."""
+    uses_default_weights = serializers.BooleanField(read_only=True)
+    weights_pending = serializers.BooleanField(read_only=True)
+
+
+class ObservableFullSerializer(WeightFlagsMixin, serializers.ModelSerializer):
     """Los alias en plural son lo que el Sheet genérico busca para listar
     cada colección hija sin un fetch extra."""
     observable_question_types = ObservableQuestionTypeSerializer(
@@ -45,7 +51,7 @@ class ComponentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ObservableCountsSerializer(ObservableSerializer):
+class ObservableCountsSerializer(WeightFlagsMixin, ObservableSerializer):
     """Los conteos vienen anotados en el queryset y se declaran a mano
     porque un serializer escrito no los inyecta como el auto-generado."""
     a_questions_count = serializers.IntegerField(read_only=True)
@@ -96,13 +102,14 @@ class ComponentFullSerializer(serializers.ModelSerializer):
     def get_observables(self, obj: Component) -> list:
         # El import vive aquí porque indicator.catalog_schema importa
         # este módulo: a nivel de módulo sería un ciclo.
-        from indicator.catalog_schema import OBSERVABLE_COUNT_FIELDS
+        from indicator.catalog_schema import (
+            OBSERVABLE_COUNT_FIELDS, TYPE_WEIGHTS_PREFETCH)
 
         queryset = obj.observables.annotate(**{
             name: Count(path, distinct=True)
             for name, path in OBSERVABLE_COUNT_FIELDS.items()
         }).prefetch_related(
-            'type_weights', 'reachquestion_set__others_sectors',
+            TYPE_WEIGHTS_PREFETCH, 'reachquestion_set__others_sectors',
             'bquestion_set')
         return ObservableCountsSerializer(queryset, many=True).data
 

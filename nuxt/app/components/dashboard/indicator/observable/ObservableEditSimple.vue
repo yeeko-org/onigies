@@ -500,7 +500,6 @@ function onQuestionSaved(block, {res}) {
           :model-value="full_main.number"
           label="Número"
           readonly
-          hint="Clave del instrumento"
           persistent-hint
           variant="outlined"
           density="comfortable"

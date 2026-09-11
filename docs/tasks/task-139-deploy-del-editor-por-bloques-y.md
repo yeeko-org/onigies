@@ -8,7 +8,7 @@ owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-09-10-editor-por-bloques-cuestionario-abierto-y-retiro-del-seed]]"]
 depends-on: ["[[task-131]]"]
-related: ["[[adr-0015]]"]
+related: ["[[adr-0015]]", "[[2026-09-10-deploy-del-editor-por-bloques-y-ultima-siembra]]"]
 ---
 
 # Deploy del editor por bloques y última siembra del cuestionario antes de que Rubén edite
@@ -29,9 +29,11 @@ Runbook, con el skill `deploy-api` como guía de detalle:
 
 Respaldo también inmediatamente antes de cerrar el cuestionario.
 
+Ejecutada el 10 de septiembre: [[2026-09-10-deploy-del-editor-por-bloques-y-ultima-siembra]]. Dos desviaciones del runbook, ambas decididas por Ricardo en la sesión: sin `migrate_initial_data` (redundante con las migraciones 0006 y 0010) y sin `--sync-institutions` (escribía `is_centralized` en encuestas existentes, [[task-148]]). Lo que sigue abierto es el paso 7 y el respaldo previo al cierre.
+
 ## Criterios de aceptación
 
-- [ ] Producción con las migraciones aplicadas y `load_questionnaire` corrido una sola vez, con `seeded_at` escrito
-- [ ] Frontend publicado en Netlify con el editor por bloques y la barra del interruptor
-- [ ] Humo del 1.3 y el 1.12 en producción sin errores de consola
+- [x] Producción con las migraciones aplicadas y `load_questionnaire` corrido una sola vez, con `seeded_at` escrito
+- [x] Frontend publicado en Netlify con el editor por bloques y la barra del interruptor
+- [x] Humo del 1.3 y el 1.12 en producción sin errores de consola
 - [ ] Rubén avisado de que puede editar

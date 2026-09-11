@@ -1,5 +1,9 @@
 ---
 name: deploy-api
+metadata:
+  rules: 2026-09-05
+  type: operations
+  reader: both
 description: "Deploy the ONIGIES monorepo to production: the Django API on the Yeeko server (migration-drift checklist, server runbook, smoke tests) and the Nuxt frontend build on Netlify (pnpm lockfile, local emulation of the build, verifying publication by build id). Use whenever deploying, pushing the production branch, running migrations on the server, debugging a 500 right after a deploy, or when a Netlify build fails or never publishes."
 ---
 
@@ -48,9 +52,9 @@ Any command in the deploy plan that writes rows (seeds included, migrations asid
 
 > **Incident 2026-08-12:** re-running `migrate_flow_data` (retired since) silently reset 179 advanced flow statuses to their frozen legacy values — no FlowEvents, smoke all green. The deploy decision had assessed only comment resurrection; the status branch was never enumerated. Its own output carried the fingerprint («1 reconciliación bp_draft → bp_completed») and was read as success. See `docs/records/2026-08-12-incidente-migrate-flow-data.md`.
 
-## The last questionnaire seed
+## The questionnaire seed is retired
 
-Since `adr-0015` `load_questionnaire` is a one-shot: the deploy that ships the observable editor (`task-139`) runs it once, it writes `QuestionnaireSettings.seeded_at`, and every later invocation aborts unless `--force`. Never pass `--force` on production without a fresh dump in `~/databases/` and Ricardo's explicit yes: it re-asserts seed structure over what the client built from the dashboard and prunes their extra AQuestion/PlanQuestion rows. Pending on production before that deploy: migrations `question` 0005–0010 and `indicator` 0010; the `question` 0010 data migration rewrites `QuestionType.default_weight` only where the old value is untouched and creates the settings row (`content_open=True`).
+Since `adr-0015` `load_questionnaire` is a one-shot and it already ran on production (2026-09-10): `QuestionnaireSettings.seeded_at` is set and every invocation aborts unless `--force`. The dashboard is the sole source of the instrument. Never pass `--force` on production without a fresh dump in `~/databases/` and Ricardo's explicit yes: it re-asserts seed structure over what the client built from the dashboard and prunes their extra AQuestion/PlanQuestion rows. `--sync-institutions` is not inert either: re-saving every institution runs `_preload_centralized`, which fills `is_centralized` on existing surveys where the answer is null — Ricardo ruled that value must not be written by a deploy.
 
 ## Server runbook
 
@@ -65,19 +69,12 @@ git pull origin production                  # 3. bring the code
 venv/bin/pip install -r requirements.txt    # 4. only if requirements changed
 venv/bin/python manage.py migrate           # 5. schema
 venv/bin/python manage.py makemigrations --check --dry-run   # 6. MUST say "No changes detected" — if not, do NOT reload; a model shipped without its migration
-# 7. idempotent seeds if their source changed: seed_flow, migrate_ps_schemas
-#    question/seed_data/ changed → load_sectors, then
-#    load_questionnaire --sync-institutions (backfills the new wrappers).
-#    load_sectors FIRST: load_questionnaire aborts with "Sectores
-#    inexistentes" if a sector it references is missing (deploy 2026-08-04).
-#    Since 2026-09-07 load_questionnaire writes texts only on create
-#    (the dashboard rules over them, adr-0014); add --overwrite-texts ONLY
-#    for the one planned reseed right after that change (nobody has edited
-#    texts yet). QuestionType names changed the same day: run
-#    migrate_initial_data once (it seeds order/required; names/weights
-#    only on create — the data migration already renamed existing rows).
-#    load_questionnaire aborts if a Component was renamed from the
-#    dashboard (natural key); fix the name or the seed before reseeding.
+# 7. idempotent seeds if their source changed: seed_flow, migrate_ps_schemas,
+#    load_sectors. load_questionnaire is retired (see above): the dashboard
+#    owns the instrument, so a seed_data/ change no longer reaches production.
+#    migrate_initial_data is NOT part of a deploy: it re-asserts StatusControl
+#    rows across four apps and everything it seeds for QuestionType already
+#    travels in migrations.
 sudo supervisorctl restart apionigies       # 8. reload (brief downtime, seconds)
 ```
 

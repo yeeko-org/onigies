@@ -18,3 +18,5 @@ Tres conductas del editor por bloques quedaron en código sin verse funcionar en
 - [ ] Las tres conductas vistas funcionar, o corregidas
 
 Credencial staff local para el recorrido: la de «Prueba manual contra el stack local» en `nuxt/TESTING.md`.
+
+Observado en el humo de producción del 10 de septiembre ([[2026-09-10-deploy-del-editor-por-bloques-y-ultima-siembra]]): Ctrl+Enter en el campo «Nombre del observable» (un text field, no un textarea) no guarda; el botón Guardar sí. Coincide con el tooltip del botón («dentro del texto»), así que no contradice lo programado, pero el caso del textarea sigue sin verse correr.

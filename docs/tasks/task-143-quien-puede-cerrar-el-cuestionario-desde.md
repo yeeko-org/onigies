@@ -14,6 +14,9 @@ related: ["[[adr-0015]]"]
 
 La barra del interruptor y el PATCH de `questionnaire_settings` van con el permiso genérico de escritura en catálogos: cualquier usuario del dashboard con ese permiso puede cerrar el cuestionario. Como el cierre es de ida y con diálogo de confirmación, el daño de un cierre accidental es que Ricardo lo reabra en el admin. Decidir si se restringe a staff (una condición en `QuestionnaireGate` y un permiso en el viewset) o si conviene que Rubén mismo pueda cerrarlo cuando termine.
 
+
+Antes de cerrar el cuestionario, quien lo cierre toma un dump de producción a `~/databases/` (compromiso de [[task-139]] y del adr-0015): con el seed retirado, ese respaldo es la única vía para restaurar una pregunta borrada.
+
 ## Criterios de aceptación
 
 - [ ] Decisión registrada y, si se restringe, aplicada en backend y frontend

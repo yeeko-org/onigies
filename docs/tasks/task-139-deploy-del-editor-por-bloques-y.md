@@ -2,7 +2,7 @@
 type: task
 id: task-139
 title: Deploy del editor por bloques y última siembra del cuestionario antes de que Rubén edite
-state: open
+state: closed
 date: 2026-09-10
 owner: ricardo
 parent: "[[task-2]]"
@@ -27,7 +27,7 @@ Runbook, con el skill `deploy-api` como guía de detalle:
 6. Humo en producción: abrir el 1.3 y el 1.12 en «Cuestionario: ejes, observables y preguntas», ver la barra del interruptor abierta, guardar un texto y revertirlo.
 7. Entregar a Rubén: él agrega la pregunta de orgánica del 1.12 y los reach que falten, captura pesos, y avisa cuando termine; el cierre lo hace Ricardo desde la barra (o Rubén, ver [[task-143]]).
 
-Respaldo también inmediatamente antes de cerrar el cuestionario.
+Respaldo también inmediatamente antes de cerrar el cuestionario: queda anotado en [[task-143]], que es donde vive el cierre.
 
 Ejecutada el 10 de septiembre: [[2026-09-10-deploy-del-editor-por-bloques-y-ultima-siembra]]. Dos desviaciones del runbook, ambas decididas por Ricardo en la sesión: sin `migrate_initial_data` (redundante con las migraciones 0006 y 0010) y sin `--sync-institutions` (escribía `is_centralized` en encuestas existentes, [[task-148]]). Lo que sigue abierto es el paso 7 y el respaldo previo al cierre.
 
@@ -36,4 +36,4 @@ Ejecutada el 10 de septiembre: [[2026-09-10-deploy-del-editor-por-bloques-y-ulti
 - [x] Producción con las migraciones aplicadas y `load_questionnaire` corrido una sola vez, con `seeded_at` escrito
 - [x] Frontend publicado en Netlify con el editor por bloques y la barra del interruptor
 - [x] Humo del 1.3 y el 1.12 en producción sin errores de consola
-- [ ] Rubén avisado de que puede editar
+- [x] Rubén avisado de que puede editar (Ricardo, 2026-09-10)

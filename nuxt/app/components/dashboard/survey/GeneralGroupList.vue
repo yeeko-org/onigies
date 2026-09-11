@@ -142,8 +142,12 @@ async function loadAll(source) {
   // Objeto completo (dashboard): se usa tal cual, sin petición extra.
   if (typeof source === 'object') return applySurvey(source)
   loading.value = true
+  // Con mensaje: un fallo de red o de permisos sale como snackbar y no
+  // como la alerta de «sin información», que solo debe cubrir la
+  // respuesta correcta sin grupos.
+  const msg_error = 'No se pudo cargar la información base'
   try {
-    const res = await mainStore.getSimple(['survey', source])
+    const res = await mainStore.getSimple(['survey', source], msg_error)
     if (res.data) applySurvey(res.data)
   } finally {
     loading.value = false

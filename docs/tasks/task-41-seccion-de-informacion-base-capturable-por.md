@@ -6,7 +6,7 @@ state: open
 date: 2026-08-03
 owner: ai
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
-related: ["[[task-2]]"]
+related: ["[[task-2]]", "[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Sección de información base capturable por las IES
@@ -38,6 +38,14 @@ Rubén revisará los cambios de redacción antes de la publicación definitiva y
 Hacer visible la sección es cambiar la constante de secciones publicadas del frontend, el mecanismo transicional que fija [[adr-0009]]; toma unos minutos y se dispara cuando Rubén lo indique.
 
 Bugs que bloquean la presentación: [[task-105]] (el colapso de panels falló en vivo en la demo) y [[task-104]] (el logo exigido al guardar). Y [[task-106]], la validación de campos vacíos, es prerrequisito del «No aplica» de autoridades decidido el mismo día.
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**Avance reportado por Rubén**, dos semanas después de abrir la sección: `[15:09]` «Bien, ya como diez terminaron»; `[15:16]` «apenas hoy fue la reunión; y ya tuve reunión con mis compañeras becarias, ya van a hacer la primera verificación el lunes» —el lunes 8 de septiembre—. `[37:54]` «ahí ellas ya también van a haber cogido un poco más de experiencia; apenas están empezando a revisar».
+
+**Una tensión nueva con el orden que fija [[adr-0007]].** El ADR ordena validar la información base antes que los avances del cuestionario, y Rubén lo sostiene como discurso —`[14:00]` «Yo he manejado una retórica de "vamos por partes": si no está verificada la información base, lo demás sale mal»—, pero las IES le devolvieron un impedimento operativo que el ADR no contempla: `[14:09]` «ya me dijeron: "Sí te quiero dar la información base, pero a mí las áreas a las que les pido información no me dejan hacerles por separado las peticiones, o corro el riesgo de que ya no me den la información si pido un alcance y tal"».
+
+Es decir: **la IES necesita el cuestionario completo en la mano para pedir datos a sus áreas una sola vez**, aunque solo vaya a capturar la información base. Eso es lo que empuja el compromiso de mandarles el documento antes de que la plataforma esté lista (`[23:25]` «el compromiso fue mandarles el cuestionario completo»). No invalida el ADR —el orden de *validación* sigue igual— pero sí obliga a que el instrumento completo circule antes de lo que el orden sugeriría.
 
 ## Criterios de aceptación
 

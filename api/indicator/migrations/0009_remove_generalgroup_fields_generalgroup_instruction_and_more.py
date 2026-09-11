@@ -22,14 +22,14 @@ GROUP_TEXTS = {
                     "mantiene vínculos a través de sus actividades "
                     "institucionales.",
         "instruction": "Para cada población marcada, indique cuántas "
-                       "personas la integran según su sexo y género. Si "
+                       "personas la integran según su sexo-género. Si "
                        "no cuenta con el dato exacto, registre su mejor "
                        "estimación.",
     },
     "autoridades": {
         "title": "Autoridades",
-        "instruction": "Indique cuántas personas integran, según su sexo "
-                       "y género, cada uno de los siguientes órganos y "
+        "instruction": "Indique cuántas personas integran, según su "
+                       "sexo-género, cada uno de los siguientes órganos y "
                        "conjuntos de autoridades de su institución.",
     },
     "planes_estudio": {

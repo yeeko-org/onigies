@@ -1,6 +1,6 @@
 <script setup>
 /**
- * Celdas de conteo por sexo y género compartidas por las dos tablas matriz
+ * Celdas de conteo por sexo-género compartidas por las dos tablas matriz
  * de «Información base» (poblaciones y autoridades): los tres conteos más el
  * total. Emite `<td>` sueltos (raíz fragmento), así que solo vive dentro de
  * un `<tr>`; la fila dueña decide todo lo demás (presencia, «No aplica»,

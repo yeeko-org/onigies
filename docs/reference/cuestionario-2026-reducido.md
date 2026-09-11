@@ -2,11 +2,13 @@
 type: reference
 id: cuestionario-2026-reducido
 title: Cuestionario ONIGIES 2026 — versión reducida e indexada
-state: current
+state: obsolete
 date: 2026-07-29
 ---
 
 # Observatorio Nacional para la Igualdad de Género en las IES — Levantamiento 2026
+
+> **Obsoleta desde el 2026-09-11.** Desde el 2026-09-10 el instrumento vive en la base de datos de producción, donde Rubén lo edita directamente ([[adr-0015]]); este archivo es la versión reducida del seed y ya no refleja lo que ven las IES. La forma de sacar una foto actual es la exportación a Word desde el dashboard ([[task-150]]).
 
 **Cuestionario (versión reducida/indexada)**
 
@@ -630,7 +632,7 @@ características o elementos que resulten aplicables)
 6. La institución cuenta con una política para incorporar la perspectiva
    de género en los criterios para la aprobación de proyectos de
    investigación (liderazgo de mujeres académicas, grupos diversos,
-   incorporación de la variable sexo/género).
+   incorporación de la variable sexo-género).
 7. La institución cuenta con acciones afirmativas para impulsar a las
    mujeres en avanzar en sus niveles como investigadoras.
 

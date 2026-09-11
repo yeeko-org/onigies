@@ -1,0 +1,31 @@
+---
+type: task
+id: task-153
+title: "Ventana de respuesta de las IES: cuestionario visible pero no respondible hasta el 25 de septiembre"
+state: open
+date: 2026-09-11
+owner: ai
+parent: "[[task-2]]"
+source: ["[[2026-09-04-reunion-con-ruben]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[adr-0015]]"]
+---
+
+# Ventana de respuesta de las IES: cuestionario visible pero no respondible hasta el 25 de septiembre
+
+Las IES tienen que poder **ver** el cuestionario completo antes de poder **responderlo**. La fecha comprometida de apertura es el **25 de septiembre**.
+
+**No es el interruptor de [[adr-0015]]**, que gobierna si la estructura del cuestionario se edita desde el dashboard y cierra de ida. Esta es la compuerta de respuesta de las IES, y es otra cosa.
+
+`[22:03]` Ricardo: «esto es lo único para cerrar ya el cuestionario y poderlo mostrar. Y lo que yo puedo hacer es programar que no se pueda responder todavía hasta el 25».
+
+**Nota de Ricardo (2026-09-11): si se puede liberar antes del 25, mucho mejor.** Coincide con lo que él mismo planteó en la reunión, `[22:03]`: «más bien: si lo podemos abrir antes, pues que se abra. Creo que no hay ningún impedimento para abrirlo antes del 25, ¿o sí?». La objeción de Rubén fue de acompañamiento, no de fecha: `[22:30]` «tú ya un poco viste cómo es: sí se necesita mucho acompañamiento». Así que el diseño debería permitir **adelantar** la apertura sin tocar código.
+
+**La fecha viene con ambigüedad en la propia reunión**, `[13:24]`: «Bueno, dijimos que el 10, ¿no? ¿El 10 de septiembre o qué día era que lo íbamos a abrir? El 25». Ricardo se corrige solo; el resto de la conversación confirma el 25 (`[22:03]`, `[23:04]`, `[23:20]`).
+
+**Y el compromiso del 25 es de plataforma, no de documento**, `[23:16]`: «ese día cumplimos con llegar ya con el cuestionario montado». El documento va antes y por separado ([[task-150]]).
+
+## Criterios de aceptación
+
+- [ ] Las IES ven el cuestionario completo sin poder capturar respuestas
+- [ ] La fecha de apertura de respuestas es configurable y se puede adelantar sin tocar código
+- [ ] El cuestionario quedó abierto a respuestas el 25 de septiembre o antes

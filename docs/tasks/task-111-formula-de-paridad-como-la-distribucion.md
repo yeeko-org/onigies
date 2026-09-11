@@ -1,7 +1,7 @@
 ---
 type: task
 id: task-111
-title: "Fórmula de paridad: cómo la distribución por sexo y género produce el valor del 1.7"
+title: "Fórmula de paridad: cómo la distribución por sexo-género produce el valor del 1.7"
 state: open
 date: 2026-08-11
 owner: ricardo
@@ -10,9 +10,9 @@ source: ["[[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]"]
 related: ["[[task-110]]", "[[task-28]]", "[[adr-0004]]"]
 ---
 
-# Fórmula de paridad: cómo la distribución por sexo y género produce el valor del 1.7
+# Fórmula de paridad: cómo la distribución por sexo-género produce el valor del 1.7
 
-Rubén reconoció en la reunión del 11 de agosto, `[22:23]`, que falta construir una fórmula para medir, en términos de paridad, qué tan cerca está la distribución por sexo y género de un reparto equitativo. Ricardo matizó que la existencia del indicador no cambia la realidad del registro, solo la mide.
+Rubén reconoció en la reunión del 11 de agosto, `[22:23]`, que falta construir una fórmula para medir, en términos de paridad, qué tan cerca está la distribución por sexo-género de un reparto equitativo. Ricardo matizó que la existencia del indicador no cambia la realidad del registro, solo la mide.
 
 Importa ahora porque la composición se captura en generales por [[adr-0004]] y puntúa el observable 1.7 a través de su ponderación de población: el dato entra, pero no hay regla escrita que lo convierta en valor.
 

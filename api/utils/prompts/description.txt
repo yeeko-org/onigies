@@ -1460,7 +1460,7 @@ Mencione todas las características o elementos que resulten aplicables:
 | Existen líneas de investigación institucionalizadas en estudios de género y feministas dentro de instancias académicas dedicadas a distintos ámbitos de conocimientos | Sí |
 | Existen grupos académicos institucionalizados en la IES dedicados explícitamente a la investigación desde los estudios de género y feministas | Sí |
 | La institución cuenta con una política para promover la investigación en estudios de género y feministas de manera transversal a todas sus instancias académicas | Sí |
-| La institución cuenta con una política para incorporar la perspectiva de género en los criterios para la aprobación de proyectos de investigación (liderazgo de mujeres académicas, grupos diversos, incorporación de la variable sexo/género) | Sí |
+| La institución cuenta con una política para incorporar la perspectiva de género en los criterios para la aprobación de proyectos de investigación (liderazgo de mujeres académicas, grupos diversos, incorporación de la variable sexo-género) | Sí |
 | La institución cuenta con acciones afirmativas para impulsar a las mujeres en avanzar en sus niveles como investigadoras | Sí |
 
 Variable B. Pregunta sobre transversalidad (con qué alcance):

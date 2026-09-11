@@ -80,7 +80,7 @@ export function useGeneralValidation(survey, catalog) {
 
   const authorityIssues = () => {
     const issues = []
-    // La titular es unipersonal y no tiene escape: su sexo y género se
+    // La titular es unipersonal y no tiene escape: su sexo-género se
     // guarda como un 1 en el conteo que corresponde.
     if (iesHead.value) {
       const row = rowFor(iesHead.value.id)
@@ -89,7 +89,7 @@ export function useGeneralValidation(survey, catalog) {
       if (!answered)
         issues.push({
           key: 'head',
-          label: 'Falta indicar el sexo y género de la persona titular '
+          label: 'Falta indicar el sexo-género de la persona titular '
             + 'de la institución.',
         })
     }

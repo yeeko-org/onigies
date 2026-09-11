@@ -6,6 +6,7 @@ state: open
 date: 2026-08-04
 owner: ricardo
 parent: "[[task-41]]"
+related: ["[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Preguntas para Rubí en la validación de la sección de información base
@@ -22,7 +23,20 @@ La reunión ([[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]) cerró 
 
 **Sin tocar:** el permiso de edición de las revisoras y el registro de la plataforma (tuteo o usted).
 
-Dato relacionado que sí se movió: el término «sexo» pasa a «sexo y género» en la leyenda de poblaciones, ya convención del `CLAUDE.md` raíz. No es exactamente la pregunta de «Mujer/Hombre» para la persona titular, que sigue abierta.
+Dato relacionado que sí se movió: el término «sexo» pasa a «sexo y género» en la leyenda de poblaciones, ya convención del `CLAUDE.md` raíz (desde la reunión del 2026-09-04 la convención es «sexo-género»). No es exactamente la pregunta de «Mujer/Hombre» para la persona titular, que sigue abierta.
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**Queda respondida la pregunta que esta task daba por "sin tocar": el registro de la plataforma.** El criterio acordado es **doble, y la frontera es la superficie, no el documento**:
+
+- **Las preguntas del cuestionario van en tercera persona.** `[56:13]` Rubén: «es que está en tercera persona la IES»; `[56:39]` Ricardo: «las del cuestionario sí tienen que estar en tercera persona».
+- **Los mensajes de la plataforma van en tú**, incluidos los de estatus. `[56:39]` «yo me refiero a los mensajes de la plataforma, y sobre todo a la parte que tiene que ver con los estatus»; `[56:50]` «Está bien en "tú"»; `[56:52]` Rubén: «Todas están en "tú" y se ven re bien. Sí, ya la gente se acostumbró a usarlo así».
+
+El ejemplo con el que se fijó el criterio fue un diálogo de confirmación: `[56:27]` «cuando eliminas: "¿Estás seguro de eliminar?"», y `[56:32]` Rubén: «Ahí sí puedes tutear».
+
+**Procedencia del hallazgo:** no lo notó Ricardo sino el asistente, `[56:58]` «eso es algo que notó Clau […] me propusieron la redacción de "usted" y le dije "cámbialo a tú", y me dice "no, pero hay unas cosas en usted y en tú"».
+
+Sigue sin tocarse el otro punto de esta task: el permiso de edición de las revisoras.
 
 ## Criterios de aceptación
 

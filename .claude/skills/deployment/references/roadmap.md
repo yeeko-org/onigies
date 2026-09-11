@@ -4,7 +4,7 @@ Living checklist for moving the ONIGIES monorepo off the temporary setup and ont
 
 This is a **skeleton** — correct, reorder, and expand it as the real plan firms up.
 
-_Last updated: 2026-07-29_
+_Last updated: 2026-09-11_
 
 ## Phase 0 — Temporary bridge (done)
 
@@ -16,7 +16,10 @@ _Last updated: 2026-07-29_
 
 ## Phase 1 — UNAM virtual machine
 
-- [ ] VM provisioning approved and delivered (trámite in process)
+**Nothing here has started.** ONIGIES has filed no server request with the DGTIC and has no interlocutor there; the VM and the DGTIC meeting that project conversations sometimes refer to belong to STIG, a separate project for the same client. Who can open the ticket, and the state of the pending step, live in `docs/reference/interlocucion-con-la-cigu.md` and `docs/tasks/task-102-…`.
+
+- [ ] Request the VM from the DGTIC through the entity's área TIC (not filed yet)
+- [ ] VM provisioning approved and delivered
 - [ ] Provision the VM: OS, Python, Node + pnpm, PostgreSQL access, nginx
 - [ ] Deploy the `api/` backend on the VM
 - [ ] Bring the files back to VM disk (`migrate_files_to_s3 --download`, then `USE_S3_FILES=0`) and retire the bridge bucket

@@ -68,11 +68,11 @@ def _authority_issues(survey, rows: dict, sectors: list) -> list[str]:
     for sector in sectors:
         row = rows.get(sector.id)
         if sector.is_ies_head:
-            # Su sexo y género se guarda como un 1 en el conteo que
+            # Su sexo-género se guarda como un 1 en el conteo que
             # corresponde; los otros dos quedan en 0.
             counts = [getattr(row, field, None) for field, _ in COUNT_FIELDS]
             if 1 not in counts:
-                issues.append('Falta indicar el sexo y género de la '
+                issues.append('Falta indicar el sexo-género de la '
                               'persona titular de la institución.')
             continue
         if row is not None and row.no_apply:

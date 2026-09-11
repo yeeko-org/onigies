@@ -114,6 +114,8 @@ Lo sustantivo: el servidor actual es de 2018 y está obsoleto; el trámite del n
 
 **Preferencia de Ricardo, no decisión:** que sea un servidor nuevo y no el mismo que gestionó Sandra, porque serían proyectos distintos con entornos distintos aunque ambos de la CIGU — «pero preguntamos». Por eso no hay ADR: se decide después de la reunión con Cómputo UNAM.
 
+> **Nota editorial (2026-09-11).** Los dos párrafos de arriba quedan como se escribieron, pero tres datos suyos hay que leerlos corregidos. El trámite «que inició Sandy» es el de la máquina virtual del **STIG** —otro proyecto de la misma CIGU, repo propio en `~/dev/unam/stig`, independiente de este—, y es también «el que gestionó Sandra»; para ONIGIES no se ha pedido ningún servidor ([[task-102]]). **Nazul Valencia ya no trabaja en la CIGU.** Quien levanta los tickets ante la DGTIC por la entidad entera es Carlos Gutiérrez, titular del área TIC: [[interlocucion-con-la-cigu]].
+
 Esa reunión la propuso Ricardo para resolver antes de arrancar el procedimiento de solicitud, qué pasa con el dominio durante la transición y la capacidad de disco. Rubén está fuera de la oficina; probablemente la gestione la próxima semana.
 
 Pendiente adicional: en un servidor nuevo los respaldos hay que configurarlos desde cero. Ricardo tiene una idea sin resolver — sincronizarlos con su propia computadora como salvaguarda — sobre la que no ha decidido si es apropiado que ahí vivan datos institucionales.

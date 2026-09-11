@@ -8,7 +8,7 @@
  * escape es el opt-out «No aplica» por renglón (`no_apply`, task-56), para
  * el cuerpo que una IES pueda no tener.
  *
- * La titular es unipersonal: se pregunta por su sexo y género con un radio y
+ * La titular es unipersonal: se pregunta por su sexo-género con un radio y
  * se persiste como una fila de total 1 (el conteo que corresponde en 1 y los
  * otros en 0). Esa cocina no se muestra nunca en la interfaz.
  */

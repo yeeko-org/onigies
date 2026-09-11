@@ -1,13 +1,14 @@
 ---
-type: reference
+type: record
 id: 2026-09-04-correcciones-de-redaccion-del-instrumento
 title: Correcciones de redacción del instrumento 2026 reunidas para revisión de la CIGU
-state: current
 date: 2026-09-04
 related: ["[[task-116]]", "[[task-16]]", "[[task-17]]", "[[task-50]]", "[[task-57]]", "[[task-88]]"]
 ---
 
 # Correcciones de redacción del instrumento ONIGIES 2026 — para revisión de la CIGU
+
+> Fotografía del documento enviado a Rubén el 2026-09-04 (`[07:02]` de [[2026-09-04-reunion-con-ruben]]). Rubén lo está aplicando en producción desde el dashboard; pasó de reference a record el 2026-09-11 por decisión de Ricardo, sin más seguimiento de su lado. El barrido posterior es [[task-157]].
 
 Este documento reúne, en un solo lugar, los puntos de redacción del cuestionario 2026 que necesitan una definición de la CIGU. Se armó recorriendo el instrumento tal como está cargado hoy en la plataforma y contrastándolo con el documento original y con las dudas que se han ido acumulando en las reuniones de julio y agosto. Cada punto indica dónde aparece, qué dice hoy textualmente, cuál es el problema y una propuesta concreta de redacción.
 

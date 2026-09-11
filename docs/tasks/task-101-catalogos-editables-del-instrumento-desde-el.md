@@ -6,6 +6,7 @@ state: open
 date: 2026-08-11
 owner: ai
 source: ["[[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Catálogos editables del instrumento desde el dashboard
@@ -27,6 +28,14 @@ La adaptación del frontend al contrato nuevo va aparte, en [[task-113]], porque
 Compromiso operativo de esta semana: dejar lista la edición de `GeneralGroup` y `GeneralQuestion` poco antes de la presentación del viernes, para que el equipo de Rubén edite lo fino sin tocar el seed ni el admin.
 
 **2026-09-07:** `QuestionType` entró al dashboard como catálogo editable con guardas (nombre público, ponderación por defecto y orden; entrada de menú «Tipos de pregunta»), y sus nombres son la fuente de las etiquetas del cuestionario ([[adr-0014]]). Pendiente conectarlo a `/respuestas` cuando se rehaga esa captura ([[task-132]]).
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**Rubén recorrió la superficie de edición con Ricardo y confirmó que trabajará ahí.** `[39:14]` «¿Estás aquí en gestión de catálogos, no? Preguntas base, no». Ricardo le mostró el anidamiento, `[39:29]`: «si te vas a componente, abres uno y ahí se edita el nombre del componente, y ahí abajo están los observables […] En eje vas a poder ver los componentes, y de los componentes vas a poder ver los observables, y de los observables… va a estar todo anidado». Rubén, `[40:23]`: «Y puedo cambiar el título y la redacción». Y `[41:08]`: «Sí, porque en ese yo trabajaría».
+
+**Lo que faltaba el 4 de septiembre ya está.** En la reunión Ricardo reconoció que no había subido la última parte (`[39:29]` «creo que no subí la última parte, déjame subirla») y Rubén preguntó `[40:39]` «¿Y cuándo ya sacas a producción?». Eso se resolvió después de esta reunión: el editor por bloques y el interruptor se deployaron el 10 de septiembre ([[adr-0015]], [[task-139]]).
+
+**Detalle de acceso, no de funcionalidad:** Rubén entra por la URL de Netlify y no por `onigies.unam.mx`, por costumbre del autocompletado (`[39:06]` «ya me acostumbré, ya está guardado, nomás pongo la O y se pone»). No pidió cambiarlo.
 
 ## Criterios de aceptación
 

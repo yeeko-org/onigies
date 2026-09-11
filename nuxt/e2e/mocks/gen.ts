@@ -167,12 +167,12 @@ const genGroupCatalogs = [
       + 'institución, así como todas aquellas que están presentes física o '
       + 'virtualmente.',
     instruction: 'Para cada población marcada, indique cuántas personas la '
-      + 'integran según su sexo y género.',
+      + 'integran según su sexo-género.',
     is_population: true, order: 3,
     questions: [{
       id: QUESTION_MEASURES_NON_BINARY, name: 'measures_non_binary',
       q_type: 'boolean', order: 1,
-      text: 'En sus registros de sexo y género, ¿su institución contempla '
+      text: 'En sus registros de sexo-género, ¿su institución contempla '
         + 'la categoría no binaria?',
       hint: 'Si responde Sí, las tablas de esta sección incluirán una '
         + 'columna para el conteo de personas no binarias.',
@@ -182,9 +182,9 @@ const genGroupCatalogs = [
   {
     name: 'autoridades', public_name: 'Autoridades', title: 'Autoridades',
     subtitle: '',
-    instruction: 'Indique cuántas personas integran, según su sexo y '
-      + 'género, cada uno de los siguientes órganos y conjuntos de '
-      + 'autoridades de su institución.',
+    instruction: 'Indique cuántas personas integran, según su sexo-género, '
+      + 'cada uno de los siguientes órganos y conjuntos de autoridades de '
+      + 'su institución.',
     is_population: true, order: 4, questions: [],
   },
   {

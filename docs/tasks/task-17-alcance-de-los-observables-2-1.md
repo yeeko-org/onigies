@@ -7,6 +7,7 @@ date: 2026-08-03
 owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-07-03-dudas-del-instrumento-con-el-cliente]]", "[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Alcance de los observables 2.1 y 2.2: ¿solo instancias académicas?
@@ -18,6 +19,12 @@ Al resolverse: corregir el instrumento reducido y el seed, y ajustar `includes_a
 **Ventana acordada: semana del 2026-08-03.** Sale del mismo documento que se revisó en la reunión del 28 de julio, y aplica el mismo acuerdo que [[task-16]]: se resuelve sobre la base de producción, no por correo. `[36:41]` «Mejor el lunes. El lunes para que ya se haga directo sobre la base final [...]. Y ya si lo hacemos con la base real real pues no va a haber problema, no se va a volar». Entra en el recorrido de [[task-50]].
 
 **2026-09-07:** la versión maquetada y final del instrumento **sigue diciendo solo «instancias académicas»** en 2.1 y 2.2 ([[2026-09-07-cotejo-del-instrumento-maquetado]]). Que el documento definitivo lo conserve no zanja la duda —puede ser el mismo descuido arrastrado o una restricción deliberada—, así que la task sigue abierta a la espera de la definición de la CIGU, hoy en el punto A.3 del documento de correcciones.
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**Rubén razonó la duda en voz alta y no la cerró.** `[19:06]` «No sé si esto quedó en "académicas" porque nada más es para procesos académicos y las administrativas no tendrían relación, no me acuerdo». Es exactamente la disyuntiva de esta task —descuido arrastrado o restricción deliberada— dicha por la persona que puede zanjarla, sin zanjarla.
+
+La task sigue abierta y con el mismo dueño. El contexto en que salió fue el recorrido del documento de correcciones ([[task-116]]), punto A.3.
 
 ## Criterios de aceptación
 

@@ -289,12 +289,16 @@ Estado actual, según Ricardo:
   respaldo de la madrugada anterior; es el único caso donde el respaldo
   de 7 días realmente ha sido útil.
 
+> **Nota editorial (2026-09-11).** Lo de arriba queda como se dijo el 11 de agosto, pero dos datos de ese primer punto ya no se sostienen. La solicitud que «ya inició Sandy» **no es de ONIGIES: es la de la máquina virtual del STIG**, otro proyecto de la misma CIGU con repo propio en `~/dev/unam/stig` y completamente independiente de este; para ONIGIES nunca se pidió servidor ([[task-102]]). Y **Nazul Valencia ya no trabaja en la CIGU**, así que no es vía para nada. Quien levanta los tickets ante la DGTIC por la entidad entera es Carlos Gutiérrez, titular del área TIC: [[interlocucion-con-la-cigu]].
+
 ## 14. Migración al servidor nuevo de la UNAM `[46:50–50:17]`
 
 **Decisión: debe ser un servidor nuevo**, no el mismo que gestionó
 Sandra — aunque ambos servidores serían de la CIGU, son proyectos
 distintos con entornos diferentes (cada uno es una máquina virtual con un
 bloque propio de recursos, no una computadora física completa).
+
+> **Nota editorial (2026-09-11).** «El que gestionó Sandra» es **la máquina virtual del STIG**, la que la DGTIC entregó para ese proyecto. Que la decisión de esta reunión fuera pedir uno nuevo sigue siendo válido; lo que no existe todavía es la solicitud ([[task-102]]).
 
 Ricardo propone agendar una reunión con Cómputo UNAM para resolver dudas
 antes de arrancar: procedimiento de solicitud, qué pasa con el dominio

@@ -7,6 +7,7 @@ date: 2026-09-07
 owner: ricardo
 parent: "[[task-5]]"
 source: ["[[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Reunión con Rubén del viernes 11 de septiembre: reach obligatorio, simulación de puntajes, el 1.12 y la ponderación tentativa
@@ -17,6 +18,14 @@ Puntos a llevar:
 - El observable 1.12 (planes de estudio) tiene fila de transversalidad orgánica porque el tipo es requerido, pero no tiene esa pregunta: ¿es excepción legítima (y «requerido» admite excepciones) o falta la pregunta en el instrumento?
 - Ponderación tentativa acordada por WhatsApp el 7 de septiembre: armonización e institucionalización 5, sectorial 2.5, orgánica 2.5, sobre 10; Rubén quiere simular con Ricardo qué puntaje saca una IES con una u otra forma de calcular antes de fijarla. Los pesos siguen nulos ([[task-15]]).
 - Rubén entra de lleno a ONIGIES después del miércoles 9.
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**Esta reunión es la que agendó la del 11 de septiembre.** `[37:07]` Rubén: «¿nos podríamos reunir, si quieres, jueves o viernes de la próxima semana, o miércoles? El martes y miércoles vamos a estar a full con lo de la clausura del diplomado»; `[37:27]` «el jueves ya voy a estar libre».
+
+**Y le puso el tema de ponderación que esta task lleva.** Ricardo, `[53:32]`: «Eso no tenemos que resolverlo ahorita, pero lo ideal es que destinemos un día para conversar eso». La simulación de puntajes que Rubén pidió por WhatsApp el 7 de septiembre es el desarrollo de ese acuerdo, no algo distinto.
+
+**Qué esperaba Rubén tener listo para esa reunión:** la corrección del cuestionario. `[38:32]` «es posible que el jueves que nos veamos, si no alcanzo, no tenga listo eso; pero podemos ver lo que tú avanzaste, y yo le daría prioridad a más tardar el viernes o el lunes, para que ya esté listo el sondeo».
 
 ## Criterios de aceptación
 

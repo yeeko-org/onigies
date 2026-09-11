@@ -8,6 +8,7 @@ owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]", "[[2026-07-03-dudas-del-instrumento-con-el-cliente]]", "[[2026-07-03-reduccion-del-cuestionario]]"]
 depends-on: ["[[task-42]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]"]
 ---
 
 # Revisión humana del cuestionario pregunta por pregunta
@@ -31,6 +32,16 @@ Esta task absorbe los hallazgos previos detectados con asistencia de IA sobre lo
 ## Hallazgo adelantado (2026-08-06)
 
 En la revisión con Fernanda ([[2026-08-06-temas-reunion-fer]], §6 `[12:17]`–`[13:07]`) salió el primer caso de este tipo sin esperar a la revisión formal: la palabra **«existen»** en una de las preguntas no es la mejor redacción. Ricardo decidió implementar ya «Se atiende» —[[task-88]]— y dejó anotado que igual hay que corroborarlo con **Rubén**, porque es tema metodológico. Sirve como muestra del tipo de hallazgo que esta revisión va a producir en volumen.
+
+## Acuerdos de la reunión con Rubén (2026-09-04)
+
+**La revisión arrancó, y Rubén la asumió como suya.** `[10:04]` «Está bien, porque es mi responsabilidad». Lo que en esta task era «enseñarle a Rubí a corregir los textos ella misma» ocurrió en la reunión: Ricardo le recorrió el dashboard —catálogos, componente, observable— y Rubén confirmó que ahí trabajaría (`[41:08]` «Sí, porque en ese yo trabajaría»).
+
+**Alcance que Rubén se puso:** los hallazgos del documento de correcciones ([[task-116]]) más los nueve observables con doble título, `[20:28]` «me voy a tardar como un día, yo creo».
+
+**Calendario acordado:** Rubén corrige el viernes (`[38:05]` «Creo que es mejor que sea viernes»), reconociendo que puede no alcanzar: `[38:32]` «es posible que el jueves que nos veamos, si no alcanzo, no tenga listo eso […] yo le daría prioridad a más tardar el viernes o el lunes».
+
+**Segunda vuelta antes de las IES:** Rubén pasará el resultado a sus compañeras. `[32:48]` «se lo voy a pasar también a mis compañeras. Si encuentran algo hacemos correcciones, descargamos, y ya con base en eso nada más toca avisarles a las IES que ya está listo».
 
 ## Criterios de aceptación
 

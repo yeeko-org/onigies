@@ -2,7 +2,7 @@
 type: task
 id: task-132
 title: Revisión de campos no editables y textos en código de question e indicator
-state: open
+state: closed
 date: 2026-09-07
 owner: ricardo
 parent: "[[task-101]]"
@@ -35,6 +35,10 @@ Antes de abrir un campo a edición, decidir si es contenido del cliente (se edit
 
 ## Criterios de aceptación
 
-- [ ] Lista acordada con Ricardo de qué campos de question e indicator son contenido editable y cuáles estructura del seed
-- [ ] Los textos visibles al usuario que se decidan editables tienen su campo en un catálogo, sin hardcoding
-- [ ] adr-0014 enmendada si la frontera cambia
+- [x] Lista acordada con Ricardo de qué campos de question e indicator son contenido editable y cuáles estructura del seed
+- [x] Los textos visibles al usuario que se decidan editables tienen su campo en un catálogo, sin hardcoding
+- [x] adr-0014 enmendada si la frontera cambia
+
+## Cierre (10 de septiembre de 2026)
+
+La frontera acordada es [[adr-0015]]: con el cuestionario abierto, el dashboard crea y borra preguntas y tipos y edita las banderas de sectorial y orgánica; cerrado, solo textos y pesos; `number`, `order` y `component` del observable y `order` de las preguntas nunca. El seed se retira tras su última corrida, así que la distinción «contenido del cliente / estructura del seed» deja de tener un guardián automático y pasa a ser el interruptor. Los hints de los editores no van a catálogo: son texto del dashboard, no del instrumento. Los textos de `/respuestas` quedan para cuando se rehaga esa captura ([[task-101]]). Los catálogos sin serializer propio (`Axis`, `Component`, `Sector`, `AOption`, `Feature`, `FeatureOption`, `Period`) siguen como estaban; `Sector` no entró bajo el interruptor por decisión de Ricardo («solo la selección por reach»).

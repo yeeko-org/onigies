@@ -19,10 +19,12 @@ affects:
   - api/api/views/indicator/serializers.py
   - api/api/views/question/serializers.py
   - nuxt/app/components/dashboard/common/generic/EditCommonFields.vue
-related: ["[[task-15]]", "[[task-42]]", "[[task-131]]", "[[adr-0003]]", "[[adr-0005]]"]
+related: ["[[task-15]]", "[[task-42]]", "[[task-131]]", "[[adr-0003]]", "[[adr-0005]]", "[[adr-0015]]"]
 ---
 
 # La ponderación y la aplicabilidad de los tipos de pregunta viven en un modelo intermedio; QuestionType es la fuente de nombres y pesos default; el dashboard manda sobre los textos del instrumento
+
+> **Enmendada por [[adr-0015]] (10 de septiembre de 2026):** el punto 5 (estructura no editable) y la premisa del punto 4 de que el seed gobierna la estructura cambian; con el cuestionario abierto el dashboard crea y borra preguntas y tipos y edita las banderas de sectorial y orgánica, el seed se retira tras su última corrida, `QuestionType` gana `icon` y `color`, y el default de peso solo se hereda en el trío estándar. Los puntos 3 y 6 y el resto siguen vigentes.
 
 ## Contexto y planteamiento del problema
 

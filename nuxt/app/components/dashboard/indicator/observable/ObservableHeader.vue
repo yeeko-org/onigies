@@ -24,37 +24,34 @@ const ROW_HEIGHT = 78
 
 const QUESTION_UNIT = {label: 'pregunta', label_plural: 'preguntas'}
 
+// Solo lo que `cats.question_type` no puede cargar: de qué campo sale el
+// conteo, con qué unidad se lee y los tres casos aparte.
 const TYPE_CHIPS = {
-  a_questions: {
-    collection_name: 'a_question', count_field: 'a_questions_count',
-    ...QUESTION_UNIT},
+  a_questions: {count_field: 'a_questions_count', ...QUESTION_UNIT},
   reach: {
-    collection_name: 'reach_question', count_field: 'reach_sectors_count',
+    count_field: 'reach_sectors_count',
     label: 'sector', label_plural: 'sectores'},
-  b_questions: {
-    collection_name: 'b_question', count_field: 'b_questions_count',
-    ...QUESTION_UNIT},
-  plans: {
-    collection_name: 'plan_question', count_field: 'plan_questions_count',
-    ...QUESTION_UNIT},
+  b_questions: {count_field: 'b_questions_count', ...QUESTION_UNIT},
+  plans: {count_field: 'plan_questions_count', ...QUESTION_UNIT},
   special: {
-    collection_name: 'special_question',
     count_field: 'special_questions_count', hide_count: true,
     ...QUESTION_UNIT},
   population: {
-    icon: 'diversity_3',
-    color: 'deep-purple',
     is_reverse: true,
     tooltip_complement: 'Se captura en «Información de base».',
     ...QUESTION_UNIT,
   },
 }
 
+const PENDING_WEIGHTS =
+  'Faltan ponderaciones por capturar en este observable.'
+
 // Hay a lo más una BQuestion por observable: el conteo no informa, lo
 // que distingue es a qué instancias se les pregunta.
 const ORG_INSTANCES = [
-  {key: 'b_includes_academic', icon: 'school', label: 'académicas'},
-  {key: 'b_includes_admin', icon: 'apartment', label: 'administrativas'},
+  {key: 'b_includes_academic', icon: 'school', label: 'Instancias académicas'},
+  {key: 'b_includes_admin', icon: 'apartment',
+    label: 'Instancias administrativas'},
 ]
 
 const { cats } = storeToRefs(useMainStore())
@@ -65,7 +62,7 @@ const org_instances = computed(
 
 const org_tooltip = computed(() => org_instances.value.length === 2
   ? 'instancias académicas y administrativas'
-  : `solo instancias ${org_instances.value[0]?.label}`)
+  : `solo ${org_instances.value[0]?.label.toLowerCase()}`)
 
 const title_text = computed(() => `${props.main.number} ${props.main.name}`)
 
@@ -84,6 +81,8 @@ const counters = computed(() => (props.main.question_types || []).reduce(
       acc.push({
         name,
         ...chip,
+        icon: types_by_name.value[name]?.icon,
+        color: types_by_name.value[name]?.color,
         tooltip_title: types_by_name.value[name]?.public_name,
         count: chip.count_field ? props.main[chip.count_field] : 0,
       })
@@ -126,11 +125,27 @@ const counters = computed(() => (props.main.question_types || []).reduce(
     </template>
     <template #details>
       <div class="d-flex align-center ga-2">
+        <!-- El aviso no cuelga de ninguna colección ni cuenta nada, así
+             que se pintan los dos slots: `hide_count` reaparece como
+             icono de alerta cuando el conteo es cero. -->
+        <HeaderChip
+          v-if="main.weights_pending"
+          color="warning"
+        >
+          <template #content>
+            <v-icon size="20" color="warning" class="px-1">
+              warning_amber
+            </v-icon>
+          </template>
+          <template #tooltip>
+            <div class="font-weight-bold">Ponderación pendiente</div>
+            <div>{{ PENDING_WEIGHTS }}</div>
+          </template>
+        </HeaderChip>
         <HeaderChip
           v-for="counter in counters"
           :key="counter.name"
           :count="counter.count"
-          :collection_name="counter.collection_name"
           :label="counter.label"
           :label_plural="counter.label_plural"
           :icon="counter.icon"

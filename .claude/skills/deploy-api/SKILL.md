@@ -48,6 +48,10 @@ Any command in the deploy plan that writes rows (seeds included, migrations asid
 
 > **Incident 2026-08-12:** re-running `migrate_flow_data` (retired since) silently reset 179 advanced flow statuses to their frozen legacy values — no FlowEvents, smoke all green. The deploy decision had assessed only comment resurrection; the status branch was never enumerated. Its own output carried the fingerprint («1 reconciliación bp_draft → bp_completed») and was read as success. See `docs/records/2026-08-12-incidente-migrate-flow-data.md`.
 
+## The last questionnaire seed
+
+Since `adr-0015` `load_questionnaire` is a one-shot: the deploy that ships the observable editor (`task-139`) runs it once, it writes `QuestionnaireSettings.seeded_at`, and every later invocation aborts unless `--force`. Never pass `--force` on production without a fresh dump in `~/databases/` and Ricardo's explicit yes: it re-asserts seed structure over what the client built from the dashboard and prunes their extra AQuestion/PlanQuestion rows. Pending on production before that deploy: migrations `question` 0005–0010 and `indicator` 0010; the `question` 0010 data migration rewrites `QuestionType.default_weight` only where the old value is untouched and creates the settings row (`content_open=True`).
+
 ## Server runbook
 
 SSH: `ssh -i ~/.ssh/servers/yeeko.pem ubuntu@api.yeeko.org` — repo at `~/unam/onigies`, venv at `api/venv`, passwordless sudo.

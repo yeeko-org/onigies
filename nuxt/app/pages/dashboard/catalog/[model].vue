@@ -7,6 +7,10 @@ import {storeToRefs} from "pinia";
 import CollectionDisplay from "~/components/dashboard/CollectionDisplay.vue";
 import PanelList from "~/components/dashboard/common/main/PanelList.vue";
 import PanelsResult from "~/components/dashboard/common/main/PanelsResult.vue";
+import QuestionnaireGate from
+  "~/components/dashboard/question/questionnaire_settings/QuestionnaireGate.vue"
+
+const route = useRoute()
 
 const mainStore = useMainStore()
 const {
@@ -65,6 +69,9 @@ const group_results = computed(() => {
 
 <template>
   <div v-if="current_filter_group_data && cats_ready" style="width: 100%">
+    <!-- Gobierna el cuestionario entero, así que va sobre las tres
+         pestañas y no dentro de la lista de una de ellas. -->
+    <QuestionnaireGate v-if="route.params.model === 'axes'" />
     <CollectionDisplay
       v-if="!need_tabs"
       :parent_collection="collections.subtype"

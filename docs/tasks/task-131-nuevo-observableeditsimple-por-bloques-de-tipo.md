@@ -2,7 +2,7 @@
 type: task
 id: task-131
 title: Nuevo ObservableEditSimple por bloques de tipo de pregunta y ObservableSheet no automático
-state: open
+state: closed
 date: 2026-09-07
 owner: ai
 parent: "[[task-2]]"
@@ -82,11 +82,15 @@ Test heredado de [[task-42]], propuesto y no escrito: un PATCH de revisora cambi
 
 ## Criterios de aceptación
 
-- [ ] El detalle del observable muestra primero name, number (solo lectura), description, init_question, a_main_question y a_main_subtitle con un solo Guardar
-- [ ] Un bloque por tipo de pregunta que aplica al observable, en el orden de QuestionType.order y con el nombre de public_name
-- [ ] Cada bloque muestra el peso propio del observable con el default del tipo visible cuando el propio está vacío, y lo guarda por el catálogo observable_question_type
-- [ ] Cada pregunta se edita en su textarea con su propio Guardar, sin expansion panels
-- [ ] Se puede agregar una pregunta en cada bloque y agregar un tipo no presente, con la mecánica validada por Ricardo
-- [ ] Los tipos sin contenido quedan ocultos
-- [ ] ObservableSheet propio: bajo el editor no se listan colecciones hijas automáticas
-- [ ] La validación de pesos no nulos aparece como aviso, nunca bloquea el guardado
+- [x] El detalle del observable muestra primero name, number (solo lectura), description, init_question, a_main_question y a_main_subtitle con un solo Guardar
+- [x] Un bloque por tipo de pregunta que aplica al observable, en el orden de QuestionType.order y con el nombre de public_name
+- [x] Cada bloque muestra el peso propio del observable con el default del tipo visible cuando el propio está vacío, y lo guarda por el catálogo observable_question_type
+- [x] Cada pregunta se edita en su textarea con su propio Guardar, sin expansion panels
+- [x] Se puede agregar una pregunta en cada bloque y agregar un tipo no presente, con la mecánica validada por Ricardo
+- [x] Los tipos sin contenido quedan ocultos
+- [x] ObservableSheet propio: bajo el editor no se listan colecciones hijas automáticas
+- [x] La validación de pesos no nulos aparece como aviso, nunca bloquea el guardado
+
+## Cierre (10 de septiembre de 2026)
+
+Construido y validado por Ricardo en dos recorridos visuales; record en [[2026-09-10-editor-por-bloques-cuestionario-abierto-y-retiro-del-seed]], decisiones en [[adr-0015]]. Deviaciones respecto a los criterios tal como estaban escritos: `order` no se muestra ni de solo lectura (regla nueva: nunca en un editor); el enunciado y el subtítulo de A viven en el bloque A, no en el primero; los pesos viven en la lista de tipos del bloque de definición y los guarda el mismo Guardar que los textos, no la cabecera de cada bloque; la mecánica de agregar pregunta y agregar tipo quedó validada y construida bajo el interruptor «cuestionario abierto». De las decisiones que abrían la fase: conteo de observables en `ComponentHeader` se queda en frontend (el volcado de catálogos no lleva conteos); `icon` y `color` agregados a `QuestionType`; etiqueta «Texto de la pregunta»; regla de solo lectura escrita en `dashboard-collections`; `ux-designer` sí se usó. El test heredado de [[task-42]] va en [[task-140]]. Deploy en [[task-139]].

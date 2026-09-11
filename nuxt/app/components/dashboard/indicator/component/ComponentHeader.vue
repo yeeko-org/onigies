@@ -17,6 +17,9 @@ const props = defineProps({
 
 const { all_nodes } = storeToRefs(useMainStore())
 
+// El conteo se arma en el front porque las filas de componente salen del
+// árbol en memoria del volcado plano de catálogos, que no lleva
+// anotaciones: un `count_fields` del backend nunca llegaría a esta fila.
 const observables_count = computed(() => {
   const root = all_nodes.value?.axes
   if (!root)

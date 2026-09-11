@@ -18,3 +18,7 @@ En `api/question/management/commands/load_questionnaire.py`, al re-correr el see
 - [ ] El comando cuenta las respuestas que perdería el borrado y aborta salvo con una bandera explícita
 - [ ] Existe un modo de solo lectura que reporta lo que borraría
 - [ ] Test de regresión que muerde: una opción sobrante con respuesta no se borra sin la bandera
+
+## Nota del 10 de septiembre de 2026
+
+[[adr-0015]] retira el seed: `load_questionnaire` corre por última vez en el deploy ([[task-139]]) y después aborta por `seeded_at`. El borrado en cascada solo es alcanzable con `--force`, y con `--force` el seed sigue podando las AQuestion y PlanQuestion que Rubén haya agregado desde el dashboard más allá de sus listas. La corrección sigue valiendo para ese caso; la urgencia bajó.

@@ -43,4 +43,4 @@ Los datos de «Información base» viven aparte, en `e2e/mocks/gen.ts`: el catá
 
 ## Prueba manual contra el stack local
 
-Los e2e son mockeados; para ejercitar la sección contra Django de verdad (`:8018` + `:3018`) el entorno local tiene la IES de prueba **CIAD** (`is_test=True`, survey del periodo 2025) con la persona usuaria `rickrebel+ciad@gmail.com`, contraseña `SmokeGen2026!`. Es una credencial solo de la base local de desarrollo, no existe en ningún servidor.
+Los e2e son mockeados; para ejercitar la sección contra Django de verdad (`:8018` + `:3018`) el entorno local tiene la IES de prueba **CIAD** (`is_test=True`, survey del periodo 2025) con la persona usuaria `rickrebel+ciad@gmail.com`, contraseña `SmokeGen2026!`. Es una credencial solo de la base local de desarrollo, no existe en ningún servidor. Para el dashboard (staff) existe además `smoke-staff@test.local`, contraseña `SmokeStaff2026!`, creada el 2026-09-10 solo en la base local.

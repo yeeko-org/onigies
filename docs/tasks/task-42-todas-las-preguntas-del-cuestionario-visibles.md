@@ -39,7 +39,7 @@ La decisión de diseño que estaba abierta se resolvió por la vía anidada: las
 
 Producción ya tenía los 41 observables sembrados, así que el tercer criterio se cumple; [[task-14]] cerró el 2026-09-07 con el cotejo del instrumento final.
 
-Tres puntos quedaron abiertos aquí como «llamadas de Ricardo»; se resolvieron el 2026-09-07 ([[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]], [[adr-0014]]): `order` no se hace editable (clave natural del seed); `Observable.reach_instances_question` se eliminó y el texto vive solo en `BQuestion.text`; el test de regresión del PATCH de revisora (cambia `text`, no mueve `order` ni `observable`, la IES recibe 403) sigue sin escribir y pasa como propuesta a [[task-131]], que toca esos mismos serializers. La superficie de edición se rediseña ahí.
+Tres puntos quedaron abiertos aquí como «llamadas de Ricardo»; se resolvieron el 2026-09-07 ([[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]], [[adr-0014]]): `order` no se hace editable (clave natural del seed); `Observable.reach_instances_question` se eliminó y el texto vive solo en `BQuestion.text`; el test de regresión del PATCH de revisora (cambia `text`, no mueve `order` ni `observable`, la IES recibe 403) sigue sin escribir y pasa como propuesta a [[task-131]], que toca esos mismos serializers. El 2026-09-10 pasó a la lista de [[task-140]] (punto 3 del backend), junto con los tests de la compuerta del cuestionario. La superficie de edición se rediseña ahí.
 
 Fuera de alcance y anotado: `Axis` y `Component` siguen con alta y baja desde el dashboard (ya lo eran); la lectura anónima de catálogos es preexistente y ahora cubre los textos del instrumento.
 

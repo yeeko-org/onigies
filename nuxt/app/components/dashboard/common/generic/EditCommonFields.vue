@@ -37,16 +37,6 @@ const emits = defineEmits(['update-status', 'update-comments'])
   >
     <v-col cols="12" class="d-flex pa-0">
       <v-text-field
-        v-if="final_collection_data.has.order"
-        v-model="full_main.order"
-        label="Orden"
-        type="number"
-        variant="outlined"
-        class="mr-2"
-        style="max-width: 70px;"
-      >
-      </v-text-field>
-      <v-text-field
         v-if="final_collection_data.name_field"
         v-model="full_main[final_collection_data.name_field]"
         :label="name_field_is_pk ? 'Clave interna' : 'Nombre/Título'"

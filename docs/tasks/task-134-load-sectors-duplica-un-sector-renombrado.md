@@ -17,3 +17,7 @@ source: ["[[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]]"]
 
 - [ ] El seed de sectores usa una llave que el dashboard no puede editar, o `name` deja de ser escribible
 - [ ] Test que muerde: renombrar y re-sembrar no crea una fila nueva
+
+## Nota del 10 de septiembre de 2026
+
+`load_questionnaire` ya no vuelve a correr después del deploy de [[task-139]] ([[adr-0015]]); `load_sectors` sigue sin candado ni pre-flight y el catálogo de sectores quedó fuera del interruptor del cuestionario, así que el riesgo de este bug es solo el de una corrida manual de `load_sectors`.

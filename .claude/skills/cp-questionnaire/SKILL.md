@@ -48,9 +48,36 @@ instrument's texts** (`adr-0014`): observable `name`, `description`,
 (`order`, flags, sectors, bridge rows) is re-asserted every run.
 `--overwrite-texts` restores the old behaviour for observables and
 questions — never for `Axis`/`Component`, which have been edited by
-users. One planned use: the first deploy after 2026-09-07, while nobody
-has edited texts yet. Re-running still prunes stale AQuestion/PlanQuestion
-rows with CASCADE to answers (`task-133`).
+users. Re-running still prunes stale AQuestion/PlanQuestion rows with
+CASCADE to answers (`task-133`).
+
+**The seed is retired after its last run** (`adr-0015`). `load_questionnaire`
+runs once more, at the deploy that hands the instrument to the client —
+with `--overwrite-texts`, because the A-block split of 2026-09-07
+(`a_main_question` + `a_main_subtitle`) only lands on production with it;
+runbook in `deploy-api` — and writes `QuestionnaireSettings.seeded_at`; from then on it aborts unless
+`--force`, and the dashboard is the only source of the instrument's
+structure. `--force` is a data-loss decision, not a flag: it re-asserts
+seed structure over whatever the client built.
+
+### The questionnaire gate
+
+`QuestionnaireSettings` (`question/models.py`, single row, catalog
+`questionnaire_settings`, admin) holds `content_open`. **Open**: the
+dashboard creates and deletes questions in the five families and
+`ObservableQuestionType` rows, and edits the structural flags of B
+(`includes_academic`/`includes_admin`) and Reach (`has_main_sectors`,
+`others_sectors`, `has_general_planning`); creating a question assigns
+the next `order` and `get_or_create`s its bridge row (type resolved from
+`QuestionType.model_question`). **Closed**: only `text` and `weight`
+remain writable; POST/DELETE answer 403. The gate is `ContentGateMixin` +
+`ContentGatedSerializer` (`api/api/views/content_gate.py`,
+`api/api/views/question/serializers.py`), evaluated per request because the
+switch flips at runtime. **Closing is one-way from the API**: reopening is
+a manual act in the Django admin (Ricardo), so a closed instrument cannot
+be reopened by accident from the screen where it is edited. `Sector` is
+not under the gate. New questions are created with the text «Nueva
+pregunta» because `text` rejects blank (`task-141`).
 
 ## Question types ↔ response models
 
@@ -96,9 +123,9 @@ academic + admin).
 
 ## QuestionType and the bridge (weights, applicability, names)
 
-`QuestionType` (pk `name`: `a_questions`, `reach`, `b_questions`, `plans`, `special`, `population`) is the **source of truth** for the public name of each block (`public_name` — the frontend reads it from `cats.question_type`, never hardcodes it), the block order in editors (`order`: A=1, sectorial=2, orgánica=3, planes=4, especial=5, población=6), whether the type applies to every observable (`required`: A and B) and the default weight (`default_weight`: a=60, b=40, others 0). `population` has no question model: it is captured in Generales.
+`QuestionType` (pk `name`: `a_questions`, `reach`, `b_questions`, `plans`, `special`, `population`) is the **source of truth** for the public name of each block (`public_name` — the frontend reads it from `cats.question_type`, never hardcodes it), the block order in editors (`order`: A=1, sectorial=2, orgánica=3, planes=4, especial=5, población=6), whether the type applies to every observable (`required`: A and B) the default weight (`default_weight`: A 5, reach 2.5, B 2.5, null for plans/special/population — the tentative weighting agreed with Rubén on 2026-09-07) and the block's `icon`/`color` (editable; the frontend reads them from the catalog so a type without a collection, like `population`, needs no hardcoded map). `population` has no question model: it is captured in Generales.
 
-`ObservableQuestionType` (`question/models.py`; `observable.type_weights`, `question_type.observable_weights`) has one row per (observable, type) that applies, with a nullable `weight`. Effective weight = `row.final_weight` = own weight or the type's default; `Observable.weight_for('plans')` returns `None` when no row exists. The seed creates missing rows (A and B always; reach/plans/special when the question exists; population for 1.7) and never touches `weight`. Today: 120 rows (41/41/35/1/1/1), every `weight` null — real weights are pending the client (`task-15`); do not invent them. Validation of "all weights non-null when a non-required type applies" is a warning, never a block. Known mismatch: 1.12 has a `b_questions` row (required) but no `BQuestion` (`task-135`). Dashboard: catalog `question_type` (editable `public_name`, `default_weight`, `order`; no create/delete) and catalog `observable_question_type` (only `weight` writable, filters `observable` and `question_type`).
+`ObservableQuestionType` (`question/models.py`; `observable.type_weights`, `question_type.observable_weights`) has one row per (observable, type) that applies, with a nullable `weight`. Effective weight = `row.final_weight` = own weight, or the type's default **only when the observable has exactly the standard trio {A, reach, B}** (`Observable.uses_default_weights`, `adr-0015`): the defaults were calibrated for that combination, so any other set must carry every weight by hand and the observable reports `weights_pending` (detail and list) until it does — a warning, never a save blocker. `Observable.weight_for('plans')` returns `None` when no row exists. The seed creates missing rows (A and B always; reach/plans/special when the question exists; population for 1.7) and never touches `weight`. Today: 120 rows (41/41/35/1/1/1), every `weight` null — real weights are pending the client (`task-15`); do not invent them. Validation of "all weights non-null when a non-required type applies" is a warning, never a block. Known mismatch: 1.12 has a `b_questions` row (required) but no `BQuestion`; the client adds it from the dashboard while the questionnaire is open (`task-135`). Dashboard: catalog `question_type` (editable `public_name`, `default_weight`, `icon`, `color`; no create/delete; `order` is never edited from a form) and catalog `observable_question_type` (`weight` always writable; create/delete only while the questionnaire is open, see the gate above). The observable editor captures weights in its type list, showing the inherited default as placeholder.
 
 ## Pending with the client (do not "fix" silently)
 
@@ -106,5 +133,7 @@ academic + admin).
 - 2.1/2.2: «instancias académicas» without «administrativas» (their
   `includes_admin=False` may change).
 
-When resolved: correct `docs/reference/cuestionario-2026-reducido.md`, then
-`seed_data/axis_N.py`, then re-run `load_questionnaire`.
+When resolved: correct `docs/reference/cuestionario-2026-reducido.md`; the
+text itself is fixed from the dashboard (the seed no longer re-runs after
+its last deploy, see the gate above), and `seed_data/axis_N.py` only if a
+fresh install must match.

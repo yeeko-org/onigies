@@ -75,7 +75,9 @@ siblings), declare `filter_group_key` on the schema itself
 
 `name_field` overrides the derived row title (default: first of `name`/`title`); set it when `name` is an internal key, as in `QuestionTypeSchema` (`name_field = "public_name"`). `icon` and `color` are accepted by catalogs too (since 2026-09-07) and travel in `collections_data`; `HeaderChip` uses them, so give them to any catalog that will be counted in a parent's header (the five question families: `icon="gavel"`, `color="indigo"`, …).
 
-`count_fields` — real example, `ObservableSchema`: `{"a_questions_count": "aquestion", …}` annotates `Count(<reverse accessor>, distinct=True)` on the list queryset and injects a `ReadOnlyField` per key into the auto serializer; with a hand-written `list_serializer_class` declare those fields yourself. The catalog dump in `/catalogs/all/` is annotation-free by design.
+`count_fields` — real example, `ObservableSchema`: `{"a_questions_count": "aquestion", …}` annotates `Count(<reverse accessor>, distinct=True)` on the list queryset and injects a `ReadOnlyField` per key into the auto serializer; with a hand-written `list_serializer_class` declare those fields yourself. The catalog dump in `/catalogs/all/` is annotation-free by design — and it also ignores `serializer_class`: it always uses the auto-generated flat serializer, so a computed field a catalog needs in `cats` must be a real column (`QuestionnaireSettingsSerializer.title` exists only on the endpoint).
+
+Two reusable viewset mixins live in `api/api/views/content_gate.py`: `SingleRowMixin` (a one-row catalog: no POST, no DELETE) and `ContentGateMixin` (POST/DELETE allowed only while `QuestionnaireSettings.content_open`, checked in `initial()` because `http_method_names` is read once per process). Pair the gate with a `ContentGatedSerializer` subclass declaring `open_fields` / `open_create_fields` (`api/api/views/question/serializers.py`).
 
 ## CollectionSchema
 

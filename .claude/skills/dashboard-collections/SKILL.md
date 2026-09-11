@@ -124,6 +124,16 @@ In `PanelCommon.vue`:
 > or other props — if the component declares such a prop with a default, that
 > default wins in the dashboard.
 
+**Read-only data inside an editor** is a field of the same kind with
+`readonly` (`v-text-field`, `v-checkbox`, `v-switch`), never a chip:
+chips belong to headers and filters, and a chip inside a form breaks the
+reading logic the whole detail is built on (Ricardo, 2026-09-08).
+Instance: `QuestionTypeEditSimple.vue`.
+
+**`order` is never an input in any editor**, generic frame or
+`EditSimple` (Ricardo, 2026-09-10): ordering is changed from the list
+with the «Reordenar» switch of `PanelsResult`.
+
 **Row ↔ detail sync.** The collapsed row (`{Model}Header`) reads the *list*
 object; the panel edits the *detail* object — two different objects that do not
 sync by themselves. An `EditSimple` that changes something visible in the row

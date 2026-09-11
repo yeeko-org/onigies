@@ -20,3 +20,7 @@ Bloqueado: el cliente no ha entregado la fuente de ponderaciones. Mientras tanto
 ## Criterios de aceptación
 
 - [ ] Los pesos están sembrados desde una fuente entregada por el cliente, o se documenta que el fallback es la decisión definitiva
+
+## Nota del 10 de septiembre de 2026
+
+La superficie de captura ya existe: la lista de tipos del bloque «Definición del observable» en el dashboard, con el default del tipo visible y el aviso de ponderación pendiente ([[adr-0015]]). Rubén puede capturarlos él mismo; los 120 pesos propios siguen nulos.

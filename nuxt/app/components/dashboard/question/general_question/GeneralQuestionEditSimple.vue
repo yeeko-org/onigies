@@ -102,13 +102,6 @@ function saveRecord() {
         variant="outlined"
         style="min-width: 180px;"
       />
-      <v-text-field
-        v-model="full_main.order"
-        label="Orden"
-        type="number"
-        variant="outlined"
-        style="max-width: 90px;"
-      />
     </div>
     <v-card-actions>
       <v-spacer></v-spacer>

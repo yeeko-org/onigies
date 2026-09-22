@@ -7,7 +7,7 @@ date: 2026-09-11
 owner: ai
 parent: "[[task-3]]"
 source: ["[[2026-09-04-reunion-con-ruben]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[task-150]]", "[[2026-09-22-exportacion-del-cuestionario-a-word]]"]
 ---
 
 # Espacio de documentos descargables en la plataforma
@@ -22,8 +22,16 @@ Un botón «Documentos» donde Rubén sube archivos y las IES los descargan, par
 
 Queda por decidir si el espacio es solo para las IES autenticadas o también público, y si vive en `/respuestas`, en el dashboard o en ambos.
 
+## Sesión del 2026-09-22: el modelo ya existe
+
+En la rama de [[task-150]] aterrizó la app `documents` con el modelo `PublicDocument` (título, slug automático, descripción, archivo subido **o** generador —exactamente uno—, publicado, orden), dos endpoints sin token —`GET /api/public-documents/` lista los publicados y `GET /api/public-documents/<slug>/download/` sirve cada uno: los generados se construyen al vuelo, los subidos reutilizan la redirección presignada de los adjuntos del flujo— y la colección «Documentos públicos» en el dashboard, donde Rubén crea registros, sube o reemplaza archivos, publica y copia el enlace. El primer registro, sembrado por migración, es el Word del cuestionario (`cuestionario-2026`). Probado de punta a punta en navegador local; falta uso real y el enlace desde el sitio público legado. Record: [[2026-09-22-exportacion-del-cuestionario-a-word]].
+
+**Decisión de Ricardo (2026-09-22):** el espacio es público, sin token —«Sí que tenga descarga pública porfa, hagamos una nueva clase para docs públicos (porque habrá muchos más en el futuro)»—. Dónde lo ven las IES (en `/respuestas`, en el sitio público, o ambos) sigue abierto: hoy solo existe la URL del API.
+
+**Pendiente conocido:** al reemplazar o borrar un documento subido, el archivo anterior no se elimina del almacenamiento (disco local o bucket S3). Los registros con generador no se pueden borrar desde el API ([[task-159]] decide si el botón se oculta).
+
 ## Criterios de aceptación
 
-- [ ] Rubén sube un documento desde el dashboard sin intervención técnica
+- [x] Rubén sube un documento desde el dashboard sin intervención técnica (colección lista el 2026-09-22; falta uso real)
 - [ ] Las IES lo encuentran y lo descargan desde la plataforma
-- [ ] Decidido si el espacio es público o solo para IES autenticadas
+- [x] Decidido si el espacio es público o solo para IES autenticadas: público, sin token (2026-09-22)

@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'ps_schema',
     'email_send',
     'flow',
+    'documents',
 ]
 
 MIDDLEWARE = [

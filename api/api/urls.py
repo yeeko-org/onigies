@@ -13,6 +13,8 @@ from api.views.auth.recovery_views import (
 
 from .views.ps_schemas import CollectionViewSet
 from api.views.ies import InstitutionViewSet
+from api.views.documents.public_views import (
+    PublicDocumentDownloadView, PublicDocumentListView)
 from ps_schema.registry import collection_registry
 # from api.views.stop import StationViewSet
 # from api.views.report import StairReportViewSet, AscertainableViewSet
@@ -55,6 +57,16 @@ urlpatterns = [
         'password-recovery/<uuid:key>/confirm/',
         PasswordRecoveryConfirmView.as_view(),
         name='password_recovery_confirm',
+    ),
+    path(
+        'public-documents/',
+        PublicDocumentListView.as_view(),
+        name='public_document_list',
+    ),
+    path(
+        'public-documents/<slug:slug>/download/',
+        PublicDocumentDownloadView.as_view(),
+        name='public_document_download',
     ),
     path('catalogs/', include('api.views.catalogs.urls')),
     path('flow/', include('flow.urls')),

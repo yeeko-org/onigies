@@ -537,6 +537,17 @@ function onQuestionSaved(block, {res}) {
         @keydown.ctrl.enter.prevent="saveDefinition"
         @keydown.meta.enter.prevent="saveDefinition"
       />
+      <v-textarea
+        v-model="full_main.note"
+        label="Nota"
+        variant="outlined"
+        density="comfortable"
+        rows="1"
+        auto-grow
+        class="reading-width mt-3"
+        @keydown.ctrl.enter.prevent="saveDefinition"
+        @keydown.meta.enter.prevent="saveDefinition"
+      />
 
       <v-divider class="my-3 dotted"></v-divider>
       <h4 class="text-subtitle-2 font-weight-bold mb-2">

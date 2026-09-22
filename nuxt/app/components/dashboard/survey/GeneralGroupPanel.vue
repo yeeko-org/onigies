@@ -27,6 +27,7 @@ import {
   useGeneralSurvey, isEmptyValue,
 } from '~/composables/useGeneralSurvey.js'
 import { useGeneralValidation } from '~/composables/useGeneralValidation.js'
+import { useMainStore } from '~/store/index.js'
 
 // Qué hijo pinta cada grupo. Mapa constante a nivel de módulo: no es
 // reactivo y los grupos sin entrada propia son preguntas numéricas.
@@ -45,6 +46,10 @@ const OWN_INSTRUCTION_GROUPS = ['autoridades']
 // por eso pasan por la compuerta de campos vacíos (task-106). Guardar
 // nunca valida: la captura ocurre en varias sesiones.
 const VALIDATED_TRANSITIONS = ['gen_completed', 'gen_adjusted']
+
+// El tipo del puente que marca los observables calificados con las cifras
+// de los grupos `is_population`.
+const POPULATION_TYPE = 'population'
 
 // Cuántos faltantes se enumeran antes de resumir el resto: la lista debe
 // decir qué falta sin volverse un muro de texto.
@@ -87,6 +92,28 @@ const placesOwnInstruction = computed(
   () => OWN_INSTRUCTION_GROUPS.includes(groupName.value))
 
 const { issues } = useGeneralValidation(survey, catalog)
+
+// Los números salen de los catálogos ya cargados (puente + observables),
+// no del payload del grupo: el Survey no sabe qué observable califica.
+const mainStore = useMainStore()
+const scoredObservables = computed(() => {
+  if (!catalog.value.is_population) return []
+  const cats = mainStore.cats || {}
+  const ids = new Set((cats.observable_question_type || [])
+    .filter((row) => row.question_type === POPULATION_TYPE)
+    .map((row) => row.observable))
+  return (cats.observable || [])
+    .filter((observable) => ids.has(observable.id))
+    .map((observable) => observable.number)
+})
+const scoredNote = computed(() => {
+  const numbers = scoredObservables.value
+  if (!numbers.length) return ''
+  const target = numbers.length === 1
+    ? `del observable ${numbers[0]}`
+    : `de los observables ${numbers.join(', ')}`
+  return `Las cifras de este apartado alimentan la calificación ${target}.`
+})
 
 // Los errores se pintan solo después de un intento de completar: mientras
 // la IES captura, un formulario en rojo desde el primer render estorba.
@@ -221,6 +248,16 @@ const saveAndTransition = async (transition) => {
         :editable="editable"
         :invalid="invalid"
       />
+
+      <v-alert
+        v-if="scoredNote"
+        type="info"
+        variant="tonal"
+        density="compact"
+        class="mt-4"
+      >
+        {{ scoredNote }}
+      </v-alert>
 
       <!-- Evidencia probatoria del grupo. Se ancla al GeneralGroupResponse
            y se guarda al instante (no entra en el PATCH del Survey). -->

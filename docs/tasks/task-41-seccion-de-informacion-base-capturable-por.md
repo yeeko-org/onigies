@@ -53,3 +53,6 @@ Es decir: **la IES necesita el cuestionario completo en la mano para pedir datos
 - [x] Rubí y su equipo validaron la sección antes de abrirla, con la prueba adicional que pidió
 - [x] La sección está visible para todas las IES en producción (deploy 2026-08-14, un día después del jueves 13 comprometido; ver [[2026-08-14-deploy-publicacion-de-la-seccion-de]])
 - [x] La sección quedó anunciada a los enlaces el viernes 14
+
+**2026-09-22 (desde [[task-150]]):** los paneles de Poblaciones y Autoridades muestran ya la nota recíproca «Las cifras de este apartado alimentan la calificación del observable 1.7.», con el número derivado de los catálogos (`observable_question_type` de tipo `population`), no fijo. La misma nota va en el Word exportado.
+

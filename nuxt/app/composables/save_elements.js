@@ -1,6 +1,7 @@
 import {useMainStore} from "~/store/index.js";
 import {storeToRefs} from "pinia";
 import { devWarn } from "~/utils/log.js";
+import { ok, fail } from "~/utils/api.js";
 
 /** @typedef {import('~/types/collection.js').CollectionData
  *   } CollectionData */
@@ -11,6 +12,7 @@ import { devWarn } from "~/utils/log.js";
 // hecho, se sube por su propio endpoint (upload_logo).
 const FILE_FIELDS_BY_COLLECTION = {
   institution: ['logo'],
+  public_document: ['file'],
 }
 
 function withoutUnchangedFiles(snake_name, element) {
@@ -22,6 +24,39 @@ function withoutUnchangedFiles(snake_name, element) {
       delete clean_element[field_name]
   })
   return clean_element
+}
+
+// Un File no viaja en JSON: si hay uno nuevo, el registro entero va como
+// multipart, con su cabecera explícita (sin ella, axios convierte el
+// FormData de vuelta a JSON por el Content-Type por defecto de $api).
+// Los null se omiten porque FormData los mandaría como "null".
+function toFormData(element) {
+  const form_data = new FormData()
+  Object.entries(element).forEach(([key, val]) => {
+    if (val === null || val === undefined) return
+    if (val instanceof File || typeof val !== 'object')
+      form_data.append(key, val)
+  })
+  return form_data
+}
+
+function hasNewFile(element) {
+  return Object.values(element).some(val => val instanceof File)
+}
+
+async function saveMultipart(snake_name, element, pk, error_msg) {
+  const { $api } = useNuxtApp()
+  const id = element[pk]
+  const is_edit = id && !element.is_new
+  const url = is_edit ? `/${snake_name}/${id}/` : `/${snake_name}/`
+  try {
+    const response = await $api[is_edit ? 'put' : 'post'](
+      url, toFormData(element),
+      {headers: {'Content-Type': 'multipart/form-data'}})
+    return ok(response)
+  } catch (error) {
+    return fail(error, error_msg)
+  }
 }
 
 /** @param {CollectionData} collection_data */
@@ -37,6 +72,10 @@ export async function saveElement(collection_data, element, error_msg = null) {
   const { saveSimple, saveCatalog } = mainStore
   const { snake_name, is_category } = final_snake_name(collection_data)
   const clean_element = withoutUnchangedFiles(snake_name, element)
+  if (!is_category && hasNewFile(clean_element)) {
+    const pk = collection_data.pk || 'id'
+    return await saveMultipart(snake_name, clean_element, pk, error_msg)
+  }
   if (is_category)
     return await saveCatalog([collection_data, clean_element], error_msg)
   else

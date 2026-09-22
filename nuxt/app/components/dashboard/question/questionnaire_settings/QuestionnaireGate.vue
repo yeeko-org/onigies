@@ -19,14 +19,21 @@ const CONFIRM_BODY = 'Una vez cerrado solo se pueden corregir textos y '
   + 'Reabrirlo ya no se hace desde el dashboard, lo hace el equipo técnico '
   + 'desde el admin de Django.'
 const CLOSE_ERROR = 'No se pudo cerrar el cuestionario.'
+// El Word es el documento público sembrado: su descarga no pide token,
+// así que basta un enlace directo a la API.
+const DOCX_SLUG = 'cuestionario-2026'
 
 const { cats, schemas } = storeToRefs(useMainStore())
 const { showSnackbar } = useDashboardStore()
+const config = useRuntimeConfig()
 
 const dialog = ref(false)
 const saving = ref(false)
 
 const settings = computed(() => cats.value?.questionnaire_settings?.[0])
+
+const docx_path = `/public-documents/${DOCX_SLUG}/download/`
+const docx_url = `${config.public.apiUrl}${docx_path}`
 
 const is_open = computed(() => settings.value?.content_open ?? true)
 
@@ -82,6 +89,14 @@ async function closeQuestionnaire() {
       <div v-if="seeded_label" class="text-caption text-medium-emphasis">
         Última siembra: {{ seeded_label }}
       </div>
+      <v-btn
+        color="accent"
+        variant="tonal"
+        prepend-icon="download"
+        :href="docx_url"
+      >
+        Descargar Word
+      </v-btn>
     </div>
     <div class="text-caption text-medium-emphasis">
       {{ is_open ? OPEN_CAPTION : CLOSED_CAPTION }}

@@ -27,6 +27,7 @@ from flow.permissions import (
 from flow.registry import (
     get_flow_delegate, is_flow_participant, resolve_flow_owner)
 from flow.serializers import AttachmentSerializer, AttachmentUploadSerializer
+from utils.files import stored_file_response
 
 
 class AttachmentTargetMixin:
@@ -163,7 +164,4 @@ class FlowAttachmentDownloadView(AttachmentTargetMixin, APIView):
         if not attachment.file:
             raise NotFound(f"Adjunto {attachment_id} sin archivo.")
 
-        url = attachment.file.url
-        if request.query_params.get('redirect') in ('false', '0'):
-            return Response({'url': url})
-        return HttpResponseRedirect(url)
+        return stored_file_response(request, attachment.file)

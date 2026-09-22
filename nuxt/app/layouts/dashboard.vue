@@ -63,6 +63,12 @@ const main_items = [
     icon: 'lightbulb',
     color: 'pink',
   },
+  {
+    plural_name: 'Documentos públicos',
+    snake_name: 'public_document',
+    icon: 'folder_open',
+    color: 'blue-grey',
+  },
   // {
   //   plural_name: 'Ejemplo de registro',
   //   snake_name: 'surveys',

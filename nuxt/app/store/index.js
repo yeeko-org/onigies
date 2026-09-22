@@ -7,6 +7,7 @@ import { calculateSchemas } from "~/composables/cats.js";
 import { calculate_status } from "~/composables/filters.js";
 import { devWarn } from "~/utils/log.js";
 import { ok, fail } from "~/utils/api.js";
+import { saveBlob } from "~/utils/download.js";
 let request = axios.CancelToken.source();
 
 /** @typedef {import('~/types/collection.js').CollectionData
@@ -244,12 +245,7 @@ export const useMainStore = defineStore('main', {
           .then(response => {
             const blob = new Blob([response.data],
               {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
-            const url = window.URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', `export_${group}.xlsx`)
-            document.body.appendChild(link)
-            link.click()
+            saveBlob(blob, `export_${group}.xlsx`)
             resolve({success: true})
           })
           .catch(thrown => {

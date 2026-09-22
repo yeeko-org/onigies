@@ -88,6 +88,9 @@ class Observable(models.Model):
     a_main_subtitle = models.TextField(
         blank=True, null=True,
         verbose_name="Subtítulo de armonización e institucionalización")
+    # Notas del instrumento visibles para la IES: el maquetado las trae en
+    # tres observables y no tenían campo donde vivir.
+    note = models.TextField(blank=True, null=True, verbose_name="Nota")
 
     @cached_property
     def uses_default_weights(self) -> bool:

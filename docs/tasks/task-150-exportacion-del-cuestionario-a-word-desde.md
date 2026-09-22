@@ -79,12 +79,12 @@ Record de la sesión: [[2026-09-22-exportacion-del-cuestionario-a-word]]. Rama `
 - «No binaria» se agrega a las opciones de la titular: «Sí agrégalo».
 - El deploy se hace en una sesión nueva justo después del commit; las pruebas, después del deploy ([[task-161]]).
 
-**Deploy pendiente** (sigue en pie, en esa sesión nueva). `pip install -r requirements.txt` (python-docx), `migrate` (indicator 0011, documents 0001 y 0002), `migrate_ps_schemas` para la colección «Documentos públicos», el build de Netlify del frontend (botón «Descargar Word», colección y nota recíproca), y el enlace a la URL de descarga en el sitio público legado (servidor de la UNAM). Pendiente de decisión de Ricardo, de prioridad baja: si la descarga pública se cachea ([[task-162]]).
+**Deploy hecho el 2026-09-22** (detalle en [[2026-09-22-exportacion-del-cuestionario-a-word]], sección «Deploy»): commit db07698 en `production`, `python-docx` instalado, migraciones `indicator/0011`, `documents/0001` y `0002` aplicadas, `migrate_ps_schemas` corrido (insertó tres filas de `Collection`: `survey`, `general_package` y `public_document`), frontend publicado en Netlify. La descarga pública responde en producción con el .docx generado desde la base. Falta el enlace a la URL de descarga en el sitio público legado (servidor de la UNAM). Pendiente de decisión de Ricardo, de prioridad baja: si la descarga pública se cachea ([[task-162]]).
 
 **Pruebas de regresión: plan acordado.** Las pruebas 1, 3 y 4 las escribe un ejecutor después del deploy; la 2 es opcional. Detalle en [[task-161]]: (1) descarga pública —anónimo 200 con tipo y nombre de adjunto, slug desconocido 404, borrador 404 anónimo y 200 para revisora—; (2, opcional) conteos estructurales del constructor sobre un fixture chico más la nota del 1.7; (3) `template.docx` conserva los estilos y numeraciones que busca el writer (`Option Table`, `List Item`, `OnigiesLetter`, `image2.png`, `updateFields`); (4) `PublicDocument` —archivo-o-generador 400, gestión cerrada a anónimos e IES, slug desduplicado, borrado y cambio de slug de un generado rechazados—.
 
 ## Criterios de aceptación
 
-- [ ] Desde el dashboard se descarga el cuestionario completo en .docx (se verifica en el deploy: no quedó registrado un clic en el navegador; en local solo se probó la URL anónima)
+- [ ] Desde el dashboard se descarga el cuestionario completo en .docx (en producción la URL pública a la que apunta el botón devuelve el .docx; falta el clic desde el dashboard)
 - [ ] El resultado respeta el formato de `vf-2025-ONIGIES-maquetado.docx` lo bastante para que Rubén no reformatee más de unos minutos
 - [ ] Rubén produjo con ella el «Cuestionario final final» y lo mandó a las IES

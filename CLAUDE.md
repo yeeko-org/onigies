@@ -24,6 +24,7 @@ The new dashboard owns six routes (`/dashboard`, `/respuestas`, `/login`, `/regi
 ## Domain and language conventions
 
 - **Client**: CIGU — Coordinación para la Igualdad de Género de la UNAM. Rubén (also «Rubí» in older docs) belongs to its structure and leads ONIGIES there.
+- **Who decides**: the methodology formally belongs to ANUIES; CIGU took the project on, so in practice Rubén alone makes many methodological and operational decisions. Attribute decisions to Rubén, not to «the CIGU».
 - **«sexo-género»** (hyphenated, standardized by Rubén on 2026-09-04), never «sexo y género» nor just «sexo», in base/general questions and legends.
 - **Column order: Mujeres before Hombres**, everywhere (tables, forms, exports).
 - **UI wording: «De prueba»**, never «test», for test institutions and related labels.

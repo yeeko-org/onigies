@@ -3,7 +3,6 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from flow.seed import seed_flow
-from ies.initial_data import InitStatus
 from ies.models import Institution, Period, User
 
 
@@ -12,9 +11,6 @@ class FlowSecurityTestCase(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        # Institution.save fija status_sending/status_register del flujo
-        # viejo (StatusControl), que coexiste con flow.Status.
-        InitStatus()
         seed_flow()
         cls.period = Period.objects.create(year=2025)
 

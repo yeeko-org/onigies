@@ -2,23 +2,9 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from indicator.models import Axis, Component, Sector, GeneralGroup
-from ies.models import Institution, Period, StatusControl, Instance, User
+from ies.models import Institution, Period, Instance
 from question.models import GeneralQuestion
 from flow.registry import FlowParticipant
-
-
-class Comment(models.Model):
-    text = models.TextField(verbose_name='Texto del comentario')
-    status_register = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "Comment"
-
-    class Meta:
-        abstract = True
 
 
 class Survey(models.Model):
@@ -75,10 +61,6 @@ class AxisValue(FlowParticipant, models.Model):
         Axis, on_delete=models.CASCADE, related_name='axis_values')
     value = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
-    status_register = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE, blank=True, null=True)
-    # Flujo nuevo; coexiste con status_register hasta verificar la
-    # migración de datos (ver docs/records/2026-06-05-diseno-del-motor-de-flujo.md §5).
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
@@ -241,8 +223,6 @@ class GeneralGroupResponse(FlowParticipant, models.Model):
     general_group = models.ForeignKey(
         GeneralGroup, on_delete=models.CASCADE,
         related_name='general_group_responses')
-    status_register = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE)
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
@@ -264,13 +244,3 @@ class GeneralGroupResponse(FlowParticipant, models.Model):
     class Meta:
         verbose_name = 'Grupo de Respuestas General'
         verbose_name_plural = 'Grupos de Respuestas Generales'
-
-
-class GeneralGroupComment(Comment):
-    general_group_response = models.ForeignKey(
-        GeneralGroupResponse, on_delete=models.CASCADE,
-        related_name='comments')
-
-    class Meta:
-        verbose_name = 'Comentario a grupo de respuestas (General)'
-        verbose_name_plural = 'Comentarios a grupos de respuestas (General)'

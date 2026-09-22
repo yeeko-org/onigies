@@ -2,11 +2,10 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from indicator.models import Observable, Sector
-from ies.models import StatusControl
 from question.models import (
     QuestionType, ReachQuestion, AQuestion, AOption, PlanQuestion,
     BQuestion, SpecialQuestion)
-from survey.models import Survey, Comment
+from survey.models import Survey
 from flow.registry import FlowParticipant
 
 
@@ -20,10 +19,6 @@ class ObservableResponse(FlowParticipant, models.Model):
     axis_value = models.ForeignKey(
         'survey.AxisValue', on_delete=models.CASCADE,
         related_name='observable_responses')
-    status_register = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE)
-    # Flujo nuevo; coexiste con status_register hasta verificar la
-    # migración de datos (ver docs/records/2026-06-05-diseno-del-motor-de-flujo.md §5).
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
@@ -40,16 +35,6 @@ class ObservableResponse(FlowParticipant, models.Model):
         verbose_name_plural = 'Respuestas observables'
 
 
-class ObservableComment(Comment):
-    observable_response = models.ForeignKey(
-        ObservableResponse, on_delete=models.CASCADE,
-        related_name='comments')
-
-    class Meta:
-        verbose_name = 'Comentario de respuesta observable'
-        verbose_name_plural = 'Comentarios de respuestas observables'
-
-
 class GroupResponse(FlowParticipant, models.Model):
     flow_parent = 'observable_response'
 
@@ -59,8 +44,6 @@ class GroupResponse(FlowParticipant, models.Model):
     question_type = models.ForeignKey(
         QuestionType, on_delete=models.CASCADE,
         related_name='group_responses')
-    status_register = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE)
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
@@ -75,15 +58,6 @@ class GroupResponse(FlowParticipant, models.Model):
     class Meta:
         verbose_name = 'Grupo de Respuestas (por tipo)'
         verbose_name_plural = 'Grupos de Respuestas (por tipo)'
-
-
-class GroupComment(Comment):
-    group_response = models.ForeignKey(
-        GroupResponse, on_delete=models.CASCADE, related_name='comments')
-
-    class Meta:
-        verbose_name = 'Comentario de encuesta'
-        verbose_name_plural = 'Comentarios de encuestas'
 
 
 class AResponse(models.Model):

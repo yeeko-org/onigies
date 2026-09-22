@@ -142,10 +142,9 @@ const emits = defineEmits(['open-panel'])
       </div>
     </v-toolbar-title>
     <template v-if="real_show_details" >
-      <!-- Único camino de estado: el catálogo del motor de flujo. Los chips
-           viejos por status_group se retiraron (task-9): toda colección con
-           status es participante del flujo y su `status` siempre se siembra,
-           mientras que los campos StatusControl quedan stale al transicionar. -->
+      <!-- Único camino de estado: el catálogo del motor de flujo; toda
+           colección con status es participante del flujo y su `status`
+           siempre se siembra. -->
       <FlowStatusChip
         v-if="mainFlowStatus && !is_map_viz"
         :status="main.status"

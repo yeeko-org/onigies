@@ -1,11 +1,5 @@
 from rest_framework import serializers
-from ies.models import StatusControl, Institution, Period
-
-
-class StatusControlSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StatusControl
-        fields = "__all__"
+from ies.models import Institution, Period
 
 
 class InstitutionSerializer(serializers.ModelSerializer):

@@ -4,7 +4,6 @@ import { defineStore } from 'pinia'
 import axios from "axios";
 import { calculateNewCats, hydrateFilterGroup } from "~/composables/nodes.js";
 import { calculateSchemas } from "~/composables/cats.js";
-import { calculate_status } from "~/composables/filters.js";
 import { devWarn } from "~/utils/log.js";
 import { ok, fail } from "~/utils/api.js";
 import { saveBlob } from "~/utils/download.js";
@@ -31,7 +30,6 @@ export const useMainStore = defineStore('main', {
     all_nodes: {},
     schemas: /** @type {Schemas|Object} */ ({}),
     cats_ready: false,
-    status: {},
     current_filter_group: null,
     current_filter_group_data: null,
     current_collection: null,
@@ -68,7 +66,6 @@ export const useMainStore = defineStore('main', {
             this.schemas = calculateSchemas(data)
             // console.log("schemas", this.schemas)
             this.all_nodes = calculateNewCats(data, this.schemas)
-            this.status = calculate_status(data.status_control)
             this.setCollectionData()
             this.setFilterGroupData()
             this.cats_ready = true
@@ -271,21 +268,6 @@ export const useMainStore = defineStore('main', {
     },
   },
   getters: {
-    status_dict(state) {
-      if (!state.cats?.status_control)
-        return {}
-      let status_dict = {}
-      Object.keys(state.status).forEach(group_key=>{
-        status_dict[group_key] = {}
-        state.status[group_key].forEach(st=>{
-          status_dict[group_key][st.name] = st
-        })
-      })
-      return status_dict
-    },
-    status_filters(state) {
-      return state.schemas?.status_filters || {}
-    },
     collections_summary(state) {
       return state.schemas.collections.reduce((obj, coll) => {
         obj[coll.snake_name] = {

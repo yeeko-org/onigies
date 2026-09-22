@@ -12,7 +12,6 @@ from rest_framework.test import APITestCase
 from flow.models import Status
 from flow.seed import seed_flow
 from flow.services import execute_transition
-from ies.initial_data import InitStatus
 from ies.models import Institution, Period, User
 
 
@@ -26,7 +25,6 @@ class TestInstitutionPeriodLockTests(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        InitStatus()
         seed_flow()
         # Un día antes de hoy: el día límite todavía cuenta como abierto.
         yesterday = timezone.localdate() - timedelta(days=1)

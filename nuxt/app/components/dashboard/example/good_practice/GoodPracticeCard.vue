@@ -67,11 +67,6 @@ function openEdit(){
           variant="text"
           tile
         />
-  <!--      <StatusDetail-->
-  <!--        collection="register"-->
-  <!--        :final_filters="practice"-->
-  <!--        hide_details-->
-  <!--      />-->
           <v-chip variant="tonal" color="success" class="ml-3">
             <v-icon start size="small">check_circle</v-icon>
             {{ active_features.length }}

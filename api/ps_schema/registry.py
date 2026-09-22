@@ -140,16 +140,13 @@ NAME_FIELDS = ("name", "title")
 HAS_FIELDS = ("comments", "description", "help_text", "order", "color", "icon")
 
 def _derive_field_meta(fields: list, name_field: str = None) -> dict:
-    """pk, name_field, has y status_groups derivados de la metadata de campos.
-    """
+    """pk, name_field y has derivados de la metadata de campos."""
     names = {f["name"] for f in fields}
     return {
         "pk": next((f["name"] for f in fields if f["primary_key"]), "id"),
         "name_field": name_field or next(
             (n for n in NAME_FIELDS if n in names), None),
         "has": {h: h in names for h in HAS_FIELDS},
-        "status_groups": [f["name"] for f in fields
-                          if f.get("related_model") == "StatusControl"],
     }
 
 # ---------------------------------------------------------------------------

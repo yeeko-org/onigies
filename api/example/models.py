@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from indicator.models import Axis, Component
-from ies.models import User, Period, StatusControl, Institution
+from ies.models import User
 from survey.models import Survey
 from flow.registry import FlowParticipant
 
@@ -50,10 +50,6 @@ class GoodPracticePackage(FlowParticipant, models.Model):
         related_name='packages')
     has_good_practices = models.BooleanField(
         blank=True, null=True, verbose_name="Tiene buenas prácticas")
-    status_sending = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE, blank=True, null=True)
-    # Flujo nuevo; coexiste con status_sending hasta verificar la
-    # migración de datos (ver docs/records/2026-06-05-diseno-del-motor-de-flujo.md §5).
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
@@ -111,9 +107,6 @@ class GoodPractice(FlowParticipant, models.Model):
     start_year = models.IntegerField(blank=True, null=True)
     end_year = models.IntegerField(blank=True, null=True)
     final_value = models.IntegerField(blank=True, null=True)
-    status_sending = models.ForeignKey(
-        StatusControl, on_delete=models.CASCADE,
-        blank=True, null=True, default='draft')
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+', default='bp_draft')
@@ -153,8 +146,6 @@ class FeatureGoodPractice(models.Model):
     has_attribute = models.BooleanField(default=False)
     final_option = models.ForeignKey(
         FeatureOption, on_delete=models.CASCADE, blank=True, null=True)
-    # status_validation = models.ForeignKey(
-    #     StatusControl, on_delete=models.CASCADE, blank=True, null=True)
     justification = models.TextField(blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
     reviewers = models.ManyToManyField(User, blank=True)
@@ -166,20 +157,3 @@ class FeatureGoodPractice(models.Model):
     class Meta:
         verbose_name = "Valor de Característica de Buena Práctica"
         verbose_name_plural = "Valores de Características de Buenas Prácticas"
-
-
-class Evidence(models.Model):
-    good_practice = models.ForeignKey(
-        GoodPractice, on_delete=models.CASCADE, blank=True, null=True,
-        related_name='evidences')
-    feature_good_practice = models.ForeignKey(
-        FeatureGoodPractice, on_delete=models.CASCADE, blank=True, null=True,
-        related_name='evidences')
-    file = models.FileField(upload_to='evidences/')
-
-    def __str__(self):
-        return "Evidencia"
-
-    class Meta:
-        verbose_name = "Evidencia"
-        verbose_name_plural = "Evidencias"

@@ -10,10 +10,6 @@ import { devWarn } from "~/utils/log.js";
  * @returns {import('~/types/collection.js').Schemas}
  */
 export function calculateSchemas(data) {
-  const status_filters = (data.status_groups || []).reduce((obj, sg) => {
-    obj[sg.collection] = sg
-    return obj
-  }, {})
   let filter_groups = data.filter_groups.map(fg => {
     let new_fg =  {...fg, ...fg.addl_config}
     const cat_group = new_fg.category_group || new_fg.special_group
@@ -31,7 +27,7 @@ export function calculateSchemas(data) {
     coll.child_relation_fields = coll.fields.filter(field => {
       return valid_relations.includes(field.relation_type)
     })
-    // pk, name_field, has y status_groups vienen del payload (ps_schema).
+    // pk, name_field y has vienen del payload (ps_schema).
     const other_fields = Object.keys(coll.has).concat(
       [coll.pk, coll.name_field])
     coll.other_fields = coll.fields.filter(f =>
@@ -112,6 +108,5 @@ export function calculateSchemas(data) {
     "filter_groups": filter_groups,
     "levels": data.levels,
     "filters_dict": filters_dict,
-    "status_filters": status_filters,
   }
 }

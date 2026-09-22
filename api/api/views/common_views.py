@@ -8,41 +8,6 @@ from api.pagination import CustomPagination
 from api.views.confirm_delete import CustomDeleteMixin
 
 
-class AdvancedConditionalFieldsViewMixin(viewsets.ModelViewSet):
-    """
-    Advanced mixin that supports multiple permission levels
-    """
-
-    field_permissions = {
-        'anonymous': [
-            'status_register', 'comments', 'status_validation',
-            'status_sending'],
-        'authenticated': [],  # Fields to exclude for authenticated users
-        'staff': [],  # Fields to exclude for staff users
-    }
-
-    def get_excluded_fields(self):
-        """
-        Determine which fields to exclude based on user permissions
-        """
-        if self.request.user.is_staff:
-            return self.field_permissions.get('staff', [])
-        elif self.request.user.is_authenticated:
-            return self.field_permissions.get('authenticated', [])
-        else:
-            return self.field_permissions.get('anonymous', [])
-
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        excluded_fields = self.get_excluded_fields()
-        # print("get_serializer, excluded_fields: ", excluded_fields)
-        if excluded_fields:
-            kwargs['exclude_fields'] = excluded_fields
-
-        kwargs.setdefault('context', self.get_serializer_context())
-        return serializer_class(*args, **kwargs)
-
-
 class UnaccentSearchFilter(SearchFilter):
 
     def construct_search(self, field_name, queryset):

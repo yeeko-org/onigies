@@ -100,11 +100,6 @@ function addItem() {
   props.collection_data.fields.forEach(field => {
     if (field.default !== undefined && field.default !== null)
       element_to_edit.value[field.name] = field.default
-    else if (field.related_model === 'StatusControl'){
-      const status_info = mainStore.status_filters[field.name]
-      if (status_info && status_info.default_value)
-        element_to_edit.value[field.name] = status_info.default_value
-    }
   })
   dialog_edit.value = true
 }

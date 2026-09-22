@@ -2,11 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 
-from ies.models import StatusControl, User, status_groups_data
+from ies.models import User
 from flow.models import ROLE_CHOICES
 from ps_schema.models import LEVEL_CHOICES
 from ps_schema.registry import catalog_registry, collection_registry
-from api.views.catalogs.serializers import StatusControlSerializer
 from api.views.auth.serializers import UserProfileSerializer
 
 
@@ -15,9 +14,6 @@ class CatalogsView(APIView):
 
     def get(self, request):
         catalogs = {
-            "status_control": StatusControlSerializer(
-                StatusControl.objects.all(), many=True).data,
-            "status_groups": status_groups_data(),
             "levels": [
                 {"key_name": k, "name": v} for k, v in LEVEL_CHOICES],
             "flow_roles": dict(ROLE_CHOICES),

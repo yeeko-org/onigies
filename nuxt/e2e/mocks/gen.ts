@@ -222,7 +222,6 @@ const genGroupResponses = genGroupCatalogs.map((catalog) => ({
   general_group: catalog.name,
   general_group_full: catalog,
   status: 'gen_draft',
-  status_register: 'pre_start',
   flow_events: [],
   flow_attachments: [],
 }))

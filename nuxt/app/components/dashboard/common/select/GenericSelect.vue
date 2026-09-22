@@ -2,7 +2,6 @@
 /** @typedef {import('~/types/collection.js').CollectionData
  *   } CollectionData */
 
-import StatusChip from "~/components/dashboard/status/StatusChip.vue";
 import { VSelect, VAutocomplete } from "vuetify/components"
 import {useRules} from "~/composables/useRules.js";
 const { rules } = useRules()
@@ -218,28 +217,12 @@ function openDialog(is_add=true){
         :lines="false"
         max-width="400"
         min-height="52"
-        :disabled="['expired', 'rejected'].includes(item.raw.status_validation)"
       >
         <template v-slot:prepend v-if="item.raw.icon">
           <v-icon
             :color="item.raw.color || 'grey-darken-3'"
             :icon="item.raw.icon || 'trip_origin'"
           ></v-icon>
-        </template>
-        <template
-          v-slot:title
-          v-if="item.raw.status_validation !== undefined"
-        >
-          <div class="d-flex align-start">
-            {{ item.title }}
-            <StatusChip
-              collection="validation"
-              :main="item.raw"
-              x_small
-              disabled
-              hide_details
-            />
-          </div>
         </template>
         <template
           v-slot:subtitle
@@ -273,14 +256,6 @@ function openDialog(is_add=true){
         class="mr-2"
       ></v-icon>
       {{ item.title }}
-      <StatusChip
-        v-if="item.raw.status_validation !== undefined"
-        collection="validation"
-        :main="item.raw"
-        x_small
-        disabled
-        hide_details
-      />
     </template>
   </component>
 </template>

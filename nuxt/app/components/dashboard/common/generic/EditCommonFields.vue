@@ -27,7 +27,7 @@ function openLink(type) {
     window.open('https://vuetifyjs.com/en/styles/colors/#material-colors', '_blank')
 }
 
-const emits = defineEmits(['update-status', 'update-comments'])
+const emits = defineEmits(['update-comments'])
 
 </script>
 

@@ -1,6 +1,4 @@
 <script setup>
-import StatusDetail from "~/components/dashboard/status/StatusDetail.vue";
-
 import SelectGroup from "~/components/dashboard/common/select/SelectGroup.vue";
 import TripleBooleanFilter from "~/components/dashboard/custom_filters/TripleBooleanFilter.vue";
 import RangeDates from "~/components/dashboard/custom_filters/RangeDates.vue";
@@ -13,12 +11,9 @@ const props = defineProps({
   filter_group: Object,
 })
 const final_filters = defineModel({type: Object, required: true})
-const emits = defineEmits(['apply-filters'])
-
-const applyFilters = () => {
-  // console.log("debounce apply filters")
-  emits('apply-filters')
-}
+// El padre sigue escuchando @apply-filters; declararlo evita que caiga
+// como atributo sobre un template con varias raíces.
+defineEmits(['apply-filters'])
 
 </script>
 <template>
@@ -33,20 +28,8 @@ const applyFilters = () => {
     v-for="filter_box in visible_filters"
     :key="filter_box.name"
   >
-<!--      _v-if="filter_box.collection && filter_box.collection_group === 'status'"-->
-    <StatusDetail
-      v-if="filter_box.collection"
-      v-model="final_filters"
-      :collection="filter_box.key_name"
-      clearable
-      hide-details
-      style="max-width: 300px; min-width: 200px;"
-      @change-status="applyFilters"
-      is_filter
-      class="pr-3 pl-0 py-1"
-    />
     <div
-      v-else-if="filter_box.key_name"
+      v-if="filter_box.key_name"
       class="pr-3 pl-0 py-1 d-flex"
     >
       <SelectGroup

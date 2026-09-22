@@ -3,7 +3,6 @@ from functools import cached_property
 
 from django.db import models
 
-from ies.models import StatusControl, User
 
 STANDARD_TYPE_NAMES = frozenset({'a_questions', 'b_questions', 'reach'})
 

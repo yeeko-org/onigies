@@ -50,16 +50,8 @@ class Institution(models.Model):
             self._preload_centralized(survey, s_created)
             for axis in all_axes:
                 av, av_created = survey.axis_values.get_or_create(axis=axis)
-                # Durante la coexistencia se setean ambos flujos (viejo
-                # y nuevo); el viejo se retira en la fase de borrado.
-                changed = False
-                if not av.status_register_id:
-                    av.status_register_id = 'pre_start'
-                    changed = True
                 if not av.status_id:
                     av.status_id = 'cp_pre_start'
-                    changed = True
-                if changed:
                     av.save()
             for sector in main_sectors:
                 survey.population_quantities.get_or_create(sector=sector)
@@ -68,7 +60,6 @@ class Institution(models.Model):
             # package, p_created = survey.packages.get_or_create(period=period)
             if not has_packages:
                 package = survey.packages.create()
-                package.status_sending_id = 'draft'
                 package.status_id = 'bp_draft'
                 package.save()
 
@@ -83,7 +74,6 @@ class Institution(models.Model):
                     general_group=general_group,
                     defaults={
                         'general_package': gen_pkg,
-                        'status_register_id': 'pre_start',
                         'status_id': 'gen_draft',
                     })
 
@@ -308,71 +298,3 @@ class Period(models.Model):
     class Meta:
         verbose_name = "Periodo"
         verbose_name_plural = "Periodos"
-
-
-GROUP_CHOICES = [
-    ("register", "Registro"),
-    ("sending", "Envío"),
-    ("validation", "Validación"),
-]
-ROLE_CHOICES = [
-    ("validator", "Validador"),
-    ("ies", "Institución"),
-]
-
-STATUS_GROUP_PARAMS = {
-    "register": {"order": 3, "default_value": "pre_start"},
-    "sending": {"order": 4, "default_value": "draft"},
-    "validation": {"order": 5, "default_value": "proposed"},
-}
-
-
-def status_groups_data() -> list:
-    return [
-        {
-            "key_name": key,
-            "collection": f"status_{key}",
-            "name": f"de {label}",
-            "short_name": label,
-            "hidden": False,
-            **STATUS_GROUP_PARAMS[key],
-        }
-        for key, label in GROUP_CHOICES
-    ]
-
-
-class StatusControl(models.Model):
-    name = models.CharField(max_length=120, primary_key=True)
-    group = models.CharField(
-        max_length=10, choices=GROUP_CHOICES,
-        verbose_name="grupo de status", default="petition")
-    public_name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    color = models.CharField(
-        max_length=30, blank=True, null=True,
-        help_text="https://vuetifyjs.com/en/styles/colors/")
-    icon = models.CharField(
-        max_length=40, blank=True, null=True,
-        help_text="https://fonts.google.com/icons")
-    order = models.IntegerField(default=4)
-    is_default = models.BooleanField(
-        default=False, verbose_name="Es status por defecto")
-
-    role = models.CharField(
-        max_length=10, choices=ROLE_CHOICES,
-        blank=True, null=True,
-        verbose_name="rol asociado")
-    can_send = models.BooleanField(
-        default=False, verbose_name="Puede enviarse",
-        help_text="Se puede enviar el paquete a la siguiente etapa")
-    is_final = models.BooleanField(default=False)
-    # is_public = models.BooleanField(default=True)
-    priority = models.IntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.group} - {self.public_name}"
-
-    class Meta:
-        ordering = ["group", "order"]
-        verbose_name = "Status de control"
-        verbose_name_plural = "Status de control (TODOS)"

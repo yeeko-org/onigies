@@ -35,7 +35,7 @@ def resolve_upload_path(instance, filename: str) -> str:
         ]
         return join_path(elems, filename)
 
-    # Evidence viejo subía a 'evidences/' plano; se conserva.
+    # Carpeta plana histórica de las evidencias de bp; se conserva.
     if model in ("goodpractice", "featuregoodpractice",
                  "goodpracticepackage"):
         return join_path(["evidences"], filename)

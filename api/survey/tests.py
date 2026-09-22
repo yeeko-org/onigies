@@ -9,7 +9,6 @@ from django.test import TestCase
 
 from api.views.survey.serializers import SurveySerializer
 from flow.seed import seed_flow
-from ies.initial_data import InitStatus
 from ies.models import Institution, Period
 from indicator.models import GeneralGroup
 from question.models import GeneralQuestion
@@ -28,7 +27,6 @@ class GeneralQuestionTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        InitStatus()
         seed_flow()
         cls.period = Period.objects.create(year=2025)
 

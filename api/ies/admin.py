@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from ies.models import (
-    Institution, Period, StatusControl, User, PasswordRecoveryToken,
+    Institution, Period, User, PasswordRecoveryToken,
 )
 from survey.models import Survey
 from example.models import GoodPracticePackage
@@ -52,15 +52,6 @@ class PasswordRecoveryTokenAdmin(admin.ModelAdmin):
     @admin.display(boolean=True, description='¿Válido?')
     def is_valid_display(self, obj):
         return obj.is_valid()
-
-
-@admin.register(StatusControl)
-class StatusControlAdmin(admin.ModelAdmin):
-    list_display = [
-        "public_name", "name", "group", "order",
-        "color", "icon", "priority"]
-    list_editable = ["order", "color", "icon", "priority"]
-    list_filter = ["group"]
 
 
 @admin.register(User)

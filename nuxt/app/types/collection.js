@@ -74,27 +74,11 @@
  */
 
 /**
- * Metadata of one status group, from the `status_groups` key of the
- * `/catalogs/all/` payload (`status_groups_data` in api/ies/models.py).
- * Pushed as-is into `collection_filters` for collections with status
- * fields.
- *
- * @typedef {Object} StatusGroup
- * @property {string} key_name `register`, `sending`, `validation`, ...
- * @property {string} collection Field name: `status_{key_name}`.
- * @property {string} name Display name (`de Envío`, ...).
- * @property {string} short_name
- * @property {boolean} hidden
- * @property {number} order
- * @property {string} default_value Initial StatusControl name.
- */
-
-/**
  * One entry of `collection_filters`. Heterogeneous by construction
  * (`calculateSchemas`): a FilterRef merged with its FilterGroup, a
- * custom component filter, a status filter, or the self-filter a
- * category collection pushes for its own level. Discriminate with
- * `is_custom`, `collection` (status) or `forced_level` (self-filter).
+ * custom component filter, or the self-filter a category collection
+ * pushes for its own level. Discriminate with `is_custom` or
+ * `forced_level` (self-filter).
  *
  * @typedef {Object} CollectionFilter
  * @property {string} name
@@ -115,9 +99,7 @@
  * @property {string} [field] ComponentFilter: query param it controls.
  * @property {Array} [options] ComponentFilter.
  * @property {Array} [custom_options] ComponentFilter.
- * @property {string} [short_name] Status filters and self-filter.
- * @property {string} [collection] Status filters: `status_{group}`.
- * @property {string} [default_value] Status filters.
+ * @property {string} [short_name] Self-filter.
  * @property {string} [original_name] Self-filter: name before prefixing.
  * @property {string} [forced_level] Self-filter: level without the
  *   `category_` prefix.
@@ -154,8 +136,6 @@
  * @property {string} pk Primary-key field name.
  * @property {?string} name_field `'name'`, `'title'` or null.
  * @property {CollectionHas} has
- * @property {string[]} status_groups Field names related to
- *   StatusControl.
  * @property {number} [order] DB override (Collection table).
  * @property {?string} [help_text] DB override.
  * @property {?string} [description] DB override.
@@ -186,8 +166,6 @@
  * @property {{key_name: string, name: string}[]} levels
  * @property {Object<string, FilterGroup>} filters_dict Keyed by
  *   key_name.
- * @property {Object<string, StatusGroup>} status_filters Keyed by the
- *   `status_{group}` field name.
  */
 
 export {}

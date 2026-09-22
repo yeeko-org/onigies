@@ -23,9 +23,9 @@ Fase inversa, cuando toque mudarse al servidor de la UNAM:
     # ...apagar USE_S3_FILES y reiniciar...
 
 La fuente de verdad es la BD, no el disco: los nombres salen de
-flow.Attachment, ies.Institution.logo y example.Evidence. Los archivos
-sueltos en disco sin registro se reportan como huérfanos, pero nunca se
-suben. En ningún sentido se borra nada.
+flow.Attachment e ies.Institution.logo. Los archivos sueltos en
+disco sin registro se reportan como huérfanos, pero nunca se suben.
+En ningún sentido se borra nada.
 """
 import json
 import os
@@ -37,12 +37,11 @@ from django.core.files.storage import FileSystemStorage
 from django.core.management.base import BaseCommand, CommandError
 from storages.backends.s3 import S3Storage
 
-from example.models import Evidence
 from flow.models import Attachment
 from ies.models import Institution
 
 # Carpetas de MEDIA_ROOT donde viven los archivos subidos (ver
-# flow/upload_paths.py y los upload_to de Institution y Evidence).
+# flow/upload_paths.py y el upload_to de Institution.logo).
 MEDIA_PREFIXES = ("attachments", "evidences", "ies")
 
 
@@ -114,8 +113,8 @@ def list_s3_sizes(storage: S3Storage) -> dict[str, int]:
 
 class Command(BaseCommand):
     help = (
-        "Copia los archivos de Attachment, Institution.logo y Evidence "
-        "entre el disco y S3. Idempotente; --verify solo compara BD vs "
+        "Copia los archivos de Attachment e Institution.logo entre el "
+        "disco y S3. Idempotente; --verify solo compara BD vs "
         "S3 y --download hace el camino inverso."
     )
 
@@ -204,13 +203,9 @@ class Command(BaseCommand):
             .values_list("file", flat=True)
         logo_names = Institution.objects.exclude(logo="") \
             .values_list("logo", flat=True)
-        evidence_names = Evidence.objects.exclude(file="") \
-            .values_list("file", flat=True)
-        # dict.fromkeys: dedup preservando orden. Los Attachment
-        # espejados apuntan a los mismos nombres que los Evidence viejos.
+        # dict.fromkeys: dedup preservando orden.
         return list(dict.fromkeys(
-            list(attachment_names) + list(logo_names)
-            + list(evidence_names)))
+            list(attachment_names) + list(logo_names)))
 
     def process_one(
             self, name: str, storage: Optional[S3Storage],

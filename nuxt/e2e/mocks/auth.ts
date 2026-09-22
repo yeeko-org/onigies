@@ -66,7 +66,6 @@ export const mockRespuestasCatalogs = {
   collections: [],
   filter_groups: [],
   levels: [],
-  status_control: [],
 }
 
 export const mockRespuestasFlowStatuses = [

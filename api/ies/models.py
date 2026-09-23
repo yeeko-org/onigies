@@ -36,6 +36,7 @@ class Institution(models.Model):
     def save(self, *args, **kwargs):
         from indicator.models import Axis, Sector, GeneralGroup
         from survey.models import GeneralPackage
+        from answer.models import provision_cp_responses
 
         super().save(*args, **kwargs)
         periods = Period.objects.all()
@@ -53,6 +54,10 @@ class Institution(models.Model):
                 if not av.status_id:
                     av.status_id = 'cp_pre_start'
                     av.save()
+                # Respuestas del cuestionario principal, eager como el
+                # eje: un ObservableResponse por observable y un
+                # GroupResponse por tipo aplicable (fila puente).
+                provision_cp_responses(survey, av)
             for sector in main_sectors:
                 survey.population_quantities.get_or_create(sector=sector)
 
@@ -269,6 +274,15 @@ class Period(models.Model):
         blank=True, null=True,
         help_text="Último día para enviar las preguntas generales; al "
                   "día siguiente el periodo cierra solo.")
+    # Compuerta de respuesta del cuestionario principal (task-153): las
+    # IES ven el instrumento siempre; capturan a partir de esta fecha y
+    # hora. Nulo = todavía sin fecha de apertura. Se adelanta o atrasa
+    # desde el admin sin tocar código.
+    cp_open_at = models.DateTimeField(
+        verbose_name="Apertura de respuestas del cuestionario principal",
+        blank=True, null=True,
+        help_text="Fecha y hora desde la que las IES pueden responder el "
+                  "cuestionario por observable; vacío = aún no abre.")
 
     def __str__(self):
         return str(self.year)
@@ -284,6 +298,14 @@ class Period(models.Model):
         if self.submission_deadline:
             return timezone.localdate() > self.submission_deadline
         return False
+
+    @property
+    def is_cp_open(self) -> bool:
+        """Apertura de respuestas del cuestionario principal: solo cuando
+        hay fecha y ya pasó (hora del servidor). Sin fecha, cerrado."""
+        if self.cp_open_at is None:
+            return False
+        return timezone.now() >= self.cp_open_at
 
     @property
     def is_gen_submission_closed(self) -> bool:

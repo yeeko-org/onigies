@@ -13,7 +13,7 @@ from rest_framework import serializers
 from survey.models import (
     Survey, PopulationQuantity, GeneralQuestionResponse)
 from api.views.ies.serializers import (
-    InstitutionSimpleSerializer, PeriodSimpleSerializer)
+    AxisValueSerializer, InstitutionSimpleSerializer, PeriodSimpleSerializer)
 from api.views.survey.general_serializers import (
     GeneralPackageBriefSerializer, GeneralPackageFullSerializer)
 
@@ -173,5 +173,12 @@ class SurveyListSerializer(SurveySerializer):
 
 
 class SurveyFullSerializer(SurveyListSerializer):
-    """Detalle: agrega el paquete de generales con sus grupos y flujo."""
+    """Detalle: agrega el paquete de generales con sus grupos y flujo, y
+    los ejes del cuestionario principal con su avance y compuerta."""
     general_package = GeneralPackageFullSerializer(read_only=True)
+    axis_values = AxisValueSerializer(many=True, read_only=True)
+    cp_capture = serializers.SerializerMethodField()
+
+    def get_cp_capture(self, obj: Survey) -> dict:
+        from survey.cp_gate import capture_state
+        return capture_state(obj)

@@ -61,10 +61,27 @@ def user_can_edit_flow_content(user, obj) -> bool:
     own_status = getattr(obj, 'status', None)
     if own_status is None or not own_status.content_editable:
         return False
-    root_status = getattr(resolve_flow_root(obj), 'status', None)
+    root = resolve_flow_root(obj)
+    root_status = getattr(root, 'status', None)
     if root_status is None:
         return False
-    return root_status.role == get_user_flow_role(user)
+    if root_status.role != get_user_flow_role(user):
+        return False
+    return not content_lock_errors(user, root)
+
+
+def content_lock_errors(user, root) -> list[str]:
+    """Razones por las que la raíz tiene el contenido cerrado hoy, más
+    allá del turno: gancho `content_lock_errors(user)` del modelo raíz
+    (duck typing, como `validate_flow_transition`). Así el eje del
+    cuestionario aplica su compuerta de respuesta a todo lo que cuelga
+    de él —captura, booleano inicial, adjuntos— sin que `flow` conozca
+    la regla. Lista vacía = sin candado.
+    """
+    hook = getattr(root, 'content_lock_errors', None)
+    if not callable(hook):
+        return []
+    return hook(user)
 
 
 class IsFlowInstitutionOwnerOrReviewer(BasePermission):

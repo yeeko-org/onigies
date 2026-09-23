@@ -8,7 +8,8 @@ dos nacen de `Institution.save`, por eso `hide_create`.
 """
 from ps_schema.registry import (
     collection_registry, CollectionSchema, FilterRef)
-from survey.models import GeneralPackage, Survey
+from survey.models import AxisValue, GeneralPackage, Survey
+from api.views.answer import AxisValueViewSet
 from api.views.survey import GeneralPackageViewSet, SurveyViewSet
 
 
@@ -31,6 +32,21 @@ class GeneralPackageSchema(CollectionSchema):
     name = "Envío de preguntas generales"
     plural_name = "Envíos de preguntas generales"
     viewset_class = GeneralPackageViewSet
+    open_insertion = False
+    all_filters = [FilterRef("periods"), FilterRef("institutions")]
+    cat_params = {"init_display": True, "hide_create": True}
+
+
+@collection_registry.register
+class AxisValueSchema(CollectionSchema):
+    """Raíz del flujo `cp` y unidad de envío: un eje por survey. Solo
+    lectura por API (nace de `Institution.save`); el detalle trae el
+    cuestionario del eje con sus respuestas."""
+    model = AxisValue
+    level = "primary"
+    name = "Eje del cuestionario"
+    plural_name = "Ejes del cuestionario"
+    viewset_class = AxisValueViewSet
     open_insertion = False
     all_filters = [FilterRef("periods"), FilterRef("institutions")]
     cat_params = {"init_display": True, "hide_create": True}

@@ -6,6 +6,7 @@ API pública:
 - validate_transition(user, obj, target, comment) → list[str]
 - execute_transition(user, obj, target, comment) → FlowEvent
 - assign_auto_status(user, obj) → FlowEvent | None
+- assign_status_tree(user, obj, status) → list[FlowEvent]
 """
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
@@ -292,3 +293,46 @@ def assign_auto_status(user, obj) -> FlowEvent | None:
             _propagate_up(user, parent, auto)
 
     return event
+
+@transaction.atomic
+def assign_status_tree(user, obj, status: Status,
+                       comment: str | None = None) -> list[FlowEvent]:
+    """
+    Fija `status` en `obj` y en TODOS sus descendientes, sin validar
+    rol, `next_statuses` ni regla de hijos, registrando un FlowEvent por
+    cada objeto que cambia. No propaga hacia arriba ni emite
+    `transition_executed`.
+
+    Es la puerta del dominio, no del menú de transiciones: la usa
+    `answer.services` cuando la respuesta a la pregunta inicial de un
+    observable decide por sí sola el destino de sus grupos
+    (`cp_not_present` y la vuelta a `cp_filling`). A diferencia de
+    `_propagate_down`, recursa siempre —un hijo que ya tiene el status
+    puede tener nietos que no—.
+    """
+    locked = type(obj).objects.select_for_update().get(pk=obj.pk)
+    events: list[FlowEvent] = []
+    _force_status(user, locked, status, comment, events)
+    obj.status = locked.status
+    return events
+
+
+def _force_status(user, obj, status: Status, comment, events: list) -> None:
+    ct = _ct(obj)
+    if (status.applicable_models.filter(id=ct.id).exists()
+            and obj.status_id != status.name):
+        events.append(FlowEvent.objects.create(
+            content_type=ct,
+            object_id=obj.pk,
+            from_status=obj.status,
+            to_status=status,
+            user=user,
+            comment=comment or None,
+        ))
+        obj.status = status
+        _save_status(obj)
+    children = get_children(obj)
+    if children is None:
+        return
+    for child in children.select_related('status'):
+        _force_status(user, child, status, None, events)

@@ -9,6 +9,7 @@ from api.views.common_serializers import InvitationTokenBaseSerializer
 class PeriodSimpleSerializer(serializers.ModelSerializer):
     is_bp_submission_closed = serializers.BooleanField(read_only=True)
     is_gen_submission_closed = serializers.BooleanField(read_only=True)
+    is_cp_open = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Period
@@ -16,9 +17,20 @@ class PeriodSimpleSerializer(serializers.ModelSerializer):
 
 
 class AxisValueSerializer(serializers.ModelSerializer):
+    """Renglón del eje en la lista de /respuestas: status propio más
+    conteo de observables por status (encabezado e íconos). Cuenta en
+    Python sobre los hijos prefetcheados (41 filas por eje)."""
+    observables_by_status = serializers.SerializerMethodField()
+
     class Meta:
         model = AxisValue
         fields = '__all__'
+
+    def get_observables_by_status(self, obj: AxisValue) -> dict:
+        result: dict = {}
+        for row in obj.observable_responses.all():
+            result[row.status_id] = result.get(row.status_id, 0) + 1
+        return result
 
 
 class SurveySerializer(serializers.ModelSerializer):
@@ -44,6 +56,13 @@ class SurveyFullSerializer(SurveySerializer):
     packages = GoodPracticePackageSimpleSerializer(
         many=True, read_only=True)
     general_package = GeneralPackageSimpleSerializer(read_only=True)
+    # Compuerta de respuesta del cuestionario principal: el frontend
+    # inhabilita la captura con `open` y explica con `reason`.
+    cp_capture = serializers.SerializerMethodField()
+
+    def get_cp_capture(self, obj: Survey) -> dict:
+        from survey.cp_gate import capture_state
+        return capture_state(obj)
 
 
 class InstitutionSimpleSerializer(serializers.ModelSerializer):

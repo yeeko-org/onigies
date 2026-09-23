@@ -326,6 +326,21 @@ STATUSES = {
                "solicita un reajuste.",
           hint_wait="Respuesta aprobada. La institución puede "
                     "solicitar un reajuste si lo necesita."),
+        # Terminal por dominio, no por el motor: lo asigna
+        # `answer.services.set_init_value` cuando la IES responde «No» a
+        # la pregunta inicial, y lo revierte la misma vía. Vale cero en
+        # el promedio y no se revisa; por eso no tiene next_statuses y
+        # nadie lo alcanza desde el menú de transiciones.
+        S("cp_not_present", "No cuenta con la medida", None,
+          "La IES declaró que no cuenta con la medida; la respuesta "
+          "vale cero y no se revisa.",
+          role=None, applies=[O, G], color="grey", icon="block",
+          priority=20,
+          hint="La IES declaró que no cuenta con la medida; no hay "
+               "preguntas que responder. Cambia la respuesta inicial "
+               "del observable si quieres capturarlas.",
+          hint_wait="La IES declaró que no cuenta con la medida; no "
+                    "hay nada que revisar."),
     ],
     "gen": [
         S("gen_draft", "Borrador", None,
@@ -468,17 +483,28 @@ VALID_CHILD_STATUSES = {
     "bp_resent": ["bp_adjusted", "bp_completed", "bp_for_ruling",
                   "bp_rejected"],
     "bp_finished": ["bp_for_ruling", "bp_rejected"],
-    "cp_approved": ["cp_approved"],
-    "cp_completed": ["cp_completed"],
-    "cp_adjusted": ["cp_adjusted", "cp_completed", "cp_approved"],
-    "cp_sent": ["cp_completed", "cp_postponed", "cp_partial"],
+    # cp_not_present es un hijo válido en todo lo que avanza o se
+    # revisa: un «no cuenta con la medida» está resuelto de origen y no
+    # puede frenar al observable ni al eje.
+    "cp_approved": ["cp_approved", "cp_not_present"],
+    "cp_completed": ["cp_completed", "cp_not_present"],
+    "cp_adjusted": ["cp_adjusted", "cp_completed", "cp_approved",
+                    "cp_not_present"],
+    "cp_sent": ["cp_completed", "cp_postponed", "cp_partial",
+                "cp_not_present"],
     "cp_resent": ["cp_completed", "cp_adjusted", "cp_approved",
-                  "cp_postponed", "cp_partial"],
+                  "cp_postponed", "cp_partial", "cp_not_present"],
     # cp_voluntary_readjust permite bajar el eje a cp_need_changes sin
     # tener que mover antes cada hijo reajustado.
     "cp_need_changes": ["cp_need_changes", "cp_approved",
-                        "cp_postponed", "cp_voluntary_readjust"],
-    "cp_partial": ["cp_completed", "cp_postponed"],
+                        "cp_postponed", "cp_voluntary_readjust",
+                        "cp_not_present"],
+    "cp_partial": ["cp_completed", "cp_postponed", "cp_not_present"],
+    # Sin esta regla un observable pospuesto podía viajar en cp_sent con
+    # grupos que nadie tocó (cp_pre_start / cp_filling): posponer el
+    # observable exige que cada grupo esté resuelto o pospuesto a su vez.
+    "cp_postponed": ["cp_completed", "cp_postponed", "cp_partial",
+                     "cp_not_present"],
     "cp_partial_approved": ["cp_partial_approved"],
     # Generales (espejo de bp)
     "gen_sent": ["gen_completed"],

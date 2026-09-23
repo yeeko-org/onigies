@@ -67,6 +67,20 @@ class AxisValue(FlowParticipant, models.Model):
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor: la IES no transiciona el eje mientras la
+        compuerta de respuesta esté cerrada (la revisión sí)."""
+        from survey.cp_gate import capture_lock_errors
+        return capture_lock_errors(user, self.survey)
+
+    def content_lock_errors(self, user) -> list[str]:
+        """Gancho de `flow.permissions.user_can_edit_flow_content`: la
+        raíz del flujo cp cierra el contenido de todo lo que cuelga de
+        ella (respuestas, booleano inicial, adjuntos) mientras la
+        compuerta esté cerrada."""
+        from survey.cp_gate import capture_lock_errors
+        return capture_lock_errors(user, self.survey)
+
     def __str__(self):
         return f"{self.axis.name}: {self.value}"
 

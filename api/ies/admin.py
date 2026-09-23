@@ -33,7 +33,7 @@ class InstitutionAdmin(admin.ModelAdmin):
 class PeriodAdmin(admin.ModelAdmin):
     list_display = (
         'year', 'submission_deadline', 'gen_submission_deadline',
-        'good_practices_published', 'results_published',
+        'cp_open_at', 'good_practices_published', 'results_published',
     )
 
 

@@ -13,6 +13,7 @@ from api.views.auth.recovery_views import (
 
 from .views.ps_schemas import CollectionViewSet
 from api.views.ies import InstitutionViewSet
+from api.views.answer import GroupResponseViewSet, ObservableResponseViewSet
 from api.views.documents.public_views import (
     PublicDocumentDownloadView, PublicDocumentListView)
 from ps_schema.registry import collection_registry
@@ -33,6 +34,13 @@ router.register(r'collection', CollectionViewSet, basename='collection')
 router.register(r'invitation', InvitationTokenViewSet, basename='invitation')
 router.register(r'user', UserViewSet, basename='user')
 router.register(r'institution', InstitutionViewSet, basename='institution')
+# Captura del cuestionario principal: endpoints de escritura, no
+# colecciones del dashboard (el eje sí es colección: survey/catalog_schema).
+router.register(
+    r'observable_response', ObservableResponseViewSet,
+    basename='observable_response')
+router.register(
+    r'group_response', GroupResponseViewSet, basename='group_response')
 
 # Colecciones primary (CollectionSchema): good_practice_package, good_practice,
 # feature_good_practice, survey, general_package. Reemplaza sus registros

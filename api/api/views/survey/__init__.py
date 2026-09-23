@@ -64,7 +64,8 @@ class SurveyViewSet(BaseGenericViewSet):
             qs = qs.select_related('general_package').prefetch_related(
                 group_responses_prefetch('general_package__'),
                 'general_package__flow_events__user',
-                'general_package__flow_events__attachments')
+                'general_package__flow_events__attachments',
+                'axis_values__observable_responses')
         elif self.action == 'list':
             # El renglón colapsado solo pinta status y avance: dos
             # queries fijas para toda la página, no una por survey.

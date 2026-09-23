@@ -27,12 +27,30 @@ class ObservableResponse(FlowParticipant, models.Model):
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor: sin la pregunta inicial respondida el
+        observable no se da por completado, y con la compuerta cerrada la
+        IES no lo transiciona (la revisión sí)."""
+        from answer.group_validation import VALIDATED_TARGETS
+        from survey.cp_gate import capture_lock_errors
+
+        errors = capture_lock_errors(user, self.survey)
+        if target.name in VALIDATED_TARGETS and self.value is None:
+            errors.append(
+                'Falta responder la pregunta inicial del observable.')
+        return errors
+
     def __str__(self):
         return f"Response to '{self.observable}' ({self.survey})"
 
     class Meta:
         verbose_name = 'Respuesta observable'
         verbose_name_plural = 'Respuestas observables'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['survey', 'observable'],
+                name='unique_observable_response_per_survey'),
+        ]
 
 
 class GroupResponse(FlowParticipant, models.Model):
@@ -52,12 +70,75 @@ class GroupResponse(FlowParticipant, models.Model):
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor: un grupo vacío no se da por completado ni
+        por API directa (`answer.group_validation`), y con la compuerta
+        cerrada la IES no lo transiciona."""
+        from answer.group_validation import completion_errors
+        from survey.cp_gate import capture_lock_errors
+
+        errors = capture_lock_errors(
+            user, self.observable_response.survey)
+        return errors + completion_errors(self, target)
+
     def __str__(self):
-        return "Group Response"
+        return (f"{self.question_type_id} de "
+                f"{self.observable_response_id}")
 
     class Meta:
         verbose_name = 'Grupo de Respuestas (por tipo)'
         verbose_name_plural = 'Grupos de Respuestas (por tipo)'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['observable_response', 'question_type'],
+                name='unique_group_response_per_type'),
+        ]
+
+
+CP_INITIAL_STATUS = 'cp_pre_start'
+
+
+def provision_cp_responses(survey, axis_value) -> None:
+    """Crea, si faltan, el ObservableResponse de cada observable del eje
+    y el GroupResponse de cada tipo que le aplica (fila puente
+    `ObservableQuestionType`). Idempotente y en pocas consultas: lo
+    llama `Institution.save` en cada guardado y `resave_institutions`
+    como backfill.
+
+    `bulk_create` no dispara `post_save`, así que el status inicial se
+    fija aquí y no por la señal de `flow`.
+    """
+    from question.models import ObservableQuestionType
+
+    observable_ids = list(Observable.objects.filter(
+        component__axis_id=axis_value.axis_id).values_list('id', flat=True))
+    existing = set(ObservableResponse.objects.filter(
+        survey=survey, observable_id__in=observable_ids,
+    ).values_list('observable_id', flat=True))
+    ObservableResponse.objects.bulk_create([
+        ObservableResponse(
+            survey=survey, observable_id=observable_id,
+            axis_value=axis_value, status_id=CP_INITIAL_STATUS)
+        for observable_id in observable_ids
+        if observable_id not in existing
+    ])
+
+    responses = dict(ObservableResponse.objects.filter(
+        survey=survey, observable_id__in=observable_ids,
+    ).values_list('observable_id', 'id'))
+    bridge = ObservableQuestionType.objects.filter(
+        observable_id__in=observable_ids,
+    ).values_list('observable_id', 'question_type_id')
+    existing_groups = set(GroupResponse.objects.filter(
+        observable_response_id__in=responses.values(),
+    ).values_list('observable_response_id', 'question_type_id'))
+    GroupResponse.objects.bulk_create([
+        GroupResponse(
+            observable_response_id=responses[observable_id],
+            question_type_id=type_name, status_id=CP_INITIAL_STATUS)
+        for observable_id, type_name in bridge
+        if (responses[observable_id], type_name) not in existing_groups
+    ])
 
 
 class AResponse(models.Model):

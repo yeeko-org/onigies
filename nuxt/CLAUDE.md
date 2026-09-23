@@ -63,6 +63,8 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - `utils/log.js` — `devWarn`/`devLog`: dev-only logging (no-op in prod). Use instead of bare `console.*` for diagnostics.
 - `composables/useDates.js` — `formatDate(dateStr)` (dayjs, locale `es`).
 - `composables/useQuestionTypes.js` — `QuestionType` rows from `cats` indexed by `name` and by `model_question`; the source of block labels, never hardcode them.
+- `utils/cp_capture.js` + `components/dashboard/answer/capture/` — the cp questionnaire (IES capture in `/respuestas`, reviewer mode via the `review` prop from `AxisValueEditSimple`); see the `flow` and `cp-questionnaire` skills.
+- `dashStore.showSnackbar(message, action?)` — `action = {label, handler}` adds a button and keeps the toast 12 s; used to offer the next flow step, never to take it.
 - `components/dashboard/common/dialog/DialogDelete.vue` — confirm dialog with `title`/`subtitle`/`loading`/default slot; reusable beyond delete.
 
 ## Layouts

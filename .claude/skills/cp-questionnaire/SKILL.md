@@ -83,9 +83,25 @@ pregunta» because `text` rejects blank (`task-141`).
 
 Response chain per survey: `ObservableResponse` (survey + observable,
 `value` bool answers `init_question`) → `GroupResponse` (one per
-QuestionType, holds the score) → typed responses below. FKs are
+QuestionType that applies, reverse accessor `statuses`; its `value` is
+reserved for the score) → typed responses below. The first two are
+**eager**: `Institution.save` provisions them for every axis
+(`provision_cp_responses`, 41 observables and ~120 groups per survey;
+`resave_institutions` is the backfill), guarded by unique constraints
+`(survey, observable)` and `(observable_response, question_type)`. Typed
+responses are **lazy**, created by the first save of their group. FKs are
 CASCADE: deleting a question row deletes its answers (the seed warns
 when it prunes stale AQuestion/PlanQuestion rows).
+
+`ObservableResponse.value` governs the flow, not only the content: `False`
+(«No cuenta con la medida») moves the observable and its groups to
+`cp_not_present` — worth 0 in the average, terminal, never reviewed —; leaving
+`False` returns them to `cp_filling`. Typed answers already captured survive a
+«No» in case the IES changes its mind. Status semantics: skill `flow`.
+
+**Scoring does not exist yet**: no code fills `GroupResponse.value`,
+`AxisValue.value` or `ComponentValue.value`, and the formulas are pending the
+client (tasks 15, 28, 29, 111). Do not derive one from the weights below.
 
 | Question (`question/models.py`) | Response (`answer/models.py`) | Captures |
 |---|---|---|
@@ -94,6 +110,47 @@ when it prunes stale AQuestion/PlanQuestion rows).
 | `ReachQuestion` — `has_main_sectors`, `others_sectors` M2M, `has_general_planning` | `ReachResponse` — `not_focalized` + M2M `sectors` | «Transversalidad sectorial»: population reach |
 | `PlanQuestion` — key `(observable, order)` | `PlanResponse` — `media_plans`, `superior_plans`, `postgraduate_plans`, `percentage` | Counts per study-plan level |
 | `SpecialQuestion` — one per observable | `SpecialResponse` — `total`, `complying`, `compliance_percentage` | Ad-hoc proportions |
+
+## Capture (API)
+
+Three endpoints (`api/api/views/answer/`); transitions, comments and
+attachments go through `/flow/`:
+
+- `GET /axis_value/` — collection «Ejes del cuestionario», read-only; the axis
+  is the root and the unit of send. The list row carries
+  `observables_by_status`; the detail carries the whole questionnaire of the
+  axis with its answers (`observable_responses[].observable_full` and
+  `.group_responses[]`), the global A scale, the gen denominators the B and plan
+  counts are checked against, and `cp_capture` (the gate state). One read serves
+  the capture: the frontend never fetches observables one by one.
+- `PATCH /observable_response/{id}/` `{value}` — the initial answer; its flow
+  effect lives in `answer/services.py` (`set_init_value`).
+- `PATCH /group_response/{id}/` — one group's typed answers, only the list of
+  the group's own type (`a_responses`, `b_responses`, …), rows keyed by
+  `question`. It **upserts per question and never deletes by omission** (the IES
+  captures across sessions), and the first save promotes the group to
+  `cp_filling`.
+
+Both PATCH return the ancestors' status after propagation (`observable_status`,
+`axis_status`) so the client does not reread them. Each group carries
+`completion` `{errors, warnings}`: `answer/group_validation.py` holds the rules
+per type and is also the motor hook that refuses `cp_completed`/`cp_adjusted`
+with errors. Where a rule depends on a gen value the IES has not declared, it
+warns instead of blocking. `population` (1.7) has no capturable content here:
+its groups are promoted on «Sí» instead of on a PATCH (criterion:
+`QuestionType.model_response is None`, not the type name).
+
+**The answer gate** (`survey/cp_gate.py`): the IES captures only when the period
+opened answers (`Period.cp_open_at` reached, set in the admin) and its gen
+section is closed (`GeneralPackage` in `gen_finished`). Until then it sees the
+questionnaire but writes nothing — answers, initial boolean, transitions,
+attachments — through the `AxisValue.content_lock_errors` and
+`validate_flow_transition` hooks; direct writes get 403 with `code`
+`cp_not_open` / `gen_not_approved`. Test institutions are not exempt. The
+reviewer never captures (403 `reviewer_read_only`) and the gate does not stop
+its transitions.
+
+Frontend surfaces and the review mode: skill `flow`, «cp: the live surfaces».
 
 ## Reach: POB-ESTÁNDAR and variants
 

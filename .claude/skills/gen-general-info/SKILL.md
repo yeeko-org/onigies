@@ -18,7 +18,9 @@ description: The «Información de base» / Generales section of the ONIGIES
 The Generales section (`gen` flow group) captures institutional facts
 per Survey (= institution + period), before the per-observable
 questionnaire. Sibling skill: `cp-questionnaire`; flow statuses:
-`flow` skill (gen is terminal-absolute and a prerequisite for cp).
+`flow` skill (gen is terminal-absolute and a prerequisite for cp: the IES
+captures cp only once its `GeneralPackage` is in `gen_finished`, see «cp
+answer gate» below).
 
 ## The 5 GeneralGroups and where each answer lives
 
@@ -141,6 +143,12 @@ preguntas generales» over `GeneralPackage`).
 open; unlike bp there is no manual publication flag). Authoritative on
 the server — the frontend reads the flag, it never recomputes it with
 the client clock.
+
+**cp answer gate.** The other lock that hangs from this section: cp opens for
+an IES only when `Period.cp_open_at` has passed **and** its `GeneralPackage` is
+in `gen_finished` (all five groups `gen_approved`). Closing gen therefore
+unlocks cp, and since gen never reopens, cp never closes again for that reason.
+Rules and hooks: `survey/cp_gate.py`, skill `cp-questionnaire`.
 
 ## `--sync-institutions` gotcha
 

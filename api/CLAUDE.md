@@ -26,20 +26,21 @@ FRONTEND_SITE_URL=https://localhost:3018
 
 | App | Responsibility |
 |-----|---------------|
-| `ies` | User (custom AbstractUser), Institution, Period, StatusControl, InvitationToken, PasswordRecoveryToken |
+| `ies` | User (custom AbstractUser), Institution, Period (`cp_open_at` opens cp answers), InvitationToken, PasswordRecoveryToken |
 | `indicator` | Axis → Component → Observable hierarchy; Sector, GeneralGroup |
 | `question` | Question definitions by type; `QuestionType` catalog and the observable↔type bridge with weights |
 | `survey` | Survey per Institution-Period; AxisValue, ComponentValue, PopulationQuantity |
-| `answer` | ObservableResponse, GroupResponse, attachments, comments |
-| `example` | Good practices: GoodPracticePackage → GoodPractice → Feature → FeatureGoodPractice, Evidence |
+| `answer` | cp capture: ObservableResponse → GroupResponse (eager, one per bridge row) → typed responses (lazy). Domain rules in `answer/services.py` (init «No» → `cp_not_present` tree, reviewer waits for the axis), content gate in `answer/group_validation.py`, response gate in `survey/cp_gate.py` |
+| `example` | Good practices: GoodPracticePackage → GoodPractice → Feature → FeatureGoodPractice |
 | `ps_schema` | Schema/collection metadata for dynamic catalog and filter configuration |
 | `email_send` | EmailProfile, TemplateBase, EmailRecord. Services: `send_template_email`, `send_simple_email` |
-| `flow` | Validation-flow engine: Status catalog (groups `bp`/`cp`/`gen`), FlowEvent timeline, generic Attachment. Hierarchy registry in `flow/registry.py`. `ComponentValue` does NOT participate in the flow. Replaces `ies.StatusControl` (coexisting until data verification; see `docs/records/2026-06-05-diseno-del-motor-de-flujo.md`) |
+| `flow` | Validation-flow engine: Status catalog (groups `bp`/`cp`/`gen`), FlowEvent timeline, generic Attachment. Hierarchy registry in `flow/registry.py`. `ComponentValue` does NOT participate in the flow. The only status system: `ies.StatusControl` was removed on 2026-09-22 |
 
 Settings in `core/settings/__init__.py`; root URLs in `core/urls.py`; API routes in `api/urls.py`.
 
 **`Institution.is_test`:** test institutions see every section and ignore
-period deadlines. Any calculation, indicator or export must exclude them
+period deadlines, but the cp response gate (`survey/cp_gate.py`) applies
+to them too. Any calculation, indicator or export must exclude them
 (`institution__is_test=False`). None exists yet — do not introduce one.
 
 ## Creating views
@@ -58,4 +59,3 @@ Project-specific:
 
 - ViewSet mixins catalog (`MultiSerializer*`, `ListMix`, `CreateMix`, etc.): `api/mixins.py`
 - `BaseViewSet` extends `ModelViewSet` with `CustomPagination`, `UnaccentSearchFilter` (Postgres `unaccent__icontains`, degrades gracefully on SQLite), `DjangoFilterBackend`, `OrderingFilter`, delete-confirmation mixin: `api/views/common_views.py`
-- `AdvancedConditionalFieldsViewMixin` — excludes serializer fields by `field_permissions` dict keyed by role (`anonymous`, `authenticated`, `staff`): same file

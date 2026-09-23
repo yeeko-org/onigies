@@ -30,6 +30,11 @@ Models, the status catalog, transitions, propagation and the per-practice
 [`flow`](../flow/SKILL.md) skill — this skill is only the **layout and
 audience split**.
 
+The cp equivalent does not follow this layout: one component tree serves both
+audiences through a `review` prop instead of `isStaff`/`editable`, the reviewer
+opens it from `AxisValueEditSimple` or from `CpSurveyAxes` in the survey detail,
+and there is no scoring yet — see `flow`, «cp: the live surfaces».
+
 ## The shared building blocks (reused by both surfaces)
 
 | Component | Role | Audience knob |

@@ -26,8 +26,7 @@ produced).
 middleware/dashboard.js → store.fetchCatalogs()
   GET /catalogs/all/  → data
     ├─ calculateSchemas(data)   composables/cats.js   → store.schemas
-    ├─ calculateNewCats(...)    composables/nodes.js  → store.all_nodes (D3 trees)
-    └─ calculate_status(...)    composables/filters.js→ store.status
+    └─ calculateNewCats(...)    composables/nodes.js  → store.all_nodes (D3 trees)
   store.current_collection_data = schemas.collections_dict[current_collection]
 ```
 
@@ -43,7 +42,7 @@ middleware/dashboard.js → store.fetchCatalogs()
 Backend-provided (`ps_schema/registry.py`): `app_label`, `snake_name`,
 `model_name` (PascalCase), `name`, `plural_name`, `level`, `fields[]`,
 `available_actions[]`, `xls_export`, `cat_params` (spread to top level — e.g.
-`init_display`, `hide_create`). Each `fields[]` entry carries `name`,
+`init_display`, `hide_create`, `extra_sorts`). Each `fields[]` entry carries `name`,
 `relation_type` (`simple|one_to_many|many_to_many|one_to_one|relation`),
 `related_snake_name`, `related_model`, `field_type`, `default`, `null`.
 
@@ -56,7 +55,6 @@ longer recomputes it):
 | `pk` | primary-key field name (fallback `'id'`) |
 | `name_field` | first of `name`/`title` present, unless the schema declares `name_field` (e.g. `QuestionTypeSchema.name_field = "public_name"`, whose `name` is an internal pk) — used as the row title |
 | `has.{comments,description,help_text,order,color,icon}` | booleans: does the model have that field |
-| `status_groups` | field names whose `related_model === 'StatusControl'` — still in the payload, no longer rendered (UI retired 2026-08-20; removed in task-7) |
 
 Computed front-side by `calculateSchemas` (UI-only / needs full field objects):
 
@@ -66,7 +64,14 @@ Computed front-side by `calculateSchemas` (UI-only / needs full field objects):
 | `is_category` | `level.startsWith('category_')` → routes to `/catalogs/` API |
 | `child_relation_fields` | fields with `one_to_many`/`many_to_many` → child lists |
 | `collection_filters` | the assembled, ordered filter list (see §4) |
-| `available_sorts` | the “Ordenar por” select options |
+| `available_sorts` | the “Ordenar por” select options; `cat_params.extra_sorts` go first |
+
+**`cat_params.extra_sorts`** (`[{title, value}]`) is the convention for sort
+options specific to one collection: `value` is an `ordering` string its
+ViewSet must admit in `ordering_fields`. The list opens without sending
+`ordering` (or with `order` when the model has one), so the initial order is
+the ViewSet's default `ordering`, never a frontend rule. Today only
+`axis_value` uses it («Más urgentes», which is also its backend default).
 
 ## 2. The auto-load convention (the core)
 
@@ -117,7 +122,7 @@ In `PanelCommon.vue`:
   detail view in the dashboard.** Do not put IES-survey content here (that lives
   in `/respuestas`).
 - **No `EditSimple`** → `EditCommon` renders generic fields (`EditCommonFields.vue`:
-  name, order, status, comments, icon/color, description, help_text) + your
+  name, comments, icon/color, description, help_text) + your
   `{Model}Edit` inside the `#edit` slot, with the Guardar/Eliminar buttons.
 
 > Gotcha: `EditSimple` receives **only** `v-model`. It does **not** get `isStaff`
@@ -187,15 +192,16 @@ The filters shown at the top of every list are assembled in `cats.js` into
    `ComponentFilter` (no `filter_name`) keeps `is_custom: true`.
 2. **Category filter group** — if `is_category`, the matching `FilterGroupSchema`
    is pushed (multi-level group/type/subtype select).
-3. ~~**Status groups**~~ — no longer pushed (UI retired 2026-08-20). The
-   `status_groups` key still travels in the payload but nothing renders it;
-   it dies entirely with `StatusControl` in task-7.
+
+A filter by flow status is declared per collection, not generated: `axis_value`
+uses an `OnlyByFilter` `ComponentFilter` whose `custom_options` are built from
+the seed (`flow.seed.STATUSES`, the statuses that apply to the model) because
+the schema is assembled at import time, before any query.
 
 `FiltersList.vue` dispatches each filter to a widget by shape:
 
 | Filter shape | Widget |
 |---|---|
-| has `collection` | `StatusDetail` (status select) — unreachable since 2026-08-20; dies in task-7 |
 | has `key_name` | `SelectGroup` (hierarchical D3-tree select from `all_nodes`) |
 | has `component` | custom: `TripleBooleanFilter`, `RangeDates`, `UserSelect`, `OnlyByFilter` |
 
@@ -224,7 +230,7 @@ pagination, with zero per-model code. To customize, write a `{Model}Sheet.vue`
 that does something other than the default child-iteration. There is no
 per-child switch: a child collection is hidden only by owning the Sheet.
 
-- **Suppress every child list**: an empty-template `{Model}Sheet.vue` (`GoodPracticePackageSheet.vue`, `QuestionTypeSheet.vue`). Deleting the file brings the automatic lists back.
+- **Suppress every child list**: an empty-template `{Model}Sheet.vue` (`GoodPracticePackageSheet.vue`, `QuestionTypeSheet.vue`, `AxisValueSheet.vue` — whose `EditSimple` already shows the axis's observables). Deleting the file brings the automatic lists back.
 - **Keep some children, drop others** (`GoodPractice` has FKs to `Axis` and `Component`, so both sheets listed good practices): `ComponentSheet.vue` renders only `full_main.observables` — nested by the detail serializer — with `PanelsResult … in_sheet`; `AxisSheet.vue` builds the components from the in-memory tree `all_nodes.axes`, because `category_group` rows never fetch a detail (`PanelCommon.openMain` short-circuits) and the Sheet only sees the list row.
 
 Counts in a collapsed row use `HeaderChip` (`common/utils/HeaderChip.vue`): `count` + `collection_name` give icon, color and label from the catalog; `hide_count` shows the icon only; `tooltip_title` prefixes the bold tooltip line; slots `content` and `tooltip` override the rendering (the orgánica chip in `ObservableHeader` shows two icons instead of a number). Catalogs can now carry `icon`/`color` in their schema (`manage-collections`), which is what makes `HeaderChip` work for question families. Per-type counts on list rows come from `count_fields` (`ObservableSchema`, constant `OBSERVABLE_COUNT_FIELDS` shared with the component detail serializer).
@@ -272,8 +278,7 @@ useit(res.data)
 
 Templates use **kebab-case** event listeners. The canonical events:
 `item-saved` (`{res, is_new}`), `item-deleted` (id), `select-item`,
-`open-panel`, `update-page-number`, `change-status`, `update-status`,
-`update-comments`, `apply-filters`. Per-model components may define their own
+`open-panel`, `update-page-number`, `update-comments`, `apply-filters`. Per-model components may define their own
 local events (e.g. `created`/`saved`/`open` in `good_practice/`).
 
 ### Template canaries (intentional)

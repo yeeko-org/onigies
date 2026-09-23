@@ -109,6 +109,12 @@ class GoodPracticeSchema(CollectionSchema):
     cat_params = {"init_display": True, "hide_create": True}
 ```
 
+`cat_params` travels as-is and the frontend spreads it onto the collection.
+`extra_sorts` (`[{"title", "value"}]`) adds sort options of its own to that
+collection's selector; each `value` must be admitted by the ViewSet's
+`ordering_fields`, and the initial order stays the ViewSet's `ordering`
+(instance: `AxisValueSchema` in `survey/catalog_schema.py`).
+
 ---
 
 ## ComponentFilter — available components

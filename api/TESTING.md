@@ -17,6 +17,11 @@ pytest -q -k periodo                          # por nombre
 
 Fuera de la suite, desde la raíz del monorepo: `api/venv/bin/pytest -c api/pytest.ini api/.claude/smoke_content_gate.py -q` — sonda de la compuerta del cuestionario (13 comprobaciones contra los endpoints reales: alta y baja abiertas, 403 cerradas, orden y fila puente automáticos, banderas, cierre de ida, 405 del catálogo de ajustes).
 
+Dos sondas más de la captura cp, contra la base local, desde `api/`:
+
+- `venv/bin/python manage.py shell -c "exec(open('.claude/smoke_cp_capture.py').read())"` — recorre el contrato real con una IES y una revisora (compuerta cerrada por fecha y por generales, lectura del eje, «Sí», PATCH por tipo, transición con faltantes, «No» con revisión activa y vuelta a «Sí», la revisora solo lee) e imprime los JSON; corre en una transacción que se revierte.
+- `venv/bin/python .claude/measure_axis_queries.py [axis_value_id] [user_id] [-v]` — consultas y tiempo de `GET /axis_value/<id>/`; los ids por defecto (293, 80) son de la base local.
+
 ## Qué cubre cada clase
 
 | Archivo · clase | Cubre |

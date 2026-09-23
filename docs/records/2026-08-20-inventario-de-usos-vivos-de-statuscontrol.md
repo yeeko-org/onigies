@@ -3,7 +3,10 @@ type: record
 id: 2026-08-20-inventario-de-usos-vivos-de-statuscontrol
 date: 2026-08-20
 parent: "[[task-7]]"
+validate-paths: false
 ---
+
+> Fotografía previa al borrado ([[task-7]], ejecutado el 2026-09-22): las rutas que cita ya no existen a propósito.
 
 # Inventario de usos vivos de `ies.StatusControl` antes del borrado
 

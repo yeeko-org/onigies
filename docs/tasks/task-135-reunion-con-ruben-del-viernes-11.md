@@ -2,7 +2,7 @@
 type: task
 id: task-135
 title: "Reunión con Rubén del viernes 11 de septiembre: reach obligatorio, simulación de puntajes, el 1.12 y la ponderación tentativa"
-state: open
+state: closed
 date: 2026-09-07
 owner: ricardo
 parent: "[[task-5]]"
@@ -36,3 +36,7 @@ Puntos a llevar:
 ## Antes de la reunión (10 de septiembre de 2026)
 
 Cambia lo que se lleva: la ponderación tentativa 5 / 2.5 / 2.5 ya está en la base como default de los tipos, y planes, especial y población tienen default nulo ([[adr-0015]]); el default se hereda solo en observables con exactamente el trío, así que el 1.12 y los seis sin sectorial piden peso propio y se ven con aviso. La BQuestion faltante del 1.12 y cualquier sectorial nueva las agrega Rubén mismo desde el dashboard cuando se despliegue ([[task-139]]); ya no se editan en el seed. Si Rubén decide que sectorial es obligatoria, `required` de `reach` se cambia en `initial_data.py` y en la base a mano (el seed de tipos solo crea).
+
+## Cierre (2026-09-22)
+
+La reunión del 11 de septiembre no ocurrió (Ricardo, 2026-09-22). Los tres puntos pasan íntegros a [[task-165]], la agenda para la reunión del 23 de septiembre a las 11, junto con lo nuevo del análisis de «no aplica» ([[adr-0017]]). Los criterios quedan sin marcar a propósito: no se cumplieron aquí.

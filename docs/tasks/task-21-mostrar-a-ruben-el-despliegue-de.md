@@ -36,3 +36,7 @@ Es el **paso cinco** del orden de publicación que Rubén enumeró en la reunió
 
 - [ ] Rubén vio el despliegue y dio su opinión
 - [ ] Quedó definido el patrón de despliegue progresivo que evita la saturación visual
+
+## Lo construido el 2026-09-22 cumple la intención; falta que Rubén lo vea
+
+El panel por observable en `/respuestas` abre con la pregunta inicial Sí/No y, con «No», deja el observable cerrado («No cuenta con la medida», [[adr-0017]]) sin abrir sus preguntas; con «Ver preguntas» la IES puede asomarse en solo lectura antes de decidir (el «pienso que no, pero le abro» de `[36:06]`). Es el menú compacto que Rubén pidió. Los criterios siguen abiertos hasta que él lo vea, previsiblemente el 25 con el deploy ([[task-163]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].

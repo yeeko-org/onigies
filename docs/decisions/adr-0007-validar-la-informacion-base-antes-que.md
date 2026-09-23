@@ -8,7 +8,8 @@ origin: meeting
 deliberation: dialogued
 rationale: recorded
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
-affects: ["api/survey/models.py", "api/api/views/survey/__init__.py", "api/ies/models.py"]
+affects: ["api/survey/models.py", "api/api/views/survey/__init__.py", "api/ies/models.py", "api/survey/cp_gate.py"]
+related: ["[[adr-0018]]"]
 ---
 
 # Validar la información base antes que los avances del cuestionario
@@ -67,6 +68,8 @@ Rubí ofreció además el colchón que hace viable la secuencia: `[32:21]` «yo 
 ### Cómo se comprueba
 
 El día que se abran los observables, las IES con la información base sin validar no pueden capturar en ellos; y una IES con la información base cerrada recibe un rechazo del API al intentar modificarla.
+
+**Precisión y mecanismo (2026-09-22):** «no avanzan con los observables» significa que **ven** el cuestionario completo y no pueden **capturar** en él —Ricardo: se ven las preguntas y se inhabilita todo lo que implique captura—, porque las IES piden sus datos una sola vez y necesitan el instrumento entero a la vista. El mecanismo es la compuerta de respuesta de [[adr-0018]] (`api/survey/cp_gate.py`): `GeneralPackage` en `gen_finished` más la fecha de apertura del periodo. Los candados de [[task-53]] y [[task-55]] que esta decisión pedía quedaron cubiertos por ese mismo mecanismo y por el cierre de ida de gen ([[adr-0002]]).
 
 ## Más información
 

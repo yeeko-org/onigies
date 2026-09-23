@@ -30,7 +30,7 @@ FRONTEND_SITE_URL=https://localhost:3018
 | `indicator` | Axis → Component → Observable hierarchy; Sector, GeneralGroup |
 | `question` | Question definitions by type; `QuestionType` catalog and the observable↔type bridge with weights |
 | `survey` | Survey per Institution-Period; AxisValue, ComponentValue, PopulationQuantity |
-| `answer` | cp capture: ObservableResponse → GroupResponse (eager, one per bridge row) → typed responses (lazy). Domain rules in `answer/services.py` (init «No» → `cp_not_present` tree, reviewer waits for the axis), content gate in `answer/group_validation.py`, response gate in `survey/cp_gate.py` |
+| `answer` | cp capture: ObservableResponse → GroupResponse (eager, one per bridge row) → typed responses (lazy). Domain rules in `answer/services.py` (init «No» → `cp_not_present` tree, reviewer waits for the axis), completion rules in `answer/group_validation.py`, response gate in `survey/cp_gate.py` |
 | `example` | Good practices: GoodPracticePackage → GoodPractice → Feature → FeatureGoodPractice |
 | `ps_schema` | Schema/collection metadata for dynamic catalog and filter configuration |
 | `email_send` | EmailProfile, TemplateBase, EmailRecord. Services: `send_template_email`, `send_simple_email` |

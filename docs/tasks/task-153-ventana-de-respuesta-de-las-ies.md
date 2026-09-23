@@ -26,6 +26,10 @@ Las IES tienen que poder **ver** el cuestionario completo antes de poder **respo
 
 ## Criterios de aceptación
 
-- [ ] Las IES ven el cuestionario completo sin poder capturar respuestas
-- [ ] La fecha de apertura de respuestas es configurable y se puede adelantar sin tocar código
-- [ ] El cuestionario quedó abierto a respuestas el 25 de septiembre o antes
+- [x] Las IES ven el cuestionario completo sin poder capturar respuestas (2026-09-22, en local; [[adr-0018]])
+- [x] La fecha de apertura de respuestas es configurable y se puede adelantar sin tocar código (`Period.cp_open_at`, admin y catálogo)
+- [ ] El cuestionario quedó abierto a respuestas el 25 de septiembre o antes (depende del deploy, [[task-163]], y de publicar cp en `PUBLISHED_SECTIONS`)
+
+## Construido el 2026-09-22
+
+La compuerta es [[adr-0018]]: `Period.cp_open_at` más el `GeneralPackage` en `gen_finished` (así aplica también [[adr-0007]], como Ricardo lo precisó: se ven las preguntas, se inhabilita toda captura). Las IES de prueba no están exentas. Falta desplegar y fijar la fecha en el admin ([[task-163]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].

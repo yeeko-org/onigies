@@ -2,7 +2,7 @@
 type: task
 id: task-92
 title: UI de adjuntos en la captura del cuestionario por observable (cp)
-state: open
+state: closed
 date: 2026-08-06
 owner: ai
 parent: "[[task-2]]"
@@ -15,5 +15,7 @@ La sesión del 2026-08-06 ([[task-68]]) construyó el stack genérico de adjunto
 
 ## Criterios de aceptación
 
-- [ ] La IES puede adjuntar evidencia por GroupResponse en la captura cp
-- [ ] La revisora ve esos adjuntos en su vista de revisión
+- [x] La IES puede adjuntar evidencia por GroupResponse en la captura cp (`FlowAttachments` en `CpGroupCard`, 2026-09-22)
+- [x] La revisora ve esos adjuntos en su vista de revisión (modo `review`, 2026-09-22)
+
+Hecho el 2026-09-22 dentro de la captura cp ([[task-8]]); la compuerta de respuesta cierra también la subida de adjuntos vía `content_lock_errors` de la raíz ([[adr-0018]]). No se probó una subida real con archivo en navegador; queda en los e2e propuestos ([[task-166]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].

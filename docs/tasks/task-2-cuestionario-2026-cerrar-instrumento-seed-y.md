@@ -24,5 +24,9 @@ El seed declarativo (`load_questionnaire`) sembró el instrumento reducido en pr
 ## Criterios de aceptación
 
 - [x] El seed corre en producción con el instrumento definitivo (2026-09-07)
-- [ ] Los observables tienen pesos reales, no el fallback por tipo de pregunta
+- [ ] Los observables tienen pesos reales, no el fallback por tipo de pregunta ([[task-15]], Rubén)
 - [x] La captura de Generales existe en el frontend ([[task-41]], sesión 2026-08-03/04)
+- [x] La captura del cuestionario por observable existe en el frontend, para la IES y para la revisora ([[task-8]], 2026-09-22; pendiente de deploy, [[task-163]])
+- [ ] La calificación existe: nada llena `GroupResponse.value`, `AxisValue.value` ni `ComponentValue.value` ([[task-28]], [[task-29]], [[task-111]], Rubén)
+
+**2026-09-22:** la superficie de captura ya no está «sin construir»: backend, captura de la IES y revisión quedaron completos en la rama `cp-backend` ([[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]]). Lo que sigue abierto de este plan es lo de Rubén (pesos, agregación, condiciones base, paridad del 1.7) y el deploy.

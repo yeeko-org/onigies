@@ -43,23 +43,7 @@ Los datos de «Información base» viven aparte, en `e2e/mocks/gen.ts`: el catá
 
 ## Propuestos para cp, no escritos
 
-Pendientes de que Ricardo acuerde la lista. Necesitan un mock `e2e/mocks/cp.ts`, espejo de `gen.ts`: los status del grupo `cp` (incluido `cp_not_present`) con `role`, `content_editable`, `next_statuses` y `valid_child_statuses`; un `makeAxisValue()` con dos o tres observables de tipos distintos (A, B, alcance; uno especial y el 1.7 con su grupo `population`), `cp_capture` abierto o cerrado, `gen_denominators` y `a_options`; y los handlers de `/axis_value/`, `PATCH /observable_response/`, `PATCH /group_response/` (con `completion`, `observable_status` y `axis_status` en la respuesta) y `/flow/answer/…`.
-
-Captura de la IES (`/respuestas`):
-
-- compuerta cerrada: por fecha y por generales sin validar, el cuestionario se ve completo con su aviso, sin controles de captura ni módulo de estatus;
-- respuesta inicial: «Sí» habilita los grupos; «No» lleva observable y grupos a «No cuenta con la medida» y la vuelta a «Sí» los reabre;
-- guardado por grupo: el botón solo aparece con cambios, el PATCH lleva solo las filas tocadas y `completion` se muestra sin bloquear el guardado;
-- oferta del siguiente paso: tras completar el último grupo, snackbar con acción para el observable; tras el último observable, para el eje; nada transiciona solo;
-- tipos especiales: planes sin el nivel declarado «No aplica», la salida de planeación general del alcance, el especial con cumplen > total, y el 1.7 sin preguntas que se promueve con el «Sí».
-
-Revisión (dashboard):
-
-- lista de «Ejes del cuestionario» por urgencia, con el conteo de observables por estatus en el renglón y el filtro de estatus;
-- detalle en modo revisión: contenido de solo lectura, adjuntos y comentarios visibles, y el aviso de compuerta sin detener a la revisora;
-- devolver un grupo con comentario obligatorio, y el observable y el eje transicionados aparte;
-- regla de hijos: el eje no se aprueba con observables pendientes (diálogo de bloqueo), y la revisión queda bloqueada mientras el eje siga en turno de la IES;
-- «No cuenta con la medida»: terminal, sin transiciones, cuenta como hijo resuelto.
+Los diez flujos propuestos para la captura de la IES y la revisión (con un mock nuevo `cp.ts` junto a `gen.ts` en `e2e/mocks/`) viven en la task-166 del grafo documenter; se escriben cuando Ricardo acuerde la lista.
 
 ## Prueba manual contra el stack local
 

@@ -46,21 +46,9 @@ status. `content_editable` separates "my turn to edit" (`bp_completed`,
 `bp_adjusted` — editable bookmarks before send) from "my turn to only
 transition" (`bp_discarded`, terminal/review states).
 
-The server mirror is `user_can_edit_flow_content` (`api/flow/permissions.py`),
-which adds a third condition the client helper does not know: the root's
-optional `content_lock_errors(user)` hook (duck typing, like
-`validate_flow_transition`). `AxisValue` uses it to close all cp content —
-typed answers, the initial boolean, attachments — while the answer gate is
-closed (see cp below); the frontend gets that state as `cp_capture` in the
-axis payload instead.
+The server mirror is `user_can_edit_flow_content` (`api/flow/permissions.py`), which adds a third condition the client helper does not know: the root's optional `content_lock_errors(user)` hook (duck typing, like `validate_flow_transition`). `AxisValue` uses it to close all cp content — typed answers, the initial boolean, attachments — while the answer gate is closed (see cp below); the frontend gets that state as `cp_capture` in the axis payload instead.
 
-The same "root governs" idea applies to **reviewer transitions** in cp:
-a group or observable reaches a reviewer-role status (`cp_completed`,
-`cp_adjusted`, `cp_partial`) before the IES sends the axis, and the motor only
-checks the object's own role. `answer.services.review_turn_errors` (called from
-the O/G `validate_flow_transition` hooks) rejects reviewer transitions while
-the axis is still in the IES's turn; `flowStore.getRootNotInTurn(root)` is its
-client mirror, applied by `useFlowActions` when given `options.root`.
+The same "root governs" idea applies to **reviewer transitions** in cp: a group or observable reaches a reviewer-role status (`cp_completed`, `cp_adjusted`, `cp_partial`) before the IES sends the axis, and the motor only checks the object's own role. `answer.services.review_turn_errors` (called from the O/G `validate_flow_transition` hooks) rejects reviewer transitions while the axis is still in the IES's turn; `flowStore.getRootNotInTurn(root)` is its client mirror, applied by `useFlowActions` when given `options.root`.
 
 ## Status model (`api/flow/models.py`)
 
@@ -98,13 +86,7 @@ cp:   AxisValue → ObservableResponse → GroupResponse
 gen:  GeneralPackage → GeneralGroupResponse
 ```
 
-**Every parent-child edge is a real FK**: `GoodPractice.package`,
-`ObservableResponse.axis_value`, `GroupResponse.observable_response`,
-`GeneralGroupResponse.general_package`. The roots (`GoodPracticePackage`,
-`AxisValue`, `GeneralPackage`) are created eager in `Institution.save`, and so
-are the whole cp tree below each axis: `ObservableResponse` and `GroupResponse`
-(`answer.models.provision_cp_responses`, idempotent, born in `cp_pre_start`
-because `bulk_create` skips the flow signal). Only the typed answers are lazy.
+**Every parent-child edge is a real FK**: `GoodPractice.package`, `ObservableResponse.axis_value`, `GroupResponse.observable_response`, `GeneralGroupResponse.general_package`. The roots (`GoodPracticePackage`, `AxisValue`, `GeneralPackage`) are created eager in `Institution.save`, and so are the whole cp tree below each axis: `ObservableResponse` and `GroupResponse` (`answer.models.provision_cp_responses`, idempotent, born in `cp_pre_start` because `bulk_create` skips the flow signal). Only the typed answers are lazy.
 
 Topology lives **on each model, not a central dict**: a participating model
 inherits the `FlowParticipant` mixin (a marker, no fields → no migration) and
@@ -125,14 +107,7 @@ defines one: `obj.validate_flow_transition(user, target)` returns a list of
 errors (duck typing, so the motor stays generic — e.g. the bp/gen packages veto
 the send when the period is closed).
 
-`execute_transition` validates, writes a `FlowEvent`, updates `obj.status`, then
-propagates: `_propagate_up` when `target.propagates_up`, `_propagate_down` when
-`target.propagates_down`. Propagation is automatic (no role/comment check) and
-only touches objects where the status applies (`applicable_models`) and that
-don't already have it. **Every manual status change goes through
-`execute_transition`**, so `valid_child_statuses` is always enforced before
-propagation; the only doors that skip it are the two domain services below
-(`assign_auto_status`, `assign_status_tree`), which no menu reaches.
+`execute_transition` validates, writes a `FlowEvent`, updates `obj.status`, then propagates: `_propagate_up` when `target.propagates_up`, `_propagate_down` when `target.propagates_down`. Propagation is automatic (no role/comment check) and only touches objects where the status applies (`applicable_models`) and that don't already have it. **Every manual status change goes through `execute_transition`**, so `valid_child_statuses` is always enforced before propagation; the only doors that skip it are the two domain services below (`assign_auto_status`, `assign_status_tree`), which no menu reaches.
 
 Every status write — the object's own and the propagated ones — goes through
 `_save_status(obj)`, a **full `obj.save()`** on purpose: with
@@ -146,16 +121,9 @@ re-read under `select_for_update()` inside the transaction.
 are in the catalog + auth, so the **frontend computes available transitions
 client-side**; there is no `GET transitions/` endpoint.
 
-`assign_auto_status(user, obj)` assigns the group's `auto_on_first_save` status
-when the object has none or sits in the group default (called from the view on
-first save; it propagates up when the status does).
+`assign_auto_status(user, obj)` assigns the group's `auto_on_first_save` status when the object has none or sits in the group default (called from the view on first save; it propagates up when the status does).
 
-`assign_status_tree(user, obj, status)` is the **domain door, not a menu
-transition**: it forces `status` on `obj` and every descendant, skipping role,
-`next_statuses` and the children rule, one `FlowEvent` per object changed, no
-upward propagation, no `transition_executed` signal. Only `answer.services`
-uses it, when the initial answer of an observable decides its groups' fate
-(`cp_not_present` and back to `cp_filling`).
+`assign_status_tree(user, obj, status)` is the **domain door, not a menu transition**: it forces `status` on `obj` and every descendant, skipping role, `next_statuses` and the children rule, one `FlowEvent` per object changed, no upward propagation, no `transition_executed` signal. Only `answer.services` uses it, when the initial answer of an observable decides its groups' fate (`cp_not_present` and back to `cp_filling`).
 
 ## Status normalization + client catalog
 
@@ -179,11 +147,7 @@ confirmation texts, `entry_rules`, `next_statuses`, `valid_child_statuses`,
 - `flowStore.canEditContent(obj, root)` → the content-edit permission (above).
 - `flowStore.getAvailableTransitions(currentName, appLabel, modelName)` → mirrors
   the motor's role + `next_statuses` ∩ `applicable_models` filter.
-- `flowStore.getChildrenNotReady(record, target, modelName)` → the children rule
-  read client-side (`CHILD_REGISTRY` says where the children hang — for cp,
-  `observable_responses` on the axis and `group_responses` on the observable,
-  the field names of the Full serializers), as reasons in Spanish for the
-  blocked dialog. UX only; the motor still enforces it on POST.
+- `flowStore.getChildrenNotReady(record, target, modelName)` → the children rule read client-side (`CHILD_REGISTRY` says where the children hang — for cp, `observable_responses` on the axis and `group_responses` on the observable, the field names of the Full serializers), as reasons in Spanish for the blocked dialog. UX only; the motor still enforces it on POST.
 - `flowStore.getRootNotInTurn(root)` → mirror of `review_turn_errors` (above).
 - `auth.flow_role` → `'reviewer'` if `is_superuser || is_staff || reviewer`, else
   `'ies'` (mirrors backend `User.is_reviewer`).
@@ -208,12 +172,7 @@ reasons)` opens the blocked dialog manually; each entry of `transitions` carries
 `blocked` (the reasons, when any) so the menu can pre-disable it — `onSelect`
 re-checks anyway, since the record may have changed since the render.
 
-`options.onTransitioned(ev)` is awaited after the mutation and the snackbar: for
-when the mutation in place isn't enough and the consumer must refetch — e.g.
-`GoodPracticeList` reloads to get `sent_at`, `GeneralGroupList` recomputes which
-panels stay open. `options.root` (value, ref or getter) is the flow root when
-`record` is a descendant: its reasons from `getRootNotInTurn` go first in each
-transition's `blocked` and `onSelect` rechecks them. It wraps `useFlow`.
+`options.onTransitioned(ev)` is awaited after the mutation and the snackbar: for when the mutation in place isn't enough and the consumer must refetch — e.g. `GoodPracticeList` reloads to get `sent_at`, `GeneralGroupList` recomputes which panels stay open. `options.root` (value, ref or getter) is the flow root when `record` is a descendant: its reasons from `getRootNotInTurn` go first in each transition's `blocked` and `onSelect` rechecks them. It wraps `useFlow`.
 
 **Record-as-model.** `FlowStatusActions` and `FlowComments` take the whole record
 via `defineModel` (not derived props); on transition/comment they **mutate it in
@@ -242,11 +201,7 @@ and the chip degrades to display-only (`FlowStatusChip`); no caret when
   from the close so the save doesn't dismiss the dialog before the transition.
 - `GoodPracticeList` (IES): "Enviar a revisión" runs through the full kernel — `useFlowActions` on the package (`FlowTransitionDialogs`), with `onTransitioned` reloading the practices. The real gate is the children rule (`getChildrenNotReady`, every practice `bp_completed`), so before `onSelect` it syncs `record.good_practices` with the live list: the children gate reads the embedded array, which goes stale after adds/deletes.
 
-**Rule registry `app/composables/flowRules.js`** maps a rule name → a function
-returning the missing items; `runEntryRules(entryRules, obj)` → `{ ok, missing }`.
-The only rules are `practice_complete` (on `bp_completed`, reuses
-`good_practice_validation.js`) and `features_rated` (on `bp_for_ruling`: every
-marked feature carries the reviewer's rating).
+**Rule registry `app/composables/flowRules.js`** maps a rule name → a function returning the missing items; `runEntryRules(entryRules, obj)` → `{ ok, missing }`. The only rules are `practice_complete` (on `bp_completed`, reuses `good_practice_validation.js`) and `features_rated` (on `bp_for_ruling`: every marked feature carries the reviewer's rating).
 
 ## Endpoints (`api/flow/urls.py`, base `/flow/{app_label}/{model_name}/{pk}/`)
 
@@ -255,16 +210,10 @@ marked feature carries the reviewer's rating).
 - `GET events/` → timeline (`FlowEventSerializer`); the components read embedded
   `flow_events` instead.
 - `POST events/` → `{ comment }` adds a pure comment.
-- `attachments/` (list/upload, detail, `download/`) → files hung on the object;
-  writing them follows the content-edit permission.
+- `attachments/` (list/upload, detail, `download/`) → files hung on the object; writing them follows the content-edit permission.
 - `GET /flow/statuses/?group=bp` → read-only catalog (`StatusSerializer`).
 
-Content is written outside `flow`, per group: bp and gen through their own
-viewsets; cp through `/axis_value/` (read-only collection, the axis with its
-whole questionnaire), `/observable_response/` (PATCH of the initial answer) and
-`/group_response/` (PATCH of one group's typed answers) — skill
-`cp-questionnaire`. Transitions, comments and attachments of cp objects still go
-through `/flow/answer/…` and `/flow/survey/axisvalue/…`.
+Content is written outside `flow`, per group: bp and gen through their own viewsets; cp through `/axis_value/` (read-only collection, the axis with its whole questionnaire), `/observable_response/` (PATCH of the initial answer) and `/group_response/` (PATCH of one group's typed answers) — skill `cp-questionnaire`. Transitions, comments and attachments of cp objects still go through `/flow/answer/…` and `/flow/survey/axisvalue/…`.
 
 ## IES vs reviewer: keep them separate
 
@@ -313,61 +262,13 @@ P = `GoodPracticePackage`, G = `GoodPractice`.
 | `bp_for_ruling` / `bp_rejected` | G | None | terminal per practice |
 | `bp_finished` | P | None | terminal package |
 
-Child rules (`valid_child_statuses`): `bp_sent ← bp_completed`;
-`bp_resent ← bp_adjusted, bp_completed`; `bp_finished ← bp_for_ruling, bp_rejected`.
-So sending the package (`bp_draft → bp_sent`) is blocked by the motor until every
-practice is `bp_completed`. The UX mirrors this client-side:
-`bp_completed.entry_rules = ['practice_complete']` blocks marking a practice
-complete until `good_practice_validation.js` passes; the send itself is gated
-only by the children rule, mirrored client-side by `getChildrenNotReady`. The
-hard children rules stay server-side.
+Child rules (`valid_child_statuses`): `bp_sent ← bp_completed`; `bp_resent ← bp_adjusted, bp_completed`; `bp_finished ← bp_for_ruling, bp_rejected`. So sending the package (`bp_draft → bp_sent`) is blocked by the motor until every practice is `bp_completed`. The UX mirrors this client-side: `bp_completed.entry_rules = ['practice_complete']` blocks marking a practice complete until `good_practice_validation.js` passes; the send itself is gated only by the children rule, mirrored client-side by `getChildrenNotReady`. The hard children rules stay server-side.
 
-The source of truth for every group's statuses, transitions and child rules is
-`api/flow/seed.py`; plan §3 (`docs/records/2026-06-05-diseno-del-motor-de-flujo.md`)
-keeps the design rationale.
+The source of truth for every group's statuses, transitions and child rules is `api/flow/seed.py`; plan §3 (`docs/records/2026-06-05-diseno-del-motor-de-flujo.md`) keeps the design rationale.
 
 ## cp catalog
 
-A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of
-work), G = `GroupResponse` (one per question type of the observable, the unit
-of save).
-
-| status | applies | role | note |
-|---|---|---|---|
-| `cp_pre_start` | A, O, G | ies | default; the whole tree is born here |
-| `cp_filling` | A, O, G | ies | auto on first save, propagates up |
-| `cp_completed` | O, G | reviewer | IES marked it complete; reviewed once the axis is sent |
-| `cp_sent` / `cp_resent` | A | reviewer | axis sent / resent |
-| `cp_in_review` | A | reviewer | |
-| `cp_need_changes` | A, O, G | ies | reviewer returns it; comment required |
-| `cp_in_adjustment` | A, O, G | ies | auto, propagates up |
-| `cp_adjusted` | O, G | reviewer | fixes applied |
-| `cp_postponed` | O, G | ies | answer later |
-| `cp_partial` / `cp_partial_approved` | O, G | reviewer / ies | partial delivery and its approval |
-| `cp_voluntary_readjust` | A, O, G | reviewer | IES asks to reopen an approved answer |
-| `cp_approved` | A, O, G | ies | public; IES may only ask a readjust |
-| `cp_not_present` | O, G | None | «No cuenta con la medida» |
-
-`cp_not_present` is **terminal by domain, not by the motor**: no
-`next_statuses` point to it or leave it. The IES's «No» to the observable's
-initial question sets it on the observable and all its groups through
-`assign_status_tree`, and changing the answer back leaves it the same way (to
-`cp_filling`). Both need the axis in the IES's turn and the answer gate open;
-the «No» is also refused once any group has entered review (the IES asks a
-readjust instead). It counts as 0 in the average (a decided rule; scoring is not built yet) and is never reviewed, so it is a valid
-child in every child rule that moves a parent forward. There is no «no aplica»
-at the observable level: partial applicability is declared in gen.
-
-Child rules worth knowing: `cp_postponed` requires every group resolved or
-postponed itself (`cp_completed`, `cp_postponed`, `cp_partial`,
-`cp_not_present`) — without it a postponed observable travelled in `cp_sent`
-with untouched groups; `cp_partial_approved` accepts `cp_not_present` groups.
-
-The reviewer returns **per group**: the group, the observable and the axis are
-transitioned separately (`review_turn_errors` keeps all of them waiting until
-the axis is sent). What the IES can type is guarded by
-`answer/group_validation.py` on `cp_completed`/`cp_adjusted` and by the answer
-gate on everything (skill `cp-questionnaire`).
+A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of work), G = `GroupResponse` (the unit of save, one per question type). The IES's initial «No» on an observable sets `cp_not_present` — terminal by domain, not by the motor — on the observable and all its groups through `assign_status_tree`; the reviewer returns per group, and `review_turn_errors` keeps every reviewer transition waiting until the axis is sent. Status table, child rules and the guards on the «No»: [references/cp.md](references/cp.md).
 
 ## gen: the live surfaces
 
@@ -395,35 +296,6 @@ section's content is written against `Survey`, not the flow wrappers: skill
 
 ## cp: the live surfaces
 
-cp also runs end to end, with one tree of components under
-`components/dashboard/answer/capture/` serving both audiences through a
-`review` prop (read-only content; transitions, comments and attachments stay):
-
-- **IES** → `/respuestas/[period]`, one `CpAxisCapture` per axis. Each
-  observable is a `CpObservablePanel` (initial question saved on change, the
-  observable's status, groups consultable before answering and editable only
-  after «Sí»); each group a `CpGroupCard` with its own «Guardar» that appears
-  only with changes — **save is per group**, no autosave — and one
-  `CpQuestions{A,B,Reach,Plan,Special}` body per type. The axis payload's
-  `cp_capture` (`{open, reason, open_at}`) drives the gate: closed, the IES sees
-  the whole questionnaire but captures and transitions nothing.
-- **Reviewer** → collection «Ejes del cuestionario» (`AxisValue`):
-  `AxisValueHeader` (row with `CpStatusCounts`), `AxisValueEditSimple` (the
-  same `CpAxisCapture` with `review`), `AxisValueSheet` empty on purpose. The
-  survey detail (`SurveyEditSimple`) adds `CpSurveyAxes` below
-  `GeneralGroupList`: the survey's axes, each opening the same review detail in
-  a dialog.
-
-cp is still unpublished for real IES: only `is_test` institutions see it until `PUBLISHED_SECTIONS` (`nuxt/app/utils/sections.js`) includes it.
-
-Next steps are **offered, never taken**: after a group transition,
-`CpObservablePanel` offers the observable the same status when the child rule
-now passes; after an observable change, `CpAxisCapture` offers the axis step
-(or highlights the axis chip when there is more than one destination). The
-offer is a snackbar with an action (skill `snackbar`). The pure logic —
-draft per group, PATCH payload with only the changed rows (the backend upserts
-and never deletes by omission), status counts — lives in `utils/cp_capture.js`,
-free of Vue so it can be tested alone. O and G pass `options.root` (the axis) to
-`useFlowActions`.
+One tree of components under `components/dashboard/answer/capture/` serves both audiences, the reviewer through a `review` prop (read-only content; transitions, comments and attachments stay). Save is per group, no autosave, and the axis payload's `cp_capture` drives the answer gate. The components per audience, the publication switch and the offered next steps: [references/cp.md](references/cp.md).
 
 Seed: `flow/seed.py` / `seed_flow` command.

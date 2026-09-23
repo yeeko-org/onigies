@@ -2,7 +2,7 @@
 type: task
 id: task-7
 title: "Fase de borrado: retirar StatusControl y los modelos viejos"
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-1]]"
@@ -41,10 +41,16 @@ El alcance descrito arriba y el §8.5 del diseño mandan cambiar el filtro `stat
 
 ## Criterios de aceptación
 
-- [ ] `grep -r status_sending\|status_register api/` no devuelve nada
-- [ ] `ies.StatusControl` y los modelos de comentarios viejos ya no existen (los de adjuntos ya se borraron el 2026-08-12)
+- [x] `grep -rn "status_sending\|status_register" api/ --include=*.py | grep -v migrations/` no devuelve nada (2026-09-22; las migraciones históricas conservan los nombres)
+- [x] `ies.StatusControl` y los modelos de comentarios viejos ya no existen (2026-09-22, commit 2f5ef8c) (los de adjuntos ya se borraron el 2026-08-12)
 - [x] `ActionFileMixin`, `EvidenceViewSet`, el campo `evidences` de los serializers de BP y `mainStore.saveFile` tampoco (sesión S3, 2026-08-12)
-- [ ] Las migraciones de borrado corrieron en producción sin incidentes (la precondición del re-run quedó eliminada el 2026-08-12 con el retiro del comando; las `Evidence` huérfanas siguen pendientes de contar antes del borrado)
+- [ ] Las migraciones de borrado corrieron en producción sin incidentes → pasa a [[task-163]] (las `Evidence` huérfanas se contaron el 2026-09-22 sobre la copia de producción: 0; las 661 tienen equivalente en `flow_attachment`)
 - [x] La razón para borrar `GroupAttachment` y `Evidence` quedó reconstruida o decidida de nuevo, y es compatible con [[task-68]] ([[adr-0010]])
 
 Nota (2026-08-20): el punto del alcance que pedía cambiar el filtro `status_sending__is_final=False` por `status__role__isnull=False` está **desactualizado** y no cuenta para el cierre — el filtro ya no existe en `api/api/views/example/__init__.py`; la evidencia está en la sección anterior y en [[2026-08-20-inventario-de-usos-vivos-de-statuscontrol]].
+
+## Ejecutado el 2026-09-22
+
+Commit `2f5ef8c` en la rama `remove-statuscontrol` (hoy dentro de `cp-backend`): fuera `status_register`/`status_sending` de los seis modelos, `ObservableComment`, `GroupComment`, `GeneralGroupComment`, el `Comment` abstracto, `example.Evidence`, `ies.StatusControl` con sus choices y `STATUS_GROUP_PARAMS`, `InitStatus` (`migrate_initial_data` se queda: dispara `InitPeriod`, `InitFeatures` e `InitQuestionTypes`), el admin, el serializer y las claves `status_control`/`status_groups` de `/catalogs/all/`, los restos muertos del inventario, y en el frontend `calculate_status`, `StatusDetail/Chip/Toggle`, `filters.js`, `colorMixin.js` y los typedefs. Migraciones answer 0005, survey 0011, example 0009, ies 0014. **Se conserva el `TextField comments`** de los tres modelos de bp: es el comentario privado de calificación de la revisora, vivo en la UI y con 11 filas reales; su destino es [[task-124]]. El §8.3 del diseño queda desactualizado en ese punto.
+
+Orden de deploy decidido por Ricardo: frontend en Netlify antes que el API, porque `calculate_status(data.status_control)` del store viejo tiraba el dashboard entero si el payload dejaba de traer la clave. El deploy es [[task-163]]. Record: [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].

@@ -3,6 +3,7 @@ type: record
 id: 2026-09-10-editor-por-bloques-cuestionario-abierto-y-retiro-del-seed
 date: 2026-09-10
 related: ["[[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]]", "[[adr-0014]]", "[[adr-0015]]", "[[task-131]]", "[[task-132]]"]
+validate-paths: false
 ---
 
 # Editor de observable por bloques, cuestionario abierto a edición y retiro del seed

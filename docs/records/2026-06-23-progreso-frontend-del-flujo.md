@@ -3,6 +3,7 @@ type: record
 id: 2026-06-23-progreso-frontend-del-flujo
 title: Progreso del frontend del motor de flujo (buenas prácticas)
 date: 2026-06-23
+validate-paths: false
 ---
 
 # Progreso — Frontend del motor de flujo (Buenas Prácticas)

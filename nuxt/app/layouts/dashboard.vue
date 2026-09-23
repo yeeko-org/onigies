@@ -58,6 +58,12 @@ const main_items = [
     color: 'pink',
   },
   {
+    plural_name: 'Ejes del cuestionario',
+    snake_name: 'axis_value',
+    icon: 'checklist',
+    color: 'deep-purple',
+  },
+  {
     plural_name: 'Buenas Prácticas',
     snake_name: 'good_practice',
     icon: 'lightbulb',

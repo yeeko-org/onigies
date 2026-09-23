@@ -150,6 +150,9 @@
  * @property {CollectionFilter[]} collection_filters Enriched: resolved
  *   filters, sorted by `order`.
  * @property {SortOption[]} available_sorts Enriched.
+ * @property {string} [default_ordering] Enriched: initial `ordering` of
+ *   the list; flow collections (a `status` FK to `Status`) open by
+ *   urgency unless `cat_params.default_ordering` says otherwise.
  * @property {boolean} [init_display] From cat_params spread: fetch the
  *   list on mount without requiring a filter.
  * @property {boolean} [hide_create] From cat_params spread.

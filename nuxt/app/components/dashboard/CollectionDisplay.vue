@@ -175,7 +175,8 @@ function resetFilters() {
   else if (coll_data.init_display)
     temp_reset.value = false
   final_filters.value = {
-    ordering: collection_data.value.has.order ? 'order' : null,
+    ordering: collection_data.value.default_ordering
+      || (collection_data.value.has.order ? 'order' : null),
     page_size: 40,
   }
   results.value = []

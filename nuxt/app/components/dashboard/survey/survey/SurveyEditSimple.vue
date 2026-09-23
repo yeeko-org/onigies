@@ -1,7 +1,8 @@
 <script setup>
 /**
  * Centro de control de la revisión sobre un cuestionario: monta la misma
- * sección «Información base» que captura la IES, en solo lectura.
+ * sección «Información base» que captura la IES, en solo lectura, y debajo
+ * los ejes del cuestionario principal con acceso a la revisión de cada uno.
  *
  * No duplica nada: `GeneralGroupList` ya es de doble audiencia y resuelve por
  * sí mismo el rol (auth), la editabilidad y las transiciones que le tocan a
@@ -11,6 +12,8 @@
  */
 import GeneralGroupList from
   '~/components/dashboard/survey/GeneralGroupList.vue'
+import CpSurveyAxes from
+  '~/components/dashboard/answer/review/CpSurveyAxes.vue'
 
 const full_main = defineModel({ type: Object, required: true })
 
@@ -28,11 +31,22 @@ function onFlowChanged(general_package) {
     is_new: false,
   })
 }
+
+const context = computed(() => {
+  const inst = full_main.value.institution_full
+  return `${inst?.acronym || inst?.name || ''} - ${full_main.value.period}`
+})
 </script>
 
 <template>
-  <GeneralGroupList
-    :survey="full_main"
-    @flow-changed="onFlowChanged"
-  />
+  <div>
+    <GeneralGroupList
+      :survey="full_main"
+      @flow-changed="onFlowChanged"
+    />
+    <CpSurveyAxes
+      :axis-values="full_main.axis_values || []"
+      :context="context"
+    />
+  </div>
 </template>

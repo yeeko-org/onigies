@@ -167,3 +167,48 @@ export function applyObservableState(target, data) {
     group.flow_events = g.flow_events
   }
 }
+
+/**
+ * `{status: n}` convertido en filas `{name, count, st}` resueltas contra
+ * el catálogo, la más urgente primero (priority del status).
+ */
+export function statusRows(byStatus, getStatus) {
+  return Object.entries(byStatus || {})
+    .map(([name, count]) => ({ name, count, st: getStatus(name) }))
+    .filter((row) => row.st)
+    .sort((a, b) => (b.st.priority || 0) - (a.st.priority || 0))
+}
+
+/**
+ * La cola de un rol en un eje: cuántos observables y cuántos grupos
+ * esperan su transición (el `role` del status es de quién es el turno).
+ */
+export function countInTurn(axis, role, getStatus) {
+  let observables = 0
+  let groups = 0
+  for (const obs of axis?.observable_responses || []) {
+    if (getStatus(obs.status)?.role === role) observables += 1
+    for (const g of obs.group_responses || [])
+      if (getStatus(g.status)?.role === role) groups += 1
+  }
+  return { observables, groups }
+}
+
+/**
+ * El grupo que pide atención de un rol dentro de un observable: el de
+ * mayor prioridad entre los que están en su turno y superan la prioridad
+ * del propio observable (p. ej. uno devuelto con ajustes, o uno que la
+ * IES completó mientras el observable sigue en llenado).
+ */
+export function attentionGroup(observable, role, getStatus) {
+  const own = getStatus(observable?.status)?.priority || 0
+  let best = null
+  let bestPriority = own
+  for (const g of observable?.group_responses || []) {
+    const st = getStatus(g.status)
+    if (st?.role !== role || (st.priority || 0) <= bestPriority) continue
+    best = g
+    bestPriority = st.priority || 0
+  }
+  return best
+}

@@ -9,6 +9,10 @@
  * autoguardado por pregunta. Al guardar, el backend devuelve la compuerta
  * de completado (`completion`), que se muestra sin bloquear el guardado:
  * dice lo que impediría marcar el grupo como completado.
+ *
+ * Con `review` (dashboard) nada se edita: las respuestas se leen (sin
+ * atenuar, a diferencia de la consulta previa de la IES), los adjuntos se
+ * ven y quedan el status y los comentarios.
  */
 import { useAuthStore } from '~/store/auth.js'
 import { useMainStore } from '~/store/index.js'
@@ -50,6 +54,7 @@ const props = defineProps({
   captureOpen: Boolean,
   // Consulta previa a responder «Sí»: todo visible, nada editable.
   preview: Boolean,
+  review: Boolean,
 })
 
 const group = defineModel({ type: Object, required: true })
@@ -68,12 +73,17 @@ const type = computed(() => types_by_name.value[group.value.question_type]
 const spec = computed(() => CP_TYPES[group.value.question_type] || null)
 const body = computed(() => BODIES[group.value.question_type] || null)
 
-// Controles apagados cuando no se puede responder por ahora (compuerta o
-// consulta previa); solo lectura cuando el flujo no le da el turno.
-const disabled = computed(() => props.preview || !props.captureOpen)
-const editable = computed(() => !disabled.value && !authStore.is_staff
+// Controles apagados cuando la IES no puede responder por ahora
+// (compuerta o consulta previa); solo lectura cuando el flujo no le da el
+// turno. La revisión siempre lee, y transiciona salvo en la consulta
+// previa (observable sin «Sí»: sus grupos no se revisan).
+const disabled = computed(
+  () => !props.review && (props.preview || !props.captureOpen))
+const editable = computed(() => !props.review && !disabled.value
+  && !authStore.is_staff
   && flowStore.canEditContent(group.value, props.axis))
-const showActions = computed(() => !disabled.value)
+const showActions = computed(
+  () => (props.review ? !props.preview : !disabled.value))
 
 const draft = ref({})
 const baseline = ref({})
@@ -168,8 +178,9 @@ const baseLink = computed(() => ({
         density="compact"
       >
         La distribución por sexo-género de este observable se captura en
-        <NuxtLink :to="baseLink">Información base</NuxtLink>; aquí no hay
-        preguntas que responder.
+        <span v-if="review">la información base del cuestionario</span>
+        <NuxtLink v-else :to="baseLink">Información base</NuxtLink>; aquí
+        no hay preguntas que responder.
       </v-alert>
       <component
         :is="body"

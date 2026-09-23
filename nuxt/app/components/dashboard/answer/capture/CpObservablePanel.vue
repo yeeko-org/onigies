@@ -7,6 +7,10 @@
  *
  * Los saltos de status que siguen a un grupo o a la respuesta inicial se
  * OFRECEN (snackbar con acción), nunca se dan solos.
+ *
+ * Con `review` (dashboard) la respuesta inicial y los grupos son de solo
+ * lectura y el módulo de estatus se muestra aunque la compuerta de
+ * respuesta esté cerrada: esa compuerta solo detiene a la IES.
  */
 import { useAuthStore } from '~/store/auth.js'
 import { useMainStore } from '~/store/index.js'
@@ -14,7 +18,9 @@ import { useDashboardStore } from '~/store/dash.js'
 import { useFlowStore } from '~/store/flow.js'
 import { useFlowActions } from '~/composables/useFlowActions.js'
 import { useQuestionTypes } from '~/composables/useQuestionTypes.js'
-import { applyObservableState } from '~/utils/cp_capture.js'
+import {
+  applyObservableState, attentionGroup as findAttentionGroup,
+} from '~/utils/cp_capture.js'
 import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
 import FlowStatusActions from
   '~/components/dashboard/flow/FlowStatusActions.vue'
@@ -28,6 +34,7 @@ const props = defineProps({
   aOptions: { type: Array, default: () => [] },
   genDenominators: { type: Object, default: () => ({}) },
   captureOpen: Boolean,
+  review: Boolean,
   // Refresca desde el servidor los status del observable, de sus grupos
   // y del eje: el motor propaga hacia arriba y el PATCH no lo devuelve.
   sync: { type: Function, required: true },
@@ -63,15 +70,12 @@ const initIcon = computed(() => INIT_ICONS[
 const canAnswer = computed(() => props.captureOpen && !authStore.is_staff
   && flowStore.getStatus(props.axis.status)?.role === authStore.flow_role)
 
-// Atención por regla, no por nombre: un grupo en turno de la IES con
-// prioridad mayor que la del observable (p. ej. le pidieron ajustes).
-const attentionGroup = computed(() => {
-  const own = flowStore.getStatus(observable.value.status)
-  return groups.value.find((g) => {
-    const st = flowStore.getStatus(g.status)
-    return st?.role === 'ies' && (st.priority || 0) > (own?.priority || 0)
-  }) || null
-})
+// Atención por regla, no por nombre: el grupo en turno de quien mira con
+// prioridad mayor que la del observable (a la IES, uno devuelto con
+// ajustes; a la revisión, uno completado en un observable aún en llenado).
+const attentionGroup = computed(() => findAttentionGroup(
+  observable.value, authStore.flow_role, flowStore.getStatus))
+const showFlow = computed(() => props.review || props.captureOpen)
 const barColor = computed(() => flowStore.getStatus(
   attentionGroup.value?.status || observable.value.status)?.color || 'grey')
 
@@ -217,7 +221,7 @@ const previewTypes = computed(() => groups.value.map((g) => ({
           :class="{ 'cp-status-slot--offer': highlight }"
         >
           <FlowStatusActions
-            v-if="captureOpen"
+            v-if="showFlow"
             v-model="observable"
             app-label="answer"
             model-name="observableresponse"
@@ -264,6 +268,7 @@ const previewTypes = computed(() => groups.value.map((g) => ({
           :a-options="aOptions"
           :gen-denominators="genDenominators"
           :capture-open="captureOpen"
+          :review="review"
           :preview="!answeredYes"
           @saved="onGroupSaved"
           @transitioned="onGroupTransitioned"
@@ -279,7 +284,7 @@ const previewTypes = computed(() => groups.value.map((g) => ({
           :class="{ 'cp-status-slot--offer': highlight }"
         >
           <FlowStatusActions
-            v-if="captureOpen"
+            v-if="showFlow"
             v-model="observable"
             app-label="answer"
             model-name="observableresponse"

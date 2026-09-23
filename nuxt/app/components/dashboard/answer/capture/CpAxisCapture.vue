@@ -1,12 +1,16 @@
 <script setup>
 /**
- * La pestaña de un eje en /respuestas: el cuestionario principal del eje
- * (flujo `cp`) para la IES. El eje es la unidad de envío y la raíz del
- * flujo; cada observable, la unidad de trabajo (CpObservablePanel).
+ * El cuestionario principal de un eje (flujo `cp`). El eje es la unidad de
+ * envío y la raíz del flujo; cada observable, la unidad de trabajo
+ * (CpObservablePanel).
  *
- * La compuerta de respuesta (`cp_capture`) viene del backend y manda
- * sobre todo lo capturable: cerrada, la IES ve el cuestionario completo
- * pero no responde ni transiciona.
+ * Dos audiencias sobre el mismo árbol, separadas por la prop `review`:
+ * - IES (/respuestas, sin `review`): captura, y la compuerta de respuesta
+ *   (`cp_capture`) del backend manda sobre todo lo capturable: cerrada, ve
+ *   el cuestionario completo pero no responde ni transiciona.
+ * - Revisión (dashboard, `review`): contenido de solo lectura; transiciona,
+ *   comenta y ve adjuntos. La compuerta solo detiene a la IES (el motor no
+ *   la aplica a la revisión), así que aquí no apaga nada: solo se informa.
  */
 import { useAuthStore } from '~/store/auth.js'
 import { useMainStore } from '~/store/index.js'
@@ -16,7 +20,7 @@ import { useIesStore } from '~/store/ies.js'
 import { useFlowActions } from '~/composables/useFlowActions.js'
 import { useDates } from '~/composables/useDates.js'
 import {
-  applyObservableState, countByStatus, resolvedCount,
+  applyObservableState, countByStatus, countInTurn, resolvedCount,
 } from '~/utils/cp_capture.js'
 import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
 import FlowStatusActions from
@@ -25,10 +29,19 @@ import FlowTransitionDialogs from
   '~/components/dashboard/flow/FlowTransitionDialogs.vue'
 import FlowComments from '~/components/dashboard/flow/FlowComments.vue'
 import CpObservablePanel from './CpObservablePanel.vue'
+import CpStatusCounts from './CpStatusCounts.vue'
 
 const props = defineProps({
-  axisValueId: { type: Number, required: true },
+  // Id del AxisValue (se pide al backend) u objeto ya completo: el
+  // EditSimple del dashboard solo recibe v-model y ya trae el detalle.
+  axisValueId: { type: Number, default: null },
+  axisValue: { type: Object, default: null },
+  review: Boolean,
 })
+
+// Resumen del eje con la forma del renglón de lista (status y conteo de
+// observables): el dashboard lo fusiona en la fila colapsada.
+const emit = defineEmits(['flow-changed'])
 
 const authStore = useAuthStore()
 const mainStore = useMainStore()
@@ -45,6 +58,11 @@ const loading = ref(false)
 const openPanels = ref({})
 
 async function load() {
+  if (props.axisValue) {
+    axis.value = props.axisValue
+    return
+  }
+  if (!props.axisValueId) return
   loading.value = true
   try {
     const res = await mainStore.getSimple(
@@ -56,13 +74,15 @@ async function load() {
   }
 }
 
-watch(() => props.axisValueId, load, { immediate: true })
+watch(() => props.axisValue || props.axisValueId, load, { immediate: true })
 
 const capture = computed(() => axis.value?.cp_capture || {})
 const captureOpen = computed(() => capture.value.open === true)
+// Quién ve el módulo de estatus: la IES solo con la compuerta abierta.
+const showFlow = computed(() => props.review || captureOpen.value)
 
 const gateMessage = computed(() => {
-  if (captureOpen.value || !capture.value.reason) return ''
+  if (props.review || captureOpen.value || !capture.value.reason) return ''
   if (capture.value.reason === 'gen_not_approved')
     return 'Tu información base todavía no está validada; hasta entonces '
       + 'puedes consultar el cuestionario pero no responderlo.'
@@ -72,6 +92,20 @@ const gateMessage = computed(() => {
       + 'consultar sus preguntas.'
   return 'El cuestionario aún no está abierto a respuestas. Mientras '
     + 'tanto puedes consultar sus preguntas.'
+})
+
+// La misma compuerta, contada a la revisión: explica por qué la IES no
+// avanza, sin detener a quien revisa.
+const reviewGateMessage = computed(() => {
+  if (!props.review || captureOpen.value || !capture.value.reason)
+    return ''
+  const prefix = 'La institución aún no puede responder este eje: '
+  if (capture.value.reason === 'gen_not_approved')
+    return `${prefix}su información base no está validada.`
+  if (capture.value.open_at)
+    return `${prefix}el cuestionario se abre el `
+      + `${formatLongDate(capture.value.open_at)}.`
+  return `${prefix}el cuestionario no está abierto a respuestas.`
 })
 
 const baseLink = computed(() => ({
@@ -91,17 +125,23 @@ const sections = computed(() => {
   return result
 })
 
-// Resumen del eje: conteo de observables por status, el más urgente
-// primero (priority del catálogo).
-const summary = computed(() => {
-  const counts = countByStatus(axis.value?.observable_responses)
-  return Object.entries(counts)
-    .map(([name, count]) => ({ name, count, st: flowStore.getStatus(name) }))
-    .filter((row) => row.st)
-    .sort((a, b) => (b.st.priority || 0) - (a.st.priority || 0))
+const byStatus = computed(
+  () => countByStatus(axis.value?.observable_responses))
+const progress = computed(
+  () => resolvedCount(byStatus.value, flowStore.getStatus))
+// La cola de la revisión: lo que espera su transición en este eje.
+const reviewQueue = computed(() => countInTurn(
+  axis.value, authStore.flow_role, flowStore.getStatus))
+
+const brief = computed(() => axis.value && ({
+  id: axis.value.id,
+  status: axis.value.status,
+  observables_by_status: byStatus.value,
+}))
+watch(brief, (value, old) => {
+  if (value && old && JSON.stringify(value) !== JSON.stringify(old))
+    emit('flow-changed', value)
 })
-const progress = computed(() => resolvedCount(
-  countByStatus(axis.value?.observable_responses), flowStore.getStatus))
 
 // --- Sincronía con el servidor ---------------------------------------
 
@@ -148,7 +188,7 @@ async function refreshAxis() {
   }
 }
 
-// --- Envío del eje ----------------------------------------------------
+// --- Paso del eje -----------------------------------------------------
 
 const highlight = ref(false)
 watch(() => axis.value?.status, () => { highlight.value = false })
@@ -157,18 +197,26 @@ const axisActions = useFlowActions(axis, 'survey', 'axisvalue', {
   onTransitioned: () => refreshAxis(),
 })
 
-// Tras cambiar un observable: si el eje ya puede cederse a la revisión
-// (regla de hijos cumplida), se ofrece el envío; nunca se da solo.
+// Tras cambiar un observable: si el eje ya puede cederse al otro rol
+// (regla de hijos cumplida), se ofrece el paso; nunca se da solo. Con
+// más de un destino posible (la revisión: aprobar o pedir ajustes) no se
+// elige por nadie: se resalta el status del eje y se avisa.
 function offerAxisStep() {
-  const t = axisActions.transitions.value.find(
+  const ready = axisActions.transitions.value.filter(
     (tr) => tr.role !== authStore.flow_role && !tr.blocked)
-  if (!t) return
+  if (!ready.length) return
   highlight.value = true
   const name = axis.value.axis_full?.short_name || 'el eje'
-  dashStore.showSnackbar(
-    `Todos los observables de ${name} están listos.`,
-    { label: t.action_name || t.public_name,
-      handler: () => axisActions.onSelect(t) })
+  const msg = `Todos los observables de ${name} están listos.`
+  if (ready.length > 1) {
+    dashStore.showSnackbar(`${msg} Elige el siguiente paso en el status `
+      + 'del eje.')
+    return
+  }
+  const t = ready[0]
+  dashStore.showSnackbar(msg, {
+    label: t.action_name || t.public_name,
+    handler: () => axisActions.onSelect(t) })
 }
 </script>
 
@@ -188,7 +236,7 @@ function offerAxisStep() {
             :class="{ 'cp-axis-status--offer': highlight }"
           >
             <FlowStatusActions
-              v-if="captureOpen"
+              v-if="showFlow"
               v-model="axis"
               app-label="survey"
               model-name="axisvalue"
@@ -204,23 +252,25 @@ function offerAxisStep() {
           />
         </div>
         <v-card-text class="d-flex align-center flex-wrap ga-2 pb-0">
-          <span class="text-body-2 text-grey-darken-1 mr-2">
+          <span
+            v-if="review"
+            class="text-body-2 mr-2"
+            :class="reviewQueue.observables || reviewQueue.groups
+              ? 'text-high-emphasis font-weight-medium'
+              : 'text-grey-darken-1'"
+            data-testid="cp-review-queue"
+          >
+            <v-icon size="18" start>flag</v-icon>
+            En turno de la revisión: {{ reviewQueue.observables }}
+            {{ reviewQueue.observables === 1 ? 'observable' : 'observables' }}
+            y {{ reviewQueue.groups }}
+            {{ reviewQueue.groups === 1 ? 'grupo' : 'grupos' }}
+          </span>
+          <span v-else class="text-body-2 text-grey-darken-1 mr-2">
             {{ progress.resolved }}/{{ progress.total }} observables sin
             captura pendiente
           </span>
-          <v-chip
-            v-for="row in summary"
-            :key="row.name"
-            :color="row.st.color"
-            size="small"
-            variant="tonal"
-          >
-            <v-icon start>{{ row.st.icon }}</v-icon>
-            {{ row.count }}
-            <v-tooltip activator="parent" location="top">
-              {{ row.st.public_name }}
-            </v-tooltip>
-          </v-chip>
+          <CpStatusCounts :counts="byStatus" />
         </v-card-text>
       </v-card>
 
@@ -235,6 +285,16 @@ function offerAxisStep() {
         <div v-if="capture.reason === 'gen_not_approved'" class="mt-2">
           <NuxtLink :to="baseLink">Ir a Información base</NuxtLink>
         </div>
+      </v-alert>
+      <v-alert
+        v-if="reviewGateMessage"
+        type="info"
+        variant="tonal"
+        density="compact"
+        icon="lock_clock"
+        class="mb-4"
+      >
+        {{ reviewGateMessage }}
       </v-alert>
 
       <div v-for="section in sections" :key="section.id" class="mb-6">
@@ -254,6 +314,7 @@ function offerAxisStep() {
             :a-options="axis.a_options"
             :gen-denominators="axis.gen_denominators"
             :capture-open="captureOpen"
+            :review="review"
             :sync="sync"
             @observable-changed="offerAxisStep"
           />

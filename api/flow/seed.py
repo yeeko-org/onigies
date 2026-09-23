@@ -336,11 +336,15 @@ STATUSES = {
           "vale cero y no se revisa.",
           role=None, applies=[O, G], color="grey", icon="block",
           priority=20,
-          hint="La IES declaró que no cuenta con la medida; no hay "
-               "preguntas que responder. Cambia la respuesta inicial "
-               "del observable si quieres capturarlas.",
-          hint_wait="La IES declaró que no cuenta con la medida; no "
-                    "hay nada que revisar."),
+          # Terminal: el mismo texto vale para la IES y para la
+          # revisión (FlowStatusActions muestra `hint` a ambas).
+          hint="La institución declaró que no cuenta con la medida; "
+               "este observable no lleva preguntas ni revisión. La "
+               "respuesta inicial puede cambiarse desde el observable "
+               "mientras el eje esté en turno de la institución.",
+          hint_wait="La institución declaró que no cuenta con la "
+                    "medida; este observable no lleva preguntas ni "
+                    "revisión."),
     ],
     "gen": [
         S("gen_draft", "Borrador", None,

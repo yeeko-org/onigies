@@ -32,6 +32,28 @@ REVIEW_ACTIVE_MESSAGE = (
 NOT_IES_TURN_MESSAGE = (
     'El eje no está en turno de tu institución; no puedes cambiar la '
     'respuesta inicial ahora.')
+AXIS_NOT_SENT_MESSAGE = (
+    'El eje aún no se ha enviado a revisión; la revisión podrá actuar '
+    'sobre esta respuesta cuando la institución lo envíe.')
+
+
+def review_turn_errors(user, axis_value) -> list[str]:
+    """Por qué la revisión no puede transicionar hoy un hijo del eje.
+
+    Espejo, para las transiciones, de la regla de contenido de
+    `flow.permissions.user_can_edit_flow_content`: la RAÍZ gobierna.
+    Un grupo u observable queda en turno de la revisión (`cp_completed`,
+    `cp_adjusted`, `cp_partial`) antes de que la IES envíe el eje, y el
+    motor solo mira el rol del status propio; sin esta regla la revisión
+    aprobaría o devolvería respuestas de un eje que todavía se está
+    capturando. Lista vacía para la IES y con el eje ya cedido.
+    """
+    if get_user_flow_role(user) != 'reviewer':
+        return []
+    axis_status = axis_value.status
+    if axis_status is not None and axis_status.role == 'ies':
+        return [AXIS_NOT_SENT_MESSAGE]
+    return []
 
 
 class InitValueError(ValueError):

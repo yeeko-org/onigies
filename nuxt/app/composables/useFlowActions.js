@@ -12,6 +12,9 @@ import { runEntryRules } from '~/composables/flowRules.js'
  * `record` es un ref al registro completo (status + flow_events + id); se muta
  * en sitio al transicionar para que chip, hint y timeline se refresquen sin
  * recargar. `appLabel`/`modelName` pueden ser valores o getters.
+ * `options.root` (valor, ref o getter): la raíz del flujo cuando `record` es
+ * un descendiente; con ella se pre-bloquea a la revisión mientras la raíz
+ * siga en turno de la IES (`flowStore.getRootNotInTurn`).
  */
 export function useFlowActions(record, appLabel, modelName, options = {}) {
   const dashStore = useDashboardStore()
@@ -20,16 +23,19 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     () => toValue(appLabel), () => toValue(modelName),
     () => record.value?.id)
 
-  // Cada transición viaja con `blocked` (motivos de entry_rules + regla de
-  // hijos) para que el menú pre-deshabilite las que fallarán; onSelect
-  // re-valida por si el estado cambió entre el render y el clic.
+  const rootBlocked = () => options.root
+    ? flowStore.getRootNotInTurn(toValue(options.root)) : []
+
+  // Cada transición viaja con `blocked` (motivos de la raíz, entry_rules y
+  // regla de hijos) para que el menú pre-deshabilite las que fallarán;
+  // onSelect re-valida por si el estado cambió entre el render y el clic.
   const transitions = computed(() => flowStore.getAvailableTransitions(
     record.value?.status, toValue(appLabel), toValue(modelName))
     .map((t) => {
       const { missing } = runEntryRules(t.entry_rules, record.value)
       const childMissing = flowStore.getChildrenNotReady(
         record.value, t, toValue(modelName))
-      const blocked = [...missing, ...childMissing]
+      const blocked = [...rootBlocked(), ...missing, ...childMissing]
       return blocked.length ? { ...t, blocked } : t
     }))
   const hasActions = computed(() => transitions.value.length > 0)
@@ -61,6 +67,11 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     // El bloqueo se anuncia con el verbo de la acción, no con el nombre del
     // status destino: «Reenviar a revisión», no «Reenviado a revisión».
     const verb = t.action_name || t.public_name
+    const rootMissing = rootBlocked()
+    if (rootMissing.length) {
+      block(`Aún no puedes pasar a "${verb}"`, rootMissing)
+      return null
+    }
     const { ok, missing } = runEntryRules(t.entry_rules, record.value)
     if (!ok) {
       block(`Aún no puedes pasar a "${verb}"`, missing)

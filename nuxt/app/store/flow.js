@@ -108,6 +108,23 @@ export const useFlowStore = defineStore('flow', () => {
     return [`Faltan ${label} por alcanzar un status válido: ${names}.`]
   }
 
+  /**
+   * Compuerta de la raíz: espejo de `answer.services.review_turn_errors`.
+   * La revisión no transiciona un descendiente (observable, grupo) mientras
+   * la raíz siga en turno de la IES —un grupo «completado» antes de enviar el
+   * eje ya tiene rol reviewer, pero el eje no se ha cedido—. Devuelve
+   * string[] de motivos para pre-bloquear el menú; el motor lo rechaza en el
+   * POST de todos modos.
+   */
+  function getRootNotInTurn(root) {
+    const authStore = useAuthStore()
+    if (authStore.flow_role !== 'reviewer') return []
+    const rootStatus = byName.value[root?.status]
+    if (rootStatus?.role !== 'ies') return []
+    return ['El eje aún no se ha enviado a revisión; la revisión podrá '
+      + 'actuar sobre esta respuesta cuando la institución lo envíe.']
+  }
+
   return { byName, loaded, ensureStatuses, getStatus, canEditContent,
-    getAvailableTransitions, getChildrenNotReady }
+    getAvailableTransitions, getChildrenNotReady, getRootNotInTurn }
 })

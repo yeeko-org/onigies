@@ -6,8 +6,9 @@ detalle anida el paquete de generales) y el GeneralPackage (raíz del
 flujo `gen`, espejo de GoodPracticePackage). Ninguna se crea a mano: las
 dos nacen de `Institution.save`, por eso `hide_create`.
 """
+from flow.seed import A as AXIS_LABEL, STATUSES
 from ps_schema.registry import (
-    collection_registry, CollectionSchema, FilterRef)
+    collection_registry, CollectionSchema, ComponentFilter, FilterRef)
 from survey.models import AxisValue, GeneralPackage, Survey
 from api.views.answer import AxisValueViewSet
 from api.views.survey import GeneralPackageViewSet, SurveyViewSet
@@ -48,5 +49,22 @@ class AxisValueSchema(CollectionSchema):
     plural_name = "Ejes del cuestionario"
     viewset_class = AxisValueViewSet
     open_insertion = False
-    all_filters = [FilterRef("periods"), FilterRef("institutions")]
-    cat_params = {"init_display": True, "hide_create": True}
+    # Los status del eje salen del seed (fuente de verdad del catálogo),
+    # no de la BD: el schema se arma al importar, antes de cualquier
+    # consulta. Solo los que aplican al eje, en el orden del seed.
+    all_filters = [
+        FilterRef("periods"), FilterRef("institutions"),
+        ComponentFilter(
+            title="Estatus", field="status", component="OnlyByFilter",
+            custom_options=[
+                {"plural_name": s.public_name, "value": s.name}
+                for s in STATUSES["cp"] if AXIS_LABEL in s.applies]),
+    ]
+    cat_params = {
+        "init_display": True, "hide_create": True,
+        # Opción extra del selector de orden (el backend ya abre así).
+        "extra_sorts": [{
+            "title": "Más urgentes",
+            "value": "-status__priority,survey__institution__name,"
+                     "axis__order"}],
+    }

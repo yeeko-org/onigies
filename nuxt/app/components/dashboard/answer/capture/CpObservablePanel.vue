@@ -109,6 +109,7 @@ watch(() => observable.value.status, () => { highlight.value = false })
 
 const obsActions = useFlowActions(
   observable, 'answer', 'observableresponse', {
+    root: () => props.axis,
     onTransitioned: async () => {
       await props.sync(observable.value)
       emit('observable-changed')

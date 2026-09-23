@@ -29,6 +29,12 @@ Fuera de la suite, desde la raíz del monorepo: `api/venv/bin/pytest -c api/pyte
 | `flow/tests/test_period_lock.py` · `TestInstitutionPeriodLockTests` | periodo cerrado: bloquea a la IES real, exime a la `is_test`, deja dictaminar a la revisora |
 | `flow/tests/test_notifications.py` · `TurnNotificationTests` | correo a la IES cuando el turno vuelve a ella o llega a status final; nunca a revisoras ni por hijos |
 | `flow/tests/test_attachments.py` · `AttachmentTests` | tope de 30 MB, borrado del archivo físico, y la descarga vía endpoint (permisos, `is_public`, 404 anti-enumeración, `?redirect=false`) |
+| `answer/tests.py` · `ProvisioningTests` | `Institution.save` aprovisiona ObservableResponse y GroupResponse (idempotente, backfill) |
+| `answer/tests.py` · `InitValueTests` | pregunta inicial: el «No» lleva el árbol a `cp_not_present`, la vuelta a «Sí» reabre, bloqueos con revisión activa, eje fuera de turno y revisora |
+| `answer/tests.py` · `ObservableFlowRulesTests` | ganchos del observable y del grupo: pregunta inicial sin responder, `cp_not_present` como hijo válido, pospuesta con grupos resueltos, y la revisión espera a que la IES envíe el eje |
+| `answer/tests.py` · `GroupValidationTests` | compuerta de contenido por tipo (A, B, alcance, planes, especial) |
+| `answer/tests.py` · `CaptureGateTests` | compuerta de respuesta (fecha + generales validadas), solo cierra a la IES |
+| `answer/tests.py` · `CaptureApiTests` | endpoints `/axis_value/`, `/observable_response/`, `/group_response/`: cerco por institución, revisora solo lee, upsert y promoción, `completion` embebido |
 | `survey/tests.py` · `GeneralValidationTests` | compuerta de contenido de las generales: qué cuenta como respuesta y cuándo exime «No aplica» |
 | `survey/tests.py` · `GeneralQuestionResponseSyncTests` | upsert de `question_responses` anidado: columna por `q_type`, normalización del `''`, sin duplicar |
 | `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones |
@@ -44,6 +50,7 @@ Fuera de la suite, desde la raíz del monorepo: `api/venv/bin/pytest -c api/pyte
 No hay credenciales compartidas: cada clase construye sus datos en `setUpTestData`.
 
 - `FlowSecurityTestCase` (`flow/tests/base.py`) — base reutilizable: catálogo de status, periodo abierto, dos instituciones con paquetes y usuarios.
+- `CpCatalogTestCase` (`answer/tests.py`) — catálogo cp mínimo a mano (un eje, tres observables), periodo con `cp_open_at` pasado, dos IES con generales en `gen_finished` y una revisora; helper `force()` fija un status sin pasar por el motor.
 - `GeneralQuestionTestCase` (`survey/tests.py`) — catálogo mínimo a mano en vez de `load_questionnaire`. Los grupos y preguntas se crean **antes** que la institución: `Institution.save` aprovisiona los `GeneralGroupResponse` sobre lo que exista en ese momento.
 - `seed_questionnaire()` (`question/tests.py`) — `InitQuestionTypes()` + `load_sectors` + `load_questionnaire` completo; el contrato del re-seed solo se ve con el cuestionario entero. Su helper `run_seed()` pasa `--force`: desde el candado de siembra, `load_questionnaire` aborta si `QuestionnaireSettings.seeded_at` ya tiene fecha.
 - `TestInstitutionPeriodLockTests` no hereda de `FlowSecurityTestCase` a propósito: necesita el periodo ya cerrado antes de crear las instituciones.

@@ -329,6 +329,7 @@ class ObservableFlowRulesTests(CpCatalogTestCase):
         self.assertIsNone(status('cp_not_present').role)
 
     def test_partial_approval_accepts_not_present_groups(self):
+        force(self.axis_value, 'cp_in_review')
         force(self.obs_response, 'cp_partial')
         self.obs_response.value = True
         self.obs_response.save()
@@ -341,6 +342,54 @@ class ObservableFlowRulesTests(CpCatalogTestCase):
         self.assertTrue(validate_transition(
             self.reviewer, self.obs_response,
             status('cp_partial_approved')))
+
+    def test_reviewer_waits_for_the_axis_to_be_sent(self):
+        """Un grupo completado ya tiene rol reviewer, pero la revisión
+        no lo devuelve ni lo aprueba mientras el eje siga en turno de
+        la IES; en cuanto el eje está en revisión, sí."""
+        self.answer_a_complete()
+        force(self.group_a, 'cp_completed')
+        force(self.obs_response, 'cp_filling')
+        force(self.axis_value, 'cp_filling')
+        group = GroupResponse.objects.select_related(
+            'observable_response__axis_value__status').get(
+            pk=self.group_a.pk)
+        errors = validate_transition(
+            self.reviewer, group, status('cp_need_changes'), 'Falta.')
+        self.assertEqual(len(errors), 1)
+        self.assertIn('aún no se ha enviado a revisión', errors[0])
+        # La IES no ve el mensaje (su turno sobre el grupo no existe,
+        # pero la razón que recibe es la del rol, no la del eje).
+        ies_errors = validate_transition(
+            self.ies_a, group, status('cp_need_changes'), 'Falta.')
+        self.assertFalse(
+            any('enviado a revisión' in e for e in ies_errors))
+        force(self.axis_value, 'cp_in_review')
+        group.refresh_from_db()
+        self.assertEqual(validate_transition(
+            self.reviewer, group, status('cp_need_changes'), 'Falta.'),
+            [])
+        self.client.force_authenticate(self.reviewer)
+        force(self.axis_value, 'cp_filling')
+        response = self.client.post(self.transitions_url(group), {
+            'target_status': 'cp_need_changes', 'comment': 'Falta.'})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('aún no se ha enviado', response.data['detail'])
+
+    def test_reviewer_waits_on_the_observable_too(self):
+        self.obs_response.statuses.update(status_id='cp_approved')
+        self.obs_response.value = True
+        self.obs_response.save()
+        force(self.obs_response, 'cp_completed')
+        force(self.axis_value, 'cp_filling')
+        errors = validate_transition(
+            self.reviewer, self.obs_response, status('cp_approved'))
+        self.assertEqual(len(errors), 1)
+        self.assertIn('aún no se ha enviado a revisión', errors[0])
+        force(self.axis_value, 'cp_in_review')
+        self.obs_response.refresh_from_db()
+        self.assertEqual(validate_transition(
+            self.reviewer, self.obs_response, status('cp_approved')), [])
 
     def test_postponed_requires_resolved_groups(self):
         force(self.obs_response, 'cp_filling')

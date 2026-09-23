@@ -29,12 +29,15 @@ class ObservableResponse(FlowParticipant, models.Model):
 
     def validate_flow_transition(self, user, target) -> list[str]:
         """Gancho del motor: sin la pregunta inicial respondida el
-        observable no se da por completado, y con la compuerta cerrada la
-        IES no lo transiciona (la revisión sí)."""
+        observable no se da por completado; con la compuerta cerrada la
+        IES no lo transiciona, y la revisión no lo transiciona mientras
+        el eje siga en turno de la IES."""
         from answer.group_validation import VALIDATED_TARGETS
+        from answer.services import review_turn_errors
         from survey.cp_gate import capture_lock_errors
 
         errors = capture_lock_errors(user, self.survey)
+        errors += review_turn_errors(user, self.axis_value)
         if target.name in VALIDATED_TARGETS and self.value is None:
             errors.append(
                 'Falta responder la pregunta inicial del observable.')
@@ -72,13 +75,16 @@ class GroupResponse(FlowParticipant, models.Model):
 
     def validate_flow_transition(self, user, target) -> list[str]:
         """Gancho del motor: un grupo vacío no se da por completado ni
-        por API directa (`answer.group_validation`), y con la compuerta
-        cerrada la IES no lo transiciona."""
+        por API directa (`answer.group_validation`); con la compuerta
+        cerrada la IES no lo transiciona, y la revisión no lo transiciona
+        mientras el eje siga en turno de la IES."""
         from answer.group_validation import completion_errors
+        from answer.services import review_turn_errors
         from survey.cp_gate import capture_lock_errors
 
-        errors = capture_lock_errors(
-            user, self.observable_response.survey)
+        observable_response = self.observable_response
+        errors = capture_lock_errors(user, observable_response.survey)
+        errors += review_turn_errors(user, observable_response.axis_value)
         return errors + completion_errors(self, target)
 
     def __str__(self):

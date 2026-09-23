@@ -90,16 +90,10 @@ export function calculateSchemas(data) {
         title: "Orden",
         value: "order"
       })
-    // Colecciones del motor de flujo: la revisión trabaja por urgencia, así
-    // que abren con lo más urgente primero (priority del status); `id`
-    // desempata para que la paginación sea estable.
-    const has_flow_status = coll.fields.some(
-      f => f.name === 'status' && f.related_model === 'Status')
-    if (has_flow_status) {
-      const by_urgency = "-status__priority,id"
-      available_sorts.unshift({ title: "Más urgentes", value: by_urgency })
-      coll.default_ordering = coll.cat_params?.default_ordering || by_urgency
-    }
+    // Órdenes propios de la colección (`cat_params.extra_sorts`), al frente:
+    // solo los que su backend admite en `ordering_fields`. El orden inicial
+    // no se manda: lo decide el `ordering` por defecto del ViewSet.
+    available_sorts.unshift(...(coll.cat_params?.extra_sorts || []))
     collection_filters = collection_filters.sort((a, b) => a.order - b.order)
 
     coll.collection_filters = collection_filters

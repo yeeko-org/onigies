@@ -20,7 +20,7 @@ turno y la compuerta de respuesta abierta (`user_can_edit_flow_content`
 + `survey.cp_gate`); la revisión solo lee, como con los adjuntos.
 """
 from django.db.models import Prefetch
-from django_filters import FilterSet, NumberFilter
+from django_filters import CharFilter, FilterSet, NumberFilter
 from rest_framework import mixins, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
@@ -107,6 +107,7 @@ class ContentWriteMixin:
 class AxisValueFilter(FilterSet):
     institution = NumberFilter(field_name='survey__institution')
     period = NumberFilter(field_name='survey__period')
+    status = CharFilter(field_name='status')
 
     class Meta:
         model = AxisValue
@@ -125,7 +126,10 @@ class AxisValueViewSet(InstitutionScopedMixin, BaseGenericViewSet):
     ordering_fields = [
         'id', 'axis__order', 'survey__period__year',
         'survey__institution__name', 'status__order', 'status__priority']
-    ordering = ['survey__institution__name', 'axis__order']
+    # Orden por defecto, como en los paquetes bp y gen: más urgentes
+    # primero (mayor priority del status); institución y eje desempatan.
+    ordering = ['-status__priority', 'survey__institution__name',
+                'axis__order']
     filterset_class = AxisValueFilter
     http_method_names = ['get', 'head', 'options']
 

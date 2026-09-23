@@ -133,6 +133,7 @@ async function save() {
 // El kernel del grupo; toda transición con cambios pendientes guarda
 // antes, para que la compuerta del backend evalúe lo que la IES ve.
 const kernel = useFlowActions(group, 'answer', 'groupresponse', {
+  root: () => props.axis,
   onTransitioned: (ev) => emit('transitioned', ev),
 })
 const actions = {

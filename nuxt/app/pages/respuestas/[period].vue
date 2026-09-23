@@ -6,6 +6,8 @@ import GoodPracticeList from
     "~/components/dashboard/example/good_practice/GoodPracticeList.vue";
 import GeneralGroupList from
     "~/components/dashboard/survey/GeneralGroupList.vue";
+import CpAxisCapture from
+    "~/components/dashboard/answer/capture/CpAxisCapture.vue";
 import {
   SECTION_BASE, SECTION_CP, SECTION_BP, isSectionVisible, sectionOfTab,
 } from "~/utils/sections.js";
@@ -50,6 +52,12 @@ const current_survey = computed(() => {
     return null
   return iesStore.surveys.find(survey => survey.period === period.value)
 })
+
+// El AxisValue del eje en el survey del periodo (llega en el perfil).
+function axisValueOf(axisId) {
+  return (current_survey.value?.axis_values || [])
+    .find((av) => av.axis === axisId) || null
+}
 
 </script>
 
@@ -113,26 +121,18 @@ const current_survey = computed(() => {
 
       <template v-if="showCp">
         <v-tabs-window-item
-          v-for="(axis, ai) in all_axis"
+          v-for="axis in all_axis"
           :key="axis.id"
           :value="`axis-${axis.id}`"
         >
           <v-container fluid>
-            <v-row>
-              <v-col
-                v-for="i in 6"
-                :key="i"
-                cols="12"
-                md="4"
-              >
-                <v-img
-                  :lazy-src="`https://picsum.photos/10/6?image=${(ai + 1) * i * 5 + 10}`"
-                  :src="`https://picsum.photos/500/300?image=${(ai + 1) * i * 5 + 10}`"
-                  height="205"
-                  cover
-                ></v-img>
-              </v-col>
-            </v-row>
+            <CpAxisCapture
+              v-if="axisValueOf(axis.id)"
+              :axis-value-id="axisValueOf(axis.id).id"
+            />
+            <v-alert v-else type="info" variant="tonal">
+              Este eje aún no tiene cuestionario para este periodo.
+            </v-alert>
           </v-container>
         </v-tabs-window-item>
       </template>

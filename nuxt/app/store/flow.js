@@ -12,8 +12,9 @@ import { devWarn } from '~/utils/log.js'
  */
 const CHILD_REGISTRY = {
   goodpracticepackage: { field: 'good_practices', label: 'buenas prácticas' },
-  // axisvalue: { field: 'observable_responses', label: 'respuestas' },
-  // observableresponse: { field: 'group_responses', label: 'grupos' },
+  axisvalue: { field: 'observable_responses', label: 'observables' },
+  observableresponse: {
+    field: 'group_responses', label: 'grupos de preguntas' },
   generalpackage: { field: 'general_group_responses', label: 'grupos' },
 }
 

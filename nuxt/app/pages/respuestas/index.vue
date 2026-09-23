@@ -5,11 +5,14 @@ import {useMainStore} from '~/store/index.js'
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
 import GenericDisplay from "~/components/dashboard/common/select/GenericDisplay.vue";
 import InstitutionCard from "~/components/dashboard/ies/institution/InstitutionCard.vue";
+import { useFlowStore } from "~/store/flow.js";
+import { resolvedCount } from "~/utils/cp_capture.js";
 import {
   SECTION_BASE, SECTION_CP, SECTION_BP, isSectionVisible,
 } from "~/utils/sections.js";
 
 const iesStore = useIesStore()
+const flowStore = useFlowStore()
 const mainStore = useMainStore()
 const { cats, cats_ready } = storeToRefs(mainStore)
 
@@ -24,6 +27,13 @@ const showCp = computed(
   () => isSectionVisible(SECTION_CP, iesStore.is_test))
 const showBp = computed(
   () => isSectionVisible(SECTION_BP, iesStore.is_test))
+
+// Observables del eje que ya no esperan captura de la IES, sobre el total.
+function axisProgress(axis_value) {
+  const { resolved, total } = resolvedCount(
+    axis_value.observables_by_status, flowStore.getStatus)
+  return total ? `${resolved}/${total}` : ''
+}
 
 </script>
 
@@ -131,7 +141,11 @@ const showBp = computed(
                       <FlowStatusChip
                         :status="axis_value.status"
                         x-small
-                      />
+                      >
+                        <span v-if="axisProgress(axis_value)" class="ml-1">
+                          · {{ axisProgress(axis_value) }}
+                        </span>
+                      </FlowStatusChip>
                     </template>
                   </v-badge>
                 </NuxtLink>

@@ -505,7 +505,9 @@ VALID_CHILD_STATUSES = {
     # observable exige que cada grupo esté resuelto o pospuesto a su vez.
     "cp_postponed": ["cp_completed", "cp_postponed", "cp_partial",
                      "cp_not_present"],
-    "cp_partial_approved": ["cp_partial_approved"],
+    # Un grupo «no cuenta con la medida» no forma parte de la entrega
+    # parcial: no puede frenar la aprobación de la parte entregada.
+    "cp_partial_approved": ["cp_partial_approved", "cp_not_present"],
     # Generales (espejo de bp)
     "gen_sent": ["gen_completed"],
     "gen_resent": ["gen_adjusted", "gen_completed", "gen_approved"],

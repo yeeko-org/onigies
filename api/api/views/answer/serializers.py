@@ -17,6 +17,7 @@ las respuestas tipadas de un `GroupResponse` completo, por upsert sobre
 from django.core.validators import MinValueValidator
 from rest_framework import serializers
 
+from answer.group_validation import gen_values, group_completion
 from answer.models import (
     AResponse, BResponse, GroupResponse, ObservableResponse, PlanResponse,
     ReachResponse, SpecialResponse)
@@ -261,14 +262,24 @@ class GroupResponseSerializer(serializers.ModelSerializer):
 
 
 class GroupResponseFullSerializer(GroupResponseSerializer):
+    """`completion` {errors, warnings}: la compuerta de contenido, para
+    que el frontend anticipe el «Marcar como completado» sin otra
+    llamada. Con `context['gen_values']` (lectura del eje) no consulta
+    las generales por grupo."""
     flow_events = FlowEventSerializer(many=True, read_only=True)
     flow_attachments = AttachmentSerializer(many=True, read_only=True)
+    completion = serializers.SerializerMethodField()
 
     class Meta(GroupResponseSerializer.Meta):
         fields = GroupResponseSerializer.Meta.fields + [
-            'value', 'flow_events', 'flow_attachments']
+            'value', 'flow_events', 'flow_attachments', 'completion']
         read_only_fields = GroupResponseSerializer.Meta.read_only_fields + [
             'value']
+
+    def get_completion(self, obj: GroupResponse) -> dict:
+        completion = group_completion(obj, self.context.get('gen_values'))
+        return {'errors': completion.errors,
+                'warnings': completion.warnings}
 
 
 class ObservableResponseSerializer(serializers.ModelSerializer):
@@ -354,6 +365,13 @@ class AxisValueFullSerializer(AxisValueSerializer):
         fields = AxisValueSerializer.Meta.fields + [
             'value', 'observable_responses', 'flow_events', 'a_options',
             'gen_denominators', 'cp_capture']
+
+    def to_representation(self, obj: AxisValue) -> dict:
+        # Las generales del survey vienen prefetcheadas; se resuelven una
+        # vez para el `completion` de todos los grupos del eje.
+        self.context['gen_values'] = gen_values(
+            obj.survey.question_responses.all())
+        return super().to_representation(obj)
 
     def get_a_options(self, obj) -> list:
         return AOptionReadSerializer(

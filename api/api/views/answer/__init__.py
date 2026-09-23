@@ -9,6 +9,10 @@ ViewSets de la captura del cuestionario principal (flujo `cp`).
   tipadas de un grupo completo; promueve a `cp_filling` en el primer
   guardado.
 
+Ambos PATCH devuelven, además del objeto, el status de sus ancestros
+tras la propagación (`observable_status`, `axis_status`): el cliente
+no tiene que releer el observable ni el eje por cada guardado.
+
 Las transiciones, comentarios y adjuntos van por los endpoints
 genéricos de `flow` (`/flow/answer/<model>/<pk>/…`). Quién escribe
 contenido: la IES dueña, con el status propio editable, la raíz en su
@@ -23,7 +27,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from answer.group_validation import group_completion
 from answer.models import GroupResponse, ObservableResponse
 from answer.services import InitValueError, set_init_value
 from api.views.answer.serializers import (
@@ -218,17 +221,18 @@ class ObservableResponseViewSet(InstitutionScopedMixin, ContentWriteMixin,
                 {'detail': errors[0] if len(errors) == 1 else errors},
                 status=status.HTTP_400_BAD_REQUEST)
         obj = self._with_detail(self.get_queryset()).get(pk=obj.pk)
-        return Response(ObservableResponseFullSerializer(
-            obj, context=self.get_serializer_context()).data)
+        data = ObservableResponseFullSerializer(
+            obj, context=self.get_serializer_context()).data
+        data['axis_status'] = obj.axis_value.status_id
+        return Response(data)
 
 
 class GroupResponseViewSet(InstitutionScopedMixin, ContentWriteMixin,
                            mixins.RetrieveModelMixin,
                            mixins.UpdateModelMixin, GenericViewSet):
     """PATCH con las respuestas tipadas del grupo; la respuesta trae el
-    grupo completo más `completion` (errores y advertencias de la
-    compuerta de contenido, para que el frontend anticipe el
-    «Marcar como completado»)."""
+    grupo completo (con `completion`) más el status del observable y
+    del eje ya propagados."""
     permission_classes = [IsAuthenticated, IsFlowInstitutionOwnerOrReviewer]
     survey_path = 'observable_response__survey'
     queryset = GroupResponse.objects.all().select_related(
@@ -259,8 +263,8 @@ class GroupResponseViewSet(InstitutionScopedMixin, ContentWriteMixin,
         return Response(self._payload(group))
 
     def _payload(self, group: GroupResponse) -> dict:
-        completion = group_completion(group)
         data = self.get_serializer(group).data
-        data['completion'] = {
-            'errors': completion.errors, 'warnings': completion.warnings}
+        observable_response = group.observable_response
+        data['observable_status'] = observable_response.status_id
+        data['axis_status'] = observable_response.axis_value.status_id
         return data

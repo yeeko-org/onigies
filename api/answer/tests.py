@@ -9,6 +9,8 @@ El catálogo se construye a mano (un eje, tres observables) en vez de
 """
 from datetime import timedelta
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase
@@ -231,6 +233,30 @@ class InitValueTests(CpCatalogTestCase):
         # Los grupos siguen en reposo hasta que se capturen.
         self.assertEqual(self.group_statuses(), {'cp_pre_start'})
 
+    def test_yes_starts_groups_without_capturable_content(self):
+        """Un grupo cuyo tipo no tiene modelo de respuesta (population)
+        nunca recibe un PATCH: el «Sí» lo promueve para que pueda
+        completarse desde el menú como cualquier otro."""
+        population = GroupResponse.objects.create(
+            observable_response=self.obs_response,
+            question_type_id='population')
+        self.assertEqual(population.status_id, 'cp_pre_start')
+        set_init_value(self.ies_a, self.obs_response, True)
+        population.refresh_from_db()
+        self.group_b.refresh_from_db()
+        self.assertEqual(population.status_id, 'cp_filling')
+        self.assertEqual(self.group_b.status_id, 'cp_pre_start')
+        self.assertTrue(FlowEvent.objects.filter(
+            object_id=population.pk, to_status_id='cp_filling').exists())
+        # Y desde ahí el menú lo lleva a completado sin contenido.
+        execute_transition(self.ies_a, population, status('cp_completed'))
+        population.refresh_from_db()
+        self.assertEqual(population.status_id, 'cp_completed')
+        # Un segundo «Sí» no lo regresa.
+        set_init_value(self.ies_a, self.obs_response, True)
+        population.refresh_from_db()
+        self.assertEqual(population.status_id, 'cp_completed')
+
     def test_no_blocked_when_a_group_is_under_review(self):
         for name in ('cp_need_changes', 'cp_in_adjustment', 'cp_adjusted',
                      'cp_approved', 'cp_partial', 'cp_partial_approved'):
@@ -301,6 +327,20 @@ class ObservableFlowRulesTests(CpCatalogTestCase):
     def test_not_present_has_no_manual_transitions(self):
         self.assertEqual(status('cp_not_present').next_statuses.count(), 0)
         self.assertIsNone(status('cp_not_present').role)
+
+    def test_partial_approval_accepts_not_present_groups(self):
+        force(self.obs_response, 'cp_partial')
+        self.obs_response.value = True
+        self.obs_response.save()
+        self.obs_response.statuses.update(status_id='cp_partial_approved')
+        force(self.group_reach, 'cp_not_present')
+        self.assertEqual(validate_transition(
+            self.reviewer, self.obs_response,
+            status('cp_partial_approved')), [])
+        force(self.group_reach, 'cp_filling')
+        self.assertTrue(validate_transition(
+            self.reviewer, self.obs_response,
+            status('cp_partial_approved')))
 
     def test_postponed_requires_resolved_groups(self):
         force(self.obs_response, 'cp_filling')
@@ -524,6 +564,9 @@ class CaptureApiTests(CpCatalogTestCase):
         self.assertEqual(data['status'], 'cp_filling')
         self.assertEqual(data['completion']['errors'], [])
         self.assertEqual(len(data['flow_events']), 1)
+        # El estado propagado viaja en la misma respuesta.
+        self.assertEqual(data['observable_status'], 'cp_filling')
+        self.assertEqual(data['axis_status'], 'cp_filling')
         self.obs_response.refresh_from_db()
         self.axis_value.refresh_from_db()
         self.assertEqual(self.obs_response.status_id, 'cp_filling')
@@ -586,8 +629,35 @@ class CaptureApiTests(CpCatalogTestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data['status'], 'cp_not_present')
+        self.assertEqual(data['axis_status'], 'cp_filling')
         self.assertEqual(
             {g['status'] for g in data['group_responses']}, {'cp_not_present'})
         response = self.client.patch(
             self.group_url(self.group_b), {'b_responses': []}, format='json')
         self.assertEqual(response.status_code, 403)
+
+    def test_axis_read_embeds_completion_per_group(self):
+        self.answer_a_complete()
+        self.gen_answer(self.gq_academic, 3)
+        BResponse.objects.create(
+            group_response=self.group_b, question=self.bq,
+            academic_instances_complying=2, admin_instances_complying=1)
+        self.client.force_authenticate(self.ies_a)
+        with CaptureQueriesContext(connection) as ctx:
+            response = self.client.get(
+                reverse('axis_value-detail', args=[self.axis_value.pk]))
+        self.assertEqual(response.status_code, 200)
+        # La compuerta no consulta por grupo: el eje entero cabe en un
+        # número fijo de queries (22 con este catálogo).
+        self.assertLessEqual(len(ctx.captured_queries), 24)
+        groups = {
+            g['id']: g['completion']
+            for o in response.json()['observable_responses']
+            for g in o['group_responses']}
+        self.assertEqual(groups[self.group_a.pk]['errors'], [])
+        self.assertEqual(groups[self.group_b.pk]['errors'], [])
+        self.assertIn(
+            'Información base no declara instancias administrativas; el '
+            'conteo no se pudo contrastar.',
+            groups[self.group_b.pk]['warnings'])
+        self.assertTrue(groups[self.group_reach.pk]['errors'])

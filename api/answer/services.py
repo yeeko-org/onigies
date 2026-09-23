@@ -68,7 +68,9 @@ def set_init_value(user, observable_response, value) -> list:
       arrepiente.
     - Salir de `False` (a `True` o a nulo): de vuelta a `cp_filling`.
     - `True` por primera vez: el observable arranca la captura
-      (`assign_auto_status`, que sube al eje).
+      (`assign_auto_status`, que sube al eje); con `True` arrancan
+      también los grupos sin contenido capturable, que no tendrán un
+      PATCH que los promueva.
 
     El eje solo se promueve desde su reposo (`cp_pre_start`): un eje en
     corrección no cambia de status por esta vía.
@@ -96,7 +98,30 @@ def set_init_value(user, observable_response, value) -> list:
         if event is not None:
             events.append(event)
 
+    if value is True:
+        events += _start_groups_without_capture(user, observable_response)
+
     event = assign_auto_status(user, observable_response.axis_value)
     if event is not None:
         events.append(event)
+    return events
+
+
+def _start_groups_without_capture(user, observable_response) -> list:
+    """Promueve a `cp_filling` los grupos cuyo tipo no tiene contenido
+    capturable (hoy `population`, cuyo dato vive en información base).
+
+    Los demás grupos se promueven con su primer PATCH; estos no reciben
+    ninguno, y `cp_pre_start` solo sale hacia `cp_filling`: sin esto
+    el 1.7 nunca podría marcarse como completado desde el menú. El
+    criterio es del catálogo (`QuestionType.model_response` nulo), no
+    el nombre del tipo.
+    """
+    events = []
+    groups = observable_response.statuses.filter(
+        question_type__model_response__isnull=True)
+    for group in groups.select_related('status'):
+        event = assign_auto_status(user, group)
+        if event is not None:
+            events.append(event)
     return events

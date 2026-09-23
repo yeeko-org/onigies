@@ -46,14 +46,19 @@ class Completion:
         self.warnings: list[str] = []
 
 
-def _gen_values(survey) -> dict:
-    """{name: (valor entero o None, no_apply)} de las preguntas generales
-    del survey; una pregunta sin fila cuenta como sin dato."""
+def gen_values(rows) -> dict:
+    """{name: (valor entero o None, no_apply)} a partir de filas de
+    GeneralQuestionResponse; una pregunta sin fila cuenta como sin
+    dato. Las filas pueden venir ya prefetcheadas (lectura del eje)."""
     return {
         row.general_question.name: (row.value_integer, row.no_apply)
-        for row in survey.question_responses.select_related(
-            'general_question')
+        for row in rows
     }
+
+
+def _gen_values(survey) -> dict:
+    return gen_values(
+        survey.question_responses.select_related('general_question'))
 
 
 def _short(text: str, limit: int = 80) -> str:
@@ -161,22 +166,30 @@ def _special_issues(group, observable, result: Completion) -> None:
                 f'en: {_short(question.text)}')
 
 
-def group_completion(group_response) -> Completion:
-    """Qué le falta al grupo para poder darse por completado."""
+def group_completion(group_response, gen: dict | None = None) -> Completion:
+    """Qué le falta al grupo para poder darse por completado.
+
+    `gen` (salida de `gen_values`) se pasa cuando quien llama ya tiene
+    las generales del survey a la mano —el eje completo las resuelve
+    una vez para sus ~50 grupos—; sin él se consultan aquí.
+    """
     result = Completion()
     observable_response = group_response.observable_response
     observable = observable_response.observable
-    survey = observable_response.survey
     type_name = group_response.question_type_id
+
+    def gen_or_query() -> dict:
+        return gen if gen is not None else _gen_values(
+            observable_response.survey)
 
     if type_name == 'a_questions':
         _a_issues(group_response, observable, result)
     elif type_name == 'b_questions':
-        _b_issues(group_response, observable, _gen_values(survey), result)
+        _b_issues(group_response, observable, gen_or_query(), result)
     elif type_name == 'reach':
         _reach_issues(group_response, observable, result)
     elif type_name == 'plans':
-        _plan_issues(group_response, observable, _gen_values(survey), result)
+        _plan_issues(group_response, observable, gen_or_query(), result)
     elif type_name == 'special':
         _special_issues(group_response, observable, result)
     return result

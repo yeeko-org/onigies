@@ -24,6 +24,14 @@ Orden obligatorio:
 
 Lo que no debe limpiarse: la carpeta `evidences/` (disco y S3), compartida con los adjuntos nuevos de bp.
 
+## Riesgos y pasos añadidos tras la crítica de cierre (2026-09-23)
+
+1. **Nadie puede capturar aunque se fije la fecha.** En la copia de producción del 22 de septiembre, 0 de 66 paquetes de generales están en `gen_finished` (51 `gen_draft`, 14 `gen_sent`, 1 `gen_need_changes`). Con [[adr-0018]], fijar `cp_open_at` no abre la captura a ninguna IES hasta que la revisión finalice la información base de cada una; el ritmo lo pone Rubén ([[task-165]]).
+2. **El instrumento sigue editable** (`QuestionnaireSettings.content_open=True`, [[adr-0015]]). Crear un observable o un tipo de pregunta desde el dashboard no reprovisiona el árbol eager, y borrar un observable o una pregunta con respuestas las borra en cascada (`on_delete=CASCADE` en `api/answer/models.py`). Opciones para Ricardo: cerrar el instrumento antes de fijar `cp_open_at` ([[task-143]] pide dump previo), o reprovisionar tras cada edición estructural (`provision_cp_responses --apply`) y pasar a `PROTECT` cuando haya respuestas.
+3. **Publicar cp en `PUBLISHED_SECTIONS` el mismo día de apertura** pierde la ventana «ver antes de responder» de [[task-153]]. Opción: publicarlo en este mismo deploy con `cp_open_at` vacío, para que las IES vean el cuestionario sin poder capturar.
+4. **Ramas antes de Netlify:** falta decidir qué rama se mergea a cuál (`cp-backend` nació de `remove-statuscontrol`, que nació de `main`). La tolerancia «frontend nuevo sobre API viejo» se verificó solo para `2f5ef8c`; con el frontend de `cp-backend` sobre el API viejo, abrir un eje da 404 hasta que aterrice el API.
+5. **`Period.cp_open_at` en el dashboard** solo se expone por el `PeriodSerializer` genérico; no se verificó que el formulario del periodo lo edite. Si no, el admin de Django es el camino seguro.
+
 ## Criterios de aceptación
 
 - [ ] Frontend publicado en Netlify antes que el API

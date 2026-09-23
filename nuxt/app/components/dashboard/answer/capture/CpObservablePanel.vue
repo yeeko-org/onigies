@@ -217,7 +217,7 @@ const previewTypes = computed(() => groups.value.map((g) => ({
           </v-alert>
         </div>
         <div
-          v-if="answered"
+          v-if="answeredYes"
           class="cp-status-slot"
           :class="{ 'cp-status-slot--offer': highlight }"
         >

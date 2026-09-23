@@ -23,6 +23,10 @@ Lo que la sesión del 22 de septiembre dejó abierto porque es llamado de Ricard
 7. **Sí/No inicial para la revisora** se ve `disabled` (poco contraste); `v-btn-toggle` no tiene `readonly`.
 8. **Deep-link `/respuestas/2025?tab=axis-1`** recargado cae en `?tab=base` contra el API real (probablemente `is_test` llega después del primer render); el e2e mockeado pasa. Preexistente, sin confirmar.
 9. **`notifyApiError`** une con comas los `detail` en lista y el snackbar siempre es verde, incluso en errores. Preexistente.
+10. **¿Las IES de prueba quedan exentas de la compuerta cp?** Hoy no lo están ([[adr-0018]]). Lo decidió la sesión, no Ricardo, y contradice la convención escrita en `api/CLAUDE.md` («test institutions see every section and ignore period deadlines»). Opciones: ratificar (no exentas: la IES de prueba ve lo mismo que una real, incluido el aviso); exentarlas solo de la fecha (siguen dependiendo de su base en `gen_finished`); o exentarlas de ambas (capturan siempre, útil para demos y pruebas, pero ya no muestran lo que verá una IES real).
+11. **¿Los ejes se ordenan por prioridad del estatus por defecto?** Está implementado (`AxisValueViewSet.ordering` y `cat_params.extra_sorts`, commit `d804c5a`), pero Ricardo dijo «no estoy seguro» y no llegó a responder. Opciones: dejarlo, o volver al orden por eje y dejar la urgencia como orden opcional.
+12. **Los 39 tests de `api/answer/tests.py`** se escribieron sin que Ricardo pidiera tests ni acordara la lista (la regla global es proponerlos, no escribirlos). Opciones: ratificarlos, recortarlos a los que prueban comportamiento prometido, o retirarlos.
+13. **¿El módulo de estatus inferior del observable se oculta en «No»?** El superior, a la derecha de la pregunta inicial, ya se muestra solo con «Sí» (su spec: «solo cuando exista una respuesta en true»). El inferior (`CpObservablePanel.vue`, `v-if="answered"`) sigue visible también con «No», donde muestra el hint del estatus terminal. Opciones: dejarlo así u ocultarlo también.
 
 ## Criterios de aceptación
 

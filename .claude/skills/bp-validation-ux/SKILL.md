@@ -41,7 +41,7 @@ and there is no scoring yet — see `flow`, «cp: the live surfaces».
 |---|---|---|
 | `example/good_practice/GoodPracticeCard.vue` | compact summary of one práctica (axes, evidence count, status chip) | `isStaff` → reviewer adds "X/Y evaluados"; clickable/"Evaluar" when `isStaff` even off-turn |
 | `example/good_practice/GoodPracticeEditSimple.vue` | the práctica detail opened in a **dialog** (content + features + status + comments) | `isStaff` → reviewer sees content read-only + scoring; `editable` → may edit now |
-| `example/good_practice/FeatureList.vue` + `FeatureItem.vue` | the características: IES marks (`has_attribute`/justification/evidences), reviewer scores (`final_option` slider) | `isStaff` chooses mode; `editable` gates editing by turn |
+| `example/good_practice/FeatureList.vue` + `FeatureItem.vue` | the características: IES marks (`has_attribute`/justification/`flow_attachments`), reviewer scores (`final_option` slider) | `isStaff` chooses mode; `editable` gates editing by turn |
 
 Two distinct knobs, do not conflate them:
 
@@ -96,7 +96,7 @@ dashboard auto-loads it inline for the `GoodPracticePackage` collection with
 ### Open the dialog with the nested object directly (no extra fetch)
 
 `GoodPracticePackageFullSerializer` nests each práctica with the **full**
-`GoodPracticeFullSerializer` (`feature_values`, `evidences`, `flow_events`,
+`GoodPracticeFullSerializer` (`feature_values`, `flow_attachments`, `flow_events`,
 `status`) — `api/api/views/example/serializers.py`. So `openPractice` sets
 `editingPractice` to the **same object reference** from
 `pkg.good_practices`; mutating its `status`/`flow_events`/`feature_values` in
@@ -120,7 +120,7 @@ duplicate list disappears. Keep it; deleting it brings the duplicate back.
 The calificación is **reviewer-only**: `FeatureGoodPractice.final_option`
 (the slider score), its reviewer `comments` and `reviewers`, plus the rollup
 `GoodPractice.final_value`. The IES sees only its own marking
-(`has_attribute`/`justification`/`evidences`) and the **status**.
+(`has_attribute`/`justification`/`flow_attachments`) and the **status**.
 
 Enforced at two layers — keep both:
 

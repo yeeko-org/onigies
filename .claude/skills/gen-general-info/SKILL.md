@@ -126,7 +126,7 @@ means crossing `sectors` (existence) with `population_quantities`
 |---|---|
 | `components/dashboard/survey/GeneralGroupList.vue` | the section: the Survey with its nested `general_package`, `persist()` (the PATCH), the package send and the period lock |
 | `.../survey/GeneralGroupPanel.vue` | one expansion panel per group: its body + split-button "Guardar" / group transitions |
-| `.../survey/General{Populations,Authorities,NumberFields,NumberInput,Government}.vue` | the per-group bodies |
+| `.../survey/` (the other `General*.vue`) | the per-group bodies and their inputs |
 | `.../survey/survey/Survey{Header,Sheet,EditSimple}.vue` | the reviewer's collection «Cuestionarios de las IES» |
 | `composables/useGeneralSurvey.js` | sector lists by flag, `PopulationQuantity` rows, `GeneralQuestionResponse` rows (`questionValue`/`setQuestionValue`, `allowsNoApply`), `buildPayload()` (`''` → `null`) |
 
@@ -150,9 +150,6 @@ in `gen_finished` (all five groups `gen_approved`). Closing gen therefore
 unlocks cp, and since gen never reopens, cp never closes again for that reason.
 Rules and hooks: `survey/cp_gate.py`, skill `cp-questionnaire`.
 
-## `--sync-institutions` gotcha
+## Backfill after adding a GeneralGroup
 
-After adding a GeneralGroup (e.g. `autoridades`), existing Surveys lack
-its `GeneralGroupResponse`. `load_questionnaire --sync-institutions`
-re-saves every Institution to backfill them. Without it, existing
-surveys silently miss the new group.
+After adding a GeneralGroup (e.g. `autoridades`), existing Surveys lack its `GeneralGroupResponse`, and they silently miss the new group until backfilled. `load_questionnaire --sync-institutions` no longer does it: the seed lock makes `load_questionnaire` abort. The gen backfill is `resave_institutions`, which re-saves every Institution — and so also runs `_preload_centralized` and writes `is_centralized`: on production it needs the write inventory that `deploy-api` demands for data-writing commands. The cp tree (`ObservableResponse`/`GroupResponse`) has its own backfill that re-saves nothing: `provision_cp_responses` (dry-run by default, `--apply`).

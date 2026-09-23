@@ -40,7 +40,7 @@ models use default `*_set`).
 | `migrate_initial_data` | QuestionType: `order`, `required`, model names always; `public_name` and `default_weight` only on create |
 
 Run order after `migrate`: `load_sectors` → `migrate_initial_data` →
-`load_questionnaire --sync-institutions`. The seed is idempotent
+`load_questionnaire` (retired since 2026-09-10; see `deploy-api`). The seed is idempotent
 (`update_or_create` on natural keys) and **the dashboard rules over the
 instrument's texts** (`adr-0014`): observable `name`, `description`,
 `init_question`, `a_main_question`, `a_main_subtitle` and every question
@@ -51,14 +51,7 @@ questions — never for `Axis`/`Component`, which have been edited by
 users. Re-running still prunes stale AQuestion/PlanQuestion rows with
 CASCADE to answers (`task-133`).
 
-**The seed is retired after its last run** (`adr-0015`). `load_questionnaire`
-runs once more, at the deploy that hands the instrument to the client —
-with `--overwrite-texts`, because the A-block split of 2026-09-07
-(`a_main_question` + `a_main_subtitle`) only lands on production with it;
-runbook in `deploy-api` — and writes `QuestionnaireSettings.seeded_at`; from then on it aborts unless
-`--force`, and the dashboard is the only source of the instrument's
-structure. `--force` is a data-loss decision, not a flag: it re-asserts
-seed structure over whatever the client built.
+**The seed is retired** (`adr-0015`). `load_questionnaire` already ran for the last time on production (2026-09-10): `QuestionnaireSettings.seeded_at` is set, every invocation aborts unless `--force`, and the dashboard is the only source of the instrument's structure. `--force` is a data-loss decision, not a flag: it re-asserts seed structure over whatever the client built. Details and the backfills that replace `--sync-institutions`: `deploy-api` and `gen-general-info`.
 
 ### The questionnaire gate
 

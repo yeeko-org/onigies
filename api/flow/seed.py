@@ -189,8 +189,8 @@ STATUSES = {
           role="ies", flags={"default", "edit"},
           applies=[A, O, G], color="blue-grey-lighten-1",
           icon="hourglass_empty", priority=35,
-          hint="Comienza a capturar las respuestas del eje; el "
-               "avance se guarda automáticamente.",
+          hint="Comienza a capturar las respuestas del eje; cada grupo "
+               "de preguntas se guarda con su propio botón.",
           hint_wait="La institución aún no comienza a capturar este "
                     "eje."),
         S("cp_filling", "En llenado", None,

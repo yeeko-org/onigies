@@ -20,8 +20,9 @@ in `ps_schema/registry.py`. This skill covers design decisions only.
 | `category_group/type/subtype` | `CatalogSchema` | `catalog_registry` | `api/api/views/catalogs/urls.py` |
 | `primary/secondary/relational` | `CollectionSchema` | `collection_registry` | `api/api/urls.py` |
 
-Still registered manually in `api/api/urls.py`: `collection`, `evidence`,
-`invitation`, `user`, `institution` (survey flow), `survey`.
+Still registered manually in `api/api/urls.py`: `collection`, `invitation`,
+`user`, `institution` (survey flow), `observable_response`, `group_response`
+(cp capture write endpoints). `survey` comes from the registry.
 
 **Two `institution` endpoints by design — do not collapse them:**
 `/institution/` (survey flow, the IES manages its own institution) and
@@ -33,8 +34,9 @@ Still registered manually in `api/api/urls.py`: `collection`, `evidence`,
   (`BaseStatusViewSet`), `viewset` (`ModelViewSet`).
 - `permission`: keys `editor` (default → `IsFullEditorOrReadOnly`),
   `admin` (`IsAdminOrReadOnly`), `any` (`AllowAny`).
-- **Never use `base="status"` on catalogs**: no catalog model in onigies
-  has `status_validation`.
+- `base="status"` (`BaseStatusViewSet`) only adds `filterset_fields =
+  ['status']`: it fits only a model with a `status` field, hence the
+  `generic` default.
 
 ---
 
@@ -125,18 +127,9 @@ ComponentFilter(title="Editor", field="editor", component="UserSelect",
                 hidden=True)
 ComponentFilter(title="Con archivos", field="has_files",
                 component="TripleBooleanFilter", hidden=True)
-
-# OnlyByFilter with fixed options:
-ComponentFilter(title="Colección", field="only_by", component="OnlyByFilter",
-                options=["good_practice", "evidence"])
-
-# OnlyByFilter with custom options:
-ComponentFilter(title="Status", field="status", component="OnlyByFilter",
-                custom_options=[
-                    {"plural_name": "Faltan validar", "value": "to_validate"},
-                    {"plural_name": "Validados", "value": "validated"},
-                ])
 ```
+
+`OnlyByFilter` takes its choices from `custom_options` (list of `{plural_name, value}`) or, without them, from `options` (`OnlyByFilter.vue`); real instance of `custom_options`: the «Estatus» filter of `AxisValueSchema` in `api/survey/catalog_schema.py`, built from the cp statuses of the seed.
 
 ---
 

@@ -240,17 +240,13 @@ and the chip degrades to display-only (`FlowStatusChip`); no caret when
   **save then transition** — `saveAndTransition(t)` = `await persist();
   onSelect(t)`, closing only if `onSelect` returned an event. `persist` is split
   from the close so the save doesn't dismiss the dialog before the transition.
-- `GoodPracticeList` (IES): "Enviar a revisión" evaluates `bp_sent`'s
-  `entry_rules` (`package_ready`) via `runEntryRules`; on failure opens
-  `FlowBlockedDialog`, else the confirm dialog, then `packageTransition('bp_sent')`
-  + `loadPractices()`. (Uses `runEntryRules` directly, not the full kernel, to
-  keep its own snackbar and avoid a double mutation since it reloads.)
+- `GoodPracticeList` (IES): "Enviar a revisión" runs through the full kernel — `useFlowActions` on the package (`FlowTransitionDialogs`), with `onTransitioned` reloading the practices. The real gate is the children rule (`getChildrenNotReady`, every practice `bp_completed`), so before `onSelect` it syncs `record.good_practices` with the live list: the children gate reads the embedded array, which goes stale after adds/deletes.
 
 **Rule registry `app/composables/flowRules.js`** maps a rule name → a function
 returning the missing items; `runEntryRules(entryRules, obj)` → `{ ok, missing }`.
-`practice_complete` reuses `good_practice_validation.js`. `package_ready` (on
-`bp_sent`) lists the practices still in the IES's turn (touches the store per
-child).
+The only rules are `practice_complete` (on `bp_completed`, reuses
+`good_practice_validation.js`) and `features_rated` (on `bp_for_ruling`: every
+marked feature carries the reviewer's rating).
 
 ## Endpoints (`api/flow/urls.py`, base `/flow/{app_label}/{model_name}/{pk}/`)
 
@@ -322,9 +318,9 @@ Child rules (`valid_child_statuses`): `bp_sent ← bp_completed`;
 So sending the package (`bp_draft → bp_sent`) is blocked by the motor until every
 practice is `bp_completed`. The UX mirrors this client-side:
 `bp_completed.entry_rules = ['practice_complete']` blocks marking a practice
-complete until `good_practice_validation.js` passes;
-`bp_sent.entry_rules = ['package_ready']` gates the send. The hard children rules
-stay server-side.
+complete until `good_practice_validation.js` passes; the send itself is gated
+only by the children rule, mirrored client-side by `getChildrenNotReady`. The
+hard children rules stay server-side.
 
 The source of truth for every group's statuses, transitions and child rules is
 `api/flow/seed.py`; plan §3 (`docs/records/2026-06-05-diseno-del-motor-de-flujo.md`)
@@ -417,6 +413,8 @@ cp also runs end to end, with one tree of components under
   survey detail (`SurveyEditSimple`) adds `CpSurveyAxes` below
   `GeneralGroupList`: the survey's axes, each opening the same review detail in
   a dialog.
+
+cp is still unpublished for real IES: only `is_test` institutions see it until `PUBLISHED_SECTIONS` (`nuxt/app/utils/sections.js`) includes it.
 
 Next steps are **offered, never taken**: after a group transition,
 `CpObservablePanel` offers the observable the same status when the child rule

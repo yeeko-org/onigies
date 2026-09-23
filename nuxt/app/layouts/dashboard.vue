@@ -292,15 +292,6 @@ watch(
           </template>
 
         </v-list-item>
-        <v-list-item
-          :href="`${admin_url}/work_flux/statuscontrol/`"
-          target="_blank"
-          title="Gestión de status"
-        >
-          <template v-slot:prepend>
-            <v-icon color="accent">hub</v-icon>
-          </template>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-main>

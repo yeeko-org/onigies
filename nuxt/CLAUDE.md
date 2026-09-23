@@ -64,7 +64,7 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - `composables/useDates.js` — `formatDate(dateStr)` (dayjs, locale `es`).
 - `composables/useQuestionTypes.js` — `QuestionType` rows from `cats` indexed by `name` and by `model_question`; the source of block labels, never hardcode them.
 - `utils/cp_capture.js` + `components/dashboard/answer/capture/` — the cp questionnaire (IES capture in `/respuestas`, reviewer mode via the `review` prop from `AxisValueEditSimple`); see the `flow` and `cp-questionnaire` skills.
-- `dashStore.showSnackbar(message, action?)` — `action = {label, handler}` adds a button and keeps the toast 12 s; used to offer the next flow step, never to take it.
+- `dashStore.showSnackbar(message, action?)` — the optional action button: see the `snackbar` skill.
 - `components/dashboard/common/dialog/DialogDelete.vue` — confirm dialog with `title`/`subtitle`/`loading`/default slot; reusable beyond delete.
 
 ## Layouts
@@ -81,4 +81,4 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - **Axios `$api`:** injected via `plugins/api.ts`, attaches `Authorization: Token <value>` from the `auth_onigies` cookie.
 - **Vuetify theme:** `primary #2C2F6E` (indigo, institutional chrome), `accent #14A8A0` (turquoise — buttons and user actions MUST use accent, not primary). Source of truth: `app/plugins/vuetify.ts` and `design-system/`.
 - **Cross-cutting visual conventions** live in `defaults`/`aliases` of `app/plugins/vuetify.ts`. Never replicate them by repeating props at each usage, nor by wrapping a single Vuetify element in a component just to fix its props.
-- Main list+filter component: `CollectionDisplay.vue` (owns `final_filters`, `results`, `loading_fetch`; debounces search). Generic CRUD primitives in `common/generic/` and dialogs in `common/dialog/`.
+- Generic CRUD primitives in `common/generic/` and dialogs in `common/dialog/`.

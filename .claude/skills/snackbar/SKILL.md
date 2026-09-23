@@ -35,5 +35,6 @@ its groups allow it); a confirmation needs no action.
 
 ## Notes
 
-- Call **inside `try`**, after the operation succeeds — not in `catch`
-- Only use from Vue components/pages, not plain composables
+- Success toasts go **inside `try`**, after the operation succeeds.
+- Errors go through `notifyApiError` (`useApiError`) or the `error_msg` of `fail` (`utils/api.js`, used by the save helpers), never a raw `showSnackbar` in a `catch`: they extract the API message consistently.
+- The composables that own the operation (`useFlowActions`, `useApiError`) do call `showSnackbar` themselves; don't repeat the toast in the component that uses them.

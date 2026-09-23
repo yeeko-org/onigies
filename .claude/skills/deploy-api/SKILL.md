@@ -86,7 +86,7 @@ The range that retires `StatusControl` and ships cp capture and review (commits 
 - `migrate` applies six migrations: answer 0005/0006, survey 0011, example 0009, ies 0014/0015 (0014 deletes `StatusControl`; 0005/0009/0011 drop the old status FKs, the old comment models and `example.Evidence`, whose 661 rows were already copied to `flow.Attachment` — irreversible, take the dump first).
 - `seed_flow` — creates `cp_not_present` and rewrites the cp child rules; without it the IES's «No» fails with `Status.DoesNotExist`.
 - `migrate_ps_schemas` — registers the new `axis_value` collection's row (order/icon overrides; the collection works without it).
-- **Backfill of the eager cp tree** (41 `ObservableResponse` and ~120 `GroupResponse` per survey): `provision_cp_responses` runs from `Institution.save`, and `resave_institutions` re-saves every institution. That command is data-writing (section above): besides the cp tree it runs `_preload_centralized`, the same side effect that keeps `--sync-institutions` out of deploys. Which backfill to run is Ricardo's decision, with its write inventory.
+- **Backfill of the eager cp tree** (41 `ObservableResponse` and ~120 `GroupResponse` per survey): `venv/bin/python manage.py provision_cp_responses` (dry-run; read the counts), then the same with `--apply`. It calls `provision_cp_responses` per `AxisValue` without re-saving institutions — `resave_institutions` would also run `_preload_centralized` and write `is_centralized`, the side effect that keeps `--sync-institutions` out of deploys; no shell either. Write inventory: it only inserts missing rows — `ObservableResponse` (survey, observable, axis_value, status `cp_pre_start`) and `GroupResponse` (observable_response, question_type, status `cp_pre_start`) — via `bulk_create`, so no signals fire; existing rows are never updated. Expected: after the first run, `ObservableResponse` creados + existentes = 41 × surveys; a second run reports 0 creados.
 - `Period.cp_open_at` stays empty (gate closed) and is set in the Django admin on the day answers open; nothing in the deploy sets it.
 
 Reload gotchas (multi-tenant box, ~20 client apps under one supervisord):
@@ -106,7 +106,7 @@ A root-URL check proves nothing — hit endpoints that exercise real models:
 | From `manage.py shell`: `Attachment.objects.exclude(file="").first().file.url` fetched with urllib | 200 — proves S3 signing works end-to-end (with `USE_S3_FILES=0`, the old `/files/<name>` → 200 check applies instead) |
 | `tail ~/unam/logs/onigies_api/error.log` | no new tracebacks |
 | Manual: login on the dashboard, open /respuestas and a BP package | works |
-| Manual (from the cp release on): as reviewer, «Ejes del cuestionario» lists and opens an axis; as an IES, /respuestas shows the cp questionnaire with the gate message while `cp_open_at` is empty | works |
+| Manual (from the cp release on): as reviewer, «Ejes del cuestionario» lists and opens an axis; as a test IES (`is_test`), /respuestas shows the cp questionnaire with the gate message while `cp_open_at` is empty | works |
 
 Old workers keep serving during the HUP handoff, so a failed smoke means the new code is bad, not a mid-restart blip — fix forward or `git checkout <previous-ref>` + HUP to roll back.
 

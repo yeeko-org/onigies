@@ -108,8 +108,8 @@ def provision_cp_responses(survey, axis_value) -> None:
     """Crea, si faltan, el ObservableResponse de cada observable del eje
     y el GroupResponse de cada tipo que le aplica (fila puente
     `ObservableQuestionType`). Idempotente y en pocas consultas: lo
-    llama `Institution.save` en cada guardado y `resave_institutions`
-    como backfill.
+    llama `Institution.save` en cada guardado y el comando
+    `provision_cp_responses` como backfill.
 
     `bulk_create` no dispara `post_save`, así que el status inicial se
     fija aquí y no por la señal de `flow`.

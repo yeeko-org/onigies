@@ -8,7 +8,9 @@ El catálogo se construye a mano (un eje, tres observables) en vez de
 `load_questionnaire`: las reglas se ven con un observable por forma.
 """
 from datetime import timedelta
+from io import StringIO
 
+from django.core.management import call_command
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -183,6 +185,25 @@ class ProvisioningTests(CpCatalogTestCase):
         self.inst_a.save()
         self.assertEqual(GroupResponse.objects.filter(
             observable_response__survey=self.survey_a).count(), 10)
+
+    def test_backfill_command_is_idempotent(self):
+        ObservableResponse.objects.filter(survey=self.survey_a).delete()
+        dry = self.run_backfill('--period', '2026')
+        self.assertIn('ObservableResponse: creados 3, existentes 3', dry)
+        self.assertEqual(
+            ObservableResponse.objects.filter(survey=self.survey_a).count(), 0)
+        first = self.run_backfill('--period', '2026', '--apply')
+        self.assertIn('ObservableResponse: creados 3, existentes 3', first)
+        self.assertIn('GroupResponse: creados 9, existentes 9', first)
+        second = self.run_backfill('--apply')
+        self.assertIn('ObservableResponse: creados 0, existentes 6', second)
+        self.assertIn('GroupResponse: creados 0, existentes 18', second)
+
+    @staticmethod
+    def run_backfill(*args) -> str:
+        out = StringIO()
+        call_command('provision_cp_responses', *args, stdout=out)
+        return out.getvalue()
 
 
 class InitValueTests(CpCatalogTestCase):

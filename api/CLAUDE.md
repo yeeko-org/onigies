@@ -34,7 +34,7 @@ FRONTEND_SITE_URL=https://localhost:3018
 | `example` | Good practices: GoodPracticePackage → GoodPractice → Feature → FeatureGoodPractice |
 | `ps_schema` | Schema/collection metadata for dynamic catalog and filter configuration |
 | `email_send` | EmailProfile, TemplateBase, EmailRecord. Services: `send_template_email`, `send_simple_email` |
-| `flow` | Validation-flow engine: Status catalog (groups `bp`/`cp`/`gen`), FlowEvent timeline, generic Attachment. Hierarchy registry in `flow/registry.py`. `ComponentValue` does NOT participate in the flow. The only status system: `ies.StatusControl` was removed on 2026-09-22 |
+| `flow` | Validation-flow engine: Status catalog (groups `bp`/`cp`/`gen`), FlowEvent timeline, generic Attachment. Hierarchy registry in `flow/registry.py`. `ComponentValue` does NOT participate in the flow. The only status system |
 
 Settings in `core/settings/__init__.py`; root URLs in `core/urls.py`; API routes in `api/urls.py`.
 

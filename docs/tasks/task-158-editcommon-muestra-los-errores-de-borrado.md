@@ -5,7 +5,8 @@ title: EditCommon muestra los errores de borrado como JSON crudo
 state: open
 date: 2026-09-22
 owner: ricardo
-parent: "[[task-150]]"
+parent: "[[task-2]]"
+related: ["[[task-150]]"]
 ---
 
 # EditCommon muestra los errores de borrado como JSON crudo

@@ -7,7 +7,7 @@ date: 2026-08-03
 owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-07-04-seed-del-cuestionario]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Conseguir los pesos reales por observable
@@ -37,3 +37,15 @@ Esta reunión es **anterior** al acuerdo por WhatsApp del 7 de septiembre y al d
 ## Nota del 10 de septiembre de 2026
 
 La superficie de captura ya existe: la lista de tipos del bloque «Definición del observable» en el dashboard, con el default del tipo visible y el aviso de ponderación pendiente ([[adr-0015]]). Rubén puede capturarlos él mismo; los 120 pesos propios siguen nulos.
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]]. Lo metodológico de fondo (el reparto dentro de cada 5, la transversalidad curricular, el «parcialmente») está completo en [[task-173]]; aquí va lo que toca a los pesos.
+
+- **Ricardo abrió el tema**, `[38:32]`: «algo importante de los ejes y de los observables: está pendiente cerrar lo de los ponderadores». Le mostró el default, `[39:56]`–`[40:19]`: «solo hay un default global […] para las que tengan… estas tres, lo más común: que tengan armonización, transversalización sectorial y transversalidad orgánica»; `[40:42]`–`[41:23]`: «tiene un valor de ponderación del 1 al 10, porque la idea es que valgan 10. Este vale 5, este vale 2.5, este vale 2.5, y los demás no tienen default […] no todas tienen transversalidad sectorial»; y el aviso, `[41:59]`: «en lo que decides, está esta nota que dice "ponderación pendiente"; cuando ya esté la ponderación, tienes que ponerla».
+- **Rubén: suman 10 y se equilibran cuando falta un componente.** `[41:37]`–`[41:56]`: «no le podrías exigir que tenga formación docente a alguien que no da clases. […] lo que hay que decidir es, en el proceso de armonización, en esos casos, cómo se va a hacer la ponderación». `[42:17]`: «La idea es que sumen 10 en cada una y que decidamos cómo se van a generar sus equilibrios cuando falte un componente».
+- **Criterio de Rubén para la futura ADR de ponderación** (candidato C4 del triage; no se escribió como ADR): `[43:24]`, «todo lo que esté activo tiene que sumar 10»; y `[44:09]`, «Lo que hemos decidido, de verdad —ese sí fue un criterio para todas—, es que vale 5 la institucionalización con armonización y 5 la transversalidad, ¿verdad? Pero hay algunos que no van a tener nada de transversalidad». El 5 / 2.5 / 2.5 del trío es compatible con eso: sectorial y orgánica suman el 5 de transversalidad.
+- **Las combinaciones que hay que ponderar**, Ricardo: `[42:28]`–`[42:55]`, observables con solo tres sectores y otros sin instancias administrativas («porque es de población estudiantil»; también investigación, y mecanismos y criterios de evaluación), las especiales en morado; `[43:10]`–`[43:12]`, la distribución de la población, «este tipo no tiene preguntas»; `[43:31]`, «La mayoría tiene 3, muchas tienen 2, y creo que solo una tiene 4. Entonces, los ponderadores: primero hay que decidir los que tienen tres, luego los que tienen dos; hay que ver si los que tienen transversalidad orgánica de un solo tipo —solo instancias académicas— cuentan igual que los que tienen dos, etcétera». `[44:21]`–`[44:32]`: «todas tienen transversalidad orgánica, pero no todas tienen transversalidad sectorial», y enseguida encontró una sin orgánica (el caso de los planes de estudio, [[task-173]] punto b). Rubén, `[44:27]`: «puede ser una transversalidad que no es ni sectorial ni…».
+- **Los casos excepcionales**, `[58:12]`–`[59:35]`: Ricardo le pasa a Rubén los observables que no siguen la estructura común (institucionalización, sectorial y orgánica) y los candidatos a «parcialmente»; Rubén, `[59:14]`, «hay que revisar los casos en los que no se sigue esa estructura, para ver qué se va a hacer». Detalle en [[task-173]] punto f.
+
+Los pesos propios siguen nulos; la reunión no fijó ninguno.

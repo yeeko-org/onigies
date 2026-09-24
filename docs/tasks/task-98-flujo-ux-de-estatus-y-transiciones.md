@@ -6,6 +6,7 @@ state: open
 date: 2026-08-11
 owner: ai
 source: ["[[2026-08-11-auditoria-del-arbol-de-trabajo-y-reorganizacion]]"]
+related: ["[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Flujo — UX de estatus y transiciones para las dos audiencias
@@ -22,3 +23,7 @@ Dos de ellas, [[task-75]] y [[task-76]], dependen de que ocurra el taller de est
 
 - [ ] Las ocho hijas están cerradas o abandonadas
 - [ ] La doble transición (grupo y paquete) se resuelve con el mismo criterio en bp y en gen
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]]. Ricardo, `[20:13]`, en el encabezado del eje de la captura cp: «Aquí son tres niveles: uno es a nivel eje. No se puede enviar a revisión porque aquí dice "faltan observables"; puede ser que esté deshabilitado, o que le des clic y te aparezca por qué no. Eso lo pienso». Queda como pregunta de diseño de esta raíz: botón deshabilitado con la razón a la vista, o activo con un clic que explique por qué no.

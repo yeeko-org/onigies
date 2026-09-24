@@ -5,8 +5,8 @@ title: Decidir si la descarga pública del Word se cachea
 state: open
 date: 2026-09-22
 owner: ricardo
-parent: "[[task-150]]"
-related: ["[[task-151]]"]
+parent: "[[task-2]]"
+related: ["[[task-150]]", "[[task-151]]"]
 ---
 
 # Decidir si la descarga pública del Word se cachea

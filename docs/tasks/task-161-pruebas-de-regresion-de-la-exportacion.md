@@ -5,8 +5,8 @@ title: Pruebas de regresión de la exportación a Word y de los documentos públ
 state: open
 date: 2026-09-22
 owner: ai
-parent: "[[task-150]]"
-related: ["[[task-151]]", "[[2026-09-22-exportacion-del-cuestionario-a-word]]"]
+parent: "[[task-2]]"
+related: ["[[task-150]]", "[[task-151]]", "[[2026-09-22-exportacion-del-cuestionario-a-word]]"]
 ---
 
 # Pruebas de regresión de la exportación a Word y de los documentos públicos

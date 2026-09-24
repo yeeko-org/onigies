@@ -7,7 +7,7 @@ date: 2026-09-22
 owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]]"]
-related: ["[[task-7]]", "[[task-153]]", "[[adr-0018]]"]
+related: ["[[task-7]]", "[[task-153]]", "[[adr-0018]]", "[[2026-09-23-reunion-ruben]]", "[[2026-09-23-diseno-de-la-captura-cp-y-decisiones-pendientes]]", "[[task-175]]"]
 ---
 
 # Deploy del retiro de StatusControl y del cuestionario principal (cp)
@@ -38,3 +38,14 @@ Lo que no debe limpiarse: la carpeta `evidences/` (disco y S3), compartida con l
 - [ ] Migraciones, seed_flow y provision_cp_responses --apply corridos en producción con los conteos esperados
 - [ ] Smoke de IES de prueba y de staff en verde
 - [ ] cp_open_at fijado y cp publicado en PUBLISHED_SECTIONS el día de apertura (compromiso: 25 de septiembre o antes)
+- [ ] Avisar a Rubén cuando el deploy esté arriba (`[1:25:04]`, "hoy mismo")
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]]. Rubén autorizó liberar el cuestionario sin esperar la ponderación. Ricardo, `[1:20:00]`: «termino, porque hay detallitos pequeñitos que tengo que terminar aquí, y lo subo y lo prueba allá» (quién prueba, duda T13 de la limpia). Rubén, `[1:20:17]`: «Lo puedes subir, porque entiendo que estas preguntas que tenemos no son preguntas de cuestionario, son preguntas de valor, y se pueden ajustar». Ricardo, `[1:23:58]`: «en un par de horas acabo esto: los últimos detalles chiquititos, que ya son muy poquitos, para que pueda subir estas preguntas. Le pides a tu equipo que lo revise, por si ve algo, y ya lo mandas»; `[1:25:04]`: «te aviso cuando esté arriba, que va a ser hoy mismo». Rubén, `[1:23:58]`: «Buenísimo, Ricardo». La prisa de Rubén es su reunión del viernes 25 (`[12:04]`, `[35:17]`).
+
+## Pasos de deploy del diseño cp, 2026-09-23
+
+La sesión de diseño de la captura cp dejó sus pasos de deploy pendientes (migración `question.0011`, `seed_flow`, `provision_cp_responses --apply`, nombres y colores de estatus) en la sección «Pasos de deploy pendientes» de [[2026-09-23-diseno-de-la-captura-cp-y-decisiones-pendientes]]; se corren con este deploy. El bug del guardado «en llenado» encontrado el mismo día está en [[task-174]]: las respuestas sí se guardan, pero si se libera con el bug toda IES verá el error en su primer guardado; la decisión pendiente está en [[task-175]], entrada (a).
+
+Las tres A que piden texto que la plataforma no guarda (1.16 A1 y A2, 2.5 A9) son lo único de la brecha que bloquea compartir las preguntas tal cual: decisión pendiente en [[task-175]], entrada (e).

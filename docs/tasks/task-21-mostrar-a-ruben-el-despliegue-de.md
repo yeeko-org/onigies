@@ -2,12 +2,12 @@
 type: task
 id: task-21
 title: Mostrar a Rubén el despliegue de preguntas iniciales y específicas
-state: open
+state: closed
 date: 2026-08-03
 owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-06-26-seguimiento-pendientes-ruben]]", "[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Mostrar a Rubén el despliegue de preguntas iniciales y específicas
@@ -34,9 +34,17 @@ Es el **paso cinco** del orden de publicación que Rubén enumeró en la reunió
 
 ## Criterios de aceptación
 
-- [ ] Rubén vio el despliegue y dio su opinión
-- [ ] Quedó definido el patrón de despliegue progresivo que evita la saturación visual
+- [x] Rubén vio el despliegue y dio su opinión
+- [x] Quedó definido el patrón de despliegue progresivo que evita la saturación visual
 
 ## Lo construido el 2026-09-22 cumple la intención; falta que Rubén lo vea
 
 El panel por observable en `/respuestas` abre con la pregunta inicial Sí/No y, con «No», deja el observable cerrado («No cuenta con la medida», [[adr-0017]]) sin abrir sus preguntas; con «Ver preguntas» la IES puede asomarse en solo lectura antes de decidir (el «pienso que no, pero le abro» de `[36:06]`). Es el menú compacto que Rubén pidió. Los criterios siguen abiertos hasta que él lo vea, previsiblemente el 25 con el deploy ([[task-163]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].
+
+## Reunión con Rubén, 2026-09-23: lo vio y lo aprobó
+
+Fuente: [[2026-09-23-reunion-ruben]]. Ricardo le mostró el despliegue progresivo en vivo. `[16:42]`: «cuando está en no o por iniciar, sí puedo ver: lo primero que sale nada más es la pregunta principal con el siguiente, y luego las preguntas más específicas». `[23:04]`: «Creo que esto es lo que querías: que cuando todavía no puedes contestar aparezcan así las preguntas del observable y pongas "ver preguntas", para que no se vea tan atascado. Era lo que habíamos acordado, ir mostrándolo por niveles. ¿Está bien, qué opinas?». `[24:54]`: «Justo lo que tú decías es que se van a asustar con tantas preguntas. Ahora, por eje, ven solo 17, máximo 17 preguntas; lo abren y ven la pregunta inicial». `[26:43]`: «puedo ver las preguntas con otro clic, y todo aparece sin el sí o no».
+
+Lo que dijo Rubén: `[19:09]`, «Ay, qué bueno», sobre el vínculo automático con las instancias declaradas en la información base (`[18:59]`–`[19:04]`); `[22:31]`, recorriendo servicios especializados, su transversalidad sectorial y la orgánica, «No, estaba perfecto, Ricardo»; `[24:52]`, «Me encanta», sobre la captura inhabilitada mientras la base no esté validada; `[49:42]`, «Esa está súper bien». Preguntó, `[23:49]`, si va marcando cuántos observables llevas contestados; Ricardo, `[23:54]`: «Sí». Ricardo le mostró también el estatus y los comentarios (`[19:10]`).
+
+**Cerrada el 2026-09-23 por la sesión**: Rubén vio el despliegue y lo aprobó, [[2026-09-23-reunion-ruben]] `[22:31]`.

@@ -6,7 +6,7 @@ state: open
 date: 2026-09-11
 owner: ai
 parent: "[[task-2]]"
-related: ["[[2026-09-04-reunion-con-ruben]]", "[[task-116]]", "[[fb-2]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[task-116]]", "[[fb-2]]", "[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Barrido crítico del cuestionario cuando Rubén avise que terminó sus correcciones
@@ -30,3 +30,7 @@ Pendientes ya conocidos que no van en esa lista y que este barrido debe comproba
 - [ ] Rubén avisó que terminó sus correcciones
 - [ ] El barrido corrió sobre el contenido de producción, no sobre el seed
 - [ ] Los hallazgos nuevos quedaron en un documento que Rubén pueda recorrer, o se cerró declarando que no hubo ninguno
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]]. Rubén dijo que ya terminó sus correcciones y las mandó a las IES, `[11:34]`: «no lo revisé a detalle, porque además ya había terminado los cambios; ya los mandé a las IES». La task sigue abierta. Si esto cuenta como el aviso del primer criterio es lectura: Rubén habla de los cambios que mandó a las IES, sin decir que terminó de corregir en el dashboard; no se marcó.

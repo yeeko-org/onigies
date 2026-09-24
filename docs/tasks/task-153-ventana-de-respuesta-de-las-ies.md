@@ -7,7 +7,7 @@ date: 2026-09-11
 owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-09-04-reunion-con-ruben]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]", "[[adr-0015]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[adr-0015]]", "[[2026-09-23-reunion-ruben]]", "[[task-175]]"]
 ---
 
 # Ventana de respuesta de las IES: cuestionario visible pero no respondible hasta el 25 de septiembre
@@ -32,4 +32,13 @@ Las IES tienen que poder **ver** el cuestionario completo antes de poder **respo
 
 ## Construido el 2026-09-22
 
-La compuerta es [[adr-0018]]: `Period.cp_open_at` más el `GeneralPackage` en `gen_finished` (así aplica también [[adr-0007]], como Ricardo lo precisó: se ven las preguntas, se inhabilita toda captura). Las IES de prueba no están exentas (decisión de la sesión, no de Ricardo; pendiente de ratificar en [[task-168]]). Falta desplegar y fijar la fecha en el admin ([[task-163]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].
+La compuerta es [[adr-0018]]: `Period.cp_open_at` más el `GeneralPackage` en `gen_finished` (así aplica también [[adr-0007]], como Ricardo lo precisó: se ven las preguntas, se inhabilita toda captura). Las IES de prueba están exentas de la fecha `cp_open_at` pero no del prerrequisito `gen_finished` ([[adr-0018]] enmendada el 2026-09-23; [[task-168]] punto 10, cerrada). Falta desplegar y fijar la fecha en el admin ([[task-163]]). Record [[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]].
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]].
+
+- **La fecha de apertura por periodo**, Ricardo, `[12:40]`: «una de las cosas que ya agregué es que se puede editar una fecha de apertura para cada periodo, para empezar a registrar las preguntas generales, el cuestionario principal» (es `Period.cp_open_at`).
+- **Rubén vio la compuerta y la aprobó** ([[adr-0018]]). Ricardo, `[23:54]`–`[24:32]`, entrando como una IES sin base validada: «está deshabilitado, no puedo seleccionar nada, porque aquí dice "tu información base todavía no está validada; hasta entonces puedes consultar el cuestionario, pero no resolverlo"». Rubén, `[24:52]`: «Me encanta».
+- **Liberar ya.** Ricardo, `[34:54]`: «El cuestionario ya podríamos liberarlo, si quieres». Rubén, `[35:17]`: «Sí, yo lo liberaría, porque el viernes ya se los puedo mostrar»; `[12:04]`: «el viernes tengo reunión y me van a preguntar». El viernes es el 25 de septiembre, la fecha comprometida. El deploy, en [[task-163]].
+- **Fechas límite por sección.** La reunión (`[35:41]`–`[37:59]`) tocó fechas límite para revisar cada sección. Respuesta de Ricardo en el triage: «Eso no nos corresponde, no guardar nada, con los campos existentes tenemos, si acaso uno para "cierre de cp"». El posible campo de cierre de cp queda como decisión suya en [[task-175]], entrada (b).

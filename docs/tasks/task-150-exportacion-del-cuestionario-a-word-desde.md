@@ -2,12 +2,12 @@
 type: task
 id: task-150
 title: Exportación del cuestionario a Word desde el dashboard
-state: open
+state: closed
 date: 2026-09-11
 owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-09-04-reunion-con-ruben]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]", "[[task-116]]", "[[task-50]]", "[[task-151]]", "[[2026-09-22-exportacion-del-cuestionario-a-word]]", "[[task-161]]", "[[task-162]]", "[[task-20]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[task-116]]", "[[task-50]]", "[[task-151]]", "[[2026-09-22-exportacion-del-cuestionario-a-word]]", "[[task-161]]", "[[task-162]]", "[[task-20]]", "[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Exportación del cuestionario a Word desde el dashboard
@@ -88,3 +88,11 @@ Record de la sesión: [[2026-09-22-exportacion-del-cuestionario-a-word]]. Rama `
 - [ ] Desde el dashboard se descarga el cuestionario completo en .docx (en producción la URL pública a la que apunta el botón devuelve el .docx; falta el clic desde el dashboard)
 - [ ] El resultado respeta el formato de `vf-2025-ONIGIES-maquetado.docx` lo bastante para que Rubén no reformatee más de unos minutos
 - [ ] Rubén produjo con ella el «Cuestionario final final» y lo mandó a las IES
+
+## Reunión con Rubén, 2026-09-23, y cierre
+
+Fuente: [[2026-09-23-reunion-ruben]]. Ricardo, `[11:00]`: «¿viste el exportador cómo quedó?». Rubén, `[11:18]`: «Más o menos. Se ve casi idéntico». Ricardo, `[11:21]`–`[11:25]`: «¿no le harías ningún cambio? Bueno, yo hice algunos cambios: quité algunas cosas, puse otras, porque estandaricé». Rubén, `[11:34]`: «no lo revisé a detalle, porque además ya había terminado los cambios; ya los mandé a las IES. Pero sí vi lo que me mandaste, y cuando lo abrí dije: es casi igual, salvo algunas cositas». Ricardo, `[11:52]`: «¿Quieres comentármelas de una vez, si está fácil?»; Rubén, `[11:59]`: «Veamos primero el cuestionario». Al final, Ricardo, `[1:20:31]`–`[1:20:37]`: «¿Tenías un comentario de la exportación, o nada?»; Rubén pasó a las buenas prácticas sin dar ninguno (`[1:20:36]`, `[1:20:44]`). `[1:24:28]` (párrafo con dos voces fundidas, duda 4 de la limpia): «Las preguntas se pueden descargar, y la idea de ese Word es que después lo exportes a PDF. Ya quedó».
+
+Las notas del observable, que el Word imprime: Ricardo, `[25:15]`–`[25:34]`, «Esto es algo que tú habías puesto como notas […] son aclaraciones. Solo tres lugares lo tienen, pero podríamos ponerlo sin problema en otros lugares»; Rubén, `[25:44]`–`[25:46]`, «Sí, lo podemos checar, pero está bastante bien así como quedó»; Ricardo, `[25:46]`, en la 1.3 «la nota estaba abajo de esta pregunta, y yo las puse todas al principio», y `[26:43]`, «se pueden ir agregando en el dashboard a medida que queramos, en el mismo lugar de los observables».
+
+**Cerrada el 2026-09-23 por decisión de Ricardo:** el exportador queda cerrado, sin más cambios. Los criterios se dejan como estaban, porque el cierre descansa en su declaración y no en ellos: el primero está cumplido en producción por la URL pública (el clic desde el dashboard no se verificó); del segundo, Rubén solo dijo «casi idéntico»; del tercero, que mandó sus cambios a las IES, sin decir si fue con el Word exportado. Lo que sigue vive en sus tasks, que pasaron de hijas de esta a hijas de [[task-2]] para que el cierre no las arrastre: [[task-158]] (errores de borrado en EditCommon), [[task-161]] (pruebas) y [[task-162]] (caché).

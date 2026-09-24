@@ -6,6 +6,7 @@ state: open
 date: 2026-05-26
 owner: ai
 parent: "[[task-3]]"
+related: ["[[2026-09-23-reunion-ruben]]"]
 ---
 
 # Aplicar el design system al dashboard
@@ -305,3 +306,7 @@ del propio admin):
   notificaciones de aprobación/rechazo de evidencia.
 
 El primer caso concreto ya tiene task propia: [[task-65]] rediseña el correo de recuperación de contraseña (fondo del header y tipografía oficial), detectado en la revisión con Fernanda del 2026-08-06. El rosa de marca no se toca: es decisión de Rubí.
+
+## Reunión con Rubén, 2026-09-23
+
+Fuente: [[2026-09-23-reunion-ruben]]. Rubén, `[19:23]`: «Yo no veo bien los colores. El colorcito que tienen los observables es moradito, ¿verdad?»; `[19:39]`: «me imaginaba que era más moradito que rosa, y el de no violencia es más rosa»; `[19:52]`: «Yo no veo bien el rosa y el morado; como que veo morado arriba y rosa abajo». Ricardo, `[19:37]`–`[19:39]`: «aquí es azul»; `[19:48]`: «Podemos cambiar los colores, pero se supone que son los cuatro colores»; `[19:58]`–`[20:09]`: «Es el mismo color, pero degradado; lo hace solita la plataforma. Yo creo que está bien». Sin cambio acordado; queda como dato de accesibilidad para cuando se toque la paleta de ejes.

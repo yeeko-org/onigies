@@ -4,6 +4,8 @@
  * observable como encabezado y cada característica con la escala global
  * de opciones (Sí/No).
  */
+import YesNoRadio from '~/components/dashboard/common/select/YesNoRadio.vue'
+
 const props = defineProps({
   observable: { type: Object, required: true },
   options: { type: Array, default: () => [] },
@@ -14,6 +16,10 @@ const props = defineProps({
 const draft = defineModel({ type: Object, required: true })
 
 const questions = computed(() => props.observable.a_questions || [])
+
+// La escala global llega ordenada por valor descendente (Sí antes que No).
+const scale = computed(() => props.options.map(
+  (option) => ({ value: option.id, text: option.text })))
 </script>
 
 <template>
@@ -30,28 +36,16 @@ const questions = computed(() => props.observable.a_questions || [])
     <div
       v-for="question in questions"
       :key="question.id"
-      class="cp-a-row d-flex align-center ga-4 py-1"
+      class="cp-a-row py-2"
     >
-      <span class="text-body-2 flex-grow-1">{{ question.text }}</span>
-      <v-radio-group
+      <YesNoRadio
         v-if="draft[question.id]"
         v-model="draft[question.id].selected_option"
+        :label="question.text"
+        :options="scale"
         :readonly="readonly"
         :disabled="disabled"
-        :aria-label="question.text"
-        color="accent"
-        density="compact"
-        inline
-        hide-details
-        class="flex-grow-0"
-      >
-        <v-radio
-          v-for="option in options"
-          :key="option.id"
-          :label="option.text"
-          :value="option.id"
-        />
-      </v-radio-group>
+      />
     </div>
   </div>
 </template>

@@ -1,10 +1,19 @@
 import { useDashboardStore } from '~/store/dash.js'
 
 // Composable para extraer y notificar errores de la API DRF.
-// Cubre tres formas comunes de respuesta:
-// - { detail: '...' }                 (errores genéricos)
-// - { field: ['msg', ...] }           (errores de validación)
-// - string plano                      (respuestas no JSON)
+// Cubre las formas comunes de respuesta:
+// - { detail: '...' } o { detail: ['...', ...] }   (errores genéricos)
+// - { field: ['msg', ...], ... }                    (errores de validación)
+// - ['msg', ...]                                    (ValidationError con lista)
+// - string plano                                    (respuestas no JSON)
+// Varios mensajes se unen uno por renglón: el snackbar respeta los saltos.
+
+const flatten = (value) => {
+  if (value === null || value === undefined) return []
+  if (Array.isArray(value)) return value.flatMap(flatten)
+  if (typeof value === 'object') return Object.values(value).flatMap(flatten)
+  return [String(value)]
+}
 
 export function useApiError() {
   const dashStore = useDashboardStore()
@@ -13,18 +22,15 @@ export function useApiError() {
     const data = err?.response?.data
     if (!data) return fallback
     if (typeof data === 'string') return data
-    if (data.detail) return data.detail
-    const firstField = Object.keys(data)[0]
-    if (firstField) {
-      const val = data[firstField]
-      return Array.isArray(val) ? val[0] : String(val)
-    }
-    return fallback
+    const source = (!Array.isArray(data) && data.detail !== undefined)
+      ? data.detail : data
+    const messages = flatten(source).filter((msg) => msg.trim())
+    return messages.length ? messages.join('\n') : fallback
   }
 
   function notifyApiError(err, fallback) {
     const msg = extractMessage(err, fallback)
-    dashStore.showSnackbar(`Error: ${msg}`)
+    dashStore.showError(`Error: ${msg}`)
     return msg
   }
 

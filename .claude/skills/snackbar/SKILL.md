@@ -24,6 +24,8 @@ of 4 s so it can be read and reached. Use it to propose the next step without
 taking it (cp capture offers «Marcar como completado» to the observable once
 its groups allow it); a confirmation needs no action.
 
+`dashStore.showError(message)` is the error variant: same toast, `error` color, no action. Use it for a failure the component detects itself without an API error to parse (e.g. a `{errors}` result whose message the helper did not already show); API errors still go through `notifyApiError`.
+
 ## Recommended messages
 
 | Action | Message |

@@ -1,7 +1,7 @@
 <script setup>
 import FeatureList from "~/components/dashboard/example/good_practice/FeatureList.vue";
 import FlowStatusChip from "~/components/dashboard/flow/FlowStatusChip.vue";
-import FlowTransitionMenu from "~/components/dashboard/flow/FlowTransitionMenu.vue";
+import FlowSaveMenu from "~/components/dashboard/flow/FlowSaveMenu.vue";
 import FlowTransitionDialogs from "~/components/dashboard/flow/FlowTransitionDialogs.vue";
 import FlowComments from "~/components/dashboard/flow/FlowComments.vue";
 import { useFlowActions } from "~/composables/useFlowActions.js"
@@ -24,7 +24,10 @@ const props = defineProps({
   editable: {
     type: Boolean,
     default: true
-  }
+  },
+  // Paquete de la práctica (raíz del flujo): la práctica solo trae su id.
+  // Sin él no hay candado previo y el motor responde 400 al transicionar.
+  root: { type: Object, default: null },
 })
 
 const full_main = defineModel({type: Object, required: true})
@@ -49,7 +52,8 @@ watchEffect(() => {
 // quedar stale si la transición del hijo propaga hacia arriba).
 const flowActions = useFlowActions(
   full_main, 'example', 'goodpractice',
-  { onTransitioned: (ev) => emit('transitioned', ev) })
+  { onTransitioned: (ev) => emit('transitioned', ev),
+    root: () => props.root })
 const { transitions, currentStatus, sending } = flowActions
 
 // La validez para QUEDARSE en un status es la misma que para entrar: si el
@@ -113,12 +117,18 @@ const saveAndTransition = async (t) => {
   if (ev) emit('close')
 }
 
+// Sin nada que ver ni que subir, la sección de evidencia no se pinta.
+const attachmentsEditable = computed(() => !props.isStaff && props.editable)
+const showEvidence = computed(() => isEditing.value
+  && (attachmentsEditable.value
+    || (full_main.value.flow_attachments || []).length > 0))
+
 const remove = async () => {
   try {
     const res = await mainStore.deleteSimple(
       ['good_practice', full_main.value.id])
     if (res.errors) {
-      dashStore.showSnackbar('No se pudo eliminar la buena práctica')
+      dashStore.showError('No se pudo eliminar la buena práctica')
       return
     }
     emit('deleted')
@@ -237,15 +247,16 @@ const remove = async () => {
           :rules="completeRules(hasResults, 'Los resultados son obligatorios')"
         />
       </v-form>
-      <p class="text-subtitle-2 mt-2 mb-1">Evidencias:</p>
-      <FlowAttachments
-        v-if="isEditing"
-        v-model="full_main.flow_attachments"
-        app-label="example"
-        model-name="goodpractice"
-        :id="full_main.id"
-        :editable="!isStaff && editable"
-      />
+      <template v-if="showEvidence">
+        <p class="text-subtitle-2 mt-2 mb-1">Evidencias:</p>
+        <FlowAttachments
+          v-model="full_main.flow_attachments"
+          app-label="example"
+          model-name="goodpractice"
+          :id="full_main.id"
+          :editable="attachmentsEditable"
+        />
+      </template>
       <v-divider class="mt-4"></v-divider>
       <v-input
         v-if="isEditing"
@@ -293,54 +304,16 @@ const remove = async () => {
       >
         Cerrar
       </v-btn>
-      <!-- Sin transiciones (status terminal o no es turno): el botón guarda y
-           cierra directo, sin desplegar opciones. -->
-      <v-btn
-        v-if="editable && !transitions.length"
-        color="accent"
-        variant="flat"
-        :loading="loading"
-        prepend-icon="save"
-        @click="savePractice"
-      >
-        Guardar
-      </v-btn>
-      <!-- Con transiciones: el botón despliega un menú hacia abajo encabezado
-           por "Guardar y mantener como {status}" (guarda sin transicionar),
-           seguido de cada transición (guarda y luego transiciona). -->
-      <v-menu
-        v-else-if="editable"
-        location="bottom end"
-      >
-        <template #activator="{ props: menuProps }">
-          <v-btn
-            v-bind="menuProps"
-            color="accent"
-            variant="flat"
-            :loading="loading || sending"
-            prepend-icon="save"
-            append-icon="expand_more"
-          >
-            Guardar
-          </v-btn>
-        </template>
-        <FlowTransitionMenu
-          :transitions="transitions"
-          @select="saveAndTransition"
-        >
-          <template #lead>
-            <v-list-item
-              :title="`Guardar y mantener como ${currentStatus?.public_name}`"
-              @click="savePractice"
-            >
-              <template #prepend>
-                <v-icon color="accent">save</v-icon>
-              </template>
-            </v-list-item>
-            <v-divider />
-          </template>
-        </FlowTransitionMenu>
-      </v-menu>
+      <!-- Sin transiciones (status terminal o no es turno) guarda y cierra
+           directo; con ellas, guardar y luego transicionar. -->
+      <FlowSaveMenu
+        v-if="editable"
+        :transitions="transitions"
+        :current-status="currentStatus"
+        :loading="loading || sending"
+        @save="savePractice"
+        @select="saveAndTransition"
+      />
     </v-card-actions>
 
     <FlowTransitionDialogs :actions="flowActions">

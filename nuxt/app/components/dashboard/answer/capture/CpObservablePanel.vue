@@ -26,6 +26,8 @@ import FlowStatusActions from
   '~/components/dashboard/flow/FlowStatusActions.vue'
 import FlowTransitionDialogs from
   '~/components/dashboard/flow/FlowTransitionDialogs.vue'
+import TitleCommon from '~/components/dashboard/common/utils/TitleCommon.vue'
+import YesNoRadio from '~/components/dashboard/common/select/YesNoRadio.vue'
 import CpGroupIcons from './CpGroupIcons.vue'
 import CpGroupCard from './CpGroupCard.vue'
 
@@ -56,14 +58,32 @@ const answered = computed(() => observable.value.value !== null
   && observable.value.value !== undefined)
 const answeredYes = computed(() => observable.value.value === true)
 
+// Mismo ancho que el título del observable en el dashboard
+// (ObservableHeader): dos renglones y el resto en el tooltip.
+const TITLE_WIDTH = 520
+
+// El color de «No» y de «sin responder» es el de los status que esas
+// respuestas implican (Sin la medida / Por iniciar): el catálogo manda, así
+// el ícono y los chips cambian juntos si cambia la paleta.
 const INIT_ICONS = {
-  true: { icon: 'toggle_on', color: 'accent', label: 'Sí' },
-  false: { icon: 'toggle_off', color: 'grey-darken-1', label: 'No' },
-  null: {
-    icon: 'radio_button_unchecked', color: 'grey', label: 'Sin responder' },
+  true: { icon: 'toggle_on', label: 'Sí' },
+  false: { icon: 'toggle_off', status: 'cp_not_present', label: 'No' },
+  null: { icon: 'pending', status: 'cp_pre_start', label: 'Sin responder' },
 }
-const initIcon = computed(() => INIT_ICONS[
-  answered.value ? String(observable.value.value) : 'null'])
+const initIcon = computed(() => {
+  const item = INIT_ICONS[
+    answered.value ? String(observable.value.value) : 'null']
+  const color = item.status
+    ? flowStore.getStatus(item.status)?.color || 'grey'
+    : 'accent'
+  return { ...item, color }
+})
+const title = computed(
+  () => `${instrument.value.number} ${instrument.value.name}`)
+// El renglón del observable lleva el tinte de su eje, como los paneles del
+// dashboard (PanelCommon); el cuerpo abierto queda blanco.
+const titleColor = computed(
+  () => `${props.axis.axis_full?.color || 'blue-grey'}-lighten-5`)
 
 // La respuesta inicial la da la IES en el turno del eje; el backend
 // decide lo demás (revisión activa) y responde 400 con el motivo.
@@ -76,15 +96,18 @@ const canAnswer = computed(() => props.captureOpen && !authStore.is_staff
 const attentionGroup = computed(() => findAttentionGroup(
   observable.value, authStore.flow_role, flowStore.getStatus))
 const showFlow = computed(() => props.review || props.captureOpen)
-const barColor = computed(() => flowStore.getStatus(
-  attentionGroup.value?.status || observable.value.status)?.color || 'grey')
 
 // --- Pregunta inicial -------------------------------------------------
 
 const savingInit = ref(false)
 
+// Apagada mientras la IES aún no puede responder (compuerta cerrada); de
+// solo lectura para quien ya no tiene el turno o revisa.
+const initDisabled = computed(
+  () => (!props.review && !props.captureOpen) || savingInit.value)
+
 async function onInitChange(value) {
-  // El botón activo no se desmarca: volver a «sin responder» no se ofrece.
+  // Volver a «sin responder» no se ofrece.
   if (value === null || value === undefined) return
   if (value === observable.value.value) return
   savingInit.value = true
@@ -152,16 +175,13 @@ const previewTypes = computed(() => groups.value.map((g) => ({
 
 <template>
   <v-expansion-panel :value="observable.id" class="cp-observable">
-    <v-expansion-panel-title>
-      <div class="cp-bar" :class="`bg-${barColor}`" />
-      <div class="d-flex align-center flex-wrap ga-3 w-100 pr-2">
-        <span class="text-subtitle-1 font-weight-bold">
-          {{ instrument.number }}
-        </span>
-        <span class="text-subtitle-1 cp-observable__name">
-          {{ instrument.name }}
-        </span>
-        <v-spacer />
+    <v-expansion-panel-title :color="titleColor">
+      <div class="d-flex align-center flex-wrap ga-3 pr-2">
+        <TitleCommon
+          :title_text="title"
+          :title_width="TITLE_WIDTH"
+          card_class="text-subtitle-1 font-weight-medium"
+        />
         <v-icon :color="initIcon.color" size="28">
           {{ initIcon.icon }}
           <v-tooltip activator="parent" location="top">
@@ -178,121 +198,95 @@ const previewTypes = computed(() => groups.value.map((g) => ({
     </v-expansion-panel-title>
 
     <v-expansion-panel-text>
-      <div class="d-flex align-start flex-wrap ga-6 mb-4">
-        <div class="flex-grow-1 cp-init">
-          <p class="text-body-1 font-weight-medium mb-2">
-            {{ instrument.init_question }}
-          </p>
-          <v-btn-toggle
-            :model-value="answered ? observable.value : null"
-            :disabled="!canAnswer || savingInit"
-            color="accent"
-            variant="outlined"
-            density="comfortable"
-            divided
-            @update:model-value="onInitChange"
+      <div class="cp-column">
+        <div class="d-flex align-start flex-wrap ga-6 mb-4">
+          <div class="cp-init">
+            <YesNoRadio
+              :model-value="answered ? observable.value : null"
+              :label="instrument.init_question"
+              label-class="text-body-1 font-weight-medium"
+              :readonly="!canAnswer"
+              :disabled="initDisabled"
+              @update:model-value="onInitChange"
+            >
+              <template #append>
+                <v-progress-circular
+                  v-if="savingInit"
+                  indeterminate
+                  size="20"
+                  width="2"
+                />
+              </template>
+            </YesNoRadio>
+            <div
+              v-if="instrument.note"
+              class="cp-note d-flex align-start ga-1 mt-2 text-caption
+                text-medium-emphasis"
+            >
+              <v-icon size="14" class="cp-note__icon">info</v-icon>
+              <span>{{ instrument.note }}</span>
+            </div>
+          </div>
+          <div
+            v-if="answeredYes"
+            class="cp-status-slot"
+            :class="{ 'cp-status-slot--offer': highlight }"
           >
-            <v-btn :value="true" prepend-icon="toggle_on" class="px-6">
-              Sí
-            </v-btn>
-            <v-btn :value="false" prepend-icon="toggle_off" class="px-6">
-              No
-            </v-btn>
-          </v-btn-toggle>
-          <v-progress-circular
-            v-if="savingInit"
-            indeterminate
-            size="20"
-            width="2"
-            class="ml-3"
-          />
-          <v-alert
-            v-if="instrument.note"
-            type="info"
-            variant="tonal"
-            density="compact"
-            class="mt-3 cp-note"
+            <FlowStatusActions
+              v-if="showFlow"
+              v-model="observable"
+              app-label="answer"
+              model-name="observableresponse"
+              :actions="obsActions"
+              hint="tooltip"
+            />
+            <FlowStatusChip v-else :status="observable.status" />
+          </div>
+        </div>
+
+        <v-card
+          v-if="!answeredYes"
+          variant="flat"
+          border
+          class="d-flex align-center flex-wrap ga-4 px-4 py-2 mb-4"
+        >
+          <span class="text-body-2 text-grey-darken-1">
+            Preguntas de este observable:
+          </span>
+          <span
+            v-for="item in previewTypes"
+            :key="item.id"
+            class="d-inline-flex align-center ga-1 text-body-2"
           >
-            {{ instrument.note }}
-          </v-alert>
-        </div>
-        <div
-          v-if="answeredYes"
-          class="cp-status-slot"
-          :class="{ 'cp-status-slot--offer': highlight }"
-        >
-          <FlowStatusActions
-            v-if="showFlow"
-            v-model="observable"
-            app-label="answer"
-            model-name="observableresponse"
-            :actions="obsActions"
+            <v-icon size="18">{{ item.icon }}</v-icon>
+            {{ item.name }}
+          </span>
+          <v-spacer />
+          <v-btn
+            variant="text"
+            :append-icon="showPreview ? 'expand_less' : 'expand_more'"
+            @click="showPreview = !showPreview"
+          >
+            {{ showPreview ? 'Ocultar preguntas' : 'Ver preguntas' }}
+          </v-btn>
+        </v-card>
+
+        <template v-if="answeredYes || showPreview">
+          <CpGroupCard
+            v-for="(group, index) in groups"
+            :key="group.id"
+            v-model="observable.group_responses[index]"
+            :observable="instrument"
+            :axis="axis"
+            :a-options="aOptions"
+            :gen-denominators="genDenominators"
+            :capture-open="captureOpen"
+            :review="review"
+            :preview="!answeredYes"
+            @saved="onGroupSaved"
+            @transitioned="onGroupTransitioned"
           />
-          <FlowStatusChip v-else :status="observable.status" />
-        </div>
-      </div>
-
-      <v-card
-        v-if="!answeredYes"
-        variant="flat"
-        border
-        class="d-flex align-center flex-wrap ga-4 px-4 py-2 mb-4"
-      >
-        <span class="text-body-2 text-grey-darken-1">
-          Preguntas de este observable:
-        </span>
-        <span
-          v-for="item in previewTypes"
-          :key="item.id"
-          class="d-inline-flex align-center ga-1 text-body-2"
-        >
-          <v-icon size="18">{{ item.icon }}</v-icon>
-          {{ item.name }}
-        </span>
-        <v-spacer />
-        <v-btn
-          variant="text"
-          :append-icon="showPreview ? 'expand_less' : 'expand_more'"
-          @click="showPreview = !showPreview"
-        >
-          {{ showPreview ? 'Ocultar preguntas' : 'Ver preguntas' }}
-        </v-btn>
-      </v-card>
-
-      <template v-if="answeredYes || showPreview">
-        <CpGroupCard
-          v-for="(group, index) in groups"
-          :key="group.id"
-          v-model="observable.group_responses[index]"
-          :observable="instrument"
-          :axis="axis"
-          :a-options="aOptions"
-          :gen-denominators="genDenominators"
-          :capture-open="captureOpen"
-          :review="review"
-          :preview="!answeredYes"
-          @saved="onGroupSaved"
-          @transitioned="onGroupTransitioned"
-        />
-      </template>
-
-      <div
-        v-if="answered"
-        class="d-flex justify-end mt-2"
-      >
-        <div
-          class="cp-status-slot"
-          :class="{ 'cp-status-slot--offer': highlight }"
-        >
-          <FlowStatusActions
-            v-if="showFlow"
-            v-model="observable"
-            app-label="answer"
-            model-name="observableresponse"
-            :actions="obsActions"
-          />
-          <FlowStatusChip v-else :status="observable.status" />
-        </div>
+        </template>
       </div>
 
       <FlowTransitionDialogs :actions="obsActions" />
@@ -301,20 +295,10 @@ const previewTypes = computed(() => groups.value.map((g) => ({
 </template>
 
 <style scoped>
-.cp-observable :deep(.v-expansion-panel-title) {
-  position: relative;
-}
-.cp-bar {
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: 4px;
-  border-radius: 2px;
-}
-.cp-observable__name {
-  min-width: 0;
-  flex: 1 1 280px;
+/* La captura se lee en una columna: a lo ancho de un monitor el texto de
+   la pregunta y sus radios quedarían a media pantalla de distancia. */
+.cp-column {
+  max-width: 900px;
 }
 .cp-init {
   flex: 1 1 0;
@@ -322,6 +306,9 @@ const previewTypes = computed(() => groups.value.map((g) => ({
 }
 .cp-note {
   white-space: pre-line;
+}
+.cp-note__icon {
+  margin-top: 1px;
 }
 .cp-status-slot {
   border-radius: 8px;

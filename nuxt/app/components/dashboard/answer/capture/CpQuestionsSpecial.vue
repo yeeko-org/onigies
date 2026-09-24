@@ -3,6 +3,10 @@
  * Pregunta especial: una proporción capturada como total y cuántos
  * cumplen. Que cumplan más que el total se marca en el campo; no impide
  * guardar, igual que el resto de la compuerta de completado.
+ *
+ * Las etiquetas hablan de proyectos porque la única pregunta especial del
+ * instrumento (1.14) cuenta proyectos de investigación dirigidos por
+ * mujeres; una especial de otro tema pediría etiquetas desde el catálogo.
  */
 const props = defineProps({
   observable: { type: Object, required: true },
@@ -24,11 +28,13 @@ function complyingError(row) {
 <template>
   <div>
     <div v-for="question in questions" :key="question.id" class="mb-2">
-      <p class="text-body-1 mb-3">{{ question.text }}</p>
+      <p class="text-body-1 font-weight-medium mb-3">
+        {{ question.text }}
+      </p>
       <div v-if="draft[question.id]" class="d-flex flex-wrap ga-6">
         <v-count-input
           v-model="draft[question.id].total"
-          label="Total"
+          label="Total proyectos"
           :readonly="readonly"
           :disabled="disabled"
           inputmode="numeric"
@@ -37,7 +43,7 @@ function complyingError(row) {
         />
         <v-count-input
           v-model="draft[question.id].complying"
-          label="Cumplen"
+          label="Dirigidos por mujeres"
           :error-messages="complyingError(draft[question.id])"
           :readonly="readonly"
           :disabled="disabled"

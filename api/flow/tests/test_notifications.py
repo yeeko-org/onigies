@@ -8,7 +8,7 @@ from unittest.mock import patch
 from django.urls import reverse
 from rest_framework import status
 
-from example.models import GoodPractice
+from example.models import GoodPractice, GoodPracticePackage
 from flow.models import Status
 from flow.notifications import _should_notify
 from ies.models import User
@@ -109,6 +109,9 @@ class TurnNotificationTests(FlowSecurityTestCase):
             package=self.package_a, name='Práctica X')
         practice.status_id = 'bp_completed'
         practice.save(update_fields=['status'])
+        # La revisión solo actúa sobre la práctica con el paquete enviado.
+        GoodPracticePackage.objects.filter(pk=self.package_a.pk).update(
+            status_id='bp_sent')
         self.client.force_authenticate(self.reviewer)
         with self.captureOnCommitCallbacks(execute=True):
             resp = self.client.post(

@@ -48,7 +48,7 @@ transition" (`bp_discarded`, terminal/review states).
 
 The server mirror is `user_can_edit_flow_content` (`api/flow/permissions.py`), which adds a third condition the client helper does not know: the root's optional `content_lock_errors(user)` hook (duck typing, like `validate_flow_transition`). `AxisValue` uses it to close all cp content — typed answers, the initial boolean, attachments — while the answer gate is closed (see cp below); the frontend gets that state as `cp_capture` in the axis payload instead.
 
-The same "root governs" idea applies to **reviewer transitions** in cp: a group or observable reaches a reviewer-role status (`cp_completed`, `cp_adjusted`, `cp_partial`) before the IES sends the axis, and the motor only checks the object's own role. `answer.services.review_turn_errors` (called from the O/G `validate_flow_transition` hooks) rejects reviewer transitions while the axis is still in the IES's turn; `flowStore.getRootNotInTurn(root)` is its client mirror, applied by `useFlowActions` when given `options.root`.
+The same "root governs" idea applies to **reviewer transitions** in gen, bp and cp: a child reaches a reviewer-role status (`gen_completed`, `bp_completed`, `cp_completed`…) before the IES sends the root, and the motor only checks the object's own role. `flow.permissions.root_turn_errors` (called from the children's `validate_flow_transition` hooks: `GeneralGroupResponse`, `GoodPractice`, `ObservableResponse`, `GroupResponse`) rejects reviewer transitions while the root is still in the IES's turn, with the message the root names in its `root_not_sent_message` (exposed to the frontend as `not_sent_message` in the root serializers); `flowStore.getRootNotInTurn(root)` is its client mirror, applied by `useFlowActions` when given `options.root`.
 
 ## Status model (`api/flow/models.py`)
 
@@ -69,7 +69,7 @@ PK is `name` (CharField, e.g. `bp_draft`). Key fields:
 | `propagates_up` | on assignment, recursively set the parent to it too |
 | `propagates_down` | on assignment, recursively set all descendants to it too |
 | `auto_on_first_save` | assigned automatically on the object's first save |
-| `hint` | next-step guidance shown by `FlowStatusActions` below the chip to the role whose turn it is (≠ `description`, the chip tooltip) |
+| `hint` | next-step guidance shown by `FlowStatusActions` to the role whose turn it is — below the chip (`hint="box"`) or inside the chip tooltip (`hint="tooltip"`) (≠ `description`, the chip tooltip's base text) |
 | `hint_wait` | variant of `hint` for the role that is *waiting*; empty falls back to `hint`. Unused on terminals |
 | `priority` | urgency for ordering (higher = first); used to sort status summaries, e.g. `SurveyHeader`'s group counts |
 | `requires_confirmation` + `confirm_title` / `confirm_text` | the frontend asks for an explicit confirmation before transitioning INTO it; empty title → derived from `action_name` |
@@ -86,7 +86,7 @@ cp:   AxisValue → ObservableResponse → GroupResponse
 gen:  GeneralPackage → GeneralGroupResponse
 ```
 
-**Every parent-child edge is a real FK**: `GoodPractice.package`, `ObservableResponse.axis_value`, `GroupResponse.observable_response`, `GeneralGroupResponse.general_package`. The roots (`GoodPracticePackage`, `AxisValue`, `GeneralPackage`) are created eager in `Institution.save`, and so are the whole cp tree below each axis: `ObservableResponse` and `GroupResponse` (`answer.models.provision_cp_responses`, idempotent, born in `cp_pre_start` because `bulk_create` skips the flow signal). Only the typed answers are lazy.
+**Every parent-child edge is a real FK**: `GoodPractice.package`, `ObservableResponse.axis_value`, `GroupResponse.observable_response`, `GeneralGroupResponse.general_package`. The roots (`GoodPracticePackage`, `AxisValue`, `GeneralPackage`) are created eager in `Institution.save`, and so are the whole cp tree below each axis: `ObservableResponse` and `GroupResponse` (`answer.models.provision_cp_responses`, idempotent, born in `cp_pre_start` — set there because `bulk_create` skips the flow signal — except the groups without capture, born in `cp_approved`). Only the typed answers are lazy.
 
 Topology lives **on each model, not a central dict**: a participating model
 inherits the `FlowParticipant` mixin (a marker, no fields → no migration) and
@@ -123,7 +123,7 @@ client-side**; there is no `GET transitions/` endpoint.
 
 `assign_auto_status(user, obj)` assigns the group's `auto_on_first_save` status when the object has none or sits in the group default (called from the view on first save; it propagates up when the status does).
 
-`assign_status_tree(user, obj, status)` is the **domain door, not a menu transition**: it forces `status` on `obj` and every descendant, skipping role, `next_statuses` and the children rule, one `FlowEvent` per object changed, no upward propagation, no `transition_executed` signal. Only `answer.services` uses it, when the initial answer of an observable decides its groups' fate (`cp_not_present` and back to `cp_filling`).
+`assign_status_tree(user, obj, status)` is the **domain door, not a menu transition**: it forces `status` on `obj` and every descendant, skipping role, `next_statuses` and the children rule, one `FlowEvent` per object changed, no upward propagation, no `transition_executed` signal. Only `answer.services` uses it, when the initial answer of an observable decides its groups' fate (`cp_not_present` and back to `cp_filling`, or to `cp_approved` for the groups without capture).
 
 ## Status normalization + client catalog
 
@@ -148,7 +148,7 @@ confirmation texts, `entry_rules`, `next_statuses`, `valid_child_statuses`,
 - `flowStore.getAvailableTransitions(currentName, appLabel, modelName)` → mirrors
   the motor's role + `next_statuses` ∩ `applicable_models` filter.
 - `flowStore.getChildrenNotReady(record, target, modelName)` → the children rule read client-side (`CHILD_REGISTRY` says where the children hang — for cp, `observable_responses` on the axis and `group_responses` on the observable, the field names of the Full serializers), as reasons in Spanish for the blocked dialog. UX only; the motor still enforces it on POST.
-- `flowStore.getRootNotInTurn(root)` → mirror of `review_turn_errors` (above).
+- `flowStore.getRootNotInTurn(root)` → mirror of `root_turn_errors` (above).
 - `auth.flow_role` → `'reviewer'` if `is_superuser || is_staff || reviewer`, else
   `'ies'` (mirrors backend `User.is_reviewer`).
 
@@ -182,20 +182,21 @@ handlers.
 
 | component | use |
 |---|---|
-| `FlowStatusChip.vue` | display-only chip; `:status` is the **name string**, resolved via `flowStore.getStatus`. Props `label`, `onlyIcon`/`xSmall`, `disabled`; tooltip = `public_name` + `description`. Trailing `<slot/>` for appended content. |
-| `FlowStatusActions.vue` | **unified status control** — thin assembly over `useFlowActions`: chip activator (`v-menu`) + `FlowTransitionMenu` + `FlowTransitionDialogs`. `v-model` = record; props `appLabel/modelName`. On the user's turn with transitions the chip is a menu activator, else plain. Shows the status `hint` below. |
+| `FlowStatusChip.vue` | display-only chip; `:status` is the **name string**, resolved via `flowStore.getStatus`. Props `label`, `size`, `variant`, `onlyIcon`/`xSmall`, `disabled`; tooltip = `public_name` + `description` + slot `tooltip`. Trailing `<slot/>` for appended content. |
+| `FlowStatusActions.vue` | **unified status control** — thin assembly over `useFlowActions`: chip activator (`v-menu`) + `FlowTransitionMenu` + `FlowTransitionDialogs`. `v-model` = record; props `appLabel/modelName`, `size`, `variant`, `hint: 'box' \| 'tooltip'` (default `box`). On the user's turn with transitions the chip is a menu activator, else plain. `box` shows the status `hint` below the chip; `tooltip` puts it in the chip tooltip plus a small `flag` icon when it is the user's turn — cp uses `tooltip` on observable and group (three levels would stack boxes) and `box` on the axis. |
 | `FlowTransitionMenu.vue` | **presentational** `v-list` of transitions; `:transitions`, emits `@select(t)`; `:title` uses `action_name || public_name`. Reused by chip-menu and split-button carets. |
 | `FlowTransitionDialogs.vue` | **presentational** confirmation/comment dialog (title from `confirm_title`, body `confirm_text`, comment label `comment_prompt`; embeds `FlowTimeline`) + `FlowBlockedDialog`, bound via `:actions="useFlowActions(...)"`. Every activator that isn't `FlowStatusActions` (split-buttons) must mount it itself. |
 | `FlowTimeline.vue` | **presentational** read-only history (status changes + comments), chronological; `:events` (no fetch). Reused by `FlowComments` and `FlowTransitionDialogs`. |
-| `FlowComments.vue` | compact yellow "sticky note" with comment count; opens a dialog with `FlowTimeline` + add-comment box. `v-model` = record; props `appLabel/modelName`, `width`. |
+| `FlowComments.vue` | yellow "sticky note" card only when `commentCount > 0` (status changes without text don't count), otherwise a «Comentar» button when the user may comment; either opens a dialog with `FlowTimeline` + add-comment box. `v-model` = record; props `appLabel/modelName`, `width`, `readonly` (hides the capture even on the user's turn). |
+| `FlowSaveMenu.vue` | **presentational** split-button «Guardar ▾»: lead item «Guardar y mantener como {status}», then `FlowTransitionMenu`; plain «Guardar» when there are no transitions. Props `transitions`, `currentStatus`, `loading`, `disabled`, `saveDisabled`; emits `save` and `select(t)`. The parent saves-then-transitions and mounts `FlowTransitionDialogs`. Used by gen (`GeneralGroupPanel`), bp (`GoodPracticeEditSimple`) and cp (`CpGroupCard`). |
 | `FlowBlockedDialog.vue` | generic "transition blocked" dialog. Presentational: `v-model` (open), `title`, `reasons: string[]` (failed `entry_rules` + children not ready). |
 
 **Split-buttons (alternative activator).** Where a prominent action beats the
-chip-menu, a `v-btn-group` (primary button + caret) drives the same transitions
+chip-menu, a split-button (`FlowSaveMenu` for save-then-transition) drives the same transitions
 and the chip degrades to display-only (`FlowStatusChip`); no caret when
 `transitions.length === 0`:
 
-- `GoodPracticeEditSimple` (IES): "Guardar" (`saveSimple`) + caret items that
+- `GoodPracticeEditSimple` (IES): `FlowSaveMenu` — "Guardar" (`saveSimple`) + items that
   **save then transition** — `saveAndTransition(t)` = `await persist();
   onSelect(t)`, closing only if `onSelect` returned an event. `persist` is split
   from the close so the save doesn't dismiss the dialog before the transition.
@@ -268,7 +269,7 @@ The source of truth for every group's statuses, transitions and child rules is `
 
 ## cp catalog
 
-A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of work), G = `GroupResponse` (the unit of save, one per question type). The IES's initial «No» on an observable sets `cp_not_present` — terminal by domain, not by the motor — on the observable and all its groups through `assign_status_tree`; the reviewer returns per group, and `review_turn_errors` keeps every reviewer transition waiting until the axis is sent. Status table, child rules and the guards on the «No»: [references/cp.md](references/cp.md).
+A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of work), G = `GroupResponse` (the unit of save, one per question type). The IES's initial «No» on an observable sets `cp_not_present` — terminal by domain, not by the motor — on the observable and all its groups through `assign_status_tree`; the reviewer returns per group, and `root_turn_errors` keeps every reviewer transition waiting until the axis is sent. Status table, child rules and the guards on the «No»: [references/cp.md](references/cp.md).
 
 ## gen: the live surfaces
 

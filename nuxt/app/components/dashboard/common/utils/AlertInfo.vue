@@ -12,7 +12,6 @@ const props = defineProps({
     v-if="help_text"
     type="info"
     variant="tonal"
-    border="end"
     closable
     density="compact"
   >

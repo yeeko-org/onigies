@@ -115,7 +115,9 @@ class GoodPracticeSchema(CollectionSchema):
 `extra_sorts` (`[{"title", "value"}]`) adds sort options of its own to that
 collection's selector; each `value` must be admitted by the ViewSet's
 `ordering_fields`, and the initial order stays the ViewSet's `ordering`
-(instance: `AxisValueSchema` in `survey/catalog_schema.py`).
+(e.g. `cat_params = {"extra_sorts": [{"title": "Institución", "value":
+"institution__name"}]}`; no schema uses it today — the frontend reads it in
+`composables/cats.js`).
 
 ---
 

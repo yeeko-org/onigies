@@ -4,6 +4,7 @@ import { setAuthCookie } from './helpers'
 import { mockCurrentUser, mockCatalogs, mockFlowStatuses } from
   './mocks/handlers'
 import {
+  API_BASE,
   mockIesRespuestasUser,
   mockRespuestasCatalogs,
   mockRespuestasFlowStatuses,
@@ -70,5 +71,28 @@ test.describe('/respuestas — chips y tabs ligados a la URL', () => {
       await expect(
         page.getByRole('tab', { name: /Docencia/ })
       ).toHaveAttribute('aria-selected', 'true')
+    })
+
+  test('recarga con catálogos lentos conserva el ?tab= del eje',
+    async ({ page, context }) => {
+      await setupIes(page, context)
+      // Regresión: mientras los catálogos (los ejes) no llegaban, v-tabs
+      // caía en la primera pestaña y la escribía en la URL. Esta ruta,
+      // registrada después, gana a la de setupIes.
+      await page.route(`${API_BASE}/catalogs/all/`, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, 2500))
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(mockRespuestasCatalogs),
+        })
+      })
+      await page.goto('/respuestas/2025?tab=axis-1')
+      await page.reload()
+
+      await expect(
+        page.getByRole('tab', { name: /Institucional/ })
+      ).toHaveAttribute('aria-selected', 'true', { timeout: 10_000 })
+      await expect(page).toHaveURL(/\/respuestas\/2025\?tab=axis-1/)
     })
 })

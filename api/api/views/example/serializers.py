@@ -87,6 +87,10 @@ class SurveySemiFullSerializer(serializers.ModelSerializer):
 class GoodPracticePackageSerializer(serializers.ModelSerializer):
     good_practices_count = serializers.SerializerMethodField()
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
+    # Motivo que la revisión ve mientras la raíz sigue en turno de la IES
+    # (`flow.permissions.root_turn_errors`); constante de clase, sin query.
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
     # status = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_good_practices_count(self, obj):
@@ -101,6 +105,8 @@ class GoodPracticePackageFullSerializer(serializers.ModelSerializer):
     good_practices = GoodPracticeFullSerializer(many=True, read_only=True)
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
     flow_events = FlowEventSerializer(many=True, read_only=True)
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
     # status = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:

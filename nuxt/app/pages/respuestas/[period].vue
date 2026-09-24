@@ -36,15 +36,29 @@ const default_tab = computed(() => {
   return SECTION_BP
 })
 
+// Las pestañas dependen de dos cargas que el middleware no espera: el perfil
+// (`is_test` decide si se ve cp) y los catálogos (los ejes). Antes de
+// tenerlas, v-tabs y v-tabs-window, que siempre fuerzan un valor elegido,
+// caían en la primera pestaña y la escribían en la URL, pisando el `?tab=`
+// de un deep-link recargado.
+const ready = computed(() => !!iesStore.ies_data && mainStore.cats_ready)
+
+const tabExists = (value) => !String(value).startsWith('axis-')
+  || all_axis.value.some((axis) => `axis-${axis.id}` === value)
+
 const tab = computed({
   get: () => {
     const current = route.query.tab
     const section = sectionOfTab(current)
-    if (section && isSectionVisible(section, iesStore.is_test))
+    if (section && isSectionVisible(section, iesStore.is_test)
+      && tabExists(current))
       return current
     return default_tab.value
   },
-  set: (val) => router.replace({ query: { ...route.query, tab: val } }),
+  set: (val) => {
+    if (!ready.value || val === route.query.tab) return
+    router.replace({ query: { ...route.query, tab: val } })
+  },
 })
 
 const current_survey = computed(() => {
@@ -67,7 +81,9 @@ function axisValueOf(axisId) {
       Registro del año {{ iesStore.current_period }}
     </v-card-title>
 
+    <v-progress-linear v-if="!ready" indeterminate color="primary" />
     <v-tabs
+      v-else
       v-model="tab"
       align-tabs="center"
       color="deep-purple-accent-4"
@@ -108,7 +124,7 @@ function axisValueOf(axisId) {
 <!--      color="primary"-->
 <!--    ></v-progress-linear>-->
 
-    <v-tabs-window v-if="iesStore.ies_data" v-model="tab">
+    <v-tabs-window v-if="ready" v-model="tab">
       <v-tabs-window-item
         v-if="showBase"
         value="base"

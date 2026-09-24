@@ -8,7 +8,7 @@ A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of work),
 
 | status | applies | role | note |
 |---|---|---|---|
-| `cp_pre_start` | A, O, G | ies | default; the whole tree is born here |
+| `cp_pre_start` | A, O, G | ies | default; the whole tree is born here, except the groups without capture |
 | `cp_filling` | A, O, G | ies | auto on first save, propagates up |
 | `cp_completed` | O, G | reviewer | IES marked it complete; reviewed once the axis is sent |
 | `cp_sent` / `cp_resent` | A | reviewer | axis sent / resent |
@@ -19,14 +19,16 @@ A = `AxisValue` (the unit of send), O = `ObservableResponse` (the unit of work),
 | `cp_postponed` | O, G | ies | answer later |
 | `cp_partial` / `cp_partial_approved` | O, G | reviewer / ies | partial delivery and its approval |
 | `cp_voluntary_readjust` | A, O, G | reviewer | IES asks to reopen an approved answer |
-| `cp_approved` | A, O, G | ies | public; IES may only ask a readjust |
-| `cp_not_present` | O, G | None | «No cuenta con la medida» |
+| `cp_approved` | A, O, G | ies | public; IES may only ask a readjust; groups without capture are born here |
+| `cp_not_present` | O, G | None | «Sin la medida» |
 
-`cp_not_present` is **terminal by domain, not by the motor**: no `next_statuses` point to it or leave it. The IES's «No» to the observable's initial question sets it on the observable and all its groups through `assign_status_tree`, and changing the answer back leaves it the same way (to `cp_filling`). Both need the axis in the IES's turn and the answer gate open; the «No» is also refused once any group has entered review (the IES asks a readjust instead). It counts as 0 in the average (a decided rule; scoring is not built yet) and is never reviewed, so it is a valid child in every child rule that moves a parent forward. There is no «no aplica» at the observable level: partial applicability is declared in gen.
+`cp_not_present` is **terminal by domain, not by the motor**: no `next_statuses` point to it or leave it. The IES's «No» to the observable's initial question sets it on the observable and all its groups through `assign_status_tree`, and changing the answer back leaves it the same way (to `cp_filling`; the groups without capture, to `cp_approved`). Both need the axis in the IES's turn and the answer gate open; the «No» is also refused once any group with capture has entered review (the IES asks a readjust instead) — the groups without capture sit in `cp_approved` from birth and do not count. It counts as 0 in the average (a decided rule; scoring is not built yet) and is never reviewed, so it is a valid child in every child rule that moves a parent forward. There is no «no aplica» at the observable level: partial applicability is declared in gen.
 
-Child rules worth knowing: `cp_postponed` requires every group resolved or postponed itself (`cp_completed`, `cp_postponed`, `cp_partial`, `cp_not_present`) — without it a postponed observable travelled in `cp_sent` with untouched groups; `cp_partial_approved` accepts `cp_not_present` groups.
+Groups without capture (type with `QuestionType.model_response` null, today `population`, whose data lives in gen) are born in `cp_approved` and stay there: their `validate_flow_transition` refuses every menu transition, since `cp_approved` has the ies role and would offer a readjust of something nobody captured. So `cp_approved` is also a valid group in the four observable child rules that move it forward (`cp_completed`, `cp_partial`, `cp_postponed`, `cp_partial_approved`).
 
-The reviewer returns **per group**: the group, the observable and the axis are transitioned separately (`review_turn_errors` keeps all of them waiting until the axis is sent). What the IES can type is guarded by `answer/group_validation.py` on `cp_completed`/`cp_adjusted` and by the answer gate on everything (skill `cp-questionnaire`).
+Child rules worth knowing: `cp_postponed` requires every group resolved or postponed itself (`cp_completed`, `cp_postponed`, `cp_partial`, `cp_approved`, `cp_not_present`) — without it a postponed observable travelled in `cp_sent` with untouched groups; `cp_partial_approved` accepts `cp_not_present` groups.
+
+The reviewer returns **per group**: the group, the observable and the axis are transitioned separately (`flow.permissions.root_turn_errors` keeps all of them waiting until the axis is sent). What the IES can type is guarded by `answer/group_validation.py` on `cp_completed`/`cp_adjusted` and by the answer gate on everything (skill `cp-questionnaire`).
 
 ## cp: the live surfaces
 

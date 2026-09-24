@@ -122,13 +122,6 @@ async function removeFile() {
       </template>
     </v-chip>
 
-    <span
-      v-if="!attachments.length && !editable"
-      class="text-caption text-grey-darken-1"
-    >
-      Sin archivos adjuntos
-    </span>
-
     <template v-if="editable">
       <input
         ref="inputRef"

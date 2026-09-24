@@ -31,7 +31,9 @@ const levels = computed(() => PLAN_LEVELS
 <template>
   <div>
     <div v-for="question in questions" :key="question.id" class="mb-3">
-      <p class="text-body-1 mb-3">{{ question.text }}</p>
+      <p class="text-body-1 font-weight-medium mb-3">
+        {{ question.text }}
+      </p>
       <div v-if="draft[question.id]" class="d-flex flex-wrap ga-6">
         <v-count-input
           v-for="level in levels"

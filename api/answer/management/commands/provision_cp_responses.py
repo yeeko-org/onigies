@@ -6,6 +6,9 @@ Existe para no usar `resave_institutions` en producción:
 `Institution.save()` también corre `_preload_centralized` y reescribe
 `is_centralized`, un efecto que un deploy no debe tener. Este comando
 solo toca el árbol cp. Idempotente: una segunda corrida no crea nada.
+También lleva a `cp_approved` los grupos sin captura que siguen en
+`cp_pre_start` o `cp_filling` (`approve_groups_without_capture`): los
+nuevos ya nacen así, los anteriores a la regla no.
 Dry-run por omisión (corre dentro de una transacción que se revierte y
 reporta lo que crearía); `--apply` persiste, como pide `deploy-api` para
 los comandos re-ejecutables que escriben datos.
@@ -14,7 +17,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from answer.models import (
-    GroupResponse, ObservableResponse, provision_cp_responses)
+    GroupResponse, ObservableResponse, approve_groups_without_capture,
+    provision_cp_responses)
 from survey.models import AxisValue
 
 
@@ -52,6 +56,8 @@ class Command(BaseCommand):
                 provision_cp_responses(axis_value.survey, axis_value)
                 total += 1
             after = {name: qs.count() for name, qs in counted.items()}
+            approved = approve_groups_without_capture(
+                counted['GroupResponse'])
             if not options['apply']:
                 transaction.set_rollback(True)
 
@@ -64,3 +70,5 @@ class Command(BaseCommand):
             created = after[name] - before[name]
             msg = f"{name}: creados {created}, existentes {before[name]}"
             self.stdout.write(self.style.SUCCESS(msg))
+        self.stdout.write(self.style.SUCCESS(
+            f"GroupResponse sin captura llevados a cp_approved: {approved}"))

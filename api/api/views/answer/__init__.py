@@ -126,10 +126,7 @@ class AxisValueViewSet(InstitutionScopedMixin, BaseGenericViewSet):
     ordering_fields = [
         'id', 'axis__order', 'survey__period__year',
         'survey__institution__name', 'status__order', 'status__priority']
-    # Orden por defecto, como en los paquetes bp y gen: más urgentes
-    # primero (mayor priority del status); institución y eje desempatan.
-    ordering = ['-status__priority', 'survey__institution__name',
-                'axis__order']
+    ordering = ['survey__institution__name', 'axis__order']
     filterset_class = AxisValueFilter
     http_method_names = ['get', 'head', 'options']
 

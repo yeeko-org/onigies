@@ -102,7 +102,7 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     if (!record.value.flow_events)
       record.value.flow_events = []
     record.value.flow_events.push(ev)
-    dashStore.showSnackbar(`Estado cambiado a "${t.public_name}"`)
+    dashStore.showSnackbar(`Estatus cambiado a "${t.public_name}"`)
     await options.onTransitioned?.(ev)
     return ev
   }

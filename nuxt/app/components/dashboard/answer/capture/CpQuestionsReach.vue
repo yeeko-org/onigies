@@ -19,7 +19,9 @@ const questions = computed(() => props.observable.reach_questions || [])
 <template>
   <div>
     <div v-for="question in questions" :key="question.id" class="mb-2">
-      <p class="text-body-1 mb-2">{{ question.text }}</p>
+      <p class="text-body-1 font-weight-medium mb-2">
+        {{ question.text }}
+      </p>
       <template v-if="draft[question.id]">
         <v-checkbox
           v-if="question.has_general_planning"

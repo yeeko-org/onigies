@@ -20,7 +20,8 @@ from rest_framework.test import APITestCase
 from answer.group_validation import group_completion
 from answer.models import (
     AResponse, BResponse, GroupResponse, ObservableResponse, PlanResponse,
-    ReachResponse, SpecialResponse)
+    ReachResponse, SpecialResponse, WITHOUT_CAPTURE_MESSAGE,
+    approve_groups_without_capture)
 from answer.services import InitValueError, set_init_value
 from flow.models import FlowEvent, Status
 from flow.permissions import user_can_edit_flow_content
@@ -199,6 +200,40 @@ class ProvisioningTests(CpCatalogTestCase):
         self.assertIn('ObservableResponse: creados 0, existentes 6', second)
         self.assertIn('GroupResponse: creados 0, existentes 18', second)
 
+    def test_approve_groups_without_capture_backfill(self):
+        """Grupos sin captura anteriores a la regla: los que siguen en
+        reposo o en captura pasan a `cp_approved`; los del «No» y los
+        grupos con captura no se tocan."""
+        for observable in (self.obs_std, self.obs_plan, self.obs_special):
+            ObservableQuestionType.objects.create(
+                observable=observable, question_type_id='population')
+        self.inst_a.save()
+        population = {
+            group.observable_response.observable_id: group
+            for group in GroupResponse.objects.filter(
+                observable_response__survey=self.survey_a,
+                question_type_id='population')}
+        force(population[self.obs_std.pk], 'cp_pre_start')
+        force(population[self.obs_plan.pk], 'cp_filling')
+        force(population[self.obs_special.pk], 'cp_not_present')
+        force(self.group_b, 'cp_filling')
+        groups = GroupResponse.objects.filter(
+            observable_response__survey=self.survey_a)
+        self.assertEqual(approve_groups_without_capture(groups), 2)
+        for group in population.values():
+            group.refresh_from_db()
+        self.assertEqual(
+            population[self.obs_std.pk].status_id, 'cp_approved')
+        self.assertEqual(
+            population[self.obs_plan.pk].status_id, 'cp_approved')
+        self.assertEqual(
+            population[self.obs_special.pk].status_id, 'cp_not_present')
+        self.group_a.refresh_from_db()
+        self.group_b.refresh_from_db()
+        self.assertEqual(self.group_a.status_id, 'cp_pre_start')
+        self.assertEqual(self.group_b.status_id, 'cp_filling')
+        self.assertEqual(approve_groups_without_capture(groups), 0)
+
     @staticmethod
     def run_backfill(*args) -> str:
         out = StringIO()
@@ -254,29 +289,27 @@ class InitValueTests(CpCatalogTestCase):
         # Los grupos siguen en reposo hasta que se capturen.
         self.assertEqual(self.group_statuses(), {'cp_pre_start'})
 
-    def test_yes_starts_groups_without_capturable_content(self):
+    def test_groups_without_capture_stay_approved(self):
         """Un grupo cuyo tipo no tiene modelo de respuesta (population)
-        nunca recibe un PATCH: el «Sí» lo promueve para que pueda
-        completarse desde el menú como cualquier otro."""
-        population = GroupResponse.objects.create(
-            observable_response=self.obs_response,
+        nace en `cp_approved`; el «Sí» no lo toca, y al salir del «No»
+        regresa a `cp_approved`, no a `cp_filling`."""
+        ObservableQuestionType.objects.create(
+            observable=self.obs_std, question_type_id='population')
+        self.inst_a.save()
+        population = self.obs_response.statuses.get(
             question_type_id='population')
-        self.assertEqual(population.status_id, 'cp_pre_start')
+        self.assertEqual(population.status_id, 'cp_approved')
+        set_init_value(self.ies_a, self.obs_response, True)
+        population.refresh_from_db()
+        self.assertEqual(population.status_id, 'cp_approved')
+        set_init_value(self.ies_a, self.obs_response, False)
+        population.refresh_from_db()
+        self.assertEqual(population.status_id, 'cp_not_present')
         set_init_value(self.ies_a, self.obs_response, True)
         population.refresh_from_db()
         self.group_b.refresh_from_db()
-        self.assertEqual(population.status_id, 'cp_filling')
-        self.assertEqual(self.group_b.status_id, 'cp_pre_start')
-        self.assertTrue(FlowEvent.objects.filter(
-            object_id=population.pk, to_status_id='cp_filling').exists())
-        # Y desde ahí el menú lo lleva a completado sin contenido.
-        execute_transition(self.ies_a, population, status('cp_completed'))
-        population.refresh_from_db()
-        self.assertEqual(population.status_id, 'cp_completed')
-        # Un segundo «Sí» no lo regresa.
-        set_init_value(self.ies_a, self.obs_response, True)
-        population.refresh_from_db()
-        self.assertEqual(population.status_id, 'cp_completed')
+        self.assertEqual(population.status_id, 'cp_approved')
+        self.assertEqual(self.group_b.status_id, 'cp_filling')
 
     def test_no_blocked_when_a_group_is_under_review(self):
         for name in ('cp_need_changes', 'cp_in_adjustment', 'cp_adjusted',
@@ -412,6 +445,35 @@ class ObservableFlowRulesTests(CpCatalogTestCase):
         self.assertEqual(validate_transition(
             self.reviewer, self.obs_response, status('cp_approved')), [])
 
+    def test_approved_group_without_capture_lets_observable_complete(self):
+        """El grupo sin captura nace en `cp_approved` y es hijo válido de
+        `cp_completed`: no frena al observable."""
+        ObservableQuestionType.objects.create(
+            observable=self.obs_std, question_type_id='population')
+        self.inst_a.save()
+        self.obs_response.value = True
+        self.obs_response.save()
+        force(self.obs_response, 'cp_filling')
+        self.obs_response.statuses.exclude(
+            question_type_id='population').update(status_id='cp_completed')
+        self.assertEqual(self.obs_response.statuses.get(
+            question_type_id='population').status_id, 'cp_approved')
+        self.assertEqual(validate_transition(
+            self.ies_a, self.obs_response, status('cp_completed')), [])
+
+    def test_approved_group_without_capture_refuses_readjust(self):
+        """`cp_approved` tiene rol ies, pero el grupo sin captura no
+        ofrece reajuste: nadie capturó nada."""
+        ObservableQuestionType.objects.create(
+            observable=self.obs_std, question_type_id='population')
+        self.inst_a.save()
+        group = self.obs_response.statuses.get(question_type_id='population')
+        self.assertEqual(group.status_id, 'cp_approved')
+        errors = validate_transition(
+            self.ies_a, group, status('cp_voluntary_readjust'),
+            comment='Quiero corregir el dato')
+        self.assertEqual(errors, [WITHOUT_CAPTURE_MESSAGE])
+
     def test_postponed_requires_resolved_groups(self):
         force(self.obs_response, 'cp_filling')
         self.obs_response.value = True
@@ -523,7 +585,8 @@ class GroupValidationTests(CpCatalogTestCase):
 
 class CaptureGateTests(CpCatalogTestCase):
     """Compuerta de respuesta: fecha de apertura y generales validadas.
-    Las de prueba no están exentas; la revisión no está sujeta."""
+    Las de prueba ignoran la fecha, no las generales; la revisión no
+    está sujeta."""
 
     def value_url(self) -> str:
         return reverse(
@@ -563,11 +626,14 @@ class CaptureGateTests(CpCatalogTestCase):
         self.assertEqual(
             response.json()['cp_capture']['reason'], 'gen_not_approved')
 
-    def test_test_institution_is_not_exempt(self):
+    def test_test_institution_skips_date_not_gen(self):
         Institution.objects.filter(pk=self.inst_a.pk).update(is_test=True)
         Period.objects.filter(pk=self.period.pk).update(cp_open_at=None)
+        self.assertEqual(self.patch_value().status_code, 200)
+        force(self.survey_a.general_package, 'gen_sent')
         response = self.patch_value()
         self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['code'], 'gen_not_approved')
 
     def test_gate_closes_transitions_and_content_for_ies_only(self):
         Period.objects.filter(pk=self.period.pk).update(cp_open_at=None)

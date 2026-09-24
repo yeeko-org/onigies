@@ -82,3 +82,5 @@ Dashboard is schema-driven by `/catalogs/all/`, loaded via `middleware/dashboard
 - **Vuetify theme:** `primary #2C2F6E` (indigo, institutional chrome), `accent #14A8A0` (turquoise — buttons and user actions MUST use accent, not primary). Source of truth: `app/plugins/vuetify.ts` and `design-system/`.
 - **Cross-cutting visual conventions** live in `defaults`/`aliases` of `app/plugins/vuetify.ts`. Never replicate them by repeating props at each usage, nor by wrapping a single Vuetify element in a component just to fix its props.
 - Generic CRUD primitives in `common/generic/` and dialogs in `common/dialog/`.
+- **Reuse before building:** before implementing a control or layout (a Sí/No input, a header, a save button, an evidence block), search for the component that already solved it in gen, bp or the dashboard and adapt it; a fresh implementation repeats the mistakes those already fixed.
+- **No side stripes:** no `border-left`, `v-alert border="start|end"` nor colored bars as accents. Only exception: the type blocks of `ObservableEditSimple` (`.type-block.border-s-lg`).

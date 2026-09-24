@@ -83,10 +83,13 @@ class GeneralPackageBriefSerializer(serializers.ModelSerializer):
     ni el timeline.
     """
     groups_by_status = serializers.SerializerMethodField()
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
 
     class Meta:
         model = GeneralPackage
-        fields = ['id', 'status', 'sent_at', 'groups_by_status']
+        fields = ['id', 'status', 'sent_at', 'groups_by_status',
+                  'not_sent_message']
 
     def get_groups_by_status(self, obj) -> dict:
         return count_groups_by_status(obj)
@@ -99,6 +102,10 @@ class GeneralPackageSerializer(serializers.ModelSerializer):
     survey_full = SurveySemiFullSerializer(read_only=True, source='survey')
     general_group_responses_count = serializers.SerializerMethodField()
     groups_by_status = serializers.SerializerMethodField()
+    # Motivo que la revisión ve mientras la raíz sigue en turno de la IES
+    # (`flow.permissions.root_turn_errors`); constante de clase, sin query.
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
 
     class Meta:
         model = GeneralPackage

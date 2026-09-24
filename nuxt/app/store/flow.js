@@ -18,6 +18,10 @@ const CHILD_REGISTRY = {
   generalpackage: { field: 'general_group_responses', label: 'grupos' },
 }
 
+// Solo si el serializer de la raíz aún no trae su `not_sent_message`.
+const ROOT_NOT_SENT_FALLBACK = 'Aún no se ha enviado a revisión; la '
+  + 'revisión podrá actuar cuando la institución lo envíe.'
+
 function childrenOf(record, modelName) {
   const field = CHILD_REGISTRY[modelName]?.field
   return field ? (record?.[field] || []) : []
@@ -109,20 +113,20 @@ export const useFlowStore = defineStore('flow', () => {
   }
 
   /**
-   * Compuerta de la raíz: espejo de `answer.services.review_turn_errors`.
-   * La revisión no transiciona un descendiente (observable, grupo) mientras
-   * la raíz siga en turno de la IES —un grupo «completado» antes de enviar el
-   * eje ya tiene rol reviewer, pero el eje no se ha cedido—. Devuelve
-   * string[] de motivos para pre-bloquear el menú; el motor lo rechaza en el
-   * POST de todos modos.
+   * Compuerta de la raíz: espejo de `flow.permissions.root_turn_errors`.
+   * La revisión no transiciona un descendiente mientras la raíz siga en
+   * turno de la IES —un grupo «completado» antes de enviar el eje ya tiene
+   * rol reviewer, pero el eje no se ha cedido—. Devuelve string[] de
+   * motivos para pre-bloquear el menú; el motor lo rechaza en el POST de
+   * todos modos. El texto lo da cada raíz (`not_sent_message`), porque solo
+   * ella sabe si es un eje, un envío de generales o uno de buenas prácticas.
    */
   function getRootNotInTurn(root) {
     const authStore = useAuthStore()
     if (authStore.flow_role !== 'reviewer') return []
     const rootStatus = byName.value[root?.status]
     if (rootStatus?.role !== 'ies') return []
-    return ['El eje aún no se ha enviado a revisión; la revisión podrá '
-      + 'actuar sobre esta respuesta cuando la institución lo envíe.']
+    return [root?.not_sent_message || ROOT_NOT_SENT_FALLBACK]
   }
 
   return { byName, loaded, ensureStatuses, getStatus, canEditContent,

@@ -4,15 +4,20 @@
  * tarjeta: título, status, las preguntas del tipo, evidencia y
  * comentarios.
  *
- * El borrador vive aquí y se guarda por grupo con un botón que solo
- * aparece con cambios: la IES captura en varias sesiones y no hay
- * autoguardado por pregunta. Al guardar, el backend devuelve la compuerta
- * de completado (`completion`), que se muestra sin bloquear el guardado:
- * dice lo que impediría marcar el grupo como completado.
+ * El borrador vive aquí y se guarda por grupo con el split-button de gen
+ * y bp («Guardar ▾»: guardar y mantener, o guardar y transicionar): la IES
+ * captura en varias sesiones y no hay autoguardado por pregunta. Al
+ * guardar, el backend devuelve la compuerta de completado (`completion`),
+ * que se muestra sin bloquear el guardado: dice lo que impediría marcar el
+ * grupo como completado.
  *
  * Con `review` (dashboard) nada se edita: las respuestas se leen (sin
  * atenuar, a diferencia de la consulta previa de la IES), los adjuntos se
  * ven y quedan el status y los comentarios.
+ *
+ * El grupo sin captura (`population`, sin `model_response`) solo muestra su
+ * status: no se transiciona, no se comenta ni lleva evidencia; su dato vive
+ * en información base.
  */
 import { useAuthStore } from '~/store/auth.js'
 import { useMainStore } from '~/store/index.js'
@@ -30,6 +35,7 @@ import FlowTransitionDialogs from
   '~/components/dashboard/flow/FlowTransitionDialogs.vue'
 import FlowComments from '~/components/dashboard/flow/FlowComments.vue'
 import FlowAttachments from '~/components/dashboard/flow/FlowAttachments.vue'
+import FlowSaveMenu from '~/components/dashboard/flow/FlowSaveMenu.vue'
 import CpQuestionsA from './CpQuestionsA.vue'
 import CpQuestionsB from './CpQuestionsB.vue'
 import CpQuestionsReach from './CpQuestionsReach.vue'
@@ -84,6 +90,13 @@ const editable = computed(() => !props.review && !disabled.value
   && flowStore.canEditContent(group.value, props.axis))
 const showActions = computed(
   () => (props.review ? !props.preview : !disabled.value))
+// Sin captura: el dato vive en información base (criterio del backend,
+// `model_response` nulo en el tipo, no el nombre del tipo).
+const noCapture = computed(() => !!types_by_name.value[
+  group.value.question_type] && !type.value.model_response)
+// La IES comenta donde trabaja el contenido; la revisión, donde revisa.
+const commentReadonly = computed(
+  () => (props.review ? props.preview : !editable.value))
 
 const draft = ref({})
 const baseline = ref({})
@@ -136,13 +149,24 @@ const kernel = useFlowActions(group, 'answer', 'groupresponse', {
   root: () => props.axis,
   onTransitioned: (ev) => emit('transitioned', ev),
 })
-const actions = {
-  ...kernel,
-  onSelect: async (t) => {
-    if (dirty.value && !(await save())) return null
-    return kernel.onSelect(t)
-  },
+// Guardar y luego transicionar, como los split-buttons de gen y bp; si el
+// guardado falla, el status no se mueve.
+async function saveAndTransition(t) {
+  if (dirty.value && !(await save())) return null
+  return kernel.onSelect(t)
 }
+const actions = { ...kernel, onSelect: saveAndTransition }
+const { transitions, hasActions, currentStatus, sending } = kernel
+
+// La IES transiciona desde el split-button mientras edita; fuera de la
+// edición (pospuesto, aprobado) le quedan transiciones sin nada que
+// guardar, y esas siguen en el chip-menú.
+const iesChipMenu = computed(() => !props.review && showActions.value
+  && !editable.value && hasActions.value)
+
+// Sin nada que ver ni que subir, la sección de evidencia no se pinta.
+const showEvidence = computed(() => editable.value
+  || (group.value.flow_attachments || []).length > 0)
 
 watchEffect(() => {
   if (group.value && !Array.isArray(group.value.flow_attachments))
@@ -154,26 +178,60 @@ const baseLink = computed(() => ({
 </script>
 
 <template>
-  <v-card variant="tonal" color="blue-grey" class="cp-group-card mb-4">
-    <div class="d-flex align-start flex-wrap ga-3 px-4 pt-3 pb-1">
-      <v-icon class="mt-1">{{ type.icon || 'help' }}</v-icon>
-      <span class="text-subtitle-1 font-weight-medium text-high-emphasis mt-1">
-        {{ type.public_name }}
-      </span>
+  <v-card elevation="2" class="cp-group-card mb-4">
+    <div class="d-flex align-start flex-wrap ga-3 px-4 pt-3 pb-2">
+      <v-icon class="mt-1 text-medium-emphasis">
+        {{ type.icon || 'help' }}
+      </v-icon>
+      <div class="d-flex align-center">
+        <span class="text-subtitle-1 font-weight-medium text-high-emphasis">
+          {{ type.public_name }}
+        </span>
+        <v-btn
+          v-if="type.description"
+          icon
+          variant="text"
+          size="small"
+          :aria-label="`Descripción: ${type.public_name}`"
+        >
+          <v-icon color="grey-darken-1">info</v-icon>
+          <v-tooltip activator="parent" location="end" max-width="400">
+            {{ type.description }}
+          </v-tooltip>
+        </v-btn>
+      </div>
       <v-spacer />
       <FlowStatusActions
-        v-if="showActions"
+        v-if="!noCapture && ((review && showActions) || iesChipMenu)"
         v-model="group"
         app-label="answer"
         model-name="groupresponse"
         :actions="actions"
+        size="small"
+        variant="tonal"
+        hint="tooltip"
       />
-      <FlowStatusChip v-else :status="group.status" x-small />
+      <FlowStatusChip
+        v-else
+        :status="group.status"
+        size="small"
+        variant="tonal"
+        class="mt-1"
+      />
+      <FlowComments
+        v-if="!noCapture"
+        v-model="group"
+        app-label="answer"
+        model-name="groupresponse"
+        :width="220"
+        :readonly="commentReadonly"
+      />
     </div>
+    <v-divider />
 
     <v-card-text class="text-high-emphasis">
       <v-alert
-        v-if="group.question_type === 'population'"
+        v-if="noCapture"
         type="info"
         variant="tonal"
         density="compact"
@@ -194,75 +252,60 @@ const baseLink = computed(() => ({
         :disabled="disabled"
       />
 
-      <div class="d-flex align-start flex-wrap ga-4 mt-5">
-        <div class="flex-grow-1">
-          <p class="text-subtitle-2 mb-1">Evidencia probatoria</p>
-          <FlowAttachments
-            v-model="group.flow_attachments"
-            app-label="answer"
-            model-name="groupresponse"
-            :id="group.id"
-            :editable="editable"
-          />
-        </div>
-        <FlowComments
-          v-model="group"
+      <template v-if="!noCapture && showEvidence">
+        <v-divider class="mt-5 mb-3" />
+        <p class="text-subtitle-2 mb-1">Evidencia probatoria</p>
+        <FlowAttachments
+          v-model="group.flow_attachments"
           app-label="answer"
           model-name="groupresponse"
-          :width="220"
+          :id="group.id"
+          :editable="editable"
         />
-      </div>
+      </template>
 
-      <div v-if="editable && dirty" class="d-flex justify-end mt-4">
-        <v-btn
-          variant="flat"
-          prepend-icon="save"
-          :loading="saving"
-          :disabled="hasInvalid"
-          @click="save"
-        >
-          Guardar
-        </v-btn>
-      </div>
-
-      <div
+      <v-alert
         v-if="completion?.errors?.length"
-        class="cp-completion cp-completion--error mt-3"
+        type="error"
+        variant="tonal"
+        density="compact"
+        class="mt-4"
       >
-        <div class="font-weight-medium mb-1">
+        <div class="text-body-2 mb-1">
           Para marcar este bloque como completado falta:
         </div>
-        <ul class="pl-4">
+        <ul class="pl-4 text-body-2">
           <li v-for="(msg, i) in completion.errors" :key="i">{{ msg }}</li>
         </ul>
-      </div>
-      <div
+      </v-alert>
+      <v-alert
         v-if="completion?.warnings?.length"
-        class="cp-completion cp-completion--warning mt-3"
+        type="warning"
+        variant="tonal"
+        density="compact"
+        class="mt-3"
       >
-        <ul class="pl-4">
+        <ul class="pl-4 text-body-2">
           <li v-for="(msg, i) in completion.warnings" :key="i">{{ msg }}</li>
         </ul>
+      </v-alert>
+
+      <div
+        v-if="editable && !noCapture"
+        class="d-flex justify-end mt-4"
+      >
+        <FlowSaveMenu
+          :transitions="transitions"
+          :current-status="currentStatus"
+          :loading="saving || sending"
+          :disabled="hasInvalid"
+          :save-disabled="!dirty"
+          @save="save"
+          @select="saveAndTransition"
+        />
       </div>
     </v-card-text>
 
     <FlowTransitionDialogs :actions="kernel" />
   </v-card>
 </template>
-
-<style scoped>
-.cp-completion {
-  font-size: 0.8rem;
-  line-height: 1.4;
-  border-radius: 6px;
-  padding: 6px 10px;
-}
-.cp-completion--error {
-  background: #fdecea;
-  color: #b3261e;
-}
-.cp-completion--warning {
-  background: #fff4e0;
-  color: #8a5300;
-}
-</style>

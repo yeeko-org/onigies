@@ -55,6 +55,11 @@ class Survey(models.Model):
 
 
 class AxisValue(FlowParticipant, models.Model):
+    # Motivo de `flow.permissions.root_turn_errors` para sus descendientes.
+    root_not_sent_message = (
+        'El eje aún no se ha enviado a revisión; la revisión podrá actuar '
+        'sobre esta respuesta cuando la institución lo envíe.')
+
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name='axis_values')
     axis = models.ForeignKey(
@@ -185,6 +190,11 @@ class GeneralPackage(FlowParticipant, models.Model):
 
     1:1 con Survey; agrupa los GeneralGroupResponse. Guarda el status de envío
     """
+    # Motivo de `flow.permissions.root_turn_errors` para sus grupos.
+    root_not_sent_message = (
+        'La información base aún no se ha enviado a revisión; la revisión '
+        'podrá actuar sobre este grupo cuando la institución la envíe.')
+
     survey = models.OneToOneField(
         Survey, on_delete=models.CASCADE, related_name='general_package')
     status = models.ForeignKey(
@@ -247,9 +257,11 @@ class GeneralGroupResponse(FlowParticipant, models.Model):
         """Gancho del motor (flow.services.validate_transition): un grupo
         con respuestas faltantes no puede darse por completado, ni
         siquiera por API directa. Reglas en `survey.general_validation`,
-        espejo de la compuerta del frontend."""
+        espejo de la compuerta del frontend. La revisión no lo
+        transiciona mientras el paquete siga en turno de la IES."""
+        from flow.permissions import root_turn_errors
         from survey.general_validation import completion_errors
-        return completion_errors(self, target)
+        return root_turn_errors(user, self) + completion_errors(self, target)
 
     def __str__(self):
         return (f"Respuesta del grupo general "

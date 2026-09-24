@@ -37,7 +37,7 @@ models use default `*_set`).
 | `load_questionnaire [--sync-institutions] [--overwrite-texts]` | Hierarchy structure + order, AQuestion/AOption, BQuestion, ReachQuestion, PlanQuestion, SpecialQuestion, GeneralGroup, and the `ObservableQuestionType` rows (which types apply; never their `weight`) |
 | `load_main_axis` | Only `icon`/`color`/`short_name` of Axis (visual metadata) |
 | `load_sectors` | Sector catalog (incl. `is_main`, `is_authority`) |
-| `migrate_initial_data` | QuestionType: `order`, `required`, model names always; `public_name` and `default_weight` only on create |
+| `migrate_initial_data` | QuestionType: `order`, `required`, model names always; `public_name`, `default_weight`, `icon`, `color` and `description` only on create |
 
 Run order after `migrate`: `load_sectors` → `migrate_initial_data` →
 `load_questionnaire` (retired since 2026-09-10; see `deploy-api`). The seed is idempotent
@@ -87,9 +87,10 @@ CASCADE: deleting a question row deletes its answers (the seed warns
 when it prunes stale AQuestion/PlanQuestion rows).
 
 `ObservableResponse.value` governs the flow, not only the content: `False`
-(«No cuenta con la medida») moves the observable and its groups to
+(«Sin la medida») moves the observable and its groups to
 `cp_not_present` — worth 0 in the average, terminal, never reviewed —; leaving
-`False` returns them to `cp_filling`. Typed answers already captured survive a
+`False` returns them to `cp_filling` (groups without capture, to
+`cp_approved`). Typed answers already captured survive a
 «No» in case the IES changes its mind. Status semantics: skill `flow`.
 
 **Scoring does not exist yet**: no code fills `GroupResponse.value`,
@@ -130,8 +131,8 @@ Both PATCH return the ancestors' status after propagation (`observable_status`,
 per type and is also the motor hook that refuses `cp_completed`/`cp_adjusted`
 with errors. Where a rule depends on a gen value the IES has not declared, it
 warns instead of blocking. `population` (1.7) has no capturable content here:
-its groups are promoted on «Sí» instead of on a PATCH (criterion:
-`QuestionType.model_response is None`, not the type name).
+its groups are born in `cp_approved` and get neither PATCH nor review
+(criterion: `QuestionType.model_response is None`, not the type name).
 
 **The answer gate** (`survey/cp_gate.py`): the IES captures only when the period
 opened answers (`Period.cp_open_at` reached, set in the admin) and its gen
@@ -139,7 +140,8 @@ section is closed (`GeneralPackage` in `gen_finished`). Until then it sees the
 questionnaire but writes nothing — answers, initial boolean, transitions,
 attachments — through the `AxisValue.content_lock_errors` and
 `validate_flow_transition` hooks; direct writes get 403 with `code`
-`cp_not_open` / `gen_not_approved`. Test institutions are not exempt. The
+`cp_not_open` / `gen_not_approved`. Test institutions skip the date, not the
+validated gen. The
 reviewer never captures (403 `reviewer_read_only`) and the gate does not stop
 its transitions.
 
@@ -173,9 +175,9 @@ academic + admin).
 
 ## QuestionType and the bridge (weights, applicability, names)
 
-`QuestionType` (pk `name`: `a_questions`, `reach`, `b_questions`, `plans`, `special`, `population`) is the **source of truth** for the public name of each block (`public_name` — the frontend reads it from `cats.question_type`, never hardcodes it), the block order in editors (`order`: A=1, sectorial=2, orgánica=3, planes=4, especial=5, población=6), whether the type applies to every observable (`required`: A and B) the default weight (`default_weight`: A 5, reach 2.5, B 2.5, null for plans/special/population — the tentative weighting agreed with Rubén on 2026-09-07) and the block's `icon`/`color` (editable; the frontend reads them from the catalog so a type without a collection, like `population`, needs no hardcoded map). `population` has no question model: it is captured in Generales.
+`QuestionType` (pk `name`: `a_questions`, `reach`, `b_questions`, `plans`, `special`, `population`) is the **source of truth** for the public name of each block (`public_name` — the frontend reads it from `cats.question_type`, never hardcodes it), the block order in editors (`order`: A=1, sectorial=2, orgánica=3, planes=4, especial=5, población=6), whether the type applies to every observable (`required`: A and B) the default weight (`default_weight`: A 5, reach 2.5, B 2.5, null for plans/special/population — the tentative weighting agreed with Rubén on 2026-09-07) the block's `icon`/`color` (editable; the frontend reads them from the catalog so a type without a collection, like `population`, needs no hardcoded map) and its `description`, one sentence on what the block measures (editable; the seeded texts are drafts pending Rubén's review). `population` has no question model: it is captured in Generales.
 
-`ObservableQuestionType` (`question/models.py`; `observable.type_weights`, `question_type.observable_weights`) has one row per (observable, type) that applies, with a nullable `weight`. Effective weight = `row.final_weight` = own weight, or the type's default **only when the observable has exactly the standard trio {A, reach, B}** (`Observable.uses_default_weights`, `adr-0015`): the defaults were calibrated for that combination, so any other set must carry every weight by hand and the observable reports `weights_pending` (detail and list) until it does — a warning, never a save blocker. `Observable.weight_for('plans')` returns `None` when no row exists. The seed creates missing rows (A and B always; reach/plans/special when the question exists; population for 1.7) and never touches `weight`. Today: 120 rows (41/41/35/1/1/1), every `weight` null — real weights are pending the client (`task-15`); do not invent them. Validation of "all weights non-null when a non-required type applies" is a warning, never a block. Known mismatch: 1.12 has a `b_questions` row (required) but no `BQuestion`; the client adds it from the dashboard while the questionnaire is open (`task-135`). Dashboard: catalog `question_type` (editable `public_name`, `default_weight`, `icon`, `color`; no create/delete; `order` is never edited from a form) and catalog `observable_question_type` (`weight` always writable; create/delete only while the questionnaire is open, see the gate above). The observable editor captures weights in its type list, showing the inherited default as placeholder.
+`ObservableQuestionType` (`question/models.py`; `observable.type_weights`, `question_type.observable_weights`) has one row per (observable, type) that applies, with a nullable `weight`. Effective weight = `row.final_weight` = own weight, or the type's default **only when the observable has exactly the standard trio {A, reach, B}** (`Observable.uses_default_weights`, `adr-0015`): the defaults were calibrated for that combination, so any other set must carry every weight by hand and the observable reports `weights_pending` (detail and list) until it does — a warning, never a save blocker. `Observable.weight_for('plans')` returns `None` when no row exists. The seed creates missing rows (A and B always; reach/plans/special when the question exists; population for 1.7) and never touches `weight`. Today: 120 rows (41/41/35/1/1/1), every `weight` null — real weights are pending the client (`task-15`); do not invent them. Validation of "all weights non-null when a non-required type applies" is a warning, never a block. Known mismatch: 1.12 has a `b_questions` row (required) but no `BQuestion`; the client adds it from the dashboard while the questionnaire is open (`task-135`). Dashboard: catalog `question_type` (editable `public_name`, `default_weight`, `icon`, `color`, `description`; no create/delete; `order` is never edited from a form) and catalog `observable_question_type` (`weight` always writable; create/delete only while the questionnaire is open, see the gate above). The observable editor captures weights in its type list, showing the inherited default as placeholder.
 
 ## Pending with the client (do not "fix" silently)
 

@@ -335,12 +335,16 @@ class AxisValueSerializer(serializers.ModelSerializer):
     period = serializers.IntegerField(
         source='survey.period_id', read_only=True)
     observables_by_status = serializers.SerializerMethodField()
+    # Motivo que la revisión ve mientras la raíz sigue en turno de la IES
+    # (`flow.permissions.root_turn_errors`); constante de clase, sin query.
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
 
     class Meta:
         model = AxisValue
         fields = ['id', 'survey', 'axis', 'status', 'axis_full',
                   'institution', 'institution_acronym', 'period',
-                  'observables_by_status']
+                  'observables_by_status', 'not_sent_message']
 
     def get_observables_by_status(self, obj: AxisValue) -> dict:
         return count_by_status(obj.observable_responses.all())

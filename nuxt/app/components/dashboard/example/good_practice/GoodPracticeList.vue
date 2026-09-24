@@ -466,7 +466,6 @@ function reopenPackage() {
     >
       <v-alert
         type="info"
-        border="start"
         variant="outlined"
       >
         {{ discardStatus?.confirm_text

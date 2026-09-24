@@ -84,6 +84,36 @@ def content_lock_errors(user, root) -> list[str]:
     return hook(user)
 
 
+ROOT_NOT_SENT_MESSAGE = (
+    'La institución aún no ha enviado esto a revisión; la revisión podrá '
+    'actuar sobre esta respuesta cuando lo envíe.')
+
+
+def root_turn_errors(user, obj) -> list[str]:
+    """Por qué la revisión no puede transicionar hoy un descendiente.
+
+    Espejo, para las transiciones, de `user_can_edit_flow_content`: la
+    RAÍZ gobierna. Un hijo llega a un status de rol reviewer
+    (`bp_completed`, `gen_completed`, `cp_completed`…) antes de que la
+    IES envíe la raíz, y el motor solo mira el rol del status propio;
+    sin esta regla la revisión aprobaría o devolvería lo que todavía se
+    está capturando. El mensaje lo nombra la raíz (`root_not_sent_message`,
+    duck typing). Lista vacía para la IES, para las raíces y con la raíz
+    ya cedida.
+    """
+    from flow.services import get_user_flow_role
+
+    if get_user_flow_role(user) != 'reviewer':
+        return []
+    root = resolve_flow_root(obj)
+    if root is obj:
+        return []
+    root_status = getattr(root, 'status', None)
+    if root_status is None or root_status.role != 'ies':
+        return []
+    return [getattr(root, 'root_not_sent_message', ROOT_NOT_SENT_MESSAGE)]
+
+
 class IsFlowInstitutionOwnerOrReviewer(BasePermission):
     """Pertenencia institucional a nivel de objeto para los ViewSets de
     modelos participantes del flujo (p.ej. GoodPracticePackage).

@@ -85,7 +85,7 @@ const emits = defineEmits(['item-saved'])
 
 const { cats, schemas } = storeToRefs(useMainStore())
 const { types_by_name } = useQuestionTypes()
-const { showSnackbar } = useDashboardStore()
+const { showSnackbar, showError } = useDashboardStore()
 const theme = useTheme()
 
 const saving = ref(false)
@@ -363,7 +363,7 @@ async function saveDefinition() {
   }
   emits('item-saved', {res: {...res.data, ...row_sync.value}, is_new: false})
   if (failed.length)
-    showSnackbar(`Error: no se guardó la ponderación de ${joinNames(failed)}`)
+    showError(`Error: no se guardó la ponderación de ${joinNames(failed)}`)
   else
     showSnackbar(DEFINITION_MESSAGE)
 }
@@ -483,7 +483,6 @@ function onQuestionSaved(block, {res}) {
       type="info"
       variant="tonal"
       density="compact"
-      border="start"
       icon="lock"
       class="mb-3"
     >

@@ -6,13 +6,16 @@
  * se resuelve desde el catálogo (useFlowStore), no viaja anidado en cada
  * objeto.
  *
- * El tooltip muestra public_name + description.
+ * El tooltip muestra public_name + description, y lo que el padre agregue
+ * en el slot `tooltip` (p. ej. el hint del status, cuando no cabe como
+ * recuadro bajo el chip).
  */
 import { useFlowStore } from '~/store/flow.js'
 
 const props = defineProps({
   status:   { type: String, default: null },
   size:     { type: String, default: 'default' },
+  variant:  { type: String, default: 'elevated' },
   label:    { type: String, default: '' },
   onlyIcon: Boolean,
   xSmall:   Boolean,
@@ -33,7 +36,7 @@ const chipSize = computed(() => (props.xSmall ? 'x-small' : props.size))
       :color="st.color || 'grey'"
       :size="chipSize"
       :disabled="disabled"
-      variant="elevated"
+      :variant="variant"
     >
       <v-icon :start="!onlyIcon">
         {{ st.icon || 'trip_origin' }}
@@ -46,6 +49,7 @@ const chipSize = computed(() => (props.xSmall ? 'x-small' : props.size))
         <div style="max-width: 300px;">
           <b>{{ st.public_name }}</b>
           <template v-if="st.description"><br>{{ st.description }}</template>
+          <slot name="tooltip" />
         </div>
       </v-tooltip>
     </v-chip>

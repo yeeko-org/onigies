@@ -9,6 +9,8 @@ import { saveElement } from "~/composables/save_elements.js";
 
 const WEIGHT_HINT = 'Ponderación que usa cada observable donde aplica ' +
   'este tipo, salvo que el observable declare la suya propia'
+const DESCRIPTION_HINT = 'Se muestra como ayuda (tooltip) junto al título ' +
+  'del bloque en la captura de la IES'
 
 const full_main = defineModel({type: Object, required: true})
 
@@ -94,6 +96,16 @@ function saveRecord() {
       hint="Como se nombra este bloque en todo el sistema"
       persistent-hint
       variant="outlined"
+      class="mb-4"
+    />
+    <v-textarea
+      v-model="full_main.description"
+      label="Descripción"
+      :hint="DESCRIPTION_HINT"
+      persistent-hint
+      variant="outlined"
+      auto-grow
+      rows="2"
       class="mb-4"
     />
     <div class="d-flex flex-wrap ga-3">

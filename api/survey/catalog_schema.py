@@ -60,11 +60,4 @@ class AxisValueSchema(CollectionSchema):
                 {"plural_name": s.public_name, "value": s.name}
                 for s in STATUSES["cp"] if AXIS_LABEL in s.applies]),
     ]
-    cat_params = {
-        "init_display": True, "hide_create": True,
-        # Opción extra del selector de orden (el backend ya abre así).
-        "extra_sorts": [{
-            "title": "Más urgentes",
-            "value": "-status__priority,survey__institution__name,"
-                     "axis__order"}],
-    }
+    cat_params = {"init_display": True, "hide_create": True}

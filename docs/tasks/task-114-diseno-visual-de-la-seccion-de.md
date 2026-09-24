@@ -23,6 +23,8 @@ Propuestas sobre la mesa, **no excluyentes entre sí**:
 - Icono de adjunto más un divisor — la versión mínima, si lo demás resulta ruidoso.
 - De Ricardo: card tonal; divisor superior; título en otro color.
 
+**23 de septiembre:** la captura cp implementa la opción de Ricardo (divisor superior + subtítulo «Evidencia probatoria», sin fondo ni franja) como candidata; la task se cierra cuando gen la adopte y Ricardo la valide visualmente ([[2026-09-23-diseno-de-la-captura-cp-y-decisiones-pendientes]]).
+
 ## Criterios de aceptación
 
 - [ ] Las propuestas pasaron por el skill `ux-designer` y se dialogaron con Ricardo antes de ejecutar

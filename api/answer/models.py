@@ -33,11 +33,11 @@ class ObservableResponse(FlowParticipant, models.Model):
         IES no lo transiciona, y la revisión no lo transiciona mientras
         el eje siga en turno de la IES."""
         from answer.group_validation import VALIDATED_TARGETS
-        from answer.services import review_turn_errors
+        from flow.permissions import root_turn_errors
         from survey.cp_gate import capture_lock_errors
 
         errors = capture_lock_errors(user, self.survey)
-        errors += review_turn_errors(user, self.axis_value)
+        errors += root_turn_errors(user, self)
         if target.name in VALIDATED_TARGETS and self.value is None:
             errors.append(
                 'Falta responder la pregunta inicial del observable.')
@@ -77,14 +77,19 @@ class GroupResponse(FlowParticipant, models.Model):
         """Gancho del motor: un grupo vacío no se da por completado ni
         por API directa (`answer.group_validation`); con la compuerta
         cerrada la IES no lo transiciona, y la revisión no lo transiciona
-        mientras el eje siga en turno de la IES."""
+        mientras el eje siga en turno de la IES. Un grupo sin captura
+        nace aprobado y ahí se queda: `cp_approved` tiene rol ies y
+        ofrecería un reajuste de algo que nadie capturó."""
         from answer.group_validation import completion_errors
-        from answer.services import review_turn_errors
+        from flow.permissions import root_turn_errors
         from survey.cp_gate import capture_lock_errors
 
+        if (self.status_id == CP_WITHOUT_CAPTURE_STATUS
+                and self.question_type.model_response is None):
+            return [WITHOUT_CAPTURE_MESSAGE]
         observable_response = self.observable_response
         errors = capture_lock_errors(user, observable_response.survey)
-        errors += review_turn_errors(user, observable_response.axis_value)
+        errors += root_turn_errors(user, self)
         return errors + completion_errors(self, target)
 
     def __str__(self):
@@ -102,6 +107,13 @@ class GroupResponse(FlowParticipant, models.Model):
 
 
 CP_INITIAL_STATUS = 'cp_pre_start'
+# Los grupos cuyo tipo no tiene modelo de respuesta (hoy `population`, cuyo
+# dato vive en información base) no tienen nada que capturar ni revisar:
+# nacen aprobados.
+CP_WITHOUT_CAPTURE_STATUS = 'cp_approved'
+WITHOUT_CAPTURE_MESSAGE = (
+    'Este bloque no lleva captura ni revisión: su dato se registra en la '
+    'información base.')
 
 
 def provision_cp_responses(survey, axis_value) -> None:
@@ -112,7 +124,8 @@ def provision_cp_responses(survey, axis_value) -> None:
     `provision_cp_responses` como backfill.
 
     `bulk_create` no dispara `post_save`, así que el status inicial se
-    fija aquí y no por la señal de `flow`.
+    fija aquí y no por la señal de `flow`: `cp_pre_start`, salvo los
+    grupos sin captura, que nacen en `cp_approved`.
     """
     from question.models import ObservableQuestionType
 
@@ -138,13 +151,31 @@ def provision_cp_responses(survey, axis_value) -> None:
     existing_groups = set(GroupResponse.objects.filter(
         observable_response_id__in=responses.values(),
     ).values_list('observable_response_id', 'question_type_id'))
+    without_capture = set(QuestionType.objects.filter(
+        model_response__isnull=True).values_list('name', flat=True))
     GroupResponse.objects.bulk_create([
         GroupResponse(
             observable_response_id=responses[observable_id],
-            question_type_id=type_name, status_id=CP_INITIAL_STATUS)
+            question_type_id=type_name,
+            status_id=(CP_WITHOUT_CAPTURE_STATUS
+                       if type_name in without_capture
+                       else CP_INITIAL_STATUS))
         for observable_id, type_name in bridge
         if (responses[observable_id], type_name) not in existing_groups
     ])
+
+
+def approve_groups_without_capture(groups) -> int:
+    """Backfill: lleva a `cp_approved` los grupos sin captura que siguen
+    en reposo (`cp_pre_start`) o que un «Sí» anterior a esta regla dejó
+    en `cp_filling`, como si hubieran nacido así. No toca los que un «No»
+    dejó en `cp_not_present`: volverán a `cp_approved` cuando la IES
+    salga del «No». Sin FlowEvent, igual que el aprovisionamiento.
+    Devuelve cuántos movió."""
+    return groups.filter(
+        status_id__in=[CP_INITIAL_STATUS, 'cp_filling'],
+        question_type__model_response__isnull=True,
+    ).update(status_id=CP_WITHOUT_CAPTURE_STATUS)
 
 
 class AResponse(models.Model):

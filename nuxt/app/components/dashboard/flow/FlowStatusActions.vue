@@ -3,7 +3,9 @@
  * Control unificado de estado: muestra el status (FlowStatusChip) y, cuando es
  * el turno del usuario y hay transiciones aplicables, vuelve el chip activador
  * de un menú (FlowTransitionMenu). El `hint` del status va como guía
- * persistente bajo el chip.
+ * persistente bajo el chip (`hint="box"`) o, donde varios niveles conviven
+ * y los recuadros se apilarían, dentro del tooltip del chip con una
+ * bandera al lado cuando es tu turno (`hint="tooltip"`).
  *
  * Toda la lógica (transiciones disponibles, entry_rules, comentario,
  * ejecución y mutación en sitio) vive en el kernel useFlowActions; aquí solo se
@@ -22,6 +24,12 @@ const props = defineProps({
   // Kernel ya construido por el padre, para compartir transiciones y diálogos
   // con otro disparador (p.ej. un botón inferior). Si se omite, se crea propio.
   actions: { type: Object, default: null },
+  // Tamaño y variante del chip: la jerarquía eje › observable › grupo se
+  // lee en ellos cuando los tres conviven en una pantalla.
+  size: { type: String, default: 'default' },
+  variant: { type: String, default: 'elevated' },
+  // 'box' | 'tooltip': dónde va el hint del status.
+  hint: { type: String, default: 'box' },
 })
 
 // Registro completo (con status y flow_events): única fuente del display, el
@@ -49,6 +57,9 @@ const hintWho = computed(() => {
     ? 'En espera de la revisión' : 'En espera de la institución'
 })
 
+const inTooltip = computed(() => props.hint === 'tooltip'
+  && !!hintMode.value && !!hintText.value)
+
 const actions = props.actions || useFlowActions(
   record, () => props.appLabel, () => props.modelName)
 const { sending, transitions, hasActions, onSelect } = actions
@@ -56,34 +67,72 @@ const { sending, transitions, hasActions, onSelect } = actions
 
 <template>
   <div v-if="st">
-    <!-- Con acciones: el chip es activador del menú de transiciones. -->
-    <v-menu v-if="hasActions" location="bottom start">
-      <template #activator="{ props: menuProps }">
-        <FlowStatusChip v-bind="menuProps" :status="record.status">
-          <v-progress-circular
-            v-if="sending"
-            indeterminate
-            size="16"
-            width="2"
-            class="ml-2"
-          />
-          <v-icon v-else end>expand_more</v-icon>
-        </FlowStatusChip>
-      </template>
+    <div class="d-inline-flex align-center ga-1">
+      <!-- Con acciones: el chip es activador del menú de transiciones. -->
+      <v-menu v-if="hasActions" location="bottom start">
+        <template #activator="{ props: menuProps }">
+          <FlowStatusChip
+            v-bind="menuProps"
+            :status="record.status"
+            :size="size"
+            :variant="variant"
+          >
+            <v-progress-circular
+              v-if="sending"
+              indeterminate
+              size="16"
+              width="2"
+              class="ml-2"
+            />
+            <v-icon v-else end>expand_more</v-icon>
+            <template v-if="inTooltip" #tooltip>
+              <div class="mt-2">
+                <b v-if="hintMode !== 'terminal'">{{ hintWho }}:</b>
+                {{ hintText }}
+              </div>
+            </template>
+          </FlowStatusChip>
+        </template>
 
-      <FlowTransitionMenu
-        :transitions="transitions"
-        @select="onSelect"
-      />
-    </v-menu>
+        <FlowTransitionMenu
+          :transitions="transitions"
+          @select="onSelect"
+        />
+      </v-menu>
 
-    <!-- Sin acciones: solo display, reusando el mismo chip. -->
-    <FlowStatusChip v-else :status="record.status" />
+      <!-- Sin acciones: solo display, reusando el mismo chip. -->
+      <FlowStatusChip
+        v-else
+        :status="record.status"
+        :size="size"
+        :variant="variant"
+      >
+        <template v-if="inTooltip" #tooltip>
+          <div class="mt-2">
+            <b v-if="hintMode !== 'terminal'">{{ hintWho }}:</b>
+            {{ hintText }}
+          </div>
+        </template>
+      </FlowStatusChip>
 
-    <!-- Hint persistente, sensible al turno: callout accent cuando te toca,
-         gris apagado en espera del otro rol, texto tenue en terminales. -->
+      <!-- El set de íconos `ms` no reenvía atributos al <i>: la etiqueta
+           accesible va en el envoltorio. -->
+      <span
+        v-if="hint === 'tooltip' && hintMode === 'mine'"
+        class="d-inline-flex"
+        role="img"
+        aria-label="Te toca"
+        data-testid="flow-hint-flag"
+      >
+        <v-icon color="warning" size="18">flag</v-icon>
+        <v-tooltip activator="parent" location="top">Te toca</v-tooltip>
+      </span>
+    </div>
+
+    <!-- Hint persistente, sensible al turno: recuadro warning cuando te
+         toca, gris en espera del otro rol, texto tenue en terminales. -->
     <div
-      v-if="hintMode && hintText"
+      v-if="hint === 'box' && hintMode && hintText"
       class="flow-hint mt-1"
       :class="`flow-hint--${hintMode}`"
     >
@@ -114,20 +163,24 @@ const { sending, transitions, hasActions, onSelect } = actions
   border-radius: 6px;
   padding: 6px 10px;
 }
+/* Fondo tonal del token (12 %, como variant="tonal"); el texto queda en
+   on-surface porque el warning puro sobre su tonal no da contraste para
+   letra de 12 px. */
 .flow-hint--mine {
-  background: #fdf1e0;
-  color: #7a4a08;
-  border-left: 3px solid #f59322;
+  background: rgba(var(--v-theme-warning), 0.12);
+  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+}
+.flow-hint--mine .v-icon {
+  color: rgb(var(--v-theme-warning));
 }
 .flow-hint--theirs {
-  background: #f5f5f5;
-  color: rgba(0, 0, 0, 0.55);
-  border-left: 3px solid #e0e0e0;
+  background: rgba(var(--v-theme-on-surface), 0.05);
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
 }
 .flow-hint--terminal {
   background: none;
   padding: 2px 0 0;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
 }
 .flow-hint__who {
   font-size: 0.62rem;

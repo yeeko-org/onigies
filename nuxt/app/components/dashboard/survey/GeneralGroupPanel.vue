@@ -14,7 +14,7 @@
  */
 import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
 import FlowComments from '~/components/dashboard/flow/FlowComments.vue'
-import FlowTransitionMenu from '~/components/dashboard/flow/FlowTransitionMenu.vue'
+import FlowSaveMenu from '~/components/dashboard/flow/FlowSaveMenu.vue'
 import FlowTransitionDialogs from '~/components/dashboard/flow/FlowTransitionDialogs.vue'
 import FlowStatusActions from '~/components/dashboard/flow/FlowStatusActions.vue'
 import FlowAttachments from '~/components/dashboard/flow/FlowAttachments.vue'
@@ -124,7 +124,10 @@ const listedIssues = computed(() => issues.value.slice(0, MAX_LISTED_ISSUES))
 const hiddenIssues = computed(
   () => Math.max(issues.value.length - MAX_LISTED_ISSUES, 0))
 
-const flowActions = useFlowActions(group, 'survey', 'generalgroupresponse')
+// La raíz es el paquete de generales, que viaja anidado en el Survey: con
+// él en turno de la IES, la revisión ve el candado en vez de un 400.
+const flowActions = useFlowActions(group, 'survey', 'generalgroupresponse',
+  { root: () => survey.value?.general_package })
 const { transitions, currentStatus } = flowActions
 
 // El serializer siempre manda `flow_attachments`; se garantiza el array
@@ -178,12 +181,13 @@ const summary = computed(() => {
     questions.value.length)
 })
 
-const keepStatusLabel = computed(
-  () => `Guardar y mantener como ${currentStatus.value?.public_name}`)
-
 const saveGroup = async () => {
   await props.persist()
 }
+
+// Sin nada que ver ni que subir, la sección de evidencia no se pinta.
+const showEvidence = computed(() => props.editable
+  || (group.value.flow_attachments || []).length > 0)
 
 // Guarda primero y transiciona después (patrón de GoodPracticeEditSimple):
 // si el guardado falla no se mueve el estado, y el panel se colapsa solo
@@ -261,7 +265,7 @@ const saveAndTransition = async (transition) => {
 
       <!-- Evidencia probatoria del grupo. Se ancla al GeneralGroupResponse
            y se guarda al instante (no entra en el PATCH del Survey). -->
-      <div class="mt-6">
+      <div v-if="showEvidence" class="mt-6">
         <p class="text-subtitle-2 mb-1">
           Evidencia probatoria
         </p>
@@ -299,47 +303,13 @@ const saveAndTransition = async (transition) => {
 
       <v-card-actions v-if="editable" class="px-0 mt-4">
         <v-spacer />
-        <!-- Sin transiciones disponibles: el botón solo guarda. -->
-        <v-btn
-          v-if="!transitions.length"
-          variant="flat"
-          prepend-icon="save"
+        <FlowSaveMenu
+          :transitions="transitions"
+          :current-status="currentStatus"
           :loading="saving"
-          @click="saveGroup"
-        >
-          Guardar
-        </v-btn>
-        <!-- Con transiciones: split-button encabezado por el guardado simple
-             y seguido de cada acción que guarda y luego transiciona. -->
-        <v-menu v-else location="bottom end">
-          <template #activator="{ props: menuProps }">
-            <v-btn
-              v-bind="menuProps"
-              variant="flat"
-              prepend-icon="save"
-              append-icon="expand_more"
-              :loading="saving"
-            >
-              Guardar
-            </v-btn>
-          </template>
-          <FlowTransitionMenu
-            :transitions="transitions"
-            @select="saveAndTransition"
-          >
-            <template #lead>
-              <v-list-item
-                :title="keepStatusLabel"
-                @click="saveGroup"
-              >
-                <template #prepend>
-                  <v-icon color="accent">save</v-icon>
-                </template>
-              </v-list-item>
-              <v-divider />
-            </template>
-          </FlowTransitionMenu>
-        </v-menu>
+          @save="saveGroup"
+          @select="saveAndTransition"
+        />
       </v-card-actions>
 
       <!-- Un solo juego de diálogos por kernel, para las dos audiencias: el

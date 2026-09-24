@@ -32,28 +32,6 @@ REVIEW_ACTIVE_MESSAGE = (
 NOT_IES_TURN_MESSAGE = (
     'El eje no está en turno de tu institución; no puedes cambiar la '
     'respuesta inicial ahora.')
-AXIS_NOT_SENT_MESSAGE = (
-    'El eje aún no se ha enviado a revisión; la revisión podrá actuar '
-    'sobre esta respuesta cuando la institución lo envíe.')
-
-
-def review_turn_errors(user, axis_value) -> list[str]:
-    """Por qué la revisión no puede transicionar hoy un hijo del eje.
-
-    Espejo, para las transiciones, de la regla de contenido de
-    `flow.permissions.user_can_edit_flow_content`: la RAÍZ gobierna.
-    Un grupo u observable queda en turno de la revisión (`cp_completed`,
-    `cp_adjusted`, `cp_partial`) antes de que la IES envíe el eje, y el
-    motor solo mira el rol del status propio; sin esta regla la revisión
-    aprobaría o devolvería respuestas de un eje que todavía se está
-    capturando. Lista vacía para la IES y con el eje ya cedido.
-    """
-    if get_user_flow_role(user) != 'reviewer':
-        return []
-    axis_status = axis_value.status
-    if axis_status is not None and axis_status.role == 'ies':
-        return [AXIS_NOT_SENT_MESSAGE]
-    return []
 
 
 class InitValueError(ValueError):
@@ -74,8 +52,10 @@ def init_value_errors(user, observable_response, value) -> list[str]:
     if axis_status is None or axis_status.role != 'ies':
         return [NOT_IES_TURN_MESSAGE]
     if value is False and observable_response.value is not False:
+        # Los grupos sin captura nacen en cp_approved: no son revisión.
         count = observable_response.statuses.filter(
-            status_id__in=REVIEW_ACTIVE_STATUSES).count()
+            status_id__in=REVIEW_ACTIVE_STATUSES,
+            question_type__model_response__isnull=False).count()
         if count:
             return [REVIEW_ACTIVE_MESSAGE.format(count=count)]
     return []
@@ -88,11 +68,10 @@ def set_init_value(user, observable_response, value) -> list:
     - `False`: observable y todos sus grupos a `cp_not_present`; las
       respuestas tipadas capturadas se conservan por si la IES se
       arrepiente.
-    - Salir de `False` (a `True` o a nulo): de vuelta a `cp_filling`.
+    - Salir de `False` (a `True` o a nulo): de vuelta a `cp_filling`,
+      salvo los grupos sin captura, que regresan a `cp_approved`.
     - `True` por primera vez: el observable arranca la captura
-      (`assign_auto_status`, que sube al eje); con `True` arrancan
-      también los grupos sin contenido capturable, que no tendrán un
-      PATCH que los promueva.
+      (`assign_auto_status`, que sube al eje).
 
     El eje solo se promueve desde su reposo (`cp_pre_start`): un eje en
     corrección no cambia de status por esta vía.
@@ -115,13 +94,11 @@ def set_init_value(user, observable_response, value) -> list:
     elif previous is False:
         events += assign_status_tree(
             user, observable_response, Status.objects.get(name=FILLING))
+        events += _approve_groups_without_capture(user, observable_response)
     elif value is True:
         event = assign_auto_status(user, observable_response)
         if event is not None:
             events.append(event)
-
-    if value is True:
-        events += _start_groups_without_capture(user, observable_response)
 
     event = assign_auto_status(user, observable_response.axis_value)
     if event is not None:
@@ -129,21 +106,24 @@ def set_init_value(user, observable_response, value) -> list:
     return events
 
 
-def _start_groups_without_capture(user, observable_response) -> list:
-    """Promueve a `cp_filling` los grupos cuyo tipo no tiene contenido
-    capturable (hoy `population`, cuyo dato vive en información base).
+def _approve_groups_without_capture(user, observable_response) -> list:
+    """Devuelve a `cp_approved` los grupos cuyo tipo no tiene contenido
+    capturable (hoy `population`, cuyo dato vive en información base)
+    cuando el observable sale del «No», que los había llevado a
+    `cp_not_present` con el resto del árbol.
 
-    Los demás grupos se promueven con su primer PATCH; estos no reciben
-    ninguno, y `cp_pre_start` solo sale hacia `cp_filling`: sin esto
-    el 1.7 nunca podría marcarse como completado desde el menú. El
-    criterio es del catálogo (`QuestionType.model_response` nulo), no
-    el nombre del tipo.
+    Nacen aprobados (`answer.models.provision_cp_responses`): no reciben
+    PATCH ni revisión, y un grupo en `cp_filling` frenaría al observable
+    en la regla de hijos. El criterio es del catálogo
+    (`QuestionType.model_response` nulo), no el nombre del tipo.
     """
+    from answer.models import CP_WITHOUT_CAPTURE_STATUS
+
+    approved = Status.objects.get(name=CP_WITHOUT_CAPTURE_STATUS)
     events = []
     groups = observable_response.statuses.filter(
-        question_type__model_response__isnull=True)
+        question_type__model_response__isnull=True,
+    ).exclude(status_id=CP_WITHOUT_CAPTURE_STATUS)
     for group in groups.select_related('status'):
-        event = assign_auto_status(user, group)
-        if event is not None:
-            events.append(event)
+        events += assign_status_tree(user, group, approved)
     return events

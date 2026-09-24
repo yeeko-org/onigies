@@ -12,7 +12,7 @@ const active_tab = ref('users')
 
 onMounted(() => {
   if (!authStore.user_onigies?.is_superuser) {
-    dashStore.showSnackbar('Acceso denegado')
+    dashStore.showError('Acceso denegado')
     router.push('/dashboard')
   }
 })

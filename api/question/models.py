@@ -61,6 +61,9 @@ class QuestionType(models.Model):
         max_length=50, blank=True, null=True, verbose_name="Ícono")
     color = models.CharField(
         max_length=50, blank=True, null=True, verbose_name="Color")
+    description = models.TextField(
+        blank=True, null=True, verbose_name="Descripción",
+        help_text="Qué mide este bloque de preguntas, en una frase.")
 
     @classmethod
     def for_model(cls, model_cls: type) -> "QuestionType":

@@ -203,6 +203,7 @@ async function refetchPackage() {
         v-model="editingPractice"
         :is-staff="true"
         :editable="canReview"
+        :root="pkg"
         class="mt-3"
         @saved="onSaved"
         @transitioned="refetchPackage"

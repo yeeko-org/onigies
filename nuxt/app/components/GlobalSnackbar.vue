@@ -10,8 +10,10 @@
 import { storeToRefs } from 'pinia'
 import { useDashboardStore } from '~/store/dash.js'
 
-const { global_snackbar, global_snackbar_message, global_snackbar_action } =
-  storeToRefs(useDashboardStore())
+const {
+  global_snackbar, global_snackbar_message, global_snackbar_action,
+  global_snackbar_color,
+} = storeToRefs(useDashboardStore())
 
 // Con acción el aviso espera más: es una oferta que hay que alcanzar a leer
 // y a pulsar, no una confirmación.
@@ -27,12 +29,15 @@ function runAction() {
 <template>
   <v-snackbar
     v-model="global_snackbar"
-    color="success"
+    :color="global_snackbar_color"
     location="right bottom"
     location-strategy="connected"
     :timeout="timeout"
   >
-    {{ global_snackbar_message || 'Cambios guardados' }}
+    <!-- pre-line: los errores de la API llegan uno por renglón. -->
+    <div style="white-space: pre-line;">
+      {{ global_snackbar_message || 'Cambios guardados' }}
+    </div>
     <template #actions>
       <v-btn
         v-if="global_snackbar_action"
@@ -44,7 +49,7 @@ function runAction() {
         {{ global_snackbar_action.label }}
       </v-btn>
       <v-btn
-        color="accent"
+        :color="global_snackbar_color === 'error' ? 'white' : 'accent'"
         variant="text"
         @click="global_snackbar = false"
       >

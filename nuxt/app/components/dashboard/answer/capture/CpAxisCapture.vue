@@ -132,6 +132,11 @@ const progress = computed(
 // La cola de la revisión: lo que espera su transición en este eje.
 const reviewQueue = computed(() => countInTurn(
   axis.value, authStore.flow_role, flowStore.getStatus))
+// Mientras el eje no se envía, lo completado aún no es turno de nadie en
+// la revisión (review_turn_errors lo detiene): se cuenta como avance de la
+// institución, no como cola.
+const axisWithIes = computed(
+  () => flowStore.getStatus(axis.value?.status)?.role === 'ies')
 
 const brief = computed(() => axis.value && ({
   id: axis.value.id,
@@ -223,63 +228,81 @@ function offerAxisStep() {
 <template>
   <div>
     <v-progress-linear v-if="loading" indeterminate color="primary" />
-    <template v-else-if="axis">
-      <v-card variant="flat" class="mb-4">
-        <div class="d-flex align-start flex-wrap ga-3 px-4 pt-3">
-          <v-icon :color="axis.axis_full?.color" class="mt-1">
-            {{ axis.axis_full?.icon }}
-          </v-icon>
-          <span class="mt-1 text-h6">{{ axis.axis_full?.name }}</span>
-          <v-spacer />
-          <div
-            class="cp-axis-status"
-            :class="{ 'cp-axis-status--offer': highlight }"
-          >
-            <FlowStatusActions
-              v-if="showFlow"
-              v-model="axis"
-              app-label="survey"
-              model-name="axisvalue"
-              :actions="axisActions"
-            />
-            <FlowStatusChip v-else :status="axis.status" />
-          </div>
-          <FlowComments
+    <v-card v-else-if="axis" elevation="6" class="pa-3">
+      <v-card-title class="d-flex align-start flex-wrap ga-3 text-wrap">
+        <v-icon start :color="axis.axis_full?.color" class="mt-1">
+          {{ axis.axis_full?.icon }}
+        </v-icon>
+        <span class="mt-1">{{ axis.axis_full?.name }}</span>
+        <v-spacer />
+        <div
+          class="cp-axis-status"
+          :class="{ 'cp-axis-status--offer': highlight }"
+        >
+          <FlowStatusActions
+            v-if="showFlow"
             v-model="axis"
             app-label="survey"
             model-name="axisvalue"
-            :width="200"
+            :actions="axisActions"
+            size="large"
           />
+          <FlowStatusChip v-else :status="axis.status" size="large" />
         </div>
-        <v-card-text class="d-flex align-center flex-wrap ga-2 pb-0">
-          <span
-            v-if="review"
-            class="text-body-2 mr-2"
-            :class="reviewQueue.observables || reviewQueue.groups
-              ? 'text-high-emphasis font-weight-medium'
-              : 'text-grey-darken-1'"
-            data-testid="cp-review-queue"
-          >
-            <v-icon size="18" start>flag</v-icon>
-            En turno de la revisión: {{ reviewQueue.observables }}
-            {{ reviewQueue.observables === 1 ? 'observable' : 'observables' }}
-            y {{ reviewQueue.groups }}
-            {{ reviewQueue.groups === 1 ? 'grupo' : 'grupos' }}
-          </span>
-          <span v-else class="text-body-2 text-grey-darken-1 mr-2">
-            {{ progress.resolved }}/{{ progress.total }} observables sin
-            captura pendiente
-          </span>
-          <CpStatusCounts :counts="byStatus" />
-        </v-card-text>
-      </v-card>
+        <FlowComments
+          v-model="axis"
+          app-label="survey"
+          model-name="axisvalue"
+          :width="200"
+          :readonly="!showFlow"
+          class="mt-1"
+        />
+      </v-card-title>
+
+      <v-card-text
+        v-if="axis.axis_full?.description"
+        class="py-1 text-body-2 text-grey-darken-1 font-italic"
+      >
+        {{ axis.axis_full.description }}
+      </v-card-text>
+
+      <v-card-text class="d-flex align-center flex-wrap ga-2 py-2">
+        <span
+          v-if="review && axisWithIes"
+          class="text-body-2 text-grey-darken-1 mr-2"
+          data-testid="cp-review-queue"
+        >
+          <v-icon size="18" start>schedule</v-icon>
+          {{ reviewQueue.observables }} completados por la institución, eje
+          sin enviar
+        </span>
+        <span
+          v-else-if="review"
+          class="text-body-2 mr-2"
+          :class="reviewQueue.observables || reviewQueue.groups
+            ? 'text-high-emphasis font-weight-medium'
+            : 'text-grey-darken-1'"
+          data-testid="cp-review-queue"
+        >
+          <v-icon size="18" start>flag</v-icon>
+          En turno de la revisión: {{ reviewQueue.observables }}
+          {{ reviewQueue.observables === 1 ? 'observable' : 'observables' }}
+          y {{ reviewQueue.groups }}
+          {{ reviewQueue.groups === 1 ? 'grupo' : 'grupos' }}
+        </span>
+        <span v-else class="text-body-2 text-grey-darken-1 mr-2">
+          {{ progress.resolved }}/{{ progress.total }} observables sin
+          captura pendiente
+        </span>
+        <CpStatusCounts :counts="byStatus" />
+      </v-card-text>
 
       <v-alert
         v-if="gateMessage"
         type="info"
         variant="tonal"
         icon="lock_clock"
-        class="mb-4"
+        class="mx-3 my-2"
       >
         {{ gateMessage }}
         <div v-if="capture.reason === 'gen_not_approved'" class="mt-2">
@@ -292,37 +315,39 @@ function offerAxisStep() {
         variant="tonal"
         density="compact"
         icon="lock_clock"
-        class="mb-4"
+        class="mx-3 my-2"
       >
         {{ reviewGateMessage }}
       </v-alert>
 
-      <div v-for="section in sections" :key="section.id" class="mb-6">
-        <div class="text-overline text-grey-darken-1 mb-1">
-          {{ section.name }}
+      <v-card-text>
+        <div v-for="section in sections" :key="section.id" class="mb-6">
+          <div class="text-overline text-grey-darken-1 mb-1">
+            {{ section.name }}
+          </div>
+          <v-expansion-panels
+            v-model="openPanels[section.id]"
+            multiple
+            variant="accordion"
+          >
+            <CpObservablePanel
+              v-for="obs in section.items"
+              :key="obs.id"
+              :model-value="obs"
+              :axis="axis"
+              :a-options="axis.a_options"
+              :gen-denominators="axis.gen_denominators"
+              :capture-open="captureOpen"
+              :review="review"
+              :sync="sync"
+              @observable-changed="offerAxisStep"
+            />
+          </v-expansion-panels>
         </div>
-        <v-expansion-panels
-          v-model="openPanels[section.id]"
-          multiple
-          variant="accordion"
-        >
-          <CpObservablePanel
-            v-for="obs in section.items"
-            :key="obs.id"
-            :model-value="obs"
-            :axis="axis"
-            :a-options="axis.a_options"
-            :gen-denominators="axis.gen_denominators"
-            :capture-open="captureOpen"
-            :review="review"
-            :sync="sync"
-            @observable-changed="offerAxisStep"
-          />
-        </v-expansion-panels>
-      </div>
+      </v-card-text>
 
       <FlowTransitionDialogs :actions="axisActions" />
-    </template>
+    </v-card>
   </div>
 </template>
 

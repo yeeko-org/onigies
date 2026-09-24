@@ -70,8 +70,8 @@ Computed front-side by `calculateSchemas` (UI-only / needs full field objects):
 options specific to one collection: `value` is an `ordering` string its
 ViewSet must admit in `ordering_fields`. The list opens without sending
 `ordering` (or with `order` when the model has one), so the initial order is
-the ViewSet's default `ordering`, never a frontend rule. Today only
-`axis_value` uses it («Más urgentes», which is also its backend default).
+the ViewSet's default `ordering`, never a frontend rule. No collection uses it
+today.
 
 ## 2. The auto-load convention (the core)
 

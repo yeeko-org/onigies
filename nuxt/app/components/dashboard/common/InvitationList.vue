@@ -242,7 +242,6 @@ async function deleteInvitation() {
         <v-card-text>
           <v-alert
             type="info"
-            border="start"
             variant="outlined"
             class="mb-4"
           >

@@ -96,7 +96,7 @@ const onNonBinaryChange = (value) => {
         <thead>
           <tr>
             <th class="text-left text-body-1">Población</th>
-            <th class="text-center text-body-1" style="width: 130px">
+            <th class="text-center text-body-1" style="width: 120px">
               Está presente
             </th>
             <th class="text-center text-body-1" style="width: 150px">
@@ -149,7 +149,7 @@ const onNonBinaryChange = (value) => {
                 :readonly="!editable"
                 :error="invalid.has(`presence:${sector.id}`)"
                 :aria-label="`Está presente — ${sector.name}`"
-                variant="outlined"
+                variant="solo-inverted"
                 density="compact"
                 hide-details
                 @update:model-value="onPresenceChange(sector)"

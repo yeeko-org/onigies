@@ -141,7 +141,7 @@ STATUSES = {
           entry_rules=["features_rated"]),
         S("bp_finished", "Finalizado", "Finalizar",
           "La revisión del paquete concluyó; sin acciones pendientes.",
-          role=None, applies=[P], color="blue-grey",
+          role=None, applies=[P], color="green-darken-2",
           icon="sports_score", priority=10,
           hint="Revisión del paquete concluida."),
         S("bp_need_changes", "Requiere ajustes", "Solicitar ajustes",
@@ -187,7 +187,7 @@ STATUSES = {
         S("cp_pre_start", "Por iniciar", None,
           "El eje aún no tiene respuestas capturadas.",
           role="ies", flags={"default", "edit"},
-          applies=[A, O, G], color="blue-grey-lighten-1",
+          applies=[A, O, G], color="grey-lighten-1",
           icon="hourglass_empty", priority=35,
           hint="Comienza a capturar las respuestas del eje; cada grupo "
                "de preguntas se guarda con su propio botón.",
@@ -331,10 +331,10 @@ STATUSES = {
         # la pregunta inicial, y lo revierte la misma vía. Vale cero en
         # el promedio y no se revisa; por eso no tiene next_statuses y
         # nadie lo alcanza desde el menú de transiciones.
-        S("cp_not_present", "No cuenta con la medida", None,
+        S("cp_not_present", "Sin la medida", None,
           "La IES declaró que no cuenta con la medida; la respuesta "
           "vale cero y no se revisa.",
-          role=None, applies=[O, G], color="grey", icon="block",
+          role=None, applies=[O, G], color="blue-grey", icon="block",
           priority=20,
           # Terminal: el mismo texto vale para la IES y para la
           # revisión (FlowStatusActions muestra `hint` a ambas).
@@ -425,7 +425,7 @@ STATUSES = {
         S("gen_finished", "Finalizado", "Finalizar",
           "La revisión de las preguntas generales concluyó; sin "
           "acciones pendientes.",
-          role=None, applies=[GPK], color="blue-grey",
+          role=None, applies=[GPK], color="green-darken-2",
           icon="sports_score", priority=10,
           hint="Revisión de las preguntas generales concluida."),
     ],
@@ -489,9 +489,11 @@ VALID_CHILD_STATUSES = {
     "bp_finished": ["bp_for_ruling", "bp_rejected"],
     # cp_not_present es un hijo válido en todo lo que avanza o se
     # revisa: un «no cuenta con la medida» está resuelto de origen y no
-    # puede frenar al observable ni al eje.
+    # puede frenar al observable ni al eje. cp_approved también, en todo
+    # lo que mueve al observable: los grupos sin captura (population)
+    # nacen aprobados y tampoco pueden frenarlo.
     "cp_approved": ["cp_approved", "cp_not_present"],
-    "cp_completed": ["cp_completed", "cp_not_present"],
+    "cp_completed": ["cp_completed", "cp_approved", "cp_not_present"],
     "cp_adjusted": ["cp_adjusted", "cp_completed", "cp_approved",
                     "cp_not_present"],
     "cp_sent": ["cp_completed", "cp_postponed", "cp_partial",
@@ -503,15 +505,17 @@ VALID_CHILD_STATUSES = {
     "cp_need_changes": ["cp_need_changes", "cp_approved",
                         "cp_postponed", "cp_voluntary_readjust",
                         "cp_not_present"],
-    "cp_partial": ["cp_completed", "cp_postponed", "cp_not_present"],
+    "cp_partial": ["cp_completed", "cp_postponed", "cp_approved",
+                   "cp_not_present"],
     # Sin esta regla un observable pospuesto podía viajar en cp_sent con
     # grupos que nadie tocó (cp_pre_start / cp_filling): posponer el
     # observable exige que cada grupo esté resuelto o pospuesto a su vez.
     "cp_postponed": ["cp_completed", "cp_postponed", "cp_partial",
-                     "cp_not_present"],
+                     "cp_approved", "cp_not_present"],
     # Un grupo «no cuenta con la medida» no forma parte de la entrega
     # parcial: no puede frenar la aprobación de la parte entregada.
-    "cp_partial_approved": ["cp_partial_approved", "cp_not_present"],
+    "cp_partial_approved": ["cp_partial_approved", "cp_approved",
+                            "cp_not_present"],
     # Generales (espejo de bp)
     "gen_sent": ["gen_completed"],
     "gen_resent": ["gen_adjusted", "gen_completed", "gen_approved"],

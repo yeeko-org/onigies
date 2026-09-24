@@ -41,6 +41,11 @@ class FeatureOption(models.Model):
 
 
 class GoodPracticePackage(FlowParticipant, models.Model):
+    # Motivo de `flow.permissions.root_turn_errors` para sus prácticas.
+    root_not_sent_message = (
+        'Las buenas prácticas aún no se han enviado a revisión; la revisión '
+        'podrá actuar sobre esta práctica cuando la institución las envíe.')
+
     # institution = models.ForeignKey(
     #     Institution, on_delete=models.CASCADE, related_name='packages')
     # period = models.ForeignKey(
@@ -124,6 +129,12 @@ class GoodPractice(FlowParticipant, models.Model):
                     good_practice=self,
                     feature=feature,
                 )
+
+    def validate_flow_transition(self, user, target) -> list[str]:
+        """Gancho del motor: la revisión no dictamina ni devuelve la
+        práctica mientras el paquete siga en turno de la IES."""
+        from flow.permissions import root_turn_errors
+        return root_turn_errors(user, self)
 
     def __str__(self):
         return self.name

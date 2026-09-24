@@ -39,8 +39,8 @@ FRONTEND_SITE_URL=https://localhost:3018
 Settings in `core/settings/__init__.py`; root URLs in `core/urls.py`; API routes in `api/urls.py`.
 
 **`Institution.is_test`:** test institutions see every section and ignore
-period deadlines, but the cp response gate (`survey/cp_gate.py`) applies
-to them too. Any calculation, indicator or export must exclude them
+period deadlines, including the cp opening date; the cp gate
+(`survey/cp_gate.py`) still requires their gen to be `gen_finished`. Any calculation, indicator or export must exclude them
 (`institution__is_test=False`). None exists yet — do not introduce one.
 
 ## Creating views

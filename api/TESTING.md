@@ -34,13 +34,15 @@ Dos sondas más de la captura cp, contra la base local, desde `api/`:
 | `flow/tests/test_period_lock.py` · `TestInstitutionPeriodLockTests` | periodo cerrado: bloquea a la IES real, exime a la `is_test`, deja dictaminar a la revisora |
 | `flow/tests/test_notifications.py` · `TurnNotificationTests` | correo a la IES cuando el turno vuelve a ella o llega a status final; nunca a revisoras ni por hijos |
 | `flow/tests/test_attachments.py` · `AttachmentTests` | tope de 30 MB, borrado del archivo físico, y la descarga vía endpoint (permisos, `is_public`, 404 anti-enumeración, `?redirect=false`) |
-| `answer/tests.py` · `ProvisioningTests` | `Institution.save` aprovisiona ObservableResponse y GroupResponse (idempotente, backfill) |
+| `answer/tests.py` · `ProvisioningTests` | `Institution.save` aprovisiona ObservableResponse y GroupResponse (idempotente, backfill); `approve_groups_without_capture` lleva a `cp_approved` los grupos sin captura en `cp_pre_start`/`cp_filling`, no toca `cp_not_present` ni los grupos con captura |
 | `answer/tests.py` · `InitValueTests` | pregunta inicial: el «No» lleva el árbol a `cp_not_present`, la vuelta a «Sí» reabre, bloqueos con revisión activa, eje fuera de turno y revisora |
-| `answer/tests.py` · `ObservableFlowRulesTests` | ganchos del observable y del grupo: pregunta inicial sin responder, `cp_not_present` como hijo válido, pospuesta con grupos resueltos, y la revisión espera a que la IES envíe el eje |
+| `answer/tests.py` · `ObservableFlowRulesTests` | ganchos del observable y del grupo: pregunta inicial sin responder, `cp_not_present` como hijo válido, pospuesta con grupos resueltos, la revisión espera a que la IES envíe el eje, el grupo sin captura aprobado no frena `cp_completed` y rechaza el reajuste voluntario |
 | `answer/tests.py` · `GroupValidationTests` | reglas de completitud por tipo (A, B, alcance, planes, especial) |
 | `answer/tests.py` · `CaptureGateTests` | compuerta de respuesta (fecha + generales validadas), solo cierra a la IES |
 | `answer/tests.py` · `CaptureApiTests` | endpoints `/axis_value/`, `/observable_response/`, `/group_response/`: cerco por institución, revisora solo lee, upsert y promoción, `completion` embebido |
 | `survey/tests.py` · `GeneralValidationTests` | reglas de completitud de las generales: qué cuenta como respuesta y cuándo exime «No aplica» |
+| `survey/tests.py` · `GeneralReviewTurnTests` | la revisión no transiciona un grupo `gen_completed` con el paquete en `gen_draft`; sí con `gen_sent` |
+| `example/tests.py` · `PracticeReviewTurnTests` | lo mismo en bp: práctica `bp_completed` con el paquete en `bp_draft` contra `bp_sent` |
 | `survey/tests.py` · `GeneralQuestionResponseSyncTests` | upsert de `question_responses` anidado: columna por `q_type`, normalización del `''`, sin duplicar |
 | `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones |
 | `question/tests.py` · `SeedTextOwnershipTests` | de los textos manda el dashboard; `--overwrite-texts` los repone, salvo `Axis.name` |

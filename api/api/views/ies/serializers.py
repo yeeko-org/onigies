@@ -21,6 +21,10 @@ class AxisValueSerializer(serializers.ModelSerializer):
     conteo de observables por status (encabezado e íconos). Cuenta en
     Python sobre los hijos prefetcheados (41 filas por eje)."""
     observables_by_status = serializers.SerializerMethodField()
+    # Motivo que la revisión ve mientras la raíz sigue en turno de la IES
+    # (`flow.permissions.root_turn_errors`); constante de clase, sin query.
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
 
     class Meta:
         model = AxisValue
@@ -40,12 +44,18 @@ class SurveySerializer(serializers.ModelSerializer):
 
 
 class GoodPracticePackageSimpleSerializer(serializers.ModelSerializer):
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
+
     class Meta:
         model = GoodPracticePackage
         fields = '__all__'
 
 
 class GeneralPackageSimpleSerializer(serializers.ModelSerializer):
+    not_sent_message = serializers.ReadOnlyField(
+        source='root_not_sent_message')
+
     class Meta:
         model = GeneralPackage
         fields = '__all__'

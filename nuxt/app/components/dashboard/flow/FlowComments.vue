@@ -18,6 +18,10 @@ const props = defineProps({
   appLabel:  { type: String, required: true },
   modelName: { type: String, required: true },
   width:     { type: Number, default: 280 },
+  // Apaga la captura aunque sea el turno de quien mira: el turno del
+  // registro no basta cuando su contenido no se trabaja todavía (p. ej. un
+  // grupo cp en consulta previa o con la compuerta de respuesta cerrada).
+  readonly:  Boolean,
 })
 
 // Registro completo (con flow_events). Lo mutamos en sitio al comentar.
@@ -32,8 +36,8 @@ const auth = useAuthStore()
 // Solo comenta quien tiene el turno del registro: la IES no comenta cuando el
 // objeto está del lado de la revisora y viceversa. El timeline sigue visible
 // para ambos; solo se oculta la caja de captura.
-const canComment = computed(
-  () => flowStore.getStatus(record.value?.status)?.role === auth.flow_role)
+const canComment = computed(() => !props.readonly
+  && flowStore.getStatus(record.value?.status)?.role === auth.flow_role)
 
 const open = ref(false)
 const newComment = ref('')
@@ -60,9 +64,11 @@ async function onAdd() {
 
 <template>
   <div>
-    <!-- Con historial: tarjeta amarilla compacta que abre el diálogo. -->
+    <!-- Con comentarios: tarjeta amarilla compacta que abre el diálogo. Los
+         eventos sin texto (cambios de status, incluido el automático del
+         primer guardado) no cuentan: sin ellos sería «Comentarios (0)». -->
     <v-card
-      v-if="events.length"
+      v-if="commentCount"
       color="yellow-accent-4"
       variant="flat"
       :width="width"
@@ -81,7 +87,7 @@ async function onAdd() {
       <v-icon class="mr-2" color="yellow-darken-3">open_in_full</v-icon>
     </v-card>
 
-    <!-- Sin historial y es mi turno: botón para abrir el diálogo y comentar. -->
+    <!-- Sin comentarios y es mi turno: botón para abrir el diálogo y comentar. -->
     <v-btn
       v-else-if="canComment"
       color="yellow-accent-4"

@@ -52,7 +52,6 @@ const commentPrompt = computed(() => {
         :color="pendingTransition.color || 'warning'"
         :icon="pendingTransition.icon || 'info'"
         variant="tonal"
-        border="start"
         density="comfortable"
         class="mb-2"
       >

@@ -8,8 +8,10 @@ precarga de la forma de gobierno.
 from django.test import TestCase
 
 from api.views.survey.serializers import SurveySerializer
+from flow.models import Status
 from flow.seed import seed_flow
-from ies.models import Institution, Period
+from flow.services import validate_transition
+from ies.models import Institution, Period, User
 from indicator.models import GeneralGroup
 from question.models import GeneralQuestion
 from survey.general_validation import (
@@ -111,6 +113,29 @@ class GeneralValidationTests(GeneralQuestionTestCase):
         self.assertEqual(
             group_completion_issues(self.responses['forma_gobierno']),
             ['Falta la respuesta: Forma de gobierno'])
+
+
+class GeneralReviewTurnTests(GeneralQuestionTestCase):
+    """La revisión no transiciona un grupo mientras el paquete de
+    generales siga en turno de la IES (`flow.permissions.root_turn_errors`)."""
+
+    def test_reviewer_waits_for_the_package_to_be_sent(self):
+        reviewer = User.objects.create_user(
+            'rev', password='x', reviewer=True)
+        approved = Status.objects.get(name='gen_approved')
+        group = self.responses['estructuras']
+        type(group).objects.filter(pk=group.pk).update(
+            status_id='gen_completed')
+        package = self.survey.general_package
+        type(package).objects.filter(pk=package.pk).update(
+            status_id='gen_draft')
+        group.refresh_from_db()
+        errors = validate_transition(reviewer, group, approved)
+        self.assertEqual(errors, [package.root_not_sent_message])
+        type(package).objects.filter(pk=package.pk).update(
+            status_id='gen_sent')
+        group.refresh_from_db()
+        self.assertEqual(validate_transition(reviewer, group, approved), [])
 
 
 class GeneralQuestionResponseSyncTests(GeneralQuestionTestCase):

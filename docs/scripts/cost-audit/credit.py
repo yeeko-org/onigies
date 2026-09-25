@@ -111,6 +111,11 @@ CONSOLE = re.compile(
     r"|^\s*/[\w.@/~-]+\.\w{1,6}\b"                      # ruta absoluta con extensión
     r"|^\s*\S{12,}$(?=.*[./?])"                            # token solo, sin espacios
     r"|\?v=[0-9a-f]{6,}"                                   # cache-buster de bundler
+    r"|^_?[A-Z][A-Z0-9_]{2,}\s*=\s"                      # volcado de settings
+    r"|^\s*(Request (Method|URL)|Django Version|Exception (Type|Value|"
+    r"Location)|Python (Executable|Version|Path)|Server time|Raised during)"
+    r"\s*:"                                               # página de debug
+    r"|^\s*[A-Za-z]:\\"                                  # ruta de Windows
     r")")
 
 

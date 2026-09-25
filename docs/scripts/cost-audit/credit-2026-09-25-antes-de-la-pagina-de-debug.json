@@ -1047,7 +1047,7 @@
   {
    "sid": "a354126c-1ab2-48b4-9170-ee84a0ef324e",
    "title": "Corregir b\u00fasqueda con unaccent en survey__period__year",
-   "credited_h": 0.3821554630555554,
+   "credited_h": 3.7767850924999977,
    "old_h": 0.09845583333333334,
    "span_h": 0.09845583333333333,
    "start": "2026-05-26T01:03:56.380000+00:00",
@@ -1058,13 +1058,13 @@
    "branches": {
     "main": 32
    },
-   "writing_h": 0.30074074074074075,
+   "writing_h": 3.6953703703703704,
    "writing_spill_h": 0.0,
    "reading_h": 2.1666666666666667e-05,
    "machine_h": 0.027592444444444444,
    "n_prompts": 1,
    "n_real_prompts": 1,
-   "pasted_chars": 23163,
+   "pasted_chars": 4832,
    "n_records": 32,
    "floored": false,
    "markers": {
@@ -1079,8 +1079,8 @@
     "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 1
    },
    "n_paths": 4,
-   "fused_h": 0.3821554630555554,
-   "allocated_h": 0.3821554630555554
+   "fused_h": 3.7767850924999977,
+   "allocated_h": 3.7767850924999977
   },
   {
    "sid": "e472b042-eecc-434d-accc-5363f94deb4e",
@@ -4074,7 +4074,7 @@
  ],
  "months": {
   "2026-04": 6.059465201262355,
-  "2026-05": 7.471548590255095,
+  "2026-05": 10.866178219699526,
   "2026-06": 8.630090320068692,
   "2026-07": 0.9965142038888891,
   "2026-08": 30.501931360311726,
@@ -4082,23 +4082,23 @@
  },
  "months_per_session": {
   "2026-04": 8.712641827315219,
-  "2026-05": 8.254852770810647,
+  "2026-05": 11.649482400255087,
   "2026-06": 8.633393653402026,
   "2026-07": 0.9965142038888891,
   "2026-08": 32.93866644552951,
   "2026-09": 32.55987757860675
  },
- "total_per_session_h": 92.12634286834948,
- "total_fused_h": 85.68802641794758,
- "total_allocated_h": 67.83775972125686,
+ "total_per_session_h": 95.52097249779393,
+ "total_fused_h": 89.08265604739202,
+ "total_allocated_h": 71.23238935070152,
  "allocation": {
   "-home-rick-dev-ssa-snsp-django": 1.2193776140772767,
   "-home-rick-dev-ssa-snsp": 80.91907172524924,
   "-home-rick-dev-ssa-ram-cdc-2025": 13.505560389664428,
-  "-home-rick-dev-unam-onigies": 67.83775972125686,
+  "-home-rick-dev-unam-onigies": 71.23238935070152,
   "-home-rick-dev-bandatos-pendientes-y-escaleras": 14.3950045372762,
-  "-home-rick-dev-ibero-ocsa": 121.31628563850037,
-  "-home-rick-dev-unam-stig": 21.57188402495273,
+  "-home-rick-dev-ibero-ocsa": 121.33424860127813,
+  "-home-rick-dev-unam-stig": 21.658550691619403,
   "-home-rick-dev-yeeko-bot-caceh": 28.195951841101248,
   "-home-rick-Documentos-plan-discos": 2.7385474701230477,
   "-home-rick-dev-yeeko-yeeko-chat-flow": 3.660640067863768,
@@ -4311,10 +4311,10 @@
   ]
  ],
  "stats": {
-  "records_with_ts": 45561,
-  "records_kept": 45532,
+  "records_with_ts": 44913,
+  "records_kept": 44884,
   "dup_uuid": 29,
-  "echoed_lines": 128,
-  "live_segments": 329648
+  "echoed_lines": 131,
+  "live_segments": 329029
  }
 }

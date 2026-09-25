@@ -1,0 +1,29 @@
+{
+  "extra_roots": [],
+  "audit_sessions": [
+    "fdef28fa-50b5-4e49-8a6a-7b05bd2a7241"
+  ],
+  "billable_fraction": {
+    "bb4b280d": [0.0, "personal: Wi-Fi con VPN a una TV"],
+    "46738145": [0.0, "personal: memoria USB para el .iso de Fedora"],
+    "b85c3e41": [0.0, "harness: Opus 4.8 como modelo por defecto"],
+    "6c1965d0": [0.0, "inversión propia: migración a documenter"],
+    "dc120271": [0.0, "inversión propia: migración a documenter"],
+    "ab1883c9": [0.5, "mixta: lógica de /duo"],
+    "dfd4cced": [0.8, "mixta: coordinación con agentes"],
+    "fe66c195": [0.7, "mixta: reescribir párrafos y verificar hipótesis"],
+    "b055612f": [0.9, "mixta: exportación a Word, con algo de diálogo de proceso"],
+    "34ca5579": [0.0, "admin-cliente: preparar la reunión del 11-ago"],
+    "25bf79de": [0.0, "admin-cliente: preparar la reunión con Rubén"],
+    "b6c8a4f0": [0.8, "mixta: intake de la reunión del 4-sep; 20 % admin-cliente (reference de pagos, task-154/155)"],
+    "6635e96d": [0.5, "mixta: intake de la reunión del 23-sep; 50 % admin-cliente (cuadre de pagos, task-154)"]
+  },
+  "blind_exclude_days": {
+    "2026-06-30": "puente SSH a la UNAM con la llave de soporte de STIG; ambiguo",
+    "2026-07-02": "puente SSH a la UNAM con la llave de soporte de STIG; ambiguo"
+  },
+  "blind_day_from": {
+    "2026-06-20": ["12:55", "antes de las 12:55 es la instalación de Fedora"]
+  },
+  "blind_min_prompts": 2
+}

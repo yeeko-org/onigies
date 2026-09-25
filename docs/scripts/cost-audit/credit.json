@@ -1,0 +1,4320 @@
+{
+ "project_root": "/home/rick/dev/unam/onigies",
+ "base": "/home/rick/.claude/projects/-home-rick-dev-unam-onigies",
+ "window": [
+  null,
+  null
+ ],
+ "sessions": [
+  {
+   "sid": "f85f48da-232e-491d-b67b-077fec9b4b13",
+   "title": "snoopy-prancing-cat",
+   "credited_h": 0.3541444444444445,
+   "old_h": 0.4783625,
+   "span_h": 0.4783625,
+   "start": "2026-04-15T20:30:22.073000+00:00",
+   "end": "2026-04-15T20:59:04.178000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "fix_bugs_ia",
+   "branches": {
+    "fix_bugs_ia": 119,
+    "main": 18
+   },
+   "writing_h": 0.12333333333333334,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.039327777777777774,
+   "machine_h": 0.08323388888888889,
+   "n_prompts": 5,
+   "n_real_prompts": 5,
+   "pasted_chars": 338,
+   "n_records": 149,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 403.60900000000004
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/settings.local.json": 2,
+    "/home/rick/dev/unam/onigies/docs/prueba_usuarios_reales.md": 1,
+    "/d/dev/unam/onigies/api/example/models.py": 1,
+    "/d/dev/unam/onigies/api/example/views.py": 1,
+    "/d/dev/unam/onigies/api/api/views/auth/invitation_views.py": 1,
+    "/d/dev/unam/onigies/api/api/views/example/serializers.py": 1,
+    "/d/dev/unam/onigies/api/api/views/example/__init__.py": 1,
+    "/d/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 1,
+    "/d/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/NewGoodPractice.vue": 1,
+    "/d/dev/unam/onigies/nuxt/app/pages/dashboard/[group].vue": 1,
+    "/home/rick/dev/unam/onigies/api/example": 1,
+    "/home/rick/dev/unam/onigies/api/example/views.py": 1,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/example/serializers.py": 1
+   },
+   "n_paths": 15,
+   "fused_h": 0.3541444444444445,
+   "allocated_h": 0.3541444444444445
+  },
+  {
+   "sid": "988a331d-33b3-4f16-b409-892a85d23da1",
+   "title": "stateless-roaming-shamir",
+   "credited_h": 0.26801425000000006,
+   "old_h": 0.4503244444444444,
+   "span_h": 0.4503244444444444,
+   "start": "2026-04-15T21:13:03.947000+00:00",
+   "end": "2026-04-15T21:40:05.115000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies/.claude/worktrees/gallant-jemison",
+   "branch": "claude/gallant-jemison",
+   "branches": {
+    "claude/gallant-jemison": 224
+   },
+   "writing_h": 0.115,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.021777777777777774,
+   "machine_h": 0.048666749999999995,
+   "n_prompts": 3,
+   "n_real_prompts": 3,
+   "pasted_chars": 0,
+   "n_records": 230,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "acceptEdits": 1051.467
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/RegisterForm.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/SurveyInitData.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/invitation_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/register.vue": 1
+   },
+   "n_paths": 21,
+   "fused_h": 0.26801425000000006,
+   "allocated_h": 0.26801425000000006
+  },
+  {
+   "sid": "9af23f16-c3b3-4e75-a8d4-56f3f82f4a74",
+   "title": "9af23f16",
+   "credited_h": 0.40309944981015056,
+   "old_h": 0.25090055555555557,
+   "span_h": 0.25090055555555557,
+   "start": "2026-04-16T20:28:19.877000+00:00",
+   "end": "2026-04-16T20:43:23.119000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 52
+   },
+   "writing_h": 0.21574074074074073,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.06333333333333334,
+   "machine_h": 0.05069555555555556,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 2912,
+   "n_records": 52,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 192.072
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/nuxt.config.ts": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/nodes.js": 1
+   },
+   "n_paths": 4,
+   "fused_h": 0.3110750159845778,
+   "allocated_h": 0.3110750159845778
+  },
+  {
+   "sid": "37024685-9820-43f2-8451-7b04eab04945",
+   "title": "37024685",
+   "credited_h": 0.21429490750000002,
+   "old_h": 0.21786805555555558,
+   "span_h": 0.21786805555555558,
+   "start": "2026-04-16T20:30:46.707000+00:00",
+   "end": "2026-04-16T20:43:51.032000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 42
+   },
+   "writing_h": 0.11537685194444446,
+   "writing_spill_h": 0.023141666574074075,
+   "reading_h": 0.05946166666666667,
+   "machine_h": 0.03945638888888889,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 0,
+   "n_records": 42,
+   "floored": true,
+   "markers": {
+    "marker_ide": 2
+   },
+   "mode_split": {
+    "default": 249.316
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 4,
+    "/home/rick/dev/unam/onigies/CLAUDE.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 2
+   },
+   "n_paths": 8,
+   "fused_h": 0.08293249999999999,
+   "allocated_h": 0.08293249999999999
+  },
+  {
+   "sid": "4015b0d5-1d41-413f-9749-919e3654c5ea",
+   "title": "4015b0d5",
+   "credited_h": 0.32088805555555555,
+   "old_h": 0.2511052777777778,
+   "span_h": 0.2511052777777778,
+   "start": "2026-04-16T20:45:43.238000+00:00",
+   "end": "2026-04-16T21:00:47.217000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 44
+   },
+   "writing_h": 0.12944444444444445,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.06546444444444445,
+   "machine_h": 0.06905416666666665,
+   "n_prompts": 5,
+   "n_real_prompts": 4,
+   "pasted_chars": 130,
+   "n_records": 44,
+   "floored": false,
+   "markers": {
+    "marker_ide": 3,
+    "marker_rejection": 2
+   },
+   "mode_split": {
+    "default": 308.998
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 4
+   },
+   "n_paths": 4,
+   "fused_h": 0.31965416666666663,
+   "allocated_h": 0.31965416666666663
+  },
+  {
+   "sid": "0a0e1ee9-dfbe-48b3-91dc-d47c71fb271d",
+   "title": "0a0e1ee9",
+   "credited_h": 1.7100662916666671,
+   "old_h": 1.773628888888889,
+   "span_h": 1.773628888888889,
+   "start": "2026-04-16T21:01:57.221000+00:00",
+   "end": "2026-04-16T22:48:22.285000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 230
+   },
+   "writing_h": 0.7538888888888887,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.29384249999999995,
+   "machine_h": 0.30262076388888887,
+   "n_prompts": 11,
+   "n_real_prompts": 10,
+   "pasted_chars": 130,
+   "n_records": 230,
+   "floored": false,
+   "markers": {
+    "marker_ide": 9,
+    "marker_userModified": 5,
+    "marker_rejection": 4,
+    "marker_esc": 2
+   },
+   "mode_split": {
+    "default": 2349.759
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 11,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue": 8,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/good_practice_validation.js": 3,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 2,
+    "/home/rick/dev/unam/onigies/api/ies/initial_data.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/status/StatusChip.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/status/StatusToggle.vue": 1
+   },
+   "n_paths": 35,
+   "fused_h": 1.327662175972223,
+   "allocated_h": 1.327662175972223
+  },
+  {
+   "sid": "1b2d7e8d-1601-44c3-b7f0-7a5603a00eda",
+   "title": "1b2d7e8d",
+   "credited_h": 0.7814121180606216,
+   "old_h": 0.33028916666666663,
+   "span_h": 0.8724583333333333,
+   "start": "2026-04-16T21:56:20.160000+00:00",
+   "end": "2026-04-16T22:48:41.010000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 76
+   },
+   "writing_h": 0.22703703703703704,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.10800694444444445,
+   "machine_h": 0.06105638888888889,
+   "n_prompts": 5,
+   "n_real_prompts": 5,
+   "pasted_chars": 0,
+   "n_records": 76,
+   "floored": false,
+   "markers": {
+    "marker_ide": 3
+   },
+   "mode_split": {
+    "default": 292.451
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/SurveyInitData.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/index.js": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/common_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 1
+   },
+   "n_paths": 14,
+   "fused_h": 0.4120331018055557,
+   "allocated_h": 0.4120331018055557
+  },
+  {
+   "sid": "5ecb87aa-0016-4aba-a2b0-9ddcb8fdb5e7",
+   "title": "5ecb87aa",
+   "credited_h": 0.1876631480555556,
+   "old_h": 0.07591722222222223,
+   "span_h": 0.07591722222222223,
+   "start": "2026-04-16T22:37:56.895000+00:00",
+   "end": "2026-04-16T22:42:30.197000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 21
+   },
+   "writing_h": 0.09648148148148149,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.021008888888888886,
+   "machine_h": 0.028860277777777776,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 1152,
+   "n_records": 21,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2,
+    "marker_userModified": 1
+   },
+   "mode_split": {
+    "default": 168.6
+   },
+   "paths": {
+    "/home/rick/.claude/CLAUDE.md": 2
+   },
+   "n_paths": 2,
+   "fused_h": 0.03795861111111112,
+   "allocated_h": 0.03795861111111112
+  },
+  {
+   "sid": "8799bf56-0ca0-4729-856b-04f44be469dd",
+   "title": "8799bf56",
+   "credited_h": 0.2358775,
+   "old_h": 0.18805305555555554,
+   "span_h": 0.18805305555555554,
+   "start": "2026-04-16T22:48:35.189000+00:00",
+   "end": "2026-04-16T22:59:52.180000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 28
+   },
+   "writing_h": 0.04907407407407407,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.007888888888888888,
+   "machine_h": 0.039355,
+   "n_prompts": 3,
+   "n_real_prompts": 2,
+   "pasted_chars": 130,
+   "n_records": 28,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2
+   },
+   "mode_split": {
+    "default": 176.81400000000002
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/status/StatusToggle.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/good_practice_validation.js": 1
+   },
+   "n_paths": 3,
+   "fused_h": 0.1012211111111111,
+   "allocated_h": 0.1012211111111111
+  },
+  {
+   "sid": "322595eb-61d5-4789-a718-2bdc3314b9b3",
+   "title": "322595eb",
+   "credited_h": 0.8103953055555557,
+   "old_h": 0.4449577777777778,
+   "span_h": 1.1738563888888889,
+   "start": "2026-04-16T22:49:30.162000+00:00",
+   "end": "2026-04-16T23:59:56.045000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 79
+   },
+   "writing_h": 0.14537037037037034,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.16726138888888892,
+   "machine_h": 0.10708693055555554,
+   "n_prompts": 6,
+   "n_real_prompts": 5,
+   "pasted_chars": 2289,
+   "n_records": 79,
+   "floored": false,
+   "markers": {
+    "marker_ide": 3,
+    "marker_userModified": 1
+   },
+   "mode_split": {
+    "default": 658.543
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/__init__.py": 3,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/common_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 1,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/urls.py": 1
+   },
+   "n_paths": 13,
+   "fused_h": 0.49414694444444446,
+   "allocated_h": 0.49414694444444446
+  },
+  {
+   "sid": "38c7d003-d213-4ff6-8e7c-8051e72b5a34",
+   "title": "38c7d003",
+   "credited_h": 1.1578651713888888,
+   "old_h": 1.2639675000000001,
+   "span_h": 1.6173199999999999,
+   "start": "2026-04-16T23:01:21.545000+00:00",
+   "end": "2026-04-17T00:38:23.897000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 195
+   },
+   "writing_h": 0.39444444444444443,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.19799999999999998,
+   "machine_h": 0.2037452638888889,
+   "n_prompts": 7,
+   "n_real_prompts": 6,
+   "pasted_chars": 130,
+   "n_records": 195,
+   "floored": false,
+   "markers": {
+    "marker_ide": 5,
+    "marker_userModified": 1
+   },
+   "mode_split": {
+    "default": 1717.754
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 16,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 8,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/FeatureList.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/good_practice_validation.js": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/example/serializers.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/SelectGroup.vue": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/NewGoodPractice.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useRules.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/GenericSelect.vue": 1
+   },
+   "n_paths": 40,
+   "fused_h": 0.6982929583333327,
+   "allocated_h": 0.6982929583333327
+  },
+  {
+   "sid": "d83bc103-5342-42de-872c-7d2d6b33a4db",
+   "title": "d83bc103",
+   "credited_h": 1.4101896111111107,
+   "old_h": 1.38195,
+   "span_h": 1.9164472222222222,
+   "start": "2026-04-17T00:01:29.141000+00:00",
+   "end": "2026-04-17T01:56:28.351000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies/nuxt",
+   "branch": "main",
+   "branches": {
+    "main": 327
+   },
+   "writing_h": 0.5673565740740741,
+   "writing_spill_h": 0.20338416666666667,
+   "reading_h": 0.23041416666666667,
+   "machine_h": 0.31198549999999997,
+   "n_prompts": 7,
+   "n_real_prompts": 6,
+   "pasted_chars": 502,
+   "n_records": 327,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4
+   },
+   "mode_split": {
+    "default": 2895.378
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/middleware/authenticated.js": 3,
+    "/home/rick/dev/unam/onigies/nuxt/playwright.config.ts": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/ies.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/e2e/protected-routes.test.ts": 2,
+    "/home/rick/dev/unam/onigies/nuxt/package.json": 2,
+    "/home/rick/dev/unam/onigies/.gitignore": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/playwright-e2e/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/README.md": 2,
+    "/home/rick/dev/unam/onigies/README.md": 2,
+    "/home/rick/.claude/plugins/marketplaces/claude-plugins-official/external_plugins/playwright/.claude-plugin/plugin.json": 1,
+    "/home/rick/.claude/plugins/marketplaces/claude-plugins-official/external_plugins/playwright/.mcp.json": 1,
+    "/home/rick/dev/unam/onigies/nuxt/nuxt.config.ts": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/login.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/register.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/forgot-password.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/recover-password.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/RegisterForm.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/LoginMail.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/ForgotPasswordForm.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/RecoverPasswordForm.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/auth_mix.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/.env.test": 1,
+    "/home/rick/dev/unam/onigies/nuxt/.env.test.template": 1
+   },
+   "n_paths": 53,
+   "fused_h": 1.0484540416666666,
+   "allocated_h": 1.0484540416666666
+  },
+  {
+   "sid": "092f9f2c-1343-4021-89c5-d2dcc76c60a4",
+   "title": "092f9f2c",
+   "credited_h": 0.6995355555555557,
+   "old_h": 0.22816166666666665,
+   "span_h": 0.7228886111111111,
+   "start": "2026-04-17T00:52:30.579000+00:00",
+   "end": "2026-04-17T01:35:52.978000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 38
+   },
+   "writing_h": 0.19759259259259257,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.10739333333333333,
+   "machine_h": 0.05320416666666667,
+   "n_prompts": 5,
+   "n_real_prompts": 5,
+   "pasted_chars": 1215,
+   "n_records": 38,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 284.097
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/package.json": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.4358623611111112,
+   "allocated_h": 0.4358623611111112
+  },
+  {
+   "sid": "edbd287e-f285-4a5a-b105-335766dd563a",
+   "title": "edbd287e",
+   "credited_h": 0.07211185185185186,
+   "old_h": 0.07632166666666666,
+   "span_h": 0.07632166666666666,
+   "start": "2026-04-17T01:56:41.253000+00:00",
+   "end": "2026-04-17T02:01:16.011000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 25
+   },
+   "writing_h": 0.031296296296296294,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.010341388888888891,
+   "machine_h": 0.030474166666666663,
+   "n_prompts": 3,
+   "n_real_prompts": 2,
+   "pasted_chars": 130,
+   "n_records": 25,
+   "floored": true,
+   "markers": {},
+   "mode_split": {
+    "default": 150.918
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 2
+   },
+   "n_paths": 2,
+   "fused_h": 0.06655629638888891,
+   "allocated_h": 0.06655629638888891
+  },
+  {
+   "sid": "56a5f2b5-56be-47da-a85b-da0f278ac7c0",
+   "title": "56a5f2b5",
+   "credited_h": 0.10731805555555557,
+   "old_h": 0.10731805555555554,
+   "span_h": 0.10731805555555557,
+   "start": "2026-04-17T02:07:13.643000+00:00",
+   "end": "2026-04-17T02:13:39.988000+00:00",
+   "month": "2026-04",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 71
+   },
+   "writing_h": 0.0792175,
+   "writing_spill_h": 0.0005973148148148195,
+   "reading_h": 0.020128611111111114,
+   "machine_h": 0.037700833333333336,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 0,
+   "n_records": 71,
+   "floored": true,
+   "markers": {},
+   "mode_split": {
+    "default": 177.213
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/ies.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/index.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas\\[period].vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/register.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/login.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/NewGoodPractice.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/FeatureItem.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/ies.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InstitutionCard.vue": 1
+   },
+   "n_paths": 14,
+   "fused_h": 0.10145722222222227,
+   "allocated_h": 0.10145722222222227
+  },
+  {
+   "sid": "d8933adb-4e1d-4884-8235-385a3f769e8e",
+   "title": "Mejorar l\u00f3gica de UserLoginAPIView",
+   "credited_h": 0.13154734423334996,
+   "old_h": 0.2110013888888889,
+   "span_h": 0.2110013888888889,
+   "start": "2026-05-20T15:30:15.671000+00:00",
+   "end": "2026-05-20T15:42:55.276000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 19
+   },
+   "writing_h": 0.08888888888888889,
+   "writing_spill_h": 0.0,
+   "reading_h": 1.6666666666666667e-05,
+   "machine_h": 0.011111111111111112,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 19,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "auto": 164.434
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/api/views/auth/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/login_views.py": 1
+   },
+   "n_paths": 3,
+   "fused_h": 0.13154734423334996,
+   "allocated_h": 0.13154734423334996
+  },
+  {
+   "sid": "8801c064-8b4d-46f0-b19c-8fb223300dfc",
+   "title": "Mostrar datos del usuario registrado en invitaciones",
+   "credited_h": 0.7410705555555553,
+   "old_h": 0.6941858333333333,
+   "span_h": 0.6941858333333333,
+   "start": "2026-05-20T16:00:12.113000+00:00",
+   "end": "2026-05-20T16:41:51.182000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 85
+   },
+   "writing_h": 0.43074074074074076,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.15512888888888887,
+   "machine_h": 0.055274444444444445,
+   "n_prompts": 6,
+   "n_real_prompts": 5,
+   "pasted_chars": 95,
+   "n_records": 85,
+   "floored": false,
+   "markers": {
+    "marker_ide": 5
+   },
+   "mode_split": {
+    "auto": 351.249
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationRow.vue": 6,
+    "/home/rick/dev/unam/onigies/api/api/views/common_serializers.py": 2,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/invitation_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/ies/period_views.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationList.vue": 1
+   },
+   "n_paths": 12,
+   "fused_h": 0.7410705555555553,
+   "allocated_h": 0.7410705555555553
+  },
+  {
+   "sid": "0b8592e4-6fbf-420d-ae5a-0e4c792ed960",
+   "title": "Crear gesti\u00f3n de usuarios staff y revisoras",
+   "credited_h": 0.8017395186111111,
+   "old_h": 0.9453572222222223,
+   "span_h": 0.9453572222222223,
+   "start": "2026-05-20T17:06:11.647000+00:00",
+   "end": "2026-05-20T18:02:54.933000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 148
+   },
+   "writing_h": 0.2746296296296296,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.022585555555555557,
+   "machine_h": 0.2905395694444444,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 130,
+   "n_records": 148,
+   "floored": false,
+   "markers": {
+    "marker_ask": 2,
+    "marker_userModified": 1,
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "default": 2988.407
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/api/views/auth/serializers.py": 4,
+    "/home/rick/dev/unam/onigies/api/api/urls.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 3,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/user_views.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/invitation_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/service.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/migrations/0001_initial.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/templates/email/invitation_generic.html": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/templates/email/invitation_institution.html": 1,
+    "/home/rick/dev/unam/onigies/api/api/mixins.py": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/feedback_docstrings_es.md": 1,
+    "/home/rick/dev/unam/onigies/api/utils/obj_str.py": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/feedback_minimal_queryset.md": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/admin.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/migrations/0002_data_invitation_templates.py": 1
+   },
+   "n_paths": 27,
+   "fused_h": 0.6742256158333336,
+   "allocated_h": 0.6742256158333336
+  },
+  {
+   "sid": "0f25018f-12ef-4848-bc2c-9e6e0357678c",
+   "title": "Gestionar usuarios staff y revisores en Nuxt",
+   "credited_h": 0.3254272222222222,
+   "old_h": 0.003760833333333333,
+   "span_h": 0.5023272222222221,
+   "start": "2026-05-20T17:31:32.269000+00:00",
+   "end": "2026-05-20T18:01:40.647000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 17
+   },
+   "writing_h": 0.28,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.0030258333333333335,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 4061,
+   "n_records": 17,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "default": 10.893
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationList.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationRow.vue": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/playwright-e2e": 1
+   },
+   "n_paths": 4,
+   "fused_h": 0.2498416666666667,
+   "allocated_h": 0.2498416666666667
+  },
+  {
+   "sid": "c8383855-1ba3-4e0e-a663-17770d1949bd",
+   "title": "Gesti\u00f3n de usuarios staff y revisores en superuser panel",
+   "credited_h": 0.9231955230555555,
+   "old_h": 0.7876408333333333,
+   "span_h": 2.7816030555555558,
+   "start": "2026-05-20T18:03:04.360000+00:00",
+   "end": "2026-05-20T20:49:58.131000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 178
+   },
+   "writing_h": 0.2929629629629629,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.09177777777777778,
+   "machine_h": 0.242468625,
+   "n_prompts": 3,
+   "n_real_prompts": 2,
+   "pasted_chars": 4049,
+   "n_records": 178,
+   "floored": false,
+   "markers": {
+    "marker_ask": 2,
+    "marker_ide": 1,
+    "marker_userModified": 4
+   },
+   "mode_split": {
+    "default": 2493.9629999999997
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/InvitationList.vue": 8,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationRow.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/auth.js": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InstitutionSheet.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/dashboard/staff_users.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationList.vue": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/snackbar/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/dash.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/staff/StaffUserList.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/dashboard/surveys.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/dashboard/index.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/dashboard\\[group].vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/middleware/dashboard.js": 1
+   },
+   "n_paths": 32,
+   "fused_h": 0.6474621527777781,
+   "allocated_h": 0.6474621527777781
+  },
+  {
+   "sid": "9d899e38-1561-4745-833f-0c1a6a6e4421",
+   "title": "Simplificar componentes de invitaciones y gesti\u00f3n de usuarios",
+   "credited_h": 1.173968533118968,
+   "old_h": 0.6468594444444444,
+   "span_h": 6.866272777777778,
+   "start": "2026-05-20T20:51:20.681000+00:00",
+   "end": "2026-05-21T03:43:19.263000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 244
+   },
+   "writing_h": 0.372962962962963,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.18102333333333331,
+   "machine_h": 0.19241034722222222,
+   "n_prompts": 5,
+   "n_real_prompts": 4,
+   "pasted_chars": 130,
+   "n_records": 244,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_userModified": 3,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 1835.669
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/InvitationList.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useDates.js": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/usePermissions.js": 3,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/dialog/DialogDelete.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useApiError.js": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/staff/StaffUserList.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/dashboard/staff_users.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/auth.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InstitutionSheet.vue": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/invitations/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/auth/invitation_views.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InvitationRow.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 1
+   },
+   "n_paths": 30,
+   "fused_h": 1.173968533118968,
+   "allocated_h": 1.173968533118968
+  },
+  {
+   "sid": "f94b34b0-1030-4920-8db5-c19cb37bcd26",
+   "title": "Configurar proxy nginx y documentar migracion ONIGIES",
+   "credited_h": 0.6557587174999998,
+   "old_h": 0.7970297222222221,
+   "span_h": 0.7970297222222221,
+   "start": "2026-05-22T15:43:35.244000+00:00",
+   "end": "2026-05-22T16:31:24.551000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 93
+   },
+   "writing_h": 0.337037037037037,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.04735083333333332,
+   "machine_h": 0.15585241666666663,
+   "n_prompts": 3,
+   "n_real_prompts": 3,
+   "pasted_chars": 1523,
+   "n_records": 93,
+   "floored": false,
+   "markers": {
+    "marker_ide": 3,
+    "marker_ask": 1,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "default": 1471.0409999999997
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/nuxt.config.ts": 1,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/plugins/api.ts": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/references/roadmap.md": 1
+   },
+   "n_paths": 8,
+   "fused_h": 0.5186504582083334,
+   "allocated_h": 0.5186504582083334
+  },
+  {
+   "sid": "cf323ba6-c7df-4c6d-b982-db89ccc2cf6f",
+   "title": "Implementar sistema de env\u00edo de correos electr\u00f3nicos",
+   "credited_h": 0.043518518611111105,
+   "old_h": 0.00046666666666666666,
+   "span_h": 0.00046666666666666666,
+   "start": "2026-05-22T16:06:00.490000+00:00",
+   "end": "2026-05-22T16:06:02.170000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 4
+   },
+   "writing_h": 0.04351851851851852,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.0,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 4,
+   "floored": false,
+   "markers": {},
+   "mode_split": {},
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.03134300930555556,
+   "allocated_h": 0.03134300930555556
+  },
+  {
+   "sid": "5c72ff05-1d31-4ac8-861d-17d2ffcb4430",
+   "title": "Implementar env\u00edo de correos en backend API",
+   "credited_h": 0.5402857408333337,
+   "old_h": 0.6572036111111111,
+   "span_h": 0.6572036111111111,
+   "start": "2026-05-22T16:06:09.819000+00:00",
+   "end": "2026-05-22T16:45:35.752000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies/api",
+   "branch": "main",
+   "branches": {
+    "main": 139
+   },
+   "writing_h": 0.10712333333333333,
+   "writing_spill_h": 0.10935814814814813,
+   "reading_h": 0.036243333333333336,
+   "machine_h": 0.19698849999999998,
+   "n_prompts": 4,
+   "n_real_prompts": 4,
+   "pasted_chars": 0,
+   "n_records": 139,
+   "floored": false,
+   "markers": {
+    "marker_ask": 2,
+    "marker_esc": 1,
+    "marker_ide": 2,
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "default": 1938.171
+   },
+   "paths": {
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 3,
+    "/home/rick/dev/unam/onigies/api/email_send/service.py": 1,
+    "/home/rick/dev/unam/onigies/api/.env.template": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/core/settings/get_env.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/management/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/management/commands/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/management/commands/test_smtp.py": 1,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/migrations/0002_data_invitation_templates.py": 1,
+    "/home/rick/dev/unam/onigies/api/email_send/migrations/0003_data_email_profile.py": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/email-smtp-microsoft365.md": 1
+   },
+   "n_paths": 15,
+   "fused_h": 0.4029033009722224,
+   "allocated_h": 0.4029033009722224
+  },
+  {
+   "sid": "a354126c-1ab2-48b4-9170-ee84a0ef324e",
+   "title": "Corregir b\u00fasqueda con unaccent en survey__period__year",
+   "credited_h": 3.7767850924999977,
+   "old_h": 0.09845583333333334,
+   "span_h": 0.09845583333333333,
+   "start": "2026-05-26T01:03:56.380000+00:00",
+   "end": "2026-05-26T01:09:50.821000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 32
+   },
+   "writing_h": 3.6953703703703704,
+   "writing_spill_h": 0.0,
+   "reading_h": 2.1666666666666667e-05,
+   "machine_h": 0.027592444444444444,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 4832,
+   "n_records": 32,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 283.808
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/api/views/common_views.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 1
+   },
+   "n_paths": 4,
+   "fused_h": 3.7767850924999977,
+   "allocated_h": 3.7767850924999977
+  },
+  {
+   "sid": "e472b042-eecc-434d-accc-5363f94deb4e",
+   "title": "Corregir SelectSubtype para usar year como identificador",
+   "credited_h": 0.6873627083333329,
+   "old_h": 0.6840988888888888,
+   "span_h": 2.0955733333333333,
+   "start": "2026-05-26T01:12:28.252000+00:00",
+   "end": "2026-05-26T03:18:12.316000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 83
+   },
+   "writing_h": 0.335,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.13591166666666665,
+   "machine_h": 0.12085715277777777,
+   "n_prompts": 6,
+   "n_real_prompts": 5,
+   "pasted_chars": 130,
+   "n_records": 83,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4
+   },
+   "mode_split": {
+    "default": 953.434
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/store/index.js": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/SelectSubtype.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/SelectGroup.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/DisplayGroup.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/main/PanelList.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/generic/EditCommon.vue": 2
+   },
+   "n_paths": 16,
+   "fused_h": 0.6695689537361108,
+   "allocated_h": 0.6695689537361108
+  },
+  {
+   "sid": "f3739548-5c2c-4a80-924d-d4349134093d",
+   "title": "Dise\u00f1ar UI para mostrar buenas pr\u00e1cticas en GoodPracticeList",
+   "credited_h": 0.3110488980555555,
+   "old_h": 0.3810883333333333,
+   "span_h": 0.3810883333333333,
+   "start": "2026-05-26T03:18:03.277000+00:00",
+   "end": "2026-05-26T03:40:55.195000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 44
+   },
+   "writing_h": 0.09555555555555556,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.05680500000000001,
+   "machine_h": 0.08958695833333333,
+   "n_prompts": 3,
+   "n_real_prompts": 3,
+   "pasted_chars": 0,
+   "n_records": 44,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2
+   },
+   "mode_split": {
+    "default": 759.861
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/FeatureList.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeIntro.vue": 1
+   },
+   "n_paths": 8,
+   "fused_h": 0.31103750916666667,
+   "allocated_h": 0.31103750916666667
+  },
+  {
+   "sid": "d159141c-b994-4c14-a39b-3e17157da73e",
+   "title": "Agregar opci\u00f3n para revertir respuesta en GoodPracticeList",
+   "credited_h": 0.9758661712361112,
+   "old_h": 1.146363611111111,
+   "span_h": 4.928655555555555,
+   "start": "2026-05-26T16:20:56.180000+00:00",
+   "end": "2026-05-26T21:16:39.340000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 335
+   },
+   "writing_h": 0.24685185185185185,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.07262277777777779,
+   "machine_h": 0.3588063888888889,
+   "n_prompts": 4,
+   "n_real_prompts": 4,
+   "pasted_chars": 0,
+   "n_records": 335,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2,
+    "marker_ask": 1,
+    "marker_rejection": 2,
+    "marker_userModified": 4
+   },
+   "mode_split": {
+    "default": 3543.2119999999995
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 17,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 6,
+    "/home/rick/dev/unam/onigies/api/api/views/example/serializers.py": 4,
+    "/home/rick/dev/unam/onigies/api/ies/initial_data.py": 3,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/dialog/ConfirmActionDialog.vue": 3,
+    "/home/rick/.claude/plans/resilient-stirring-stardust.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/index.js": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/d159141c-b994-4c14-a39b-3e17157da73e/tool-results/bn3f44efh.txt": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice_package/GoodPracticePackageEdit.vue": 1,
+    "/home/rick/dev/unam/onigies/api/example/admin.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/dialog/DialogDelete.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/NotReadyDialog.vue": 1
+   },
+   "n_paths": 47,
+   "fused_h": 0.9758661712361113,
+   "allocated_h": 0.9244552152797415
+  },
+  {
+   "sid": "cd158c15-983c-44ef-8628-262596985171",
+   "title": "Implementar design system del dashboard en el proyecto",
+   "credited_h": 0.5619078563888891,
+   "old_h": 0.7695658333333333,
+   "span_h": 0.7695658333333333,
+   "start": "2026-05-26T21:20:55.502000+00:00",
+   "end": "2026-05-26T22:07:05.939000+00:00",
+   "month": "2026-05",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 132
+   },
+   "writing_h": 0.21918268518518513,
+   "writing_spill_h": 0.18211361111111113,
+   "reading_h": 2.0555555555555555e-05,
+   "machine_h": 0.21262976388888888,
+   "n_prompts": 3,
+   "n_real_prompts": 2,
+   "pasted_chars": 281,
+   "n_records": 132,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_rejection": 2,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 2187.049
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/plugins/vuetify.ts": 3,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/README.md": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/README.md": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/colors_and_type.css": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/ui_kits/admin_dashboard/README.md": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/ui_kits/admin_dashboard/admin.css": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/ui_kits/admin_dashboard/index.html": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 1,
+    "/home/rick/dev/unam/onigies/docs/onigies-design-system/project/ui_kits/admin_dashboard/Sidebar.jsx": 1,
+    "/home/rick/dev/unam/onigies/docs/good_practices_intro.md": 1,
+    "/home/rick/dev/unam/onigies/docs/dashboard-design-improvements.md": 1
+   },
+   "n_paths": 14,
+   "fused_h": 0.5619078563888892,
+   "allocated_h": 0.5953091030447512
+  },
+  {
+   "sid": "dd1fece1-7565-4d8a-8012-e9d1cea9f50d",
+   "title": "Redise\u00f1ar flujo de validaci\u00f3n y registro de respuestas",
+   "credited_h": 1.2628369813888891,
+   "old_h": 0.675605,
+   "span_h": 0.675605,
+   "start": "2026-06-09T01:38:20.959000+00:00",
+   "end": "2026-06-09T02:18:53.137000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 105
+   },
+   "writing_h": 0.93,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0948225,
+   "machine_h": 0.1351055,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 506,
+   "n_records": 107,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 1272.027,
+    "auto": 274.469
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/analyze.py": 3,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/captura_fujo_miro.png": 2,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/basic_scraper.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/analysis.json": 1,
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/constants.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/PLAN_flujo_validacion.md": 1
+   },
+   "n_paths": 13,
+   "fused_h": 1.2628369813888891,
+   "allocated_h": 0.3029906344314119
+  },
+  {
+   "sid": "412bb8c1-425f-4be6-9cd1-53c488a8d6ba",
+   "title": "Refactorizar sistema de colecciones y cat\u00e1logos",
+   "credited_h": 1.3812313055387577,
+   "old_h": 1.2038238888888888,
+   "span_h": 2.126903611111111,
+   "start": "2026-06-09T20:29:22.843000+00:00",
+   "end": "2026-06-09T22:36:59.696000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 465
+   },
+   "writing_h": 0.37000000000000005,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.30330944444444446,
+   "machine_h": 0.14560275,
+   "n_prompts": 9,
+   "n_real_prompts": 9,
+   "pasted_chars": 0,
+   "n_records": 473,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 530.031,
+    "auto": 1764.375
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/PLAN_ps_schema_port.md": 13,
+    "/home/rick/dev/unam/onigies/api/example/catalog_schema.py": 4,
+    "/home/rick/dev/unam/onigies/api/ps_schema/__init__.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/urls.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/catalogs/all.py": 2,
+    "/home/rick/dev/unam/onigies/api/ies/apps.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/catalogs/urls.py": 2,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/schemas.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/registry.py": 2,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 2,
+    "/home/rick/dev/unam/onigies/api/indicator/apps.py": 2,
+    "/home/rick/dev/unam/onigies/api/indicator/catalog_schema.py": 2,
+    "/home/rick/dev/unam/onigies/api/example/apps.py": 2,
+    "/home/rick/dev/unam/onigies/api/question/apps.py": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 2,
+    "/home/rick/dev/ibero/ocsa/api/.claude/skills/manage-collections/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/constants.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/models.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/registry.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/schemas.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/initial_data.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/management/commands/migrate_ps_schemas.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/__init__.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/initial_data.py": 1
+   },
+   "n_paths": 89,
+   "fused_h": 1.3812313055387577,
+   "allocated_h": 1.3812313055387577
+  },
+  {
+   "sid": "cce143da-e8b0-4b44-865c-4d1cd7409432",
+   "title": "Fase 3 port ps_schema: teardown destructivo de modelos",
+   "credited_h": 0.7430748147222226,
+   "old_h": 0.6444055555555556,
+   "span_h": 1.7308894444444445,
+   "start": "2026-06-10T15:25:46.147000+00:00",
+   "end": "2026-06-10T17:09:37.349000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies/api",
+   "branch": "main",
+   "branches": {
+    "main": 416
+   },
+   "writing_h": 0.09703703703703705,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.07224222222222222,
+   "machine_h": 0.11522690277777776,
+   "n_prompts": 3,
+   "n_real_prompts": 3,
+   "pasted_chars": 3290,
+   "n_records": 418,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 587.603,
+    "auto": 1394.372
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/PLAN_ps_schema_port.md": 5,
+    "/home/rick/dev/unam/onigies/nuxt/README.md": 5,
+    "/home/rick/dev/unam/onigies/.claude/skills/playwright-e2e/SKILL.md": 5,
+    "/home/rick/dev/unam/onigies/api/ps_schema/models.py": 4,
+    "/home/rick/dev/unam/onigies/api/api/views/catalogs/all.py": 3,
+    "/home/rick/dev/unam/onigies/README.md": 3,
+    "/home/rick/dev/unam/onigies/api/ps_schema/admin.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/initial_data.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/management/commands/migrate_ps_schemas.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/catalogs/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/ps_schemas/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/manage-collections/SKILL.md": 2,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/schemas.py": 2,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/registry.py": 2,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/playwright.config.ts": 2,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/models.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/initial_data.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/management/commands/migrate_ps_schemas.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/ps_schemas/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/registry.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/ps_schema/admin.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/api/views/ps_schemas/views.py": 1,
+    "/home/rick/dev/ibero/ocsa/api/api/views/ps_schemas/serializers.py": 1,
+    "/home/rick/dev/unam/onigies/.claude/catalogs_tool.py": 1
+   },
+   "n_paths": 68,
+   "fused_h": 0.7397714813888894,
+   "allocated_h": 0.765863635636333
+  },
+  {
+   "sid": "b6cbf935-186e-4df1-adab-9560021ebcad",
+   "title": "Evaluar ajustes al flujo de validaci\u00f3n de estados",
+   "credited_h": 1.3904674215628297,
+   "old_h": 0.4377655555555555,
+   "span_h": 2.338601111111111,
+   "start": "2026-06-10T17:11:37.146000+00:00",
+   "end": "2026-06-10T19:31:56.110000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 143
+   },
+   "writing_h": 0.6748148148148149,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.2820513888888889,
+   "machine_h": 0.042828236111111105,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 6614,
+   "n_records": 145,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2
+   },
+   "mode_split": {
+    "auto": 939.633
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 4,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 4,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 4,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/analysis.json": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/registry.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/schemas.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/flux_rules/PLAN_flujo_validacion.md": 1,
+    "/home/rick/dev/unam/onigies/api/ies/apps.py": 1,
+    "/home/rick/dev/unam/onigies/api/utils/files.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/apps.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/migrations/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/upload_paths.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/registry.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/seed.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/admin.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/__init__.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/seed_flow.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_flow_data.py": 1,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 1
+   },
+   "n_paths": 37,
+   "fused_h": 1.3904674215628299,
+   "allocated_h": 0.6184454583317323
+  },
+  {
+   "sid": "bc2c2af3-7723-415a-9674-b7f2a8d66b04",
+   "title": "Continuar con pr\u00f3ximas migraciones y configuraci\u00f3n del flujo",
+   "credited_h": 0.435795421784005,
+   "old_h": 0.054926944444444445,
+   "span_h": 4.147271388888889,
+   "start": "2026-06-10T20:44:09.507000+00:00",
+   "end": "2026-06-11T00:52:59.684000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 40
+   },
+   "writing_h": 0.03166666666666667,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.011111111111111112,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 130,
+   "n_records": 40,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "auto": 192.7
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_flow_data.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/verify_flow_data.py": 1
+   },
+   "n_paths": 3,
+   "fused_h": 0.4357954217840049,
+   "allocated_h": 0.3494569972449916
+  },
+  {
+   "sid": "bb4b280d-5b65-41de-9e5a-6f015e299f54",
+   "title": "Compartir Wi-Fi con VPN a Samsung TV usando PowerShell",
+   "credited_h": 1.1984008333333331,
+   "old_h": 1.1475122222222223,
+   "span_h": 1.1475122222222223,
+   "start": "2026-06-13T18:14:03.665000+00:00",
+   "end": "2026-06-13T19:22:54.709000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 140
+   },
+   "writing_h": 0.6672258331481482,
+   "writing_spill_h": 0.12888527796296292,
+   "reading_h": 0.3055083333333334,
+   "machine_h": 0.15777497222222223,
+   "n_prompts": 14,
+   "n_real_prompts": 11,
+   "pasted_chars": 2727,
+   "n_records": 142,
+   "floored": false,
+   "markers": {
+    "marker_ask": 2
+   },
+   "mode_split": {
+    "default": 425.114,
+    "auto": 901.4150000000001
+   },
+   "paths": {
+    "C:\\Users\\rick_\\hotspot-vpn.ps1": 3,
+    "C:\\Users\\rick_\\hotspot-vpn-notes.md": 1
+   },
+   "n_paths": 4,
+   "fused_h": 1.1984008333333331,
+   "allocated_h": 1.1984008333333331
+  },
+  {
+   "sid": "46738145-7caa-46a9-b45d-2231f7c14a5c",
+   "title": "Detectar memoria USB de 8GB no reconocida",
+   "credited_h": 2.2215868750719916,
+   "old_h": 1.4886447222222223,
+   "span_h": 5.223856944444444,
+   "start": "2026-06-13T20:30:41.606000+00:00",
+   "end": "2026-06-14T01:44:07.491000+00:00",
+   "month": "2026-06",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 169
+   },
+   "writing_h": 0.21,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.20913166666666666,
+   "machine_h": 0.525622986111111,
+   "n_prompts": 11,
+   "n_real_prompts": 11,
+   "pasted_chars": 0,
+   "n_records": 173,
+   "floored": false,
+   "markers": {
+    "marker_ask": 4,
+    "marker_esc": 2,
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "default": 4862.381,
+    "auto": 243.93200000000002
+   },
+   "paths": {
+    "C:\\Users\\rick_\\AppData\\Local\\Temp\\write-fedora-usb.ps1": 1,
+    "C:\\Users\\rick_\\AppData\\Local\\Temp\\verify-fedora-usb.ps1": 1,
+    "C:\\Users\\rick_\\AppData\\Local\\Temp\\write-verify-fedora.ps1": 1
+   },
+   "n_paths": 3,
+   "fused_h": 2.2215868750719916,
+   "allocated_h": 2.2215868750719916
+  },
+  {
+   "sid": "efaf46ad-ffdb-4e32-a7dd-850edab72677",
+   "title": "Analizar cambios no comprometidos del proyecto",
+   "credited_h": 0.05852962972222221,
+   "old_h": 0.031710833333333334,
+   "span_h": 0.031710833333333334,
+   "start": "2026-07-28T21:13:01.108000+00:00",
+   "end": "2026-07-28T21:14:55.267000+00:00",
+   "month": "2026-07",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "production",
+   "branches": {
+    "production": 38
+   },
+   "writing_h": 0.03629629629629629,
+   "writing_spill_h": 0.0,
+   "reading_h": 1.1111111111111112e-05,
+   "machine_h": 0.022222222222222223,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 38,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "default": 114.118
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/plans/flux/PLAN_mejoras_flow_2026-07.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/PLAN_seed_cuestionario.md": 1
+   },
+   "n_paths": 2,
+   "fused_h": 0.05852962972222221,
+   "allocated_h": 0.02664185952462772
+  },
+  {
+   "sid": "76f17a41-feb8-466d-93a9-25dbf93445e4",
+   "title": "Organizar commits pendientes entre main y production",
+   "credited_h": 0.9379845741666664,
+   "old_h": 1.159675277777778,
+   "span_h": 2.220292777777778,
+   "start": "2026-07-29T20:50:13.011000+00:00",
+   "end": "2026-07-29T23:03:26.065000+00:00",
+   "month": "2026-07",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 257,
+    "production": 140
+   },
+   "writing_h": 0.18518518518518517,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.05500416666666666,
+   "machine_h": 0.2920124583333333,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 361,
+   "n_records": 418,
+   "floored": false,
+   "markers": {
+    "marker_ask": 5,
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "default": 2637.817,
+    "auto": 773.429
+   },
+   "paths": {
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/yeeko-server-ops.md": 3,
+    "/home/rick/.claude/plans/lexical-sniffing-owl.md": 3,
+    "/home/rick/dev/unam/onigies/docs/decisiones/0001-flow-primero-fast-forward.md": 3,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/flow-migration-deployed.md": 2,
+    "/home/rick/dev/unam/onigies/docs/historico/2026-07-29-commits-tematicos-y-deploy-flow.md": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/api/deploy_flow_migration.sh": 1,
+    "/home/rick/dev/unam/onigies/api/flow/seed.py": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 1,
+    "/home/rick/dev/unam/onigies/docs/historico/2026-07-29-incidente-500-migracion-faltante.md": 1,
+    "/home/rick/dev/unam/onigies/docs/meets/26_junio_26/seguimiento_pendientes.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/references/roadmap.md": 1
+   },
+   "n_paths": 22,
+   "fused_h": 0.9379845741666667,
+   "allocated_h": 0.5477214947670392
+  },
+  {
+   "sid": "7d6f4791-2d44-4e43-b813-5f9cbbc5610d",
+   "title": "Resolver error de npm en deploy de Netlify",
+   "credited_h": 0.36096666666666666,
+   "old_h": 0.005411111111111111,
+   "span_h": 0.005411111111111111,
+   "start": "2026-08-03T18:49:54.373000+00:00",
+   "end": "2026-08-03T18:50:13.853000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "production",
+   "branches": {
+    "production": 12
+   },
+   "writing_h": 0.3138888888888889,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.0019186111111111112,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 309,
+   "n_records": 12,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "default": 6.907
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.3609666666666669,
+   "allocated_h": 0.08061510639545665
+  },
+  {
+   "sid": "6c1965d0-dca9-4b8a-a898-c66670ff7af2",
+   "title": "Migrar sistema de docs con nuevas reglas de /documenter",
+   "credited_h": 0.19407,
+   "old_h": 0.16996222222222224,
+   "span_h": 0.16996222222222224,
+   "start": "2026-08-03T20:03:53.166000+00:00",
+   "end": "2026-08-03T20:14:05.030000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "production",
+   "branches": {
+    "production": 64
+   },
+   "writing_h": 0.055,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.05948638888888889,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 64,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "default": 611.86
+   },
+   "paths": {
+    "/home/rick/.claude/system/tasks/task-6-s4-repos-chicos-y-cierre.md": 1,
+    "/home/rick/.claude/system/records/2026-07-31-rediseno-documenter-especificacion.md": 1,
+    "/home/rick/.claude/system/records/2026-08-02-sesion-s4-parte-stig-api-migracion.md": 1,
+    "/home/rick/dev/unam/onigies/docs/meets/26_junio_26/seguimiento_pendientes.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/flux/PROGRESO_frontend_flow.md": 1
+   },
+   "n_paths": 5,
+   "fused_h": 0.1920152777777777,
+   "allocated_h": 0.11713108495034964
+  },
+  {
+   "sid": "dc120271-38f0-471a-bda6-08db10566c85",
+   "title": "Migrar sistema de docs con nuevas reglas de /documenter",
+   "credited_h": 0.9122191341666669,
+   "old_h": 0.6083758333333332,
+   "span_h": 2.057701388888889,
+   "start": "2026-08-03T20:14:07.291000+00:00",
+   "end": "2026-08-03T22:17:35.016000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "production",
+   "branches": {
+    "production": 229,
+    "main": 7
+   },
+   "writing_h": 0.13629629629629628,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.07889666666666667,
+   "machine_h": 0.0810613611111111,
+   "n_prompts": 5,
+   "n_real_prompts": 3,
+   "pasted_chars": 260,
+   "n_records": 243,
+   "floored": false,
+   "markers": {
+    "marker_ask": 3,
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "auto": 1741.7530000000002
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/tasks/task-38-aplicar-el-design-system-al-dashboard.md": 2,
+    "/home/rick/dev/unam/onigies/CLAUDE.md": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-03-migracion-al-esquema-documenter.md": 2,
+    "/home/rick/.claude/system/tasks/task-6-s4-repos-chicos-y-cierre.md": 1,
+    "/home/rick/.claude/system/records/2026-07-31-rediseno-documenter-especificacion.md": 1,
+    "/home/rick/.claude/system/records/2026-08-02-sesion-s4-parte-stig-api-migracion.md": 1,
+    "/home/rick/.claude/system/README.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisiones/0001-flow-primero-fast-forward.md": 1,
+    "/home/rick/dev/unam/onigies/docs/historico/2026-07-29-commits-tematicos-y-deploy-flow.md": 1,
+    "/home/rick/dev/unam/onigies/docs/historico/2026-07-29-incidente-500-migracion-faltante.md": 1,
+    "/home/rick/dev/unam/onigies/docs/good_practices_intro.md": 1,
+    "/home/rick/dev/unam/onigies/docs/prueba_usuarios_reales.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/flux/PLAN_flujo_validacion.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/flux/PROGRESO_frontend_flow.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/flux/PLAN_mejoras_flow_2026-07.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/PLAN_seed_cuestionario.md": 1,
+    "/home/rick/dev/unam/onigies/docs/plans/PLAN_ps_schema_port.md": 1,
+    "/home/rick/dev/unam/onigies/docs/questions/dudas_a_resolver_con_cliente.md": 1,
+    "/home/rick/dev/unam/onigies/docs/questions/pendientes_revision_cuestionario.md": 1,
+    "/home/rick/dev/unam/onigies/docs/meets/26_junio_26/seguimiento_pendientes.md": 1,
+    "/home/rick/dev/unam/onigies/docs/prompt_fable_seed_refactor.md": 1,
+    "/home/rick/dev/unam/onigies/RECOMENDACIONES_dashboard.md": 1,
+    "/home/rick/dev/unam/onigies/docs/dashboard-design-improvements.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0001-flow-primero-fast-forward.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-07-29-commits-tematicos-y-deploy-flow.md": 1
+   },
+   "n_paths": 30,
+   "fused_h": 0.8534263980555561,
+   "allocated_h": 0.2038399601928609
+  },
+  {
+   "sid": "06b7c6f6-cbd0-484e-92fe-3946027c2f80",
+   "title": "Actualizar transcripciones de ONIGIES desde repo externo",
+   "credited_h": 0.7427614373661952,
+   "old_h": 0.5477883333333333,
+   "span_h": 0.9542347222222222,
+   "start": "2026-08-04T00:27:59.897000+00:00",
+   "end": "2026-08-04T01:25:15.142000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 93
+   },
+   "writing_h": 0.14259259259259258,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.09926722222222222,
+   "machine_h": 0.040642222222222225,
+   "n_prompts": 8,
+   "n_real_prompts": 6,
+   "pasted_chars": 260,
+   "n_records": 110,
+   "floored": false,
+   "markers": {
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "auto": 248.45600000000002
+   },
+   "paths": {
+    "/home/rick/dev/yeeko/written.django/fixture/transcription_onigies_28_julio_26/final_transcription.md": 2,
+    "/home/rick/.claude/skills/documenter/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-26-transcripcion-reunion-ruben.md": 1,
+    "/home/rick/.claude/skills/documenter/templates/record.md": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/06b7c6f6-cbd0-484e-92fe-3946027c2f80/scratchpad/reporte-bug-anthropic.md": 1
+   },
+   "n_paths": 6,
+   "fused_h": 0.742761437366195,
+   "allocated_h": 0.3249863389304481
+  },
+  {
+   "sid": "c549806c-eab2-4a17-b5ae-51e2cab0440a",
+   "title": "Buscar y procesar transcripci\u00f3n de ONIGIES",
+   "credited_h": 0.7018660416666668,
+   "old_h": 1.0199744444444445,
+   "span_h": 1.0199744444444445,
+   "start": "2026-08-04T01:25:15.152000+00:00",
+   "end": "2026-08-04T02:26:27.060000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 320
+   },
+   "writing_h": 0.33575101851851846,
+   "writing_spill_h": 0.004989722222222221,
+   "reading_h": 0.24466666666666664,
+   "machine_h": 0.07657020833333333,
+   "n_prompts": 6,
+   "n_real_prompts": 5,
+   "pasted_chars": 130,
+   "n_records": 342,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 1440.0249999999999
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-07-28-reunion-flujo-bp-e-informacion-base.md": 4,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/c549806c-eab2-4a17-b5ae-51e2cab0440a/scratchpad/lote.json": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useFlowActions.js": 3,
+    "/home/rick/.claude/skills/duo/references/learnings.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-18-frontend-de-generales-captura-de-poblaciones.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-21-mostrar-a-ruben-el-despliegue-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-16-texto-de-alcance-del-observable-4.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-17-alcance-de-los-observables-2-1.md": 2,
+    "/home/rick/dev/yeeko/written.django/fixture/transcription_onigies_28_julio_26/final_transcription.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-26-transcripcion-reunion-ruben.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-10-endurecer-en-el-backend-el-candado.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0007-validar-informacion-base-antes-que-avances.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0007-validar-la-informacion-base-antes-que.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-54-revisar-solicitar-ajustes-disponible-en-un.md": 1,
+    "/home/rick/.claude/skills/duo/references/learnings/2026-08-03-duo-para-analisis-documental.md": 1
+   },
+   "n_paths": 29,
+   "fused_h": 0.7018660416666664,
+   "allocated_h": 0.7066451387882687
+  },
+  {
+   "sid": "ee07a69c-74f8-477e-b250-d94c8e8715ea",
+   "title": "Completar tareas 41 y 42",
+   "credited_h": 1.7906640529868758,
+   "old_h": 2.580701111111111,
+   "span_h": 2.952915277777778,
+   "start": "2026-08-04T02:26:27.067000+00:00",
+   "end": "2026-08-04T05:23:37.562000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 1965
+   },
+   "writing_h": 1.1188888888888888,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.5029816666666667,
+   "machine_h": 0.23924655555555552,
+   "n_prompts": 13,
+   "n_real_prompts": 12,
+   "pasted_chars": 130,
+   "n_records": 2029,
+   "floored": false,
+   "markers": {
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "auto": 5246.464
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupList.vue": 33,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupPanel.vue": 10,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/[period].vue": 7,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 7,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/__init__.py": 7,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 6,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 6,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/general_serializers.py": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/flow.js": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralSurvey.js": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/survey/SurveyEditSimple.vue": 4,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-42-todas-las-preguntas-del-cuestionario-visibles.md": 3,
+    "/home/rick/dev/unam/onigies/api/flow/seed.py": 3,
+    "/home/rick/dev/unam/onigies/api/question/seed_data/catalogs.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 3,
+    "/home/rick/dev/unam/onigies/api/indicator/models.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/GlobalSnackbar.vue": 3,
+    "/home/rick/.claude/skills/duo/references/learnings.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useFlowActions.js": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeList.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/flow/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/api/indicator/management/commands/load_sectors.py": 2
+   },
+   "n_paths": 180,
+   "fused_h": 1.7906640529868738,
+   "allocated_h": 1.977115779887611
+  },
+  {
+   "sid": "58bb1e0c-bb9a-4392-8546-d0ec4e9e43eb",
+   "title": "Agrupar sesiones por tema y ordenar por prioridad",
+   "credited_h": 0.18557154638888884,
+   "old_h": 0.30764749999999996,
+   "span_h": 0.30764749999999996,
+   "start": "2026-08-04T15:09:45.828000+00:00",
+   "end": "2026-08-04T15:28:13.359000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 48
+   },
+   "writing_h": 0.046851851851851846,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.115,
+   "machine_h": 0.023719694444444443,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 50,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "default": 243.974
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.1855715463888889,
+   "allocated_h": 0.053128618182383465
+  },
+  {
+   "sid": "897c5118-b8f9-4cff-a2ed-8aee748887c0",
+   "title": "Organizar sesiones de trabajo y priorizar tareas",
+   "credited_h": 0.6955317591666668,
+   "old_h": 0.22732305555555554,
+   "span_h": 1.0763413888888889,
+   "start": "2026-08-04T15:28:13.369000+00:00",
+   "end": "2026-08-04T16:32:48.198000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 38
+   },
+   "writing_h": 0.21,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.09718972222222222,
+   "machine_h": 0.025404444444444445,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 130,
+   "n_records": 42,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "auto": 157.58300000000003
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.6022185647222225,
+   "allocated_h": 0.5632554605913377
+  },
+  {
+   "sid": "0fbef1b2-c248-49be-8a9e-b7aeb1acdce5",
+   "title": "Deploy producci\u00f3n y reparar sent_at nulos",
+   "credited_h": 0.1125925925925926,
+   "old_h": 0.11346083333333333,
+   "span_h": 0.11346083333333333,
+   "start": "2026-08-04T15:48:31.610000+00:00",
+   "end": "2026-08-04T15:55:20.069000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 32
+   },
+   "writing_h": 0.09037037037037038,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.0,
+   "machine_h": 0.022222222222222223,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 130,
+   "n_records": 32,
+   "floored": true,
+   "markers": {},
+   "mode_split": {
+    "default": 112.317
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.04059208333333333,
+   "allocated_h": 0.04059208333333333
+  },
+  {
+   "sid": "79ebcbaf-da2f-4b2b-8a69-8d703eaab391",
+   "title": "Deploy producci\u00f3n y reparar sent_at nulos",
+   "credited_h": 0.29493040277777766,
+   "old_h": 1.2250738888888888,
+   "span_h": 1.2250738888888888,
+   "start": "2026-08-04T15:55:31.065000+00:00",
+   "end": "2026-08-04T17:09:01.331000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 752
+   },
+   "writing_h": 0.11629629629629629,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.047697500000000004,
+   "machine_h": 0.057141791666666664,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 0,
+   "n_records": 748,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "auto": 1371.403
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/skills/flow/SKILL.md": 16,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 12,
+    "/home/rick/dev/unam/onigies/.claude/skills/dashboard-collections/SKILL.md": 5,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 3,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 3,
+    "/home/rick/dev/unam/onigies/api/core/urls.py": 3,
+    "/home/rick/dev/unam/onigies/api/flow/tests.py": 3,
+    "/home/rick/.claude/skills/duo/references/learnings.md": 3,
+    "/home/rick/.claude/jobs/79ebcbaf/tmp/dimension_sent_at.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/repair_sent_at.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/services.py": 2,
+    "/home/rick/dev/unam/onigies/api/ies/admin.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/verify_flow_data.py": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-60-actualizar-los-skills-flow-dashboard-collections.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-04-sesion-seccion-informacion-base.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0008-el-contenido-de-las-generales-se.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/main/PanelCommon.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/survey/SurveyEditSimple.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupList.vue": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/create-skill/SKILL.md": 1,
+    "/home/rick/.claude/skills/create-skill/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-59-reparar-los-sent-at-nulos-de.md": 1,
+    "/home/rick/.claude/skills/duo/references/learnings/2026-08-04-onigies-deploy-endurecimiento.md": 1
+   },
+   "n_paths": 71,
+   "fused_h": 0.2701692916666665,
+   "allocated_h": 0.5749412508724946
+  },
+  {
+   "sid": "b85c3e41-182d-4f2b-8ab8-be692a9eca52",
+   "title": "Configurar Opus 4.8 como modelo default en settings.json",
+   "credited_h": 0.1,
+   "old_h": 0.10434083333333334,
+   "span_h": 0.10434083333333334,
+   "start": "2026-08-04T17:15:15.310000+00:00",
+   "end": "2026-08-04T17:21:30.937000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 42
+   },
+   "writing_h": 0.02,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.012444444444444445,
+   "machine_h": 0.018365555555555555,
+   "n_prompts": 4,
+   "n_real_prompts": 2,
+   "pasted_chars": 260,
+   "n_records": 43,
+   "floored": false,
+   "markers": {
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "auto": 81.229
+   },
+   "paths": {
+    "/home/rick/.claude/settings.json": 2
+   },
+   "n_paths": 2,
+   "fused_h": 0.1,
+   "allocated_h": 0.08020498733407982
+  },
+  {
+   "sid": "f132539c-3d11-4f6c-8e59-d87d581f1680",
+   "title": "Implementar bandera de instituci\u00f3n de prueba",
+   "credited_h": 0.1523351852777778,
+   "old_h": 0.09752166666666667,
+   "span_h": 0.09752166666666666,
+   "start": "2026-08-04T17:21:57.256000+00:00",
+   "end": "2026-08-04T17:27:48.334000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 44
+   },
+   "writing_h": 0.062037037037037036,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.040228611111111104,
+   "machine_h": 0.020032222222222222,
+   "n_prompts": 5,
+   "n_real_prompts": 4,
+   "pasted_chars": 130,
+   "n_records": 44,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 72.116
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.1189444444444445,
+   "allocated_h": 0.060346693853758536
+  },
+  {
+   "sid": "26165889-9bfa-4f89-bc59-aa694dfc0082",
+   "title": "Implementar bandera de instituci\u00f3n de prueba",
+   "credited_h": 0.05004185194444444,
+   "old_h": 0.02446055555555556,
+   "span_h": 0.02446055555555556,
+   "start": "2026-08-04T17:27:48.529000+00:00",
+   "end": "2026-08-04T17:29:16.587000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 65
+   },
+   "writing_h": 0.029074074074074075,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.009400833333333334,
+   "machine_h": 0.020967777777777776,
+   "n_prompts": 3,
+   "n_real_prompts": 1,
+   "pasted_chars": 260,
+   "n_records": 65,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "default": 75.484
+   },
+   "paths": {
+    "api/ies/models.py": 1,
+    "api/flow/models.py": 1,
+    "api/indicator/models.py": 1,
+    "nuxt/app/pages/respuestas/[period].vue": 1,
+    "nuxt/app/pages/respuestas/index.vue": 1,
+    "nuxt/app/layouts/ies.vue": 1
+   },
+   "n_paths": 6,
+   "fused_h": 0.024487638888888892,
+   "allocated_h": 0.018381456812944043
+  },
+  {
+   "sid": "d9bc4e19-9ce8-4eb3-86d7-dcdb47bab603",
+   "title": "Implementar bandera de instituci\u00f3n de prueba",
+   "credited_h": 1.269354230339792,
+   "old_h": 1.1897197222222222,
+   "span_h": 1.6718225,
+   "start": "2026-08-04T17:29:44.730000+00:00",
+   "end": "2026-08-04T19:10:03.291000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 463
+   },
+   "writing_h": 0.3868327777777778,
+   "writing_spill_h": 0.005574629629629629,
+   "reading_h": 0.21058388888888888,
+   "machine_h": 0.12117119444444444,
+   "n_prompts": 9,
+   "n_real_prompts": 7,
+   "pasted_chars": 225,
+   "n_records": 474,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1,
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 378.718,
+    "auto": 1579.018
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/index.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/[period].vue": 4,
+    "/home/rick/dev/unam/onigies/api/flow/tests.py": 4,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/ies/tests.py": 3,
+    "/home/rick/.claude/skills/duo/references/learnings.md": 3,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 2,
+    "/home/rick/dev/unam/onigies/api/ps_schema/schemas.py": 2,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 2,
+    "/home/rick/dev/unam/onigies/api/flow/registry.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/models.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/ies.vue": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/manage-collections/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ps_schema/registry.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/catalog_schema.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/ies/period_views.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/utils/sections.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/ies.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/ies/institution/InstitutionHeader.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/e2e/mocks/auth.ts": 1,
+    "/home/rick/dev/unam/onigies/api/TESTING.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/TESTING.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1
+   },
+   "n_paths": 48,
+   "fused_h": 1.2466263878536818,
+   "allocated_h": 0.6013322494502655
+  },
+  {
+   "sid": "d589beaf-3773-44ea-8124-1961326275db",
+   "title": "Deploy task-53 bandera is_test y secciones publicadas",
+   "credited_h": 0.6037310925000002,
+   "old_h": 0.6102713888888889,
+   "span_h": 0.6102713888888889,
+   "start": "2026-08-04T19:12:06.262000+00:00",
+   "end": "2026-08-04T19:48:43.239000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 293
+   },
+   "writing_h": 0.26185185185185184,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.032877222222222224,
+   "machine_h": 0.14698020833333336,
+   "n_prompts": 4,
+   "n_real_prompts": 4,
+   "pasted_chars": 100,
+   "n_records": 293,
+   "floored": false,
+   "markers": {
+    "marker_esc": 1,
+    "marker_ask": 1
+   },
+   "mode_split": {
+    "default": 1282.4830000000002,
+    "auto": 449.76
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.4386163702777778,
+   "allocated_h": 0.1346306765864675
+  },
+  {
+   "sid": "eecac25f-5752-4103-8188-aec606796512",
+   "title": "Revisar detalles y alcance de tareas del dashboard",
+   "credited_h": 1.3221705230555545,
+   "old_h": 1.081873888888889,
+   "span_h": 1.8071811111111111,
+   "start": "2026-08-06T18:32:49.879000+00:00",
+   "end": "2026-08-06T20:21:15.731000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 437
+   },
+   "writing_h": 0.7707314814814814,
+   "writing_spill_h": 0.2788981481481482,
+   "reading_h": 0.3737861111111111,
+   "machine_h": 0.13119515277777777,
+   "n_prompts": 7,
+   "n_real_prompts": 6,
+   "pasted_chars": 130,
+   "n_records": 463,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "missing->auto": 1032.555,
+    "auto": 1436.3410000000001
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-06-temas-reunion-fer.md": 6,
+    "/home/rick/.local/bin/yfm": 4,
+    "/home/rick/.claude/CLAUDE.md": 3,
+    "/home/rick/.claude/skills/duo/references/learnings.md": 3,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-06-transcripcion-reunion-fer.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-26-taller-de-configuracion-de-estados-con.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-22-no-mutar-props-en-panelsresult-y.md": 2,
+    "/home/rick/.claude/settings.json": 2,
+    "/home/rick/dev/yeeko/written.django/CLAUDE.md": 1,
+    "/home/rick/dev/yeeko/written.django/transcript/management/commands/transcribe.py": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-26-pendientes-reunion-ruben-raw.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-26-transcripcion-reunion-ruben.md": 1,
+    "/home/rick/dev/yeeko/written.django/fixture/transcription_onigiesfer6ago/final_transcription.md": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/eecac25f-5752-4103-8188-aec606796512/tool-results/bi945of9c.txt": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/bp-validation-ux/SKILL.md": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/eecac25f-5752-4103-8188-aec606796512/scratchpad/nodes.json": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-44-los-comentarios-por-criterio-no-se.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-10-endurecer-en-el-backend-el-candado.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-58-guiar-a-la-revisora-en-la.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-49-conteo-de-buenas-practicas-del-ultimo.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-38-aplicar-el-design-system-al-dashboard.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-43-institucion-y-eje-en-el-encabezado.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-9-borrar-del-frontend-el-mapa-de.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-50-revision-humana-del-cuestionario-pregunta-por.md": 1
+   },
+   "n_paths": 45,
+   "fused_h": 1.3221705230555543,
+   "allocated_h": 0.9041236835785091
+  },
+  {
+   "sid": "7e972e43-3d9f-4c45-897b-b74a1145f00b",
+   "title": "Refactorizar cuestionario y explorar evidencia probatoria",
+   "credited_h": 1.2573991805555542,
+   "old_h": 1.2197958333333334,
+   "span_h": 2.9181322222222223,
+   "start": "2026-08-06T20:38:29.816000+00:00",
+   "end": "2026-08-06T23:33:35.092000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 660
+   },
+   "writing_h": 0.3235185185185185,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.2551130555555555,
+   "machine_h": 0.26768943055555555,
+   "n_prompts": 5,
+   "n_real_prompts": 4,
+   "pasted_chars": 130,
+   "n_records": 683,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2,
+    "marker_ask": 2
+   },
+   "mode_split": {
+    "missing->auto": 46.486000000000004,
+    "plan": 2391.584,
+    "auto": 361.72
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/FeatureItem.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberInput.vue": 5,
+    "/home/rick/.claude/plans/vamos-a-trabajar-con-mighty-crayon.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 3,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/example/serializers.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 3,
+    "/home/rick/dev/unam/onigies/api/flow/test_attach_smoke.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/flow/FlowAttachments.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupPanel.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeEditSimple.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 2,
+    "/home/rick/dev/unam/onigies/api/flow/permissions.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/attachment_views.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/urls.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/general_serializers.py": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/example/good_practice/GoodPracticeCard.vue": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-67-indicar-visualmente-que-un-campo-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-8-llevar-cp-y-generales-al-motor.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-1-cerrar-la-migracion-al-motor-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-2-cuestionario-2026-cerrar-instrumento-seed-y.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-55-candado-de-periodo-para-la-edicion.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-57-preguntas-para-rubi-en-la-validacion.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-68-evidencia-probatoria-en-las-preguntas-base.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 2
+   },
+   "n_paths": 79,
+   "fused_h": 1.2573991805555542,
+   "allocated_h": 0.9341328921259133
+  },
+  {
+   "sid": "c8df5b52-c15e-4704-8a5e-967ece01d4eb",
+   "title": "Organizar tareas pendientes por prioridad y bloques",
+   "credited_h": 0.19852462972222223,
+   "old_h": 0.194995,
+   "span_h": 0.194995,
+   "start": "2026-08-06T20:47:58.779000+00:00",
+   "end": "2026-08-06T20:59:40.761000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies/docs",
+   "branch": "main",
+   "branches": {
+    "main": 49
+   },
+   "writing_h": 0.09351851851851851,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.09901027777777778,
+   "machine_h": 0.04415277777777778,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 0,
+   "n_records": 49,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "default": 276.91
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.19852462972222223,
+   "allocated_h": 0.09066870556023919
+  },
+  {
+   "sid": "5a6fd914-54e9-421f-beaa-451893fd9514",
+   "title": "Crear componentes personalizados con Vuetify",
+   "credited_h": 3.221123416666666,
+   "old_h": 3.062089166666667,
+   "span_h": 4.020572222222222,
+   "start": "2026-08-09T04:04:06.881000+00:00",
+   "end": "2026-08-09T08:05:20.941000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 1179
+   },
+   "writing_h": 1.9020370370370372,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.4939708333333334,
+   "machine_h": 0.4596235277777778,
+   "n_prompts": 16,
+   "n_real_prompts": 15,
+   "pasted_chars": 317,
+   "n_records": 1216,
+   "floored": false,
+   "markers": {
+    "marker_esc": 4,
+    "marker_ide": 6,
+    "marker_rejection": 1,
+    "marker_userModified": 4
+   },
+   "mode_split": {
+    "missing->auto": 1132.432,
+    "default": 2809.183,
+    "auto": 2510.312
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupPanel.vue": 15,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 11,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 10,
+    "/home/rick/dev/unam/onigies/nuxt/app/plugins/vuetify.ts": 9,
+    "/home/rick/dev/unam/onigies/api/flow/signals.py": 7,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_flow_data.py": 7,
+    "/home/rick/dev/unam/onigies/api/TESTING.md": 6,
+    "/home/rick/.claude/CLAUDE.md": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue": 5,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-96-rehacer-el-diseno-de-la-captura.md": 5,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 4,
+    "/home/rick/.claude/hooks/skill_binding.py": 4,
+    "/home/rick/dev/unam/onigies/api/question/seed_data/catalogs.py": 4,
+    "/home/rick/dev/unam/onigies/api/flow/attachment_views.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberInput.vue": 3,
+    "/home/rick/dev/unam/onigies/api/flow/serializers.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupList.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-93-decidir-los-pendientes-de-la-sesion.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-55-candado-de-periodo-para-la-edicion.md": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/[period].vue": 2,
+    "/home/rick/dev/unam/onigies/api/flow/tests/test_notifications.py": 2,
+    "/home/rick/.claude/rules/workflow-preferences.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/flow-frontend-progress.md": 2
+   },
+   "n_paths": 154,
+   "fused_h": 3.2211234166666665,
+   "allocated_h": 2.207077393885245
+  },
+  {
+   "sid": "34ca5579-8b77-4f98-b7b0-f8c5827372f5",
+   "title": "Preparar puntos clave para reuni\u00f3n con Rub\u00e9n",
+   "credited_h": 0.1279690741666667,
+   "old_h": 0.10815277777777778,
+   "span_h": 0.10815277777777778,
+   "start": "2026-08-11T18:24:25.728000+00:00",
+   "end": "2026-08-11T18:30:55.078000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 42
+   },
+   "writing_h": 0.10574074074074073,
+   "writing_spill_h": 0.0,
+   "reading_h": 6.11111111111111e-06,
+   "machine_h": 0.022222222222222223,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 130,
+   "n_records": 42,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "default": 203.458
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.1279690741666667,
+   "allocated_h": 0.1279690741666667
+  },
+  {
+   "sid": "3fa62a75-4905-42fe-9d66-2280c5910d11",
+   "title": "Esperar transcripci\u00f3n antes de lanzar agente 2",
+   "credited_h": 3.700933834648445,
+   "old_h": 1.9168530555555556,
+   "span_h": 3.3457358333333334,
+   "start": "2026-08-12T03:42:46.993000+00:00",
+   "end": "2026-08-12T07:03:31.642000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 885
+   },
+   "writing_h": 3.196844814537037,
+   "writing_spill_h": 0.8057477780555556,
+   "reading_h": 0.4543569444444444,
+   "machine_h": 0.2603113888888889,
+   "n_prompts": 15,
+   "n_real_prompts": 14,
+   "pasted_chars": 12039,
+   "n_records": 927,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4
+   },
+   "mode_split": {
+    "default": 179.504,
+    "auto": 4677.031
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-11-reunion-con-ruben-sobre-la-informacion-base.md": 14,
+    "/home/rick/dev/yeeko/written.django/docs/records/2026-08-11-transcripcion-organizada-reunion-con-ruben-onigies.md": 5,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-11-auditoria-del-arbol-de-trabajo-y-reorganizacion.md": 4,
+    "/home/rick/dev/yeeko/written.django/docs/records/2026-08-11-transcripcion-cruda-reunion-con-ruben-onigies.md": 3,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 3,
+    "/home/rick/dev/unam/onigies/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-68-evidencia-probatoria-en-las-preguntas-base.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-96-rehacer-el-diseno-de-la-captura.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-57-preguntas-para-rubi-en-la-validacion.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-104-el-logo-institucional-es-obligatorio-al.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-62-exponer-la-bandera-de-institucion-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-88-cambiar-existen-por-se-atiende-en.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-89-proponer-a-rubi-el-recordatorio-automatico.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-67-indicar-visualmente-que-un-campo-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-61-montar-vitest-en-nuxt-y-cubrir.md": 2,
+    "/home/rick/dev/yeeko/written.django/CLAUDE.md": 1,
+    "/home/rick/dev/yeeko/written.django/fixture/transcription_onigies_11_agosto_26/final_transcription.md": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/duo-no-preconclusions.md": 1,
+    "/home/rick/.claude/system/README.md": 1,
+    "/home/rick/.claude/system/tasks/task-26-integrar-en-la-skill-duo-la.md": 1,
+    "/home/rick/dev/unam/onigies/api/question/models.py": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/3fa62a75-4905-42fe-9d66-2280c5910d11/scratchpad/build_nodes.py": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/3fa62a75-4905-42fe-9d66-2280c5910d11/scratchpad/reparent.py": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-90-proponer-a-rubi-la-autenticacion-de.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-56-preguntar-a-ruben-si-la-captura.md": 1
+   },
+   "n_paths": 76,
+   "fused_h": 3.6985145777109456,
+   "allocated_h": 3.6985145777109456
+  },
+  {
+   "sid": "dfd4cced-80b5-4e64-b3e6-882e3e7464dd",
+   "title": "Estrategia de coordinaci\u00f3n con agente onigies-a1",
+   "credited_h": 2.0352932748165187,
+   "old_h": 3.277324166666667,
+   "span_h": 3.277324166666667,
+   "start": "2026-08-12T06:58:26.154000+00:00",
+   "end": "2026-08-12T10:15:04.521000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 2703
+   },
+   "writing_h": 0.8220110185185185,
+   "writing_spill_h": 0.005026018518518517,
+   "reading_h": 0.3071075,
+   "machine_h": 0.6116823194444445,
+   "n_prompts": 19,
+   "n_real_prompts": 14,
+   "pasted_chars": 555,
+   "n_records": 2774,
+   "floored": false,
+   "markers": {
+    "marker_ask": 12,
+    "marker_ide": 2,
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "missing->auto": 1415.201,
+    "auto": 7719.109,
+    "default": 2012.926
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupPanel.vue": 27,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralSurvey.js": 21,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 19,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 17,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 17,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 13,
+    "/home/rick/dev/unam/onigies/api/survey/migrations/0009_rename_sectors_survey_sectors_legacy_and_more.py": 12,
+    "/home/rick/dev/unam/onigies/api/question/seed_data/catalogs.py": 9,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGovernment.vue": 9,
+    "/home/rick/dev/unam/onigies/api/question/management/commands/load_questionnaire.py": 8,
+    "/home/rick/dev/unam/onigies/.claude/docs/research_guide.md": 7,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/general_serializers.py": 7,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-110-columna-no-binaria-con-respaldo-completo.md": 6,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-107-modelo-generalquestion-las-preguntas-base-dejan.md": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue": 6,
+    "/home/rick/dev/unam/onigies/api/question/catalog_schema.py": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/general_question/GeneralQuestionEditSimple.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralValidation.js": 6,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-112-esta-presente-la-existencia-de-una.md": 5,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-108-generalgroup-y-generalquestion-como-catalogos-del.md": 5,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-113-unificar-los-cuatro-componentes-de-grupo.md": 5,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/__init__.py": 5,
+    "/home/rick/dev/unam/onigies/api/question/models.py": 5,
+    "/home/rick/dev/unam/onigies/api/indicator/catalog_schema.py": 5,
+    "/home/rick/dev/unam/onigies/api/survey/general_validation.py": 5
+   },
+   "n_paths": 379,
+   "fused_h": 1.6543940641151351,
+   "allocated_h": 1.6336348043494564
+  },
+  {
+   "sid": "ab1883c9-35ff-4dbb-a1f0-ed0833f9f274",
+   "title": "Optimizar l\u00f3gica de /duo para reducir costo de Fable",
+   "credited_h": 1.1164840324861112,
+   "old_h": 1.4404391666666667,
+   "span_h": 1.4404391666666667,
+   "start": "2026-08-12T07:18:52.436000+00:00",
+   "end": "2026-08-12T08:45:18.017000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 140
+   },
+   "writing_h": 0.40740740740740744,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.12453305555555556,
+   "machine_h": 0.27123494444444446,
+   "n_prompts": 9,
+   "n_real_prompts": 8,
+   "pasted_chars": 130,
+   "n_records": 152,
+   "floored": false,
+   "markers": {
+    "marker_esc": 2,
+    "marker_ide": 3,
+    "marker_ask": 2
+   },
+   "mode_split": {
+    "missing->auto": 876.706,
+    "default": 2110.469
+   },
+   "paths": {
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-110-columna-no-binaria-con-respaldo-completo.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-112-esta-presente-la-existencia-de-una.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-106-validar-la-captura-de-generales-antes.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0012-la-existencia-de-una-poblacion-se.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0008-el-contenido-de-las-generales-se.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-56-preguntar-a-ruben-si-la-captura.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-11-cierre-de-sesion-duo-reunion-auditorias-y-reorganizacion.md": 1,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralSurvey.js": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 1,
+    "/home/rick/dev/unam/onigies/api/question/models.py": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/no-satellite-dialogue-sessions.md": 1
+   },
+   "n_paths": 17,
+   "fused_h": 0.7712382870833344,
+   "allocated_h": 0.7192965892170582
+  },
+  {
+   "sid": "51bbedde-b772-4236-ab62-5cd732f67e8e",
+   "title": "Finalizar cambios quir\u00fargicos en GeneralNumberQuestion.vue",
+   "credited_h": 0.6554855972222215,
+   "old_h": 0.7348677777777778,
+   "span_h": 0.7348677777777778,
+   "start": "2026-08-12T10:38:06.292000+00:00",
+   "end": "2026-08-12T11:22:11.816000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 719
+   },
+   "writing_h": 0.26847194444444444,
+   "writing_spill_h": 0.00560212962962963,
+   "reading_h": 0.05620777777777777,
+   "machine_h": 0.20566601388888886,
+   "n_prompts": 4,
+   "n_real_prompts": 2,
+   "pasted_chars": 225,
+   "n_records": 741,
+   "floored": false,
+   "markers": {
+    "marker_ask": 2,
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "default": 1874.992,
+    "auto": 561.003
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/e2e/mocks/gen.ts": 10,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-117-mudar-valores-escalares-de-survey-a.md": 9,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 8,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralSurvey.js": 8,
+    "/home/rick/dev/unam/onigies/api/api/views/survey/serializers.py": 7,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGroupPanel.vue": 7,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 7,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 6,
+    "/home/rick/dev/unam/onigies/api/survey/general_validation.py": 5,
+    "/home/rick/dev/unam/onigies/api/survey/admin.py": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 5,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-12-sesion-dedicada-mudanza-de-valores-gen.md": 5,
+    "/home/rick/dev/unam/onigies/api/survey/migrations/0009_rename_sectors_survey_sectors_legacy_and_more.py": 4,
+    "/home/rick/dev/unam/onigies/api/question/seed_data/catalogs.py": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGovernment.vue": 4,
+    "/home/rick/dev/unam/onigies/api/survey/tests.py": 4,
+    "/home/rick/dev/unam/onigies/nuxt/e2e/gen-capture.test.ts": 4,
+    "/home/rick/dev/unam/onigies/api/question/management/commands/load_questionnaire.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralValidation.js": 3,
+    "/home/rick/dev/unam/onigies/api/TESTING.md": 3,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 3,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/gen-question-schema.md": 3,
+    "/home/rick/.claude/skills/orchestrator/SKILL.md": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-106-validar-la-captura-de-generales-antes.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/TESTING.md": 2
+   },
+   "n_paths": 135,
+   "fused_h": 0.3669677823611113,
+   "allocated_h": 0.3669677823611113
+  },
+  {
+   "sid": "5c645b6b-3064-4991-94a4-61969fcc967e",
+   "title": "Investigar v-count-input peque\u00f1o en GeneralNumberQuestion",
+   "credited_h": 0.4826579583333334,
+   "old_h": 0.3965455555555556,
+   "span_h": 0.3965455555555556,
+   "start": "2026-08-12T10:44:34.348000+00:00",
+   "end": "2026-08-12T11:08:21.912000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies/nuxt",
+   "branch": "main",
+   "branches": {
+    "main": 219
+   },
+   "writing_h": 0.20259259259259257,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.06292055555555556,
+   "machine_h": 0.12930604166666668,
+   "n_prompts": 11,
+   "n_real_prompts": 11,
+   "pasted_chars": 118,
+   "n_records": 220,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4,
+    "marker_esc": 6,
+    "marker_rejection": 2
+   },
+   "mode_split": {
+    "default": 550.519,
+    "auto": 439.681
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/assets/styles/main.css": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 1
+   },
+   "n_paths": 7,
+   "fused_h": 0.3334781944444444,
+   "allocated_h": 0.3334781944444444
+  },
+  {
+   "sid": "463b00d6-d735-4994-a431-97fe26f43220",
+   "title": "Arreglar colapso de ancho en v-count-input",
+   "credited_h": 0.8126951852777783,
+   "old_h": 0.24406472222222222,
+   "span_h": 0.24406472222222222,
+   "start": "2026-08-12T11:10:26.493000+00:00",
+   "end": "2026-08-12T11:25:05.126000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies/nuxt",
+   "branch": "main",
+   "branches": {
+    "main": 185
+   },
+   "writing_h": 0.6942592592592591,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.05472833333333334,
+   "machine_h": 0.0812188888888889,
+   "n_prompts": 8,
+   "n_real_prompts": 6,
+   "pasted_chars": 847,
+   "n_records": 195,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1,
+    "marker_esc": 2,
+    "marker_ide": 2
+   },
+   "mode_split": {
+    "default": 281.655,
+    "auto": 249.478
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralPopulations.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/plugins/vuetify.ts": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/assets/styles/main.css": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-12-fix-del-colapso-del-alias-vcountinput.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralGovernment.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralCountCells.vue": 1
+   },
+   "n_paths": 22,
+   "fused_h": 0.33345217597222215,
+   "allocated_h": 0.33345217597222215
+  },
+  {
+   "sid": "9aa921bf-b9fd-47bb-9fe9-b656554e86d1",
+   "title": "Configurar modo autom\u00e1tico con comandos claros",
+   "credited_h": 0.876532310402778,
+   "old_h": 1.2049305555555556,
+   "span_h": 2.115133333333333,
+   "start": "2026-08-12T19:54:22.018000+00:00",
+   "end": "2026-08-12T22:01:16.498000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 385
+   },
+   "writing_h": 0.19444444444444445,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.13422222222222221,
+   "machine_h": 0.4090196666666666,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 130,
+   "n_records": 403,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1,
+    "marker_esc": 1,
+    "marker_ide": 3
+   },
+   "mode_split": {
+    "missing->auto": 950.1320000000001,
+    "default": 3676.477
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 6,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-12-deploy-gen-a-produccion-migraciones-seeds.md": 3,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/9aa921bf-b9fd-47bb-9fe9-b656554e86d1/scratchpad/probe_deploy.py": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-118-borrar-sectors-legacy-cuando-nada-lo.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-14-desplegar-el-seed-del-cuestionario-a.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-97-resurreccion-de-comentarios-legacy-en-el.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/flow-migration-deployed.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/gen-question-schema.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 2,
+    "/home/rick/dev/unam/onigies/api/survey/migrations/0009_rename_sectors_survey_sectors_legacy_and_more.py": 1,
+    "/home/rick/dev/unam/onigies/api/question/migrations/0004_generalquestion.py": 1,
+    "/home/rick/dev/unam/onigies/api/indicator/migrations/0009_remove_generalgroup_fields_generalgroup_instruction_and_more.py": 1
+   },
+   "n_paths": 28,
+   "fused_h": 0.8761365187361113,
+   "allocated_h": 0.7694064403134472
+  },
+  {
+   "sid": "4328191a-9ca7-466e-a8a1-57af8947bd1c",
+   "title": "Configurar acceso a archivos privados en S3 y Attachment",
+   "credited_h": 3.094644757765777,
+   "old_h": 2.5623291666666668,
+   "span_h": 10.164053055555556,
+   "start": "2026-08-12T21:08:54.457000+00:00",
+   "end": "2026-08-13T07:18:45.048000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 1198
+   },
+   "writing_h": 0.8422222222222221,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.5572283333333333,
+   "machine_h": 0.674728361111111,
+   "n_prompts": 17,
+   "n_real_prompts": 15,
+   "pasted_chars": 609,
+   "n_records": 1229,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4,
+    "marker_esc": 1,
+    "marker_userModified": 2
+   },
+   "mode_split": {
+    "missing->auto": 1642.096,
+    "auto": 2764.1020000000003,
+    "default": 4433.098
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/flow/tests/test_attachments.py": 21,
+    "/home/rick/dev/unam/onigies/api/flow/attachment_views.py": 15,
+    "/home/rick/dev/unam/onigies/api/core/settings/__init__.py": 9,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_files_to_s3.py": 9,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/SKILL.md": 8,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_flow_data.py": 6,
+    "/home/rick/dev/unam/onigies/api/api/views/example/serializers.py": 5,
+    "/home/rick/dev/unam/onigies/api/api/views/example/__init__.py": 5,
+    "/home/rick/dev/unam/onigies/api/flow/serializers.py": 4,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/verify_flow_data.py": 4,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 3,
+    "/home/rick/dev/unam/onigies/api/flow/urls.py": 3,
+    "/home/rick/dev/unam/onigies/api/.env.template": 3,
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/urls.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/flow/FlowAttachments.vue": 3,
+    "/home/rick/dev/unam/onigies/api/flow/models.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/action_export_xls.py": 2,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 2,
+    "/home/rick/dev/unam/onigies/api/flow/upload_paths.py": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/index.js": 2,
+    "/home/rick/dev/unam/onigies/api/answer/migrations/0001_initial.py": 2,
+    "/home/rick/dev/unam/onigies/api/survey/migrations/0003_survey_instances_survey_is_centralized_and_more.py": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 2
+   },
+   "n_paths": 141,
+   "fused_h": 2.9703928410991156,
+   "allocated_h": 2.4925284071279137
+  },
+  {
+   "sid": "7f446bc4-189a-4e48-8f36-d44bd0d04622",
+   "title": "Revisar correcciones de task-7",
+   "credited_h": 2.0203521498149875,
+   "old_h": 2.4746425,
+   "span_h": 2.9137875,
+   "start": "2026-08-13T01:28:13.222000+00:00",
+   "end": "2026-08-13T04:23:02.857000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 737
+   },
+   "writing_h": 0.5709259259259258,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.39719,
+   "machine_h": 0.48961102777777776,
+   "n_prompts": 14,
+   "n_real_prompts": 13,
+   "pasted_chars": 130,
+   "n_records": 775,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1
+   },
+   "mode_split": {
+    "missing->auto": 245.566,
+    "auto": 786.783,
+    "default": 4214.764
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 5,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/7f446bc4-189a-4e48-8f36-d44bd0d04622/scratchpad/census/census.py": 4,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 3,
+    "/home/rick/.claude/rules/workflow-preferences.md": 2,
+    "/home/rick/.claude/system/tasks/task-34-toda-llamada-a-bash-debe-llevar.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-99-comentarios-unificacion-edicion-y-borrado.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-97-resurreccion-de-comentarios-legacy-en-el.md": 2,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0010-los-adjuntos-se-unifican-sobre-flow.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/flow-migration-deployed.md": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-12-incidente-migrate-flow-data.md": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-05-diseno-del-motor-de-flujo.md": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-11-auditoria-del-arbol-de-trabajo-y-reorganizacion.md": 2,
+    "/home/rick/.claude/system/tasks/task-35-caducidad-de-afirmaciones-de-seguridad-y.md": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/memory/MEMORY.md": 2,
+    "/home/rick/dev/unam/onigies/api/flow/management/commands/migrate_flow_data.py": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-12-deploy-gen-a-produccion-migraciones-seeds.md": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/7f446bc4-189a-4e48-8f36-d44bd0d04622/scratchpad/census/build_restore.py": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/7f446bc4-189a-4e48-8f36-d44bd0d04622/scratchpad/restore_flow_status.sql": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/7f446bc4-189a-4e48-8f36-d44bd0d04622/scratchpad/task.json": 1,
+    "/home/rick/.claude/skills/documenter/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0010-adjuntos-y-comentarios-sobre-flow.md": 1
+   },
+   "n_paths": 41,
+   "fused_h": 1.9544948287361108,
+   "allocated_h": 1.9544948287361108
+  },
+  {
+   "sid": "1ce5d2b4-57c1-4189-9b1d-0044e7474784",
+   "title": "Hacer visible 'gen' con /documenter",
+   "credited_h": 0.9080722582492418,
+   "old_h": 0.8807702777777778,
+   "span_h": 0.8807702777777778,
+   "start": "2026-08-14T16:25:59.799000+00:00",
+   "end": "2026-08-14T17:18:50.572000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 358
+   },
+   "writing_h": 0.1905555555555556,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.09157972222222222,
+   "machine_h": 0.11337305555555556,
+   "n_prompts": 11,
+   "n_real_prompts": 11,
+   "pasted_chars": 0,
+   "n_records": 365,
+   "floored": false,
+   "markers": {
+    "marker_ide": 2,
+    "marker_esc": 4,
+    "marker_rejection": 2
+   },
+   "mode_split": {
+    "default": 75.677,
+    "auto": 831.363
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/utils/sections.js": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/[period].vue": 3,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-41-seccion-de-informacion-base-capturable-por.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-14-deploy-publicacion-de-la-seccion-de.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-96-rehacer-el-diseno-de-la-captura.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-56-preguntar-a-ruben-si-la-captura.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/pages/respuestas/index.vue": 1,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberQuestion.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralNumberFields.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/plugins/vuetify.ts": 1
+   },
+   "n_paths": 24,
+   "fused_h": 0.9080722582492418,
+   "allocated_h": 0.9080722582492418
+  },
+  {
+   "sid": "9fe62aac-0320-41e0-8135-27bf4d63c60b",
+   "title": "Multilinea en PanelList.vue y borrar comentarios TO-AI",
+   "credited_h": 2.483220319430553,
+   "old_h": 2.5282647222222225,
+   "span_h": 3.0738255555555556,
+   "start": "2026-08-20T18:06:19.417000+00:00",
+   "end": "2026-08-20T21:10:45.189000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 908
+   },
+   "writing_h": 1.545,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.6185591666666668,
+   "machine_h": 0.29895656944444443,
+   "n_prompts": 13,
+   "n_real_prompts": 12,
+   "pasted_chars": 206,
+   "n_records": 935,
+   "floored": false,
+   "markers": {
+    "marker_ide": 3
+   },
+   "mode_split": {
+    "missing->auto": 138.937,
+    "auto": 1454.0710000000001,
+    "default": 2336.593
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/main/PanelList.vue": 7,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/generic/EditCommon.vue": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/filters.js": 5,
+    "/home/rick/dev/unam/onigies/.claude/skills/dashboard-collections/SKILL.md": 5,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/main/PanelsResult.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/status/StatusDetail.vue": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/generic/EditCommonFields.vue": 4,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-7-fase-de-borrado-retirar-statuscontrol-y.md": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/cats.js": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/save_elements.js": 3,
+    "/home/rick/.claude/system/tasks/task-52-revisar-todos-los-proyectos-que-usan.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/main/PanelCommon.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/store/index.js": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-130-cubrir-con-e2e-los-paneles-el.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/MassiveEdit.vue": 2,
+    "/home/rick/.claude/system/tasks/task-43-empaquetar-collections-en-un-repo-propio.md": 2,
+    "/home/rick/dev/unam/onigies/api/ies/models.py": 1,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/status/StatusChip.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/TESTING.md": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/9fe62aac-0320-41e0-8135-27bf4d63c60b/scratchpad/record-body.md": 1,
+    "/home/rick/.claude/system/tasks/task-43-empaquetar-collections-en-un-repo.md": 1,
+    "/home/rick/dev/unam/onigies/docs/learnings/learning-2-las-sesiones-en-piloto-automatico-no.md": 1,
+    "/home/rick/dev/unam/onigies/docs/learnings/learning-6-el-barrido-de-vinculos-de-una.md": 1,
+    "/tmp/claude-1000/-home-rick-dev-unam-onigies/9fe62aac-0320-41e0-8135-27bf4d63c60b/scratchpad/cierre-nodos.json": 1
+   },
+   "n_paths": 67,
+   "fused_h": 2.4645829583194407,
+   "allocated_h": 2.4647700513701087
+  },
+  {
+   "sid": "3a6f82e1-9b25-48f4-a225-881de6536a89",
+   "title": "forgot-password.vue env\u00edo de correo con Enter",
+   "credited_h": 0.11317796296296295,
+   "old_h": 0.09579361111111112,
+   "span_h": 0.8491475,
+   "start": "2026-08-20T18:28:28.276000+00:00",
+   "end": "2026-08-20T19:19:25.207000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 34
+   },
+   "writing_h": 0.08079324074074073,
+   "writing_spill_h": 0.009021574074074074,
+   "reading_h": 0.005222222222222223,
+   "machine_h": 0.0271625,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 0,
+   "n_records": 35,
+   "floored": true,
+   "markers": {},
+   "mode_split": {
+    "auto": 17.785,
+    "default": 210.66500000000002
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/app/components/login/ForgotPasswordForm.vue": 2
+   },
+   "n_paths": 2,
+   "fused_h": 0.01863736111111111,
+   "allocated_h": 0.009187431533646324
+  },
+  {
+   "sid": "07597e12-4412-4b34-9bce-36af75d39cb2",
+   "title": "Deploy a producci\u00f3n",
+   "credited_h": 0.2837283194444444,
+   "old_h": 0.4445938888888889,
+   "span_h": 0.4445938888888889,
+   "start": "2026-08-20T21:24:57.640000+00:00",
+   "end": "2026-08-20T21:51:38.178000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 152
+   },
+   "writing_h": 0.07629629629629629,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.037005,
+   "machine_h": 0.04088831944444444,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 130,
+   "n_records": 154,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 726.314
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.2837283194444444,
+   "allocated_h": 0.25205600400501016
+  },
+  {
+   "sid": "25bf79de-25ef-45a0-81be-5979d6ad86a9",
+   "title": "Tareas pendientes con Rub\u00e9n",
+   "credited_h": 0.030006111111111112,
+   "old_h": 0.048638888888888884,
+   "span_h": 0.048638888888888884,
+   "start": "2026-08-21T03:21:56.690000+00:00",
+   "end": "2026-08-21T03:24:51.790000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 110
+   },
+   "writing_h": 0.01888888888888889,
+   "writing_spill_h": 0.0,
+   "reading_h": 6.11111111111111e-06,
+   "machine_h": 0.011111111111111112,
+   "n_prompts": 1,
+   "n_real_prompts": 1,
+   "pasted_chars": 0,
+   "n_records": 112,
+   "floored": true,
+   "markers": {},
+   "mode_split": {
+    "auto": 175.074
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.0300061111111111,
+   "allocated_h": 0.05445944519644576
+  },
+  {
+   "sid": "5401b385-066e-4699-822e-4ada84d16ed9",
+   "title": "5401b385",
+   "credited_h": 0.04172205555555555,
+   "old_h": 0.10764194444444446,
+   "span_h": 0.10764194444444446,
+   "start": "2026-08-21T03:26:02.659000+00:00",
+   "end": "2026-08-21T03:32:30.170000+00:00",
+   "month": "2026-08",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 111
+   },
+   "writing_h": 0.02722222222222222,
+   "writing_spill_h": 0.0,
+   "reading_h": 4.166666666666667e-06,
+   "machine_h": 0.014495666666666667,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 202,
+   "n_records": 113,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "missing->auto": 347.896
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-08-11-reunion-con-ruben-sobre-la-informacion-base.md": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.04172205555555556,
+   "allocated_h": 0.08623166701003648
+  },
+  {
+   "sid": "0d557873-a501-4800-bb23-06cdefab3113",
+   "title": "Documento integrado y prototipo dashboard",
+   "credited_h": 2.435425588041667,
+   "old_h": 1.7668105555555556,
+   "span_h": 5.704464444444445,
+   "start": "2026-09-04T18:13:59.976000+00:00",
+   "end": "2026-09-04T23:56:16.048000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies/docs",
+   "branch": "task-42-edicion-preguntas-dashboard",
+   "branches": {
+    "task-42-edicion-preguntas-dashboard": 529,
+    "main": 392
+   },
+   "writing_h": 0.8440740740740742,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.2605636111111111,
+   "machine_h": 0.18561845833333335,
+   "n_prompts": 10,
+   "n_real_prompts": 9,
+   "pasted_chars": 1161,
+   "n_records": 956,
+   "floored": false,
+   "markers": {
+    "marker_esc": 1
+   },
+   "mode_split": {
+    "missing->auto": 70.29899999999999,
+    "auto": 3674.372
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/question/catalog_schema.py": 5,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 4,
+    "/home/rick/dev/unam/onigies/api/indicator/catalog_schema.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/question/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/api/api/views/indicator/serializers.py": 2,
+    "/home/rick/dev/unam/onigies/docs/reference/2026-09-04-correcciones-de-redaccion-del-instrumento.md": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/common/ObservableQuestionEdit.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/common/ObservableQuestionHeader.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/indicator/observable/ObservableHeader.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/indicator/observable/ObservableEditSimple.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/layouts/dashboard.vue": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-04-prototipo-edicion-cuestionario-deploy-e-incidente-netlify.md": 1
+   },
+   "n_paths": 23,
+   "fused_h": 2.435425588041668,
+   "allocated_h": 1.6346973254883257
+  },
+  {
+   "sid": "503b55da-33b4-4c55-a92f-eaf9f0f947ba",
+   "title": "Pandoc instalaci\u00f3n estrategia",
+   "credited_h": 0.5975820277777778,
+   "old_h": 0.6930830555555556,
+   "span_h": 0.6930830555555556,
+   "start": "2026-09-07T17:39:01.653000+00:00",
+   "end": "2026-09-07T18:20:36.752000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 372
+   },
+   "writing_h": 0.23537037037037037,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.10422555555555557,
+   "machine_h": 0.059276472222222217,
+   "n_prompts": 4,
+   "n_real_prompts": 3,
+   "pasted_chars": 202,
+   "n_records": 380,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "missing->auto": 55.28,
+    "auto": 970.748
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-07-03-instrumento-cuestionario-2026.md": 2,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/tmp-compare/split.py": 1,
+    "/home/rick/dev/unam/onigies/.claude/tmp-compare/db_seed_check.py": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-07-cotejo-del-instrumento-maquetado.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-19-integrar-el-cuestionario-actualizado-de-ruben.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-14-desplegar-el-seed-del-cuestionario-a.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-2-cuestionario-2026-cerrar-instrumento-seed-y.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-16-texto-de-alcance-del-observable-4.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-17-alcance-de-los-observables-2-1.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-15-conseguir-los-pesos-reales-por-observable.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-116-enviar-a-ruben-el-documento-de.md": 1
+   },
+   "n_paths": 13,
+   "fused_h": 0.5975820277777785,
+   "allocated_h": 0.3017175346345889
+  },
+  {
+   "sid": "8e146f37-0a10-4145-8281-0efa4af0a56c",
+   "title": "Estandarizaci\u00f3n de QuestionType",
+   "credited_h": 6.572890542394203,
+   "old_h": 2.893994444444444,
+   "span_h": 8.9553675,
+   "start": "2026-09-07T22:24:56.184000+00:00",
+   "end": "2026-09-08T07:22:15.507000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "edicion-cuestionario-v2",
+   "branches": {
+    "edicion-cuestionario-v2": 3155,
+    "main": 369
+   },
+   "writing_h": 4.319703611111111,
+   "writing_spill_h": 0.11548157407407417,
+   "reading_h": 0.8900066666666668,
+   "machine_h": 0.34515452777777783,
+   "n_prompts": 18,
+   "n_real_prompts": 17,
+   "pasted_chars": 202,
+   "n_records": 3562,
+   "floored": false,
+   "markers": {
+    "marker_ide": 6
+   },
+   "mode_split": {
+    "missing->auto": 590.337,
+    "auto": 6815.143999999999
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/indicator/catalog_schema.py": 7,
+    "/home/rick/dev/unam/onigies/api/question/models.py": 6,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/utils/HeaderChip.vue": 5,
+    "/home/rick/dev/unam/onigies/api/TESTING.md": 5,
+    "/home/rick/dev/unam/onigies/api/ps_schema/registry.py": 4,
+    "/home/rick/dev/unam/onigies/api/api/views/indicator/serializers.py": 4,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/question_type/QuestionTypeEditSimple.vue": 4,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/indicator/axis/AxisHeader.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/indicator/component/ComponentHeader.vue": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/indicator/observable/ObservableHeader.vue": 3,
+    "/home/rick/dev/unam/onigies/api/ps_schema/schemas.py": 3,
+    "/home/rick/dev/unam/onigies/api/question/catalog_schema.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/generic/EditCommonFields.vue": 3,
+    "/home/rick/dev/unam/onigies/api/indicator/models.py": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/8e146f37-0a10-4145-8281-0efa4af0a56c/tool-results/bdsitraan.txt": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/dashboard-collections/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/generic/HeaderCommon.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/general_question/GeneralQuestionEditSimple.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/question_type/QuestionTypeHeader.vue": 2,
+    "/home/rick/dev/unam/onigies/.playwright-mcp/fase2d-tipos-pregunta.png": 2,
+    "/tmp/fase2e-observables.png": 2,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/api/question/migrations/0006_seed_observable_question_types.py": 1,
+    "/home/rick/dev/unam/onigies/api/question/initial_data.py": 1
+   },
+   "n_paths": 107,
+   "fused_h": 6.572890542394212,
+   "allocated_h": 3.4216616073754387
+  },
+  {
+   "sid": "3705a870-2aea-4d96-91be-6b72aab1cee5",
+   "title": "3705a870",
+   "credited_h": 0.05863316194444447,
+   "old_h": 0.1394263888888889,
+   "span_h": 0.1394263888888889,
+   "start": "2026-09-09T04:32:33.444000+00:00",
+   "end": "2026-09-09T04:40:55.379000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "edicion-cuestionario-v2",
+   "branches": {
+    "edicion-cuestionario-v2": 156,
+    "main": 2
+   },
+   "writing_h": 0.03981481481481482,
+   "writing_spill_h": 0.0,
+   "reading_h": 4.722222222222222e-06,
+   "machine_h": 0.018813625,
+   "n_prompts": 2,
+   "n_real_prompts": 1,
+   "pasted_chars": 202,
+   "n_records": 160,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "missing->auto": 451.527
+   },
+   "paths": {},
+   "n_paths": 0,
+   "fused_h": 0.05863316194444447,
+   "allocated_h": 0.08062282914979187
+  },
+  {
+   "sid": "d5ef9c1e-a1fa-4557-975b-341682832e18",
+   "title": "Revisi\u00f3n cuestionario v2 fases 3 y 4",
+   "credited_h": 2.9375383333194405,
+   "old_h": 2.460446666666667,
+   "span_h": 4.270678888888889,
+   "start": "2026-09-10T21:06:55.953000+00:00",
+   "end": "2026-09-11T01:23:10.397000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "task-131-editor-observables-cuestionario-abierto",
+   "branches": {
+    "task-131-editor-observables-cuestionario-abierto": 2439,
+    "main": 224
+   },
+   "writing_h": 1.6625925925925928,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.5031783333333334,
+   "machine_h": 0.31601588888888893,
+   "n_prompts": 15,
+   "n_real_prompts": 14,
+   "pasted_chars": 202,
+   "n_records": 2693,
+   "floored": false,
+   "markers": {
+    "marker_ide": 4
+   },
+   "mode_split": {
+    "missing->auto": 614.447,
+    "auto": 5995.557999999999
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/api/question/models.py": 9,
+    "/home/rick/dev/unam/onigies/api/api/views/question/serializers.py": 9,
+    "/home/rick/dev/unam/onigies/api/question/catalog_schema.py": 4,
+    "/home/rick/dev/unam/onigies/api/api/views/indicator/serializers.py": 4,
+    "/home/rick/dev/unam/onigies/api/question/management/commands/load_questionnaire.py": 4,
+    "/home/rick/dev/unam/onigies/nuxt/.claude/smoke/definicion-lista-tipos.png": 4,
+    "/home/rick/dev/unam/onigies/api/TESTING.md": 3,
+    "/home/rick/dev/unam/onigies/api/indicator/models.py": 3,
+    "/home/rick/dev/unam/onigies/api/api/views/content_gate.py": 3,
+    "/home/rick/dev/unam/onigies/api/indicator/catalog_schema.py": 3,
+    "/home/rick/dev/unam/onigies/api/question/tests.py": 3,
+    "/home/rick/dev/unam/onigies/api/.claude/smoke_content_gate.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/.claude/diseno-editor-observable.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/.claude/smoke/observable-1-3-abierto.png": 3,
+    "/home/rick/dev/unam/onigies/api/question/migrations/0010_new_default_weights_and_type_icons.py": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-10-editor-por-bloques-cuestionario-abierto-y-retiro-del-seed.md": 2,
+    "/home/rick/dev/unam/onigies/docs/decisions/adr-0015-cuestionario-abierto-a-edicion-cierre-de-ida-y-retiro-del-seed.md": 2,
+    "/tmp/deleg.txt": 2,
+    "/tmp/subrep.txt": 2,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/manage-collections/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/cp-questionnaire/SKILL.md": 1,
+    "/home/rick/.claude/skills/ux-designer/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-131-nuevo-observableeditsimple-por-bloques-de-tipo.md": 1,
+    "/home/rick/dev/unam/onigies/api/question/initial_data.py": 1
+   },
+   "n_paths": 85,
+   "fused_h": 2.9375383333194405,
+   "allocated_h": 2.9375383333194405
+  },
+  {
+   "sid": "03f1e4b9-309c-44c3-a8b9-2794901f2050",
+   "title": "Preguntas y QuestionType reseed",
+   "credited_h": 0.44288026575616035,
+   "old_h": 0.7309822222222222,
+   "span_h": 0.7309822222222222,
+   "start": "2026-09-11T01:23:10.407000+00:00",
+   "end": "2026-09-11T02:07:01.943000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "task-131-editor-observables-cuestionario-abierto",
+   "branches": {
+    "task-131-editor-observables-cuestionario-abierto": 585,
+    "main": 27
+   },
+   "writing_h": 0.10796296296296296,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.1450602777777778,
+   "machine_h": 0.10878018055555556,
+   "n_prompts": 8,
+   "n_real_prompts": 7,
+   "pasted_chars": 202,
+   "n_records": 624,
+   "floored": false,
+   "markers": {
+    "marker_ask": 1,
+    "marker_esc": 1,
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "missing->auto": 616.097,
+    "auto": 1250.763
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-10-deploy-del-editor-por-bloques-y-ultima-siembra.md": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.44288026575616035,
+   "allocated_h": 0.44288026575616035
+  },
+  {
+   "sid": "b6c8a4f0-d2da-499c-be9d-a4efa64deb57",
+   "title": "Transcripci\u00f3n limpia de tareas pendientes",
+   "credited_h": 2.764822736111107,
+   "old_h": 1.7043972222222221,
+   "span_h": 3.9882605555555553,
+   "start": "2026-09-11T16:17:52.217000+00:00",
+   "end": "2026-09-11T20:17:09.955000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 830,
+    "questionnaire-ies": 360
+   },
+   "writing_h": 1.4666666666666663,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.39503166666666667,
+   "machine_h": 0.21000912500000002,
+   "n_prompts": 11,
+   "n_real_prompts": 11,
+   "pasted_chars": 202,
+   "n_records": 1214,
+   "floored": false,
+   "markers": {
+    "marker_rejection": 1,
+    "marker_esc": 1,
+    "marker_ide": 3
+   },
+   "mode_split": {
+    "missing->auto": 17.378,
+    "auto": 4415.767
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/nuxt/e2e/mocks/gen.ts": 5,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-04-reunion-con-ruben.md": 4,
+    "/home/rick/dev/unam/onigies/api/indicator/migrations/0009_remove_generalgroup_fields_generalgroup_instruction_and_more.py": 4,
+    "/home/rick/dev/unam/onigies/api/survey/general_validation.py": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/composables/useGeneralValidation.js": 3,
+    "/home/rick/.claude/skills/documenter/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralAuthorities.vue": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/survey/GeneralCountCells.vue": 2,
+    "/home/rick/dev/unam/onigies/api/utils/prompts/description.txt": 2,
+    "/home/rick/dev/unam/onigies/docs/reference/cuestionario-2026-reducido.md": 2,
+    "/home/rick/dev/unam/onigies/docs/reference/2026-09-04-correcciones-de-redaccion-del-instrumento.md": 2,
+    "/home/rick/dev/unam/onigies/docs/feedback/fb-2-ruben-nunca-relee-las-preguntas-identicas.md": 2,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-2-cuestionario-2026-cerrar-instrumento-seed-y.md": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-11-intake-reunion-con-ruben-del-4-de-septiembre.md": 2,
+    "/home/rick/.claude/skills/intake/references/meeting-audio.md": 1,
+    "/home/rick/.claude/skills/documenter/references/cli.md": 1,
+    "/home/rick/dev/yeeko/written.django/CLAUDE.md": 1,
+    "/home/rick/dev/yeeko/written.django/meetings/unam/onigies/2026-09-04-reunion-con-ruben/final_transcription.md": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-04-reunion-con-ruben_raw.md": 1,
+    "/home/rick/.claude/skills/intake/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-116-enviar-a-ruben-el-documento-de.md": 1,
+    "/home/rick/dev/unam/onigies/docs/tasks/task-102-reunion-con-computo-unam-procedimiento-dominio.md": 1,
+    "/tmp/2025-09-11-Plataforma-v3-Calculo-2025.md": 1,
+    "/tmp/2026-01-07-Plataforma-v3-Calculo-2026.md": 1,
+    "/home/rick/.claude/skills/documenter/references/decision-fields.md": 1
+   },
+   "n_paths": 52,
+   "fused_h": 2.7648227361111064,
+   "allocated_h": 1.658289583801236
+  },
+  {
+   "sid": "fe66c195-7459-4498-8b1a-d4e2768a7047",
+   "title": "Reescribir p\u00e1rrafos y verificar hip\u00f3tesis",
+   "credited_h": 0.958679555555556,
+   "old_h": 1.2160149999999998,
+   "span_h": 1.216015,
+   "start": "2026-09-11T20:37:16.706000+00:00",
+   "end": "2026-09-11T21:50:14.360000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "questionnaire-ies",
+   "branches": {
+    "questionnaire-ies": 437
+   },
+   "writing_h": 0.20203703703703707,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.15289444444444444,
+   "machine_h": 0.1456347916666667,
+   "n_prompts": 8,
+   "n_real_prompts": 7,
+   "pasted_chars": 202,
+   "n_records": 448,
+   "floored": false,
+   "markers": {
+    "marker_ide": 1
+   },
+   "mode_split": {
+    "missing->auto": 630.801,
+    "auto": 209.569,
+    "default": 913.424
+   },
+   "paths": {
+    "/tmp/uaeh_probe.py": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.947572059196102,
+   "allocated_h": 0.3883826478159862
+  },
+  {
+   "sid": "b055612f-f767-4a7e-ad19-169e1347ea95",
+   "title": "b055612f",
+   "credited_h": 1.9189764593922438,
+   "old_h": 1.6131772222222223,
+   "span_h": 261.99718,
+   "start": "2026-09-11T21:48:57.868000+00:00",
+   "end": "2026-09-22T19:48:47.716000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "task-150-word-export",
+   "branches": {
+    "task-150-word-export": 1603,
+    "questionnaire-ies": 497
+   },
+   "writing_h": 0.8244444444444445,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.37683555555555553,
+   "machine_h": 0.19527370833333335,
+   "n_prompts": 13,
+   "n_real_prompts": 12,
+   "pasted_chars": 202,
+   "n_records": 2140,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "missing->auto": 827.082,
+    "auto": 3077.605
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/tasks/task-150-exportacion-del-cuestionario-a-word-desde.md": 2,
+    "/tmp/task150/gen1.png": 2,
+    "/tmp/crit_deleg.txt": 2,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-07-cotejo-del-instrumento-maquetado.md": 1,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/action_export_xls.py": 1,
+    "/home/rick/dev/unam/onigies/api/flow/attachment_views.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/cp-questionnaire/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/api/indicator/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/question/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/survey/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/question/seed_data/catalogs.py": 1,
+    "/home/rick/dev/unam/onigies/api/question/management/commands/load_questionnaire.py": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/SKILL.md": 1,
+    "/tmp/task150/maqpdf/montage1.png": 1,
+    "/tmp/task150/maqpdf/montage2.png": 1,
+    "/tmp/task150/gen0.png": 1,
+    "/tmp/task150/gen2.png": 1,
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-22-exportacion-del-cuestionario-a-word.md": 1,
+    "/tmp/crit_dialogue.txt": 1
+   },
+   "n_paths": 27,
+   "fused_h": 1.8618863184861087,
+   "allocated_h": 1.6764611460886778
+  },
+  {
+   "sid": "e45316c3-70fa-4646-a570-53b65bdc7777",
+   "title": "Deploy cambios",
+   "credited_h": 0.28818191666666665,
+   "old_h": 0.4446588888888889,
+   "span_h": 0.4446588888888889,
+   "start": "2026-09-22T19:44:20.541000+00:00",
+   "end": "2026-09-22T20:11:01.313000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "main",
+   "branches": {
+    "main": 266,
+    "task-150-word-export": 70
+   },
+   "writing_h": 0.0662962962962963,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.030114166666666668,
+   "machine_h": 0.027613583333333334,
+   "n_prompts": 3,
+   "n_real_prompts": 2,
+   "pasted_chars": 130,
+   "n_records": 340,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 662.726
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.250108513888889,
+   "allocated_h": 0.21409183243683028
+  },
+  {
+   "sid": "2d561ef3-7cd5-40b9-abb2-802d2286f1cc",
+   "title": "Cuestionario principal pendiente",
+   "credited_h": 3.676565199166666,
+   "old_h": 3.354105833333333,
+   "span_h": 6.289133611111112,
+   "start": "2026-09-22T19:59:01.356000+00:00",
+   "end": "2026-09-23T02:16:22.237000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "cp-backend",
+   "branches": {
+    "cp-backend": 2964,
+    "remove-statuscontrol": 883,
+    "main": 719
+   },
+   "writing_h": 1.6485185185185183,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.5445127777777778,
+   "machine_h": 0.3997382083333334,
+   "n_prompts": 13,
+   "n_real_prompts": 12,
+   "pasted_chars": 193,
+   "n_records": 4663,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 8972.471,
+    "default": 43.729
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/.claude/skills/flow/SKILL.md": 13,
+    "/home/rick/dev/unam/onigies/.claude/skills/dashboard-collections/SKILL.md": 10,
+    "/home/rick/dev/unam/onigies/api/CLAUDE.md": 9,
+    "/home/rick/dev/unam/onigies/.claude/skills/cp-questionnaire/SKILL.md": 4,
+    "/home/rick/dev/unam/onigies/.claude/skills/gen-general-info/SKILL.md": 4,
+    "/home/rick/dev/unam/onigies/api/api/permissions.py": 3,
+    "/home/rick/dev/unam/onigies/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/nuxt/CLAUDE.md": 3,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 3,
+    "/tmp/critic_deleg.txt": 3,
+    "/home/rick/dev/unam/onigies/docs/records/2026-06-05-diseno-del-motor-de-flujo.md": 2,
+    "/home/rick/dev/unam/onigies/api/example/models.py": 2,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/answer/capture/CpAxisCapture.vue": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/snackbar/SKILL.md": 2,
+    "/home/rick/dev/unam/onigies/.claude/skills/bp-validation-ux/SKILL.md": 2,
+    "/tmp/critic_dialogue.txt": 2,
+    "/tmp/critic_deleg2.txt": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/2d561ef3-7cd5-40b9-abb2-802d2286f1cc/tool-results/bh57z6r4s.txt": 1,
+    "/tmp/cp_tasks_b.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/2d561ef3-7cd5-40b9-abb2-802d2286f1cc/tool-results/btvc1s4pe.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/2d561ef3-7cd5-40b9-abb2-802d2286f1cc/tool-results/bv5j0aq7e.txt": 1,
+    "/home/rick/dev/unam/onigies/api/answer/models.py": 1,
+    "/home/rick/dev/unam/onigies/api/answer/group_validation.py": 1,
+    "/home/rick/dev/unam/onigies/api/answer/services.py": 1,
+    "/home/rick/dev/unam/onigies/api/api/views/answer/serializers.py": 1
+   },
+   "n_paths": 97,
+   "fused_h": 3.6160814908333387,
+   "allocated_h": 2.596168405389387
+  },
+  {
+   "sid": "a7383a8d-28d4-4b8d-9391-a19b8bde2000",
+   "title": "Ajustes dise\u00f1o vista cuestionario",
+   "credited_h": 6.4473715014651,
+   "old_h": 1.4220055555555555,
+   "span_h": 9.196757222222223,
+   "start": "2026-09-23T16:24:58.911000+00:00",
+   "end": "2026-09-24T01:36:47.237000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "cp-backend",
+   "branches": {
+    "cp-backend": 2359
+   },
+   "writing_h": 3.7179629629629627,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.4786130555555556,
+   "machine_h": 0.2368099305555556,
+   "n_prompts": 18,
+   "n_real_prompts": 17,
+   "pasted_chars": 193,
+   "n_records": 2415,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 4308.473
+   },
+   "paths": {
+    "/tmp/crit_deleg.txt": 3,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/question/question_type/QuestionTypeEditSimple.vue": 3,
+    "/tmp/crit_dialogue.txt": 2,
+    "/tmp/crit_reports.txt": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/a7383a8d-28d4-4b8d-9391-a19b8bde2000/tool-results/bcod7mry2.txt": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/common/select/YesNoRadio.vue": 1,
+    "/home/rick/dev/unam/onigies/nuxt/app/components/dashboard/flow/FlowSaveMenu.vue": 1,
+    "/tmp/cp-2-obs.png": 1,
+    "/tmp/cp-3-menu.png": 1,
+    "/tmp/cp-4-others.png": 1,
+    "/tmp/cp-shot-full.png": 1,
+    "/tmp/cp-shot-chip.png": 1,
+    "/tmp/cp-shot-desc.png": 1,
+    "/home/rick/dev/unam/onigies/nuxt/test-results/gen-capture-Informaci\u00f3n-ba-4196e-les-solo-declaran-presencia-chromium/test-failed-1.png": 1,
+    "/tmp/crit_fe2.txt": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/flow/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/manage-collections/SKILL.md": 1
+   },
+   "n_paths": 23,
+   "fused_h": 6.293579429659571,
+   "allocated_h": 3.9508986104653063
+  },
+  {
+   "sid": "cd144c44-5777-4e9d-a388-47fb8cf2a194",
+   "title": "Task-164 directo",
+   "credited_h": 0.36245076388888897,
+   "old_h": 0.2830755555555556,
+   "span_h": 0.9844744444444445,
+   "start": "2026-09-23T21:20:02.988000+00:00",
+   "end": "2026-09-23T22:19:07.096000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "cp-backend",
+   "branches": {
+    "cp-backend": 160
+   },
+   "writing_h": 0.010555555555555556,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.064,
+   "machine_h": 0.01845076388888889,
+   "n_prompts": 2,
+   "n_real_prompts": 2,
+   "pasted_chars": 63,
+   "n_records": 161,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 424.31100000000004
+   },
+   "paths": {
+    "/home/rick/dev/unam/onigies/docs/records/2026-09-23-brecha-entre-pregunta-inicial-y-preguntas-a.md": 1
+   },
+   "n_paths": 1,
+   "fused_h": 0.36110076388888895,
+   "allocated_h": 0.4482020675105486
+  },
+  {
+   "sid": "6635e96d-abb1-4e3c-a6b9-0956346587f9",
+   "title": "Keep-alive session",
+   "credited_h": 1.4738571761111114,
+   "old_h": 1.0861541666666665,
+   "span_h": 3.2903647222222223,
+   "start": "2026-09-23T22:19:17.012000+00:00",
+   "end": "2026-09-24T01:36:42.325000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "cp-backend",
+   "branches": {
+    "cp-backend": 1078
+   },
+   "writing_h": 0.6364814814814814,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.1253361111111111,
+   "machine_h": 0.15674875,
+   "n_prompts": 5,
+   "n_real_prompts": 4,
+   "pasted_chars": 1521,
+   "n_records": 1112,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "missing->auto": 2031.654,
+    "auto": 1695.908
+   },
+   "paths": {
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/bukcqarlm.txt": 2,
+    "/tmp/onigies-2026-09-23-limpia.md": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/b8ll0mkyv.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/b4tgqcim1.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/buoirle52.txt": 1,
+    "/tmp/critic_deleg.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/bx6q5tpmc.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/6635e96d-abb1-4e3c-a6b9-0956346587f9/tool-results/b24vqjoeb.txt": 1
+   },
+   "n_paths": 9,
+   "fused_h": 1.264353159847223,
+   "allocated_h": 0.34356824681102366
+  },
+  {
+   "sid": "fb5dabb8-7557-4a47-80f5-39fee7d5ba72",
+   "title": "Pendientes para deploy del cuestionario",
+   "credited_h": 1.6240223510158798,
+   "old_h": 1.2287736111111112,
+   "span_h": 7.090447777777778,
+   "start": "2026-09-25T00:00:48.594000+00:00",
+   "end": "2026-09-25T07:06:14.206000+00:00",
+   "month": "2026-09",
+   "cwd": "/home/rick/dev/unam/onigies",
+   "branch": "cp-backend",
+   "branches": {
+    "cp-backend": 1300,
+    "production": 10
+   },
+   "writing_h": 0.3492592592592593,
+   "writing_spill_h": 0.0,
+   "reading_h": 0.40256,
+   "machine_h": 0.13455998611111109,
+   "n_prompts": 7,
+   "n_real_prompts": 6,
+   "pasted_chars": 397,
+   "n_records": 1348,
+   "floored": false,
+   "markers": {},
+   "mode_split": {
+    "auto": 3094.1800000000003
+   },
+   "paths": {
+    "/tmp/critic-deleg.txt": 2,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/fb5dabb8-7557-4a47-80f5-39fee7d5ba72/tool-results/bjgnhhhnp.txt": 1,
+    "/home/rick/.claude/projects/-home-rick-dev-unam-onigies/fb5dabb8-7557-4a47-80f5-39fee7d5ba72/tool-results/bvw4amhx4.txt": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deploy-api/SKILL.md": 1,
+    "/home/rick/dev/unam/onigies/.claude/skills/deployment/SKILL.md": 1,
+    "/tmp/onigies-ruben/texts.txt": 1,
+    "/tmp/onigies-ruben/build/page-01.jpg": 1,
+    "/tmp/onigies-ruben/build/page-02.jpg": 1,
+    "/tmp/onigies-ruben/build/page-05.jpg": 1,
+    "/tmp/onigies-ruben/build/page-06.jpg": 1,
+    "/tmp/onigies-ruben/build/page-10.jpg": 1,
+    "/tmp/onigies-ruben/build/strip.jpg": 1,
+    "/tmp/critic-dialogue.txt": 1
+   },
+   "n_paths": 14,
+   "fused_h": 1.6240223510158815,
+   "allocated_h": 0.9395668160423448
+  }
+ ],
+ "months": {
+  "2026-04": 6.059465201262355,
+  "2026-05": 10.866178219699526,
+  "2026-06": 8.630090320068692,
+  "2026-07": 0.9965142038888891,
+  "2026-08": 30.501931360311726,
+  "2026-09": 32.028476742160684
+ },
+ "months_per_session": {
+  "2026-04": 8.712641827315219,
+  "2026-05": 11.649482400255087,
+  "2026-06": 8.633393653402026,
+  "2026-07": 0.9965142038888891,
+  "2026-08": 32.93866644552951,
+  "2026-09": 32.55987757860675
+ },
+ "total_per_session_h": 95.52097249779393,
+ "total_fused_h": 89.08265604739202,
+ "total_allocated_h": 71.23238935070152,
+ "allocation": {
+  "-home-rick-dev-ssa-snsp-django": 1.2193776140772767,
+  "-home-rick-dev-ssa-snsp": 80.91907172524924,
+  "-home-rick-dev-ssa-ram-cdc-2025": 13.505560389664428,
+  "-home-rick-dev-unam-onigies": 71.23238935070152,
+  "-home-rick-dev-bandatos-pendientes-y-escaleras": 14.3950045372762,
+  "-home-rick-dev-ibero-ocsa": 121.33424860127813,
+  "-home-rick-dev-unam-stig": 21.658550691619403,
+  "-home-rick-dev-yeeko-bot-caceh": 28.195951841101248,
+  "-home-rick-Documentos-plan-discos": 2.7385474701230477,
+  "-home-rick-dev-yeeko-yeeko-chat-flow": 3.660640067863768,
+  "-home-rick-dev-yeeko-yeeko-chat-flow-rebuilding": 5.137157810122879,
+  "-home-rick-dev-yeeko-written-django": 8.660483817476496,
+  "-home-rick": 2.503833807584969,
+  "-home-rick--claude": 111.26509453351827,
+  "-home-rick--claude-sistema": 2.0150769954826058,
+  "-home-rick-dev-ssa-SNSP": 0.020788902777777778,
+  "-tmp-claude-1000--home-rick--claude-b8687f61-dc92-4acc-a91e-0892fba13904-scratchpad": 0.006732069444444444,
+  "-home-rick--claude-watchers-opus5": 0.002058333333333333,
+  "-home-rick--claude-projects": 0.15489884864302128,
+  "-home-rick-dev-open-escaleras-survey-ws": 0.046401815313343524,
+  "-home-rick-dev-ibero-sentencias-salud": 27.95959995519026,
+  "-home-rick--claude-skills-transcript-mining": 0.21203122667712593,
+  "-home-rick-dev-bandatos": 0.2111102283535821,
+  "-home-rick-dev-desabasto-ocamis": 17.602465039854348,
+  "-tmp-tmp-onOuczrujV": 0.000548904839527027,
+  "-tmp-tmp-puLqmyxA7H": 0.0006775539094234378,
+  "-home-rick-dev-unam-stig-api": 1.4185308492168613,
+  "-home-rick-dev-pc-config": 2.32200183114519,
+  "-home-rick-dev-mini-helps-resolution-cidh": 2.497611277305415,
+  "-home-rick-drafts": 0.08612990277777777,
+  "-tmp-hook-lab": 0.04547438888888889,
+  "-tmp-tokprobe2": 0.00041482458396717203,
+  "-tmp-tokprobe3": 0.0014851688576257584,
+  "-home-rick-dev-mini-jev-qwen": 13.533373588096813,
+  "-home-rick-dev-desabasto-tm-precios-salud": 4.001777969500071,
+  "-home-rick-dev-open-ClaudeCodeUsage": 0.08267506944444444,
+  "-home-rick-dev-desabasto-cero-desabasto": 0.05791537784131647
+ },
+ "cap_notes": [
+  "tope por proyecto: -home-rick-dev-ssa-SNSP 0.03 -> 0.02 h (reloj 0.02 h)",
+  "tope por proyecto: -tmp-claude-1000--home-rick--claude-b8687f61-dc92-4acc-a91e-0892fba13904-scratchpad 0.01 -> 0.01 h (reloj 0.01 h)",
+  "tope por proyecto: -home-rick--claude-watchers-opus5 0.00 -> 0.00 h (reloj 0.00 h)",
+  "tope por proyecto: -home-rick-drafts 0.09 -> 0.09 h (reloj 0.09 h)",
+  "tope por proyecto: -tmp-hook-lab 0.10 -> 0.05 h (reloj 0.05 h)",
+  "tope por proyecto: -home-rick-dev-open-ClaudeCodeUsage 0.09 -> 0.08 h (reloj 0.09 h)"
+ ],
+ "empty_sessions": [
+  {
+   "sid": "2de4db42-6d68-4cef-8afb-87f3b0428a78",
+   "title": "2de4db42",
+   "n": 5
+  },
+  {
+   "sid": "36328ff9-cd64-4f5a-b5a1-91da3b110879",
+   "title": "36328ff9",
+   "n": 5
+  },
+  {
+   "sid": "4ba507af-f3d2-4e46-bdd3-e4dc1f48839e",
+   "title": "4ba507af",
+   "n": 3
+  },
+  {
+   "sid": "68518125-9b23-44f6-8be5-4c57768fe79b",
+   "title": "68518125",
+   "n": 3
+  },
+  {
+   "sid": "7d623dc1-4250-4421-ad97-368aae997884",
+   "title": "zesty-baking-sonnet",
+   "n": 56
+  },
+  {
+   "sid": "82fd34a5-e084-47cb-a710-aa849e469b5e",
+   "title": "82fd34a5",
+   "n": 3
+  },
+  {
+   "sid": "c2e56c9f-fd03-483f-aae0-88cc50e7c45a",
+   "title": "c2e56c9f",
+   "n": 5
+  },
+  {
+   "sid": "e3da7999-00fd-4e21-976f-1ba6db315db4",
+   "title": "e3da7999",
+   "n": 3
+  },
+  {
+   "sid": "e8d1d1f3-8250-40c9-b1b9-27fc30c5be16",
+   "title": "e8d1d1f3",
+   "n": 3
+  },
+  {
+   "sid": "fc156045-4f99-47c3-87d7-0ee4c8a0da73",
+   "title": "fc156045",
+   "n": 22
+  },
+  {
+   "sid": "00c0b8a8-21f5-4536-8765-e450a2552162",
+   "title": "00c0b8a8",
+   "n": 3
+  },
+  {
+   "sid": "2965aa90-fb81-46f7-8dea-1c6f4e904f28",
+   "title": "breezy-roaming-valley",
+   "n": 45
+  },
+  {
+   "sid": "4dea2def-1bc6-495e-9145-56146151e04e",
+   "title": "dazzling-beaming-sloth",
+   "n": 129
+  },
+  {
+   "sid": "50632b3a-9bc4-442f-ab43-5e456b659820",
+   "title": "50632b3a",
+   "n": 5
+  },
+  {
+   "sid": "6e4d4156-cab0-4de1-a0cf-18884aa48e1c",
+   "title": "6e4d4156",
+   "n": 3
+  },
+  {
+   "sid": "702b3bac-2e2c-4b27-8340-7d9e97a14a21",
+   "title": "702b3bac",
+   "n": 9
+  },
+  {
+   "sid": "72716265-44b9-4753-a1a0-f4fe273f110a",
+   "title": "72716265",
+   "n": 3
+  },
+  {
+   "sid": "848736b3-ce12-4a22-8b31-26d4a3419015",
+   "title": "848736b3",
+   "n": 11
+  },
+  {
+   "sid": "8722f8bd-6f5f-4150-ad5e-c048f84d135d",
+   "title": "eager-bubbling-sun",
+   "n": 42
+  },
+  {
+   "sid": "a0c0cc84-42fb-4133-8e98-b05b0879e499",
+   "title": "a0c0cc84",
+   "n": 6
+  },
+  {
+   "sid": "a949a71f-3aa3-4008-b407-2bfe43466e2e",
+   "title": "expressive-splashing-sifakis",
+   "n": 153
+  },
+  {
+   "sid": "d4bc28aa-e5a6-48a9-b513-2103125e3132",
+   "title": "valiant-nibbling-volcano",
+   "n": 24
+  },
+  {
+   "sid": "e189141e-f38c-43b6-a6a7-260f70e25f7d",
+   "title": "mutable-snacking-lobster",
+   "n": 83
+  },
+  {
+   "sid": "e953023e-ead3-4473-a5cb-1ca9035bcdf2",
+   "title": "glittery-plotting-book",
+   "n": 67
+  },
+  {
+   "sid": "ef6396a6-78da-4d63-9da7-a47e05c0e00e",
+   "title": "ef6396a6",
+   "n": 3
+  },
+  {
+   "sid": "f1811260-a48a-4023-93ae-98273cc21fb9",
+   "title": "snug-booping-puddle",
+   "n": 48
+  },
+  {
+   "sid": "fc1b32ac-1021-43c5-ba98-5d9ab731abea",
+   "title": "glittery-puzzling-duckling",
+   "n": 29
+  },
+  {
+   "sid": "fdc39beb-89eb-4cd7-af1a-72c836e5ecd3",
+   "title": "fdc39beb",
+   "n": 3
+  }
+ ],
+ "offline": [
+  [
+   "notes/2026-09-25-conceptualizacion-en-miro.md",
+   360
+  ],
+  [
+   "records/2026-06-26-transcripcion-reunion-ruben.md",
+   54
+  ],
+  [
+   "records/2026-07-28-reunion-flujo-bp-e-informacion-base.md",
+   46
+  ],
+  [
+   "records/2026-08-06-transcripcion-reunion-fer.md",
+   60
+  ],
+  [
+   "records/2026-08-11-reunion-con-ruben.md",
+   59
+  ],
+  [
+   "records/2026-09-04-reunion-con-ruben.md",
+   57
+  ],
+  [
+   "records/2026-09-23-reunion-ruben.md",
+   86
+  ]
+ ],
+ "stats": {
+  "records_with_ts": 44913,
+  "records_kept": 44884,
+  "dup_uuid": 29,
+  "echoed_lines": 131,
+  "live_segments": 329029
+ }
+}

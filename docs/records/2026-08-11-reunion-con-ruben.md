@@ -3,6 +3,7 @@ type: record
 id: 2026-08-11-reunion-con-ruben
 title: "Reunión con Rubén (Rubí) sobre ONIGIES — transcripción limpia"
 date: 2026-08-11
+offline_minutes: 59
 related: ["[[2026-08-11-reunion-con-ruben_raw]]", "[[2026-08-11-reunion-con-ruben-sobre-la-informacion-base]]"]
 ---
 

@@ -3,6 +3,7 @@ type: record
 id: 2026-06-26-transcripcion-reunion-ruben
 title: Transcripción de la reunión con Rubén del 26 de junio de 2026
 date: 2026-06-26
+offline_minutes: 54
 ---
 
 ## Notas generales

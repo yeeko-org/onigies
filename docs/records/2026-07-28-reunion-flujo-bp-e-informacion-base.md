@@ -3,6 +3,7 @@ type: record
 id: 2026-07-28-reunion-flujo-bp-e-informacion-base
 title: Transcripción de la reunión Ricardo–Rubí del 28 de julio de 2026
 date: 2026-07-28
+offline_minutes: 46
 source-path: /home/rick/dev/yeeko/written.django/fixture/transcription_onigies_28_julio_26/final_transcription.md
 ---
 

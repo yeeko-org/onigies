@@ -3,6 +3,7 @@ type: record
 id: 2026-09-04-reunion-con-ruben
 title: "Reunión con Rubén, 4 de septiembre — transcripción limpia"
 date: 2026-09-04
+offline_minutes: 57
 source: ["[[2026-09-04-reunion-con-ruben_raw]]"]
 ---
 

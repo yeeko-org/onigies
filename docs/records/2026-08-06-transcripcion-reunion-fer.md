@@ -2,6 +2,7 @@
 type: record
 id: 2026-08-06-transcripcion-reunion-fer
 date: 2026-08-06
+offline_minutes: 60
 ---
 
 ## Notas generales

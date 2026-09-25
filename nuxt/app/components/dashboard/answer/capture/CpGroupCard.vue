@@ -26,7 +26,8 @@ import { useFlowStore } from '~/store/flow.js'
 import { useFlowActions } from '~/composables/useFlowActions.js'
 import { useQuestionTypes } from '~/composables/useQuestionTypes.js'
 import {
-  CP_TYPES, buildDraft, buildGroupPayload,
+  CP_TYPES, buildDraft, buildGroupPayload, saveThenTransition,
+  transitionDoneBySave,
 } from '~/utils/cp_capture.js'
 import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
 import FlowStatusActions from
@@ -152,11 +153,29 @@ const kernel = useFlowActions(group, 'answer', 'groupresponse', {
 // Guardar y luego transicionar, como los split-buttons de gen y bp; si el
 // guardado falla, el status no se mueve.
 async function saveAndTransition(t) {
-  if (dirty.value && !(await save())) return null
-  return kernel.onSelect(t)
+  const res = await saveThenTransition(t, {
+    dirty: dirty.value,
+    save,
+    status: () => group.value.status,
+    select: kernel.onSelect,
+  })
+  if (res.skipped) {
+    const msg = `Cambios guardados. Estatus cambiado a "${t.public_name}"`
+    dashStore.showSnackbar(msg)
+  }
+  return res.event ?? null
 }
 const actions = { ...kernel, onSelect: saveAndTransition }
 const { transitions, hasActions, currentStatus, sending } = kernel
+
+// En «Por iniciar» el guardado ya pasa el grupo a «En llenado»: esa
+// transición sale del menú y el guardado principal lo dice.
+const doneBySave = computed(
+  () => transitionDoneBySave(currentStatus.value, transitions.value))
+const saveTransitions = computed(() => transitions.value
+  .filter((t) => t.name !== doneBySave.value?.name))
+const saveLabel = computed(() => doneBySave.value
+  ? `Guardar y pasar a ${doneBySave.value.public_name}` : '')
 
 // La IES transiciona desde el split-button mientras edita; fuera de la
 // edición (pospuesto, aprobado) le quedan transiciones sin nada que
@@ -295,8 +314,9 @@ const baseLink = computed(() => ({
         class="d-flex justify-end mt-4"
       >
         <FlowSaveMenu
-          :transitions="transitions"
+          :transitions="saveTransitions"
           :current-status="currentStatus"
+          :save-label="saveLabel"
           :loading="saving || sending"
           :disabled="hasInvalid"
           :save-disabled="!dirty"

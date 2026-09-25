@@ -233,7 +233,9 @@ function offerAxisStep() {
         <v-icon start :color="axis.axis_full?.color" class="mt-1">
           {{ axis.axis_full?.icon }}
         </v-icon>
-        <span class="mt-1">{{ axis.axis_full?.name }}</span>
+        <span class="mt-1">
+          Eje {{ axis.axis_full?.order }}. {{ axis.axis_full?.name }}
+        </span>
         <v-spacer />
         <div
           class="cp-axis-status"

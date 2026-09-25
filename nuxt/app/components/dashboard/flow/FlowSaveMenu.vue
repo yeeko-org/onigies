@@ -21,6 +21,9 @@ defineProps({
   // Apaga solo el guardado simple (p. ej. sin cambios que guardar); las
   // transiciones siguen disponibles.
   saveDisabled: Boolean,
+  // Reemplaza «Guardar y mantener como …» cuando guardar no mantiene el
+  // status (p. ej. cp, cuyo primer guardado promueve a «En llenado»).
+  saveLabel: { type: String, default: '' },
 })
 
 const emit = defineEmits(['save', 'select'])
@@ -56,7 +59,8 @@ const emit = defineEmits(['save', 'select'])
     >
       <template #lead>
         <v-list-item
-          :title="`Guardar y mantener como ${currentStatus?.public_name}`"
+          :title="saveLabel
+            || `Guardar y mantener como ${currentStatus?.public_name}`"
           :disabled="saveDisabled"
           @click="emit('save')"
         >

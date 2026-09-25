@@ -224,7 +224,7 @@ const previewTypes = computed(() => groups.value.map((g) => ({
                 text-medium-emphasis"
             >
               <v-icon size="14" class="cp-note__icon">info</v-icon>
-              <span>{{ instrument.note }}</span>
+              <span><strong>Nota:</strong> {{ instrument.note }}</span>
             </div>
           </div>
           <div

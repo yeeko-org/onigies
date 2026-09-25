@@ -2,7 +2,7 @@
 
 ## Niveles montados
 
-- **Unitario con Vitest** (`vitest.config.ts`, tests en `tests/unit/`): lógica pura sin Nuxt ni DOM. Hoy cubre `app/utils/sections.js` — `sectionOfTab`, `visibleSections`/`isSectionVisible` para IES real y de prueba, y la regla de la IES real: no ve `cp` y un deep-link a una sección no publicada cae en la primera publicada.
+- **Unitario con Vitest** (`vitest.config.ts`, tests en `tests/unit/`): lógica pura sin Nuxt ni DOM. Hoy cubre `app/utils/sections.js` — `sectionOfTab`, `visibleSections`/`isSectionVisible` para IES real y de prueba, cp ya publicada para la IES real, y el fallback de un deep-link no visible a la primera sección publicada— y `saveThenTransition` de `app/utils/cp_capture.js`: si el guardado de un grupo cp ya lo dejó en el destino elegido, no sale el POST de transición (task-174).
 - **End-to-end con Playwright**, contra el backend **mockeado** (`page.route`): la app corre de verdad, la API no. Ver el skill `playwright-e2e` para el flujo de trabajo MCP ↔ tests.
 
 ## Comandos

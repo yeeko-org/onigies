@@ -37,7 +37,7 @@ const default_tab = computed(() => {
 })
 
 // Las pestañas dependen de dos cargas que el middleware no espera: el perfil
-// (`is_test` decide si se ve cp) y los catálogos (los ejes). Antes de
+// (`is_test` decide qué secciones se ven) y los catálogos (los ejes). Antes de
 // tenerlas, v-tabs y v-tabs-window, que siempre fuerzan un valor elegido,
 // caían en la primera pestaña y la escribían en la URL, pisando el `?tab=`
 // de un deep-link recargado.

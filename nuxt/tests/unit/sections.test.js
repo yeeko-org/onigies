@@ -36,8 +36,8 @@ describe('visibleSections', () => {
 })
 
 describe('isSectionVisible', () => {
-  it('cp is hidden for a real IES and visible for a test IES', () => {
-    expect(isSectionVisible(SECTION_CP, false)).toBe(false)
+  it('cp is published: visible for a real IES and for a test IES', () => {
+    expect(isSectionVisible(SECTION_CP, false)).toBe(true)
     expect(isSectionVisible(SECTION_CP, true)).toBe(true)
   })
 
@@ -49,14 +49,13 @@ describe('isSectionVisible', () => {
   })
 })
 
-// La regla que se despliega: la IES real no ve cp, y el fallback de
-// [period].vue (default_tab) manda un ?tab= no visible a la primera
-// sección publicada.
+// El fallback de [period].vue (default_tab) manda un ?tab= no visible a
+// la primera sección publicada.
 describe('real IES deep-link rule', () => {
-  it('an axis deep-link resolves to cp, which a real IES cannot see', () => {
+  it('an axis deep-link resolves to cp, which a real IES sees', () => {
     const section = sectionOfTab('axis-3')
     expect(section).toBe(SECTION_CP)
-    expect(isSectionVisible(section, false)).toBe(false)
+    expect(isSectionVisible(section, false)).toBe(true)
   })
 
   it('the fallback target is the first published section, in order', () => {

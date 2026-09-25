@@ -212,3 +212,28 @@ export function attentionGroup(observable, role, getStatus) {
   }
   return best
 }
+
+/**
+ * La transición que el guardado mismo ya ejecuta: desde el status por
+ * defecto, el primer guardado promueve al `auto_on_first_save`
+ * (`assign_auto_status` del backend), así que ofrecerla aparte en el menú
+ * de guardado sería prometer dos veces lo mismo. Null fuera de ese caso.
+ */
+export function transitionDoneBySave(currentStatus, transitions) {
+  if (!currentStatus?.is_default) return null
+  return (transitions || []).find((t) => t.auto_on_first_save) || null
+}
+
+/**
+ * Guardar y luego transicionar. Si el guardado ya dejó el objeto en el
+ * destino elegido (la promoción automática del primer guardado), el POST
+ * sería una transición a sí mismo que el motor rechaza con 400: se omite
+ * y la elección cuenta como hecha. `status` es un getter porque el
+ * guardado muta el objeto.
+ */
+export async function saveThenTransition(t, { dirty, save, status, select }) {
+  if (dirty && !(await save())) return { done: false }
+  if (status() === t.name) return { done: true, skipped: true }
+  const event = await select(t)
+  return { done: !!event, event }
+}

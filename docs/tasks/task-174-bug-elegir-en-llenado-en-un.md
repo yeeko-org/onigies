@@ -2,11 +2,11 @@
 type: task
 id: task-174
 title: "Bug: elegir «En llenado» en un grupo «Por iniciar» con cambios termina en error de transición"
-state: open
+state: closed
 date: 2026-09-23
 owner: ricardo
 parent: "[[task-2]]"
-related: ["[[2026-09-23-reunion-ruben]]", "[[2026-09-23-sesion-meeting-reunion-con-ruben]]", "[[task-169]]", "[[task-166]]"]
+related: ["[[2026-09-23-reunion-ruben]]", "[[2026-09-23-sesion-meeting-reunion-con-ruben]]", "[[task-169]]", "[[task-166]]", "[[task-177]]", "[[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]"]
 ---
 
 # Bug: elegir «En llenado» en un grupo «Por iniciar» con cambios termina en error de transición
@@ -59,10 +59,16 @@ El punto 11 de [[task-169]] describe este mismo bug y remite a esta task.
 
 ## Criterios de aceptación
 
-- [ ] Ricardo elige la opción de arreglo (1, 2 o 3 de §Opciones)
-- [ ] En un grupo «Por iniciar» con cambios sin guardar, elegir «En llenado» guarda las respuestas, deja el grupo en «En llenado» y muestra «Cambios guardados» sin snackbar de error
-- [ ] Si el guardado ya promovió el estatus al destino de la transición elegida, no sale el POST de transición o el cliente lo trata como hecho
-- [ ] Lo mismo vale para «Requiere ajustes» → «Iniciar ajustes» con cambios (cp_in_adjustment también es auto_on_first_save)
-- [ ] La alerta de completitud tras un guardado no se lee como rechazo cuando la IES no pidió «completado» (decisión de UX aparte, ver §Alerta)
-- [ ] Propuesta de test de regresión presentada a Ricardo (api/answer/tests.py o el e2e de cp de task-166)
-- [ ] Revertir en la base local los datos que dejó la verificación (IES FP, observable 1012, GroupResponse 2974 y 2988, FlowEvents 444 y 445)
+- [x] Ricardo elige la opción de arreglo (1, 2 o 3 de §Opciones) — la 2 más la 1, 2026-09-25
+- [x] En un grupo «Por iniciar» con cambios sin guardar, elegir «En llenado» guarda las respuestas, deja el grupo en «En llenado» y muestra «Cambios guardados» sin snackbar de error (la transición ya no se ofrece en «Por iniciar»; el ítem principal dice «Guardar y pasar a En llenado») — evidencia: test unitario de `saveThenTransition` y build; sin verificación en navegador, y la ocultación del ítem del menú (`transitionDoneBySave`) y el nuevo texto no tienen test ni suite e2e de cp ([[task-166]]); la comprobación real es el smoke de Ricardo la mañana del 25 ([[task-163]])
+- [x] Si el guardado ya promovió el estatus al destino de la transición elegida, no sale el POST de transición o el cliente lo trata como hecho (`saveThenTransition`)
+- [x] Lo mismo vale para «Requiere ajustes» → «Iniciar ajustes» con cambios (cp_in_adjustment también es auto_on_first_save) — cubierto por la comparación genérica, aunque el caso no ocurre: ver §Corrección
+- [ ] La alerta de completitud tras un guardado no se lee como rechazo cuando la IES no pidió «completado» — pasa a [[task-177]]
+- [x] Propuesta de test de regresión presentada a Ricardo — Ricardo delegó los tests al modelo ([[task-168]] punto 12): unitario `nuxt/tests/unit/cp_capture.test.js`, verificado que muerde
+- [ ] Revertir en la base local los datos que dejó la verificación (IES FP, observable 1012, GroupResponse 2974 y 2988, FlowEvents 444 y 445) — sigue sin revertir al cerrar; no bloquea, la base local es una copia
+
+## Corrección, 2026-09-25
+
+Ricardo eligió la opción 3, que es la 2 más la 1, y salió en el deploy de esa madrugada (commit `d290636`, record [[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]). La orquestación guardar-y-transicionar dejó `CpGroupCard.vue` y vive como funciones puras en `nuxt/app/utils/cp_capture.js`: `saveThenTransition` guarda y, si el estatus que regresa el guardado ya es el destino elegido, omite el POST y lo reporta como hecho (la tarjeta muestra «Cambios guardados. Estatus cambiado a “En llenado”»); `transitionDoneBySave` detecta, por las banderas del catálogo (`is_default` y `auto_on_first_save`, sin nombres de estatus), la transición que el guardado ya ejecuta, y la tarjeta la quita del menú «Guardar ▾» y renombra el ítem principal a «Guardar y pasar a {estatus}». `FlowSaveMenu` ganó la prop opcional `saveLabel`; gen y bp no la pasan y no cambian. Test unitario nuevo con dos casos; se comprobó que muerde quitando la línea del salto. Vitest 11/11, Playwright 39/39 con `--workers=2`, `nuxt build` limpio.
+
+Hallazgo del ejecutor: la hipótesis de que «Requiere ajustes» → «Iniciar ajustes» sufría lo mismo no se sostiene, porque `assign_auto_status` (`api/flow/services.py`) solo promueve desde el estatus `is_default`, nunca desde `cp_need_changes`; la comparación genérica lo cubriría de todos modos. Con dos estatus `auto_on_first_save` aplicables a `GroupResponse`, el backend elige por `.first()` bajo el orden `["group", "order"]`, que hoy da `cp_filling`: funciona por orden, no por diseño. La §Alerta pasa a [[task-177]]; la alerta roja sigue saliendo tras el primer guardado, ahora sin el snackbar de error.

@@ -43,7 +43,7 @@ Los datos de «Información base» viven aparte, en `e2e/mocks/gen.ts`: el catá
 
 ## Propuestos para cp, no escritos
 
-Los diez flujos propuestos para la captura de la IES y la revisión (con un mock nuevo `cp.ts` junto a `gen.ts` en `e2e/mocks/`) viven en la task-166 del grafo documenter; se escriben cuando Ricardo acuerde la lista.
+Los once flujos propuestos para la captura de la IES y la revisión (diez de la captura y la revisión, más la visibilidad del enlace de descarga del Word) (con un mock nuevo `cp.ts` junto a `gen.ts` en `e2e/mocks/`) viven en la task-166 del grafo documenter; se escriben cuando Ricardo acuerde la lista.
 
 ## Prueba manual contra el stack local
 

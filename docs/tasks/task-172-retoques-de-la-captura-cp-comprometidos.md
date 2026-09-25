@@ -7,7 +7,7 @@ date: 2026-09-23
 owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-09-23-reunion-ruben]]"]
-related: ["[[task-21]]"]
+related: ["[[task-21]]", "[[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]"]
 ---
 
 # Retoques de la captura cp comprometidos con Rubén el 23 de septiembre
@@ -29,7 +29,7 @@ Los ajustes visuales de la captura cp que Ricardo dijo en voz alta, mientras se 
 
 - [ ] El botón «Ver preguntas» está a la derecha — probablemente ya hecho: en HEAD, `CpObservablePanel.vue` tiene `<v-spacer />` antes del botón, y Ricardo en `[15:01]`: «Justo ahorita lo estoy acomodando… Así quedó»; verificar en navegador antes de marcar
 - [x] Las tarjetas de grupo llevan sombra — lo aplicó la sesión de diseño cp el 2026-09-23 (`CpGroupCard.vue`, `elevation="2"`, commit c7816fd)
-- [ ] Los títulos de eje dicen «Eje …»
-- [ ] Las notas del observable llevan la palabra «Nota»
+- [x] Los títulos de eje dicen «Eje …» — «Eje N. Nombre» con el `order` del eje (Ricardo, 2026-09-25: «Poner "Eje {N}. {Axis.name}"»), en `CpAxisCapture.vue`, commit `d290636`; como el componente es compartido, la revisora también ve «Eje N.» en el dashboard
+- [x] Las notas del observable llevan la palabra «Nota» — «Nota:» en negrita junto al ícono de info, `CpObservablePanel.vue`, commit `d290636`. ⚠️ ligero: el «Sí de una vez» de Ricardo respondió a una pregunta que decía *quitar* «Eje» y «Nota» (brief invertido del coordinador); «Eje» quedó confirmado después por su «Eje {N}. {Axis.name}», «Nota:» no volvió a confirmarse; confirmar que se queda
 - [ ] El paréntesis redundante de la etiqueta de la pregunta especial se quitó
 - [ ] El tamaño del eje Cuidados se ajustó o se dejó con la razón escrita

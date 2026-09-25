@@ -6,7 +6,7 @@ state: open
 date: 2026-09-23
 owner: ricardo
 parent: "[[task-2]]"
-related: ["[[2026-09-23-reunion-ruben]]", "[[2026-09-23-sesion-meeting-reunion-con-ruben]]", "[[task-163]]", "[[task-164]]", "[[task-153]]", "[[task-157]]", "[[task-174]]", "[[task-169]]", "[[task-173]]"]
+related: ["[[2026-09-23-reunion-ruben]]", "[[2026-09-23-sesion-meeting-reunion-con-ruben]]", "[[task-163]]", "[[task-164]]", "[[task-153]]", "[[task-157]]", "[[task-174]]", "[[task-169]]", "[[task-173]]", "[[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]"]
 ---
 
 # Decisiones pendientes de Ricardo tras la reunión del 23 de septiembre
@@ -21,6 +21,8 @@ Cada grupo cp nace en «Por iniciar». Elegir «En llenado» en el menú «Guard
 2. Aplicar antes la opción 2 de [[task-174]]: omitir el POST de transición cuando el guardado ya dejó el estatus en el destino. Cambio pequeño, solo de frontend (`saveAndTransition` en `CpGroupCard.vue`).
 
 Recomendación del coordinador: opción 2 antes de abrir.
+
+**Resuelta el 2026-09-25:** Ricardo eligió la opción 2 más la 1 de [[task-174]] («Opción 3, un sag lo hace en chinga») y salió en el deploy de esa madrugada.
 
 ## (b) Campo de «cierre de cp»
 
@@ -58,6 +60,8 @@ Recomendación del coordinador: la 1 si Ricardo lo reconoce; es la lectura más 
 
 Recomendación del coordinador: la 1, como propone el análisis de la brecha ([[2026-09-23-brecha-entre-pregunta-inicial-y-preguntas-a]], bloque 3: «Un campo de texto en `AResponse` para dos o tres preguntas es más maquinaria que valor; propongo editar el texto»).
 
+**Aplicada con la recomendación el 2026-09-25, sin respuesta de Ricardo:** la 1. La redacción Sí/No propuesta de las tres A va en el documento a Rubén ([[2026-09-24-documento-para-ruben-brecha-entre-pregunta]], apartado 3) y la alternativa del campo de texto no aparece ahí; Ricardo no eligió: preguntó «el contenido ya quedó, no?» y el coordinador cerró las notas con su propia recomendación (⚠️ en [[task-164]]). Si confirma la 1, Rubén decide y la edición se hace en el dashboard de producción.
+
 ## (f) Dónde están las demás
 
 - Brecha: [[task-164]] §Decisiones pendientes de Ricardo, P1–P4.
@@ -68,8 +72,8 @@ Recomendación del coordinador: la 1, como propone el análisis de la brecha ([[
 
 ## Criterios de aceptación
 
-- [ ] (a) Liberar con el bug de [[task-174]] o aplicar antes su opción 2
+- [x] (a) Liberar con el bug de [[task-174]] o aplicar antes su opción 2 — se aplicó la 2 más la 1 antes de liberar (2026-09-25)
 - [ ] (b) Campo de «cierre de cp»: no abrirlo o abrir task para `cp_submission_deadline`
 - [ ] (c) [[task-162]]: abandonarla o mantenerla
 - [ ] (d) Documento de las tres horas identificado y su línea anotada en la task que corresponda
-- [ ] (e) Las tres A de texto: editar el texto o abrir campo en `AResponse`
+- [ ] (e) Las tres A de texto: editar el texto o abrir campo en `AResponse` — la propuesta de editar el texto viaja en el documento a Rubén con la recomendación del coordinador, sin que Ricardo eligiera (2026-09-25); falta su confirmación ([[task-164]])

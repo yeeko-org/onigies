@@ -75,19 +75,12 @@ venv/bin/python manage.py makemigrations --check --dry-run   # 6. MUST say "No c
 #    migrate_initial_data is NOT part of a deploy: it only runs InitPeriod,
 #    InitFeatures and InitQuestionTypes, and what it seeds for QuestionType
 #    already travels in migrations.
+#    provision_cp_responses (dry-run, then --apply) is the re-runnable backfill
+#    of the eager cp tree: it only bulk_creates missing ObservableResponse and
+#    GroupResponse rows (no signals, never updates). Never resave_institutions
+#    (writes is_centralized).
 sudo supervisorctl restart apionigies       # 8. reload (brief downtime, seconds)
 ```
-
-### One-off: the cp release (delete this subsection once it is on production)
-
-The range that retires `StatusControl` and ships cp capture and review (commits `2f5ef8c` through `d804c5a` on `cp-backend`) needs, beyond the runbook above:
-
-- **Frontend first, then API** — the reverse of the usual safe direction: the old frontend's store breaks as soon as `status_control` leaves the catalog payload, while the new frontend only loses the cp screens until the API lands. Push, confirm the new build id on Netlify, then run the server runbook.
-- `migrate` applies six migrations: answer 0005/0006, survey 0011, example 0009, ies 0014/0015 (0014 deletes `StatusControl`; 0005/0009/0011 drop the old status FKs, the old comment models and `example.Evidence`, whose 661 rows were already copied to `flow.Attachment` — irreversible, take the dump first).
-- `seed_flow` — creates `cp_not_present` and rewrites the cp child rules; without it the IES's «No» fails with `Status.DoesNotExist`.
-- `migrate_ps_schemas` — registers the new `axis_value` collection's row (order/icon overrides; the collection works without it).
-- **Backfill of the eager cp tree** (41 `ObservableResponse` and ~120 `GroupResponse` per survey): `venv/bin/python manage.py provision_cp_responses` (dry-run; read the counts), then the same with `--apply`. It calls `provision_cp_responses` per `AxisValue` without re-saving institutions — `resave_institutions` would also run `_preload_centralized` and write `is_centralized`, the side effect that keeps `--sync-institutions` out of deploys; no shell either. Write inventory: it only inserts missing rows — `ObservableResponse` (survey, observable, axis_value, status `cp_pre_start`) and `GroupResponse` (observable_response, question_type, status `cp_pre_start`) — via `bulk_create`, so no signals fire; existing rows are never updated. Expected: after the first run, `ObservableResponse` creados + existentes = 41 × surveys; a second run reports 0 creados.
-- `Period.cp_open_at` stays empty (gate closed) and is set in the Django admin on the day answers open; nothing in the deploy sets it.
 
 Reload gotchas (multi-tenant box, ~20 client apps under one supervisord):
 - `supervisorctl` needs **sudo** (plain `supervisorctl` fails with `Permission denied` — do not misread it as a missing socket).

@@ -27,6 +27,7 @@ Propuestas por los ejecutores del 22 de septiembre; no se escriben hasta que Ric
 8. Devolver un grupo: «Solicitar ajustes» exige comentario, envía `cp_need_changes`, el chip cambia y la cola baja; con el eje en turno de la IES, el menú sale con candado y el motivo.
 9. Regla de hijos: con un grupo aún completado, el menú del observable sale deshabilitado con el motivo; al devolver el segundo aparece la oferta.
 10. «No cuenta con la medida»: chip sin menú y grupos sin transiciones; la sección «Cuestionario principal» del survey abre el diálogo del eje.
+11. (agregado el 2026-09-25) Enlace de descarga del cuestionario en Word: `data-testid="cp-docx-link"` visible en `/respuestas/2025?tab=axis-N` y ausente en `?tab=base`; una línea en `respuestas-tabs.test.ts`, sin mock nuevo porque el enlace es un href fijo.
 
 Además: el mock de `respuestas-tabs.test.ts` no cubre `/axis_value/{id}/` (hoy recibe el 501 del catch-all y sale un snackbar de error aunque el test pase).
 

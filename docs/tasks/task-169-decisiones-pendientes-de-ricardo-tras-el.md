@@ -7,7 +7,7 @@ date: 2026-09-23
 owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-09-23-diseno-de-la-captura-cp-y-decisiones-pendientes]]"]
-related: ["[[task-168]]", "[[adr-0020]]"]
+related: ["[[task-168]]", "[[adr-0020]]", "[[task-174]]", "[[task-171]]"]
 ---
 
 # Decisiones pendientes de Ricardo tras el diseño cp del 23 de septiembre
@@ -23,8 +23,8 @@ Lo que la sesión del 23 de septiembre ([[2026-09-23-diseno-de-la-captura-cp-y-d
 7. **Adoptar `YesNoRadio` en gen y bp.** Candidatos reales: la pregunta de población no binaria en gen y `has_good_practices` en bp (radio vertical, sin `color="accent"`). `FeatureItem.vue` usa `disabled` donde el resto usa `readonly` (mismo problema de contraste que el punto 7 de [[task-168]]). Ricardo lo dejó para después de ver el componente en cp.
 8. **La bandera «Te toca» no es enfocable.** El ícono `flag` junto al chip lleva `aria-label` pero no recibe foco; con teclado el hint solo llega por el tooltip del chip. Opción: `aria-describedby` del chip al texto del hint.
 9. **Etiquetas de la pregunta especial hardcodeadas.** «Total proyectos» / «Dirigidos por mujeres» viven en `CpQuestionsSpecial.vue` porque la única pregunta especial de la siembra es 1.14. Una pregunta especial creada desde el dashboard con otro sujeto las heredaría.
-10. **Revisar con Rubén los seis textos de `QuestionType.description`** (sembrados por `question.0011` como borrador; editables en el dashboard). En la reunión del mismo día ([[2026-09-23-reunion-ruben]]) Rubén quedó en revisarlos; lo cubre [[task-171]]; este punto se cierra por duplicado. Los grupos: Armonización e institucionalización, Transversalidad orgánica, Transversalidad sectorial, Planes de estudio, Pregunta especial, Distribución de población.
-11. **Transición redundante tras el primer guardado** (bug, no decisión de diseño): elegir «En llenado» en el split-button de un grupo «Por iniciar» con cambios guarda bien pero el POST de transición `cp_filling → cp_filling` da 400 y la IES ve error; el alert de completitud aparece tras cualquier guardado. Detalle, evidencia y las tres opciones de arreglo en [[task-174]]; aquí solo la elección.
+10. **Revisar con Rubén los seis textos de `QuestionType.description`** (sembrados por `question.0011` como borrador; editables en el dashboard). En la reunión del mismo día ([[2026-09-23-reunion-ruben]]) Rubén quedó en revisarlos; lo cubre [[task-171]]; **cerrado por duplicado el 2026-09-25**. Los grupos: Armonización e institucionalización, Transversalidad orgánica, Transversalidad sectorial, Planes de estudio, Pregunta especial, Distribución de población.
+11. **Transición redundante tras el primer guardado** (bug, no decisión de diseño): elegir «En llenado» en el split-button de un grupo «Por iniciar» con cambios guarda bien pero el POST de transición `cp_filling → cp_filling` da 400 y la IES ve error; el alert de completitud aparece tras cualquier guardado. Detalle, evidencia y las tres opciones de arreglo en [[task-174]]; **cerrado el 2026-09-25**: Ricardo eligió la 2 más la 1 y salió en el deploy de esa noche.
 
 ## Aplicado sin tu voto, pendiente de tu validación
 

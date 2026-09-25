@@ -4,10 +4,10 @@ id: task-164
 title: Análisis de la brecha entre la pregunta inicial de cada observable y sus preguntas A
 state: open
 date: 2026-09-22
-owner: ai
+owner: ricardo
 parent: "[[task-2]]"
 source: ["[[2026-09-22-cierre-cuestionario-principal-captura-y-borrado]]"]
-related: ["[[task-157]]", "[[task-50]]", "[[2026-09-23-reunion-ruben]]", "[[task-175]]"]
+related: ["[[task-157]]", "[[task-50]]", "[[2026-09-23-reunion-ruben]]", "[[task-175]]", "[[2026-09-24-documento-para-ruben-brecha-entre-pregunta]]", "[[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]"]
 ---
 
 # Análisis de la brecha entre la pregunta inicial de cada observable y sus preguntas A
@@ -27,8 +27,8 @@ Material: los 41 observables con `init_question`, `a_main_question`, `a_main_sub
 - [x] Record con la tabla de los 41 observables y las brechas encontradas
 - [x] Lista de mejoras propuestas, ordenadas por impacto, lista para llevar a Rubén
 - [x] Lista de AQuestion candidatas a «No aplica», o constancia de que no hay
-- [ ] Ricardo le mandó a Rubén la lista de candidatas a «no aplica» en preguntas iniciales (`[32:00]`)
-- [ ] Ricardo le mandó a Rubén el análisis de «no aplica» de las 280 A y el documento de la brecha (el 24 de septiembre, `[59:35]`)
+- [ ] ⚠️ Ricardo le mandó a Rubén la lista de candidatas a «no aplica» en preguntas iniciales (`[32:00]`) — va dentro del documento, apartado 5
+- [ ] ⚠️ Ricardo le mandó a Rubén el análisis de «no aplica» de las 280 A y el documento de la brecha (el 24 de septiembre, `[59:35]`) — el documento está listo desde la madrugada del 25: Word y PDF en `~/respaldos/onigies-ruben/ONIGIES-2026-brecha-y-no-aplica.docx` y `.pdf` (copiados ahí desde `/tmp`, que es tmpfs y se borra al reiniciar; se regeneran del record con `~/respaldos/onigies-ruben/build.py <md> <docx>` y `soffice --headless --convert-to pdf`); lo envía Ricardo la mañana del 25 junto con el aviso del deploy
 
 ## Reunión con Rubén, 2026-09-23
 
@@ -54,4 +54,12 @@ De la reunión del 23 de septiembre:
 
 - **P4.** El 1.6 A5: ¿«No aplica», como lo leyó Ricardo en vivo (`[1:00:33]`), o candidata débil que se resuelve como «No», como la clasificó el record? Si se habilita, el control de esa A deja de ser `YesNoRadio` (ampliación del 23, arriba).
 
-La task sigue abierta; su cierre espera la lectura de Ricardo.
+La task sigue abierta; su cierre espera el envío.
+
+## Documento para Rubén, 2026-09-24 y 25
+
+El documento es el record [[2026-09-24-documento-para-ruben-brecha-entre-pregunta]] (cinco apartados: qué se le pide; la brecha con los bloques 1 a 5 como propuesta, las erratas como lista informativa y el bloque 7 como agenda; las tres A que piden texto con su redacción Sí/No; el «no aplica» en las 280 A; las candidatas entre las preguntas iniciales con 1.6 A5 en sus dos lecturas). Le habla de tú, cita a Rubén, y cada tabla de propuestas lleva columna «Decisión» como el documento del 4 de septiembre. Cifras recalculadas sobre la copia local de producción del 22: 41 observables y 280 A; 0 A que necesiten «no aplica» (18 examinadas de cerca, dos más que el record de la brecha: 1.4 A6 y 4.9 A4); 1 inicial candidata, la 1.14 (copiada de [[adr-0017]] y [[task-165]], no recalculada: el clasificador de permisos negó al ejecutor leer las bitácoras donde estaba el análisis original; releyó las 41 sin hallar otra, pasada ligera); 18 erratas (las 10 del record más 8 nuevas, entre ellas un «sexo/género» que el propio Rubén estandarizó). Dos discrepancias con el record de la brecha, corregidas en el documento: «pertenecientes las poblaciones» está en 1.16 A4, no A5; el bloque 4 son tres títulos, dos preguntas principales y un subtítulo. Ricardo aceptó los agregados del ejecutor (unidad de análisis de las IES no autónomas con el 1.12; redacción «y, en su caso, en los cargos de elección» para 1.6 A5; redacción Sí/No para 2.5 A9 además de borrarla; las 8 erratas) y el encabezado 2.2 pasó de «cinco» a «seis» (su tabla trae seis filas).
+
+Cómo quedaron las decisiones pendientes. ⚠️ **P1, P2 y P4 no las respondió Ricardo**: entraron al documento con la recomendación del coordinador cuando él preguntó «el contenido ya quedó, no?», y las notas «[Ricardo: …]» que las señalaban se quitaron; confirmarlas antes de enviar. **P1** aplicada con la recomendación (bloques 1–5 como propuesta, 6 informativo, 7 agenda). **P2** aplicada con la recomendación: editar el texto de las tres A a Sí/No ([[task-175]] e); la alternativa del campo de texto en `AResponse` no va en el documento por decisión del brief al ejecutor, no de Ricardo, así que Rubén no la ve como opción. **P3** cambió de forma: la opción «corregir en el admin local para el próximo deploy» no existe, porque desde [[adr-0015]] el seed está retirado y lo editado en local nunca llega a producción; Ricardo lo confirmó («las erratas sólo se corrigen desde el dashboard»); el documento dice «se corrigen en la plataforma» sin decir quién, y quién las corrige (Ricardo tras el deploy o Rubén) sigue abierto. **P4** aplicada con la recomendación: se mandan ambas lecturas del 1.6 A5 y Rubén decide.
+
+Correcciones que el coordinador hizo al documento tras la crítica de cierre (madrugada del 25), en el record y en el Word: (a) en el apartado 1, «texto cargado al 22 de septiembre» en vez de «hoy cargado en la plataforma», porque todo se calculó sobre la copia local del 22 y Rubén edita en el dashboard; (b) «casi todas son de redacción; dos proponen quitar una pregunta A (4.14 A3 en 2.4 y 2.5 A9 en la opción 2 del apartado 3)» en vez de «ninguna propuesta agrega ni quita»; (c) en 5.1, «ya se declara en la Información de base» sin «y de ahí se toma», porque la herencia gen → cp de denominadores no está construida ([[task-165]] punto 4). La línea de fecha del record dice 24 de septiembre y la del Word 25. ⚠️ Releer esas tres frases antes de enviar; si se quiere, el modelo hace un diff de solo lectura de las columnas «Redacción actual» contra producción antes del envío.

@@ -2,12 +2,12 @@
 type: task
 id: task-153
 title: "Ventana de respuesta de las IES: cuestionario visible pero no respondible hasta el 25 de septiembre"
-state: open
+state: closed
 date: 2026-09-11
 owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-09-04-reunion-con-ruben]]"]
-related: ["[[2026-09-04-reunion-con-ruben]]", "[[adr-0015]]", "[[2026-09-23-reunion-ruben]]", "[[task-175]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[adr-0015]]", "[[2026-09-23-reunion-ruben]]", "[[task-175]]", "[[task-163]]", "[[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]"]
 ---
 
 # Ventana de respuesta de las IES: cuestionario visible pero no respondible hasta el 25 de septiembre
@@ -28,7 +28,7 @@ Las IES tienen que poder **ver** el cuestionario completo antes de poder **respo
 
 - [x] Las IES ven el cuestionario completo sin poder capturar respuestas (2026-09-22, en local y solo IES de prueba: cp no está en `PUBLISHED_SECTIONS`; [[adr-0018]])
 - [x] La fecha de apertura de respuestas es configurable y se puede adelantar sin tocar código (`Period.cp_open_at`, admin y catálogo)
-- [ ] El cuestionario quedó abierto a respuestas el 25 de septiembre o antes (depende del deploy, [[task-163]], y de publicar cp en `PUBLISHED_SECTIONS`)
+- [x] El cuestionario quedó abierto a respuestas el 25 de septiembre o antes — 2026-09-25 00:00 hora de México ([[task-163]])
 
 ## Construido el 2026-09-22
 
@@ -42,3 +42,7 @@ Fuente: [[2026-09-23-reunion-ruben]].
 - **Rubén vio la compuerta y la aprobó** ([[adr-0018]]). Ricardo, `[23:54]`–`[24:32]`, entrando como una IES sin base validada: «está deshabilitado, no puedo seleccionar nada, porque aquí dice "tu información base todavía no está validada; hasta entonces puedes consultar el cuestionario, pero no resolverlo"». Rubén, `[24:52]`: «Me encanta».
 - **Liberar ya.** Ricardo, `[34:54]`: «El cuestionario ya podríamos liberarlo, si quieres». Rubén, `[35:17]`: «Sí, yo lo liberaría, porque el viernes ya se los puedo mostrar»; `[12:04]`: «el viernes tengo reunión y me van a preguntar». El viernes es el 25 de septiembre, la fecha comprometida. El deploy, en [[task-163]].
 - **Fechas límite por sección.** La reunión (`[35:41]`–`[37:59]`) tocó fechas límite para revisar cada sección. Respuesta de Ricardo en el triage: «Eso no nos corresponde, no guardar nada, con los campos existentes tenemos, si acaso uno para "cierre de cp"». El posible campo de cierre de cp queda como decisión suya en [[task-175]], entrada (b).
+
+## Cierre, 2026-09-25
+
+Se cumplió en la fecha comprometida: cp publicado a las IES reales y `cp_open_at` fijado la madrugada del 25 (record [[2026-09-25-deploy-del-cuestionario-principal-y-documento-para-ruben]]). La ventana «ver antes de responder» para las IES reales no existió: Ricardo decidió publicar y abrir el mismo día («Publicar con fecha hoy, ya está listo»). En la práctica, con la lectura de producción de la 01:30 del 25, ninguna IES puede capturar todavía, porque ninguna tiene su paquete de generales en `gen_finished` (0 de 66: 46 `gen_draft`, 19 `gen_sent`, 1 `gen_need_changes`), que es la segunda llave de [[adr-0018]]; hoy ven el cuestionario completo con la captura inhabilitada. Ese estado depende de la revisión de generales, no de esta task ([[task-165]] punto 5, [[task-163]]).

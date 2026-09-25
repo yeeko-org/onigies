@@ -11,12 +11,14 @@ import CpAxisCapture from
 import {
   SECTION_BASE, SECTION_CP, SECTION_BP, isSectionVisible, sectionOfTab,
 } from "~/utils/sections.js";
+import {docxUrl} from "~/utils/public_documents.js";
 const mainStore = useMainStore()
 const iesStore = useIesStore()
 const route = useRoute()
 const router = useRouter()
 
 const period = computed(() => parseInt(route.params.period))
+const docx_url = docxUrl(useRuntimeConfig().public.apiUrl)
 
 const all_axis = computed(() => mainStore.cats?.axis || [])
 
@@ -61,6 +63,10 @@ const tab = computed({
   },
 })
 
+// El Word es del cuestionario principal: solo se ofrece en sus pestañas.
+const on_cp_tab = computed(
+  () => ready.value && sectionOfTab(tab.value) === SECTION_CP)
+
 const current_survey = computed(() => {
   if (!iesStore.surveys)
     return null
@@ -77,8 +83,21 @@ function axisValueOf(axisId) {
 
 <template>
   <v-card style="width: 100%">
-    <v-card-title>
+    <v-card-title class="d-flex align-center flex-wrap ga-2">
       Registro del año {{ iesStore.current_period }}
+      <v-spacer />
+      <v-btn
+        v-if="on_cp_tab"
+        :href="docx_url"
+        target="_blank"
+        variant="text"
+        size="small"
+        prepend-icon="download"
+        class="text-none"
+        data-testid="cp-docx-link"
+      >
+        Descargar el cuestionario en Word
+      </v-btn>
     </v-card-title>
 
     <v-progress-linear v-if="!ready" indeterminate color="primary" />

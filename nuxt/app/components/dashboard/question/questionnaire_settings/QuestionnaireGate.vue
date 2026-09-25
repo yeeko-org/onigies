@@ -8,6 +8,7 @@ import { useDashboardStore } from "~/store/dash.js";
 import { saveElement } from "~/composables/save_elements.js";
 import ConfirmActionDialog from
   "~/components/dashboard/common/dialog/ConfirmActionDialog.vue";
+import { docxUrl } from "~/utils/public_documents.js";
 
 const OPEN_LABEL = 'Cuestionario abierto a edición'
 const CLOSED_LABEL = 'Cuestionario cerrado a edición'
@@ -19,9 +20,6 @@ const CONFIRM_BODY = 'Una vez cerrado solo se pueden corregir textos y '
   + 'Reabrirlo ya no se hace desde el dashboard, lo hace el equipo técnico '
   + 'desde el admin de Django.'
 const CLOSE_ERROR = 'No se pudo cerrar el cuestionario.'
-// El Word es el documento público sembrado: su descarga no pide token,
-// así que basta un enlace directo a la API.
-const DOCX_SLUG = 'cuestionario-2026'
 
 const { cats, schemas } = storeToRefs(useMainStore())
 const { showSnackbar } = useDashboardStore()
@@ -32,8 +30,7 @@ const saving = ref(false)
 
 const settings = computed(() => cats.value?.questionnaire_settings?.[0])
 
-const docx_path = `/public-documents/${DOCX_SLUG}/download/`
-const docx_url = `${config.public.apiUrl}${docx_path}`
+const docx_url = docxUrl(config.public.apiUrl)
 
 const is_open = computed(() => settings.value?.content_open ?? true)
 

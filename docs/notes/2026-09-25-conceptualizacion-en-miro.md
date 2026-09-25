@@ -10,3 +10,5 @@ written_by: agente, con el dato que Ricardo dio al coordinador en la sesión del
 ---
 
 Trabajo de conceptualización de ONIGIES en Miró, sin huella en git ni en las bitácoras de Claude Code. Ricardo lo estima en 6 horas; no se sabe la fecha. La cifra es declarada, no medida: no se intentó reconstruirla desde ninguna fuente.
+
+En la estimación, Ricardo decidió el 25 de septiembre que estas 6 horas van al renglón del flujo de validación, no a coordinación.

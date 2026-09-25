@@ -3,7 +3,7 @@ type: record
 id: 2026-09-25-estimacion-costos-onigies
 date: 2026-09-25
 parent: "[[task-154|cuadre de pagos con la CIGU]]"
-related: ["[[estado-administrativo-y-de-pagos]]", "[[task-179]]", "[[2026-09-25-conceptualizacion-en-miro]]", "[[2025-09-11-cotizacion-plataforma-v3]]", "[[2026-01-07-cotizacion-plataforma-v3]]"]
+related: ["[[estado-administrativo-y-de-pagos]]", "[[task-179]]", "[[task-180]]", "[[adr-0021]]", "[[adr-0022]]", "[[2026-09-25-conceptualizacion-en-miro]]", "[[2026-09-25-reuniones-sin-grabacion]]", "[[2026-09-25-analisis-y-construccion-de-la-base]]", "[[2026-09-25-identidad-grafica-en-claude-design]]", "[[2025-09-11-cotizacion-plataforma-v3]]", "[[2026-01-07-cotizacion-plataforma-v3]]"]
 ---
 
 # Estimación de costos de ONIGIES del lado de Ricardo (25 de septiembre de 2026)
@@ -12,11 +12,17 @@ Documento primero para Ricardo; después él decide qué parte y en qué forma l
 
 ## Veredicto
 
-**El trabajo hecho hasta hoy cuesta, a tus tarifas, unos 149,400 MXN antes de IVA (rango 140,700–172,900), por 125.3 horas (rango 118.1–149.9). Por él se han cobrado 86,206.90.** El costo es 1.73 veces lo cobrado (rango 1.63–2.01). **Costo a tarifa menos lo cobrado: unos 63,100 MXN de subtotal** (rango 54,400–86,600). Esa diferencia no es lo que el contrato permite cobrar: por la regla contractual del skill («cotizado × % entregado − cobrado») lo pendiente de lo ya entregado es solo 1,793.10, porque la cotización del dashboard era baja (ver la síntesis). No es una desproporción de cinco o diez veces; es casi el doble, y es un piso, porque deja fuera el trabajo sin huella (ver «Lo que falta declarar»).
+**El trabajo hecho hasta hoy cuesta, a tus tarifas, unos 165,600 MXN antes de IVA (rango 156,900–189,100), por 143.3 horas (rango 136.1–167.9).** De eso, 2,600 son el adelanto de la identidad gráfica de la cotización de 2026 (2 h en Claude Design); los otros **162,950** corresponden a los renglones de la cotización de 2025 ya pagados (88,000) y a lo que se hizo fuera de ellos. Por ese trabajo se han cobrado 86,206.90: el costo es **1.89 veces** lo cobrado, y **costo a tarifa menos lo cobrado da unos 76,700 MXN de subtotal**. No es una desproporción de cinco o diez veces; es casi el doble, y todavía es un piso: faltan la preparación de las cotizaciones y los días sin commit de diciembre–febrero (ver «Lo que falta declarar»). Esa diferencia no es lo que el contrato permite cobrar: por la regla contractual del skill («cotizado × % entregado − cobrado») lo pendiente de lo ya entregado es solo 1,793.10, porque la cotización del dashboard era baja (ver la síntesis).
 
-El hallazgo que más cambia la lectura no es el tamaño sino **dónde cae**, y descansa en un supuesto que Ricardo tiene que confirmar (⚠️ su decisión, en [[task-179]]): que casi todo lo construido corresponde a los renglones que la cotización de 2026 ya da por pagados. El bloque «Dashboard para registro y validación de información» (75,000), «Diseño de nueva base de datos» (8,000) y «Soporte para subir y mostrar buenas prácticas» (5,000) suman 88,000, y en ellos cae todo lo medido: registro, invitaciones, flujo de validación, buenas prácticas, generales y el cuestionario principal. **Supuesto**: que los renglones de los 233,000 pendientes (sitio público, exportaciones a Excel, indicadores, visualizaciones e informes) están en cero o casi. Ricardo mismo matizó el primer lado el 4 de septiembre («todavía falta una parte potente de las BP y falta la página pública», [[estado-administrativo-y-de-pagos]]), y el trabajo de pesos de `QuestionType` podría ser parte de «Cálculo de indicadores y ponderaciones». Si el supuesto se sostiene, los 80,000 comprometidos para 2026 y los 156,000 de enero de 2027 pagan trabajo futuro, no el excedente del dashboard, y el excedente, tal como están las cotizaciones, no lo paga nadie.
+**Cómo se reparte el desborde** (sección «Brecha por concepto y sus causas», con los ajustes de Ricardo de la noche del 25 de septiembre). Contra los 88,000 cotizados, el trabajo hecho va **unos 75,000 arriba**, y se arma así:
 
-**Dónde se separó el trabajo de lo cotizado** (sección «Brecha por concepto y sus causas»): los módulos con precio se estimaron bien —llevados al 100 %, unos 7 % arriba—; la brecha está en lo que no tenía renglón (base del dashboard, coordinación e infraestructura: el 42 % del costo) y en unas 18 h de cosas pedidas durante la construcción.
+- **Por cobrar, lo que pidió el cliente: ~29,800.** El excedente de buenas prácticas, el editor del cuestionario, las invitaciones de las IES, la exportación a Word y la institución de prueba. Ricardo lo decidió: se cobra ([[adr-0022]]).
+- **Costos no planeados: ~62,200.** La base del dashboard, la infraestructura y los deploys, las reuniones grabadas y las no grabadas, las transcripciones y la planeación, y el exceso del diseño de la base de datos. Ricardo lo decidió: se registran para aprender **y también se facturan, prorrateados entre los demás renglones cuando sea posible** ([[adr-0022]]).
+- **Renglones que van por debajo de su precio: −17,100.** Casi todo es el cuestionario por observable, que al 85 % lleva 12,400 contra 27,000.
+
+**Y lo que falta cabe en lo cotizado con margen** (sección «Lo que falta»): los 233,000 de 2026 se estiman en 138,000–208,000 con IA y el harness, incluidas la máquina virtual y una reserva de coordinación que no tienen renglón. El margen de 22,400 a 92,400 (ya descontados los 2,600 de la identidad gráfica gastados a cuenta del renglón de 16,000) es el argumento para la negociación con Rubén ([[task-180]]): en el mejor caso compensa casi todo el desborde de 92,000 brutos; en el peor, una cuarta parte, y los ~30,000 pedidos se cobran aparte en cualquier caso.
+
+El «% entregado» por renglón ya no es solo un supuesto de esta estimación: Ricardo fijó el cuestionario por observable en 85 % y el flujo de validación en 95 %, y dio por buenos los demás (poblaciones ~95 %, buenas prácticas ~80 %, base de datos 100 %).
 
 ## Las tres cifras que se comparan
 
@@ -35,20 +41,23 @@ Cada renglón dice de dónde sale su cifra: **bitácora** (sesiones de Claude Co
 | 2025-12-03 → 2026-02-24 | git: 22 commits en 9 días activos | 20.0 | 18.8–38.7 | 850 | 17,034 |
 | 2026-02-25 y 02-27 | historial: 39 prompts en 2 días | 4.1 | 3.8–4.3 | 850 | 3,442 |
 | Miró, fecha desconocida | declarado, estimado | 6.0 | — | 850 | 5,100 |
-| **Subtotal antes de IA** | | **30.1** | 28.6–49.0 | | **25,576** |
+| Reuniones sin grabación (antes del 2026-03-02; fecha y reparto no declarados) | declarado, estimado: «al menos 8 horas» | 8.0 | — | 850 | 6,800 |
+| Análisis y construcción de la base de datos | declarado, estimado | 8.0 | — | 850 | 6,800 |
+| **Subtotal antes de IA** | | **46.1** | 44.6–65.0 | | **39,176** |
 | 2026-03-02 → 03-16 | historial: 34 prompts en 4 días | 2.4 | 1.1–3.7 | 1,300 | 3,146 |
 | 2026-04-15 → 06-13 | bitácora de Windows (disco y RAR), neta | 16.9 | — | 1,300 | 22,010 |
 | 2026-06-16 → 07-04 | historial: 264 prompts en 9 días | 24.5 | 20.1–28.9 | 1,300 | 31,863 |
 | 2026-07-28 → 09-25 | bitácora de Fedora, neta, con ajustes | 45.3 | — | 1,300 | 58,915 |
 | Reuniones grabadas (seis, jun–sep) | declarado, medido en la transcripción | 6.0 | — | 1,300 | 7,843 |
-| **Subtotal con IA** | | **95.2** | 89.5–100.9 | | **123,777** |
-| **Total** | | **125.3** | 118.1–149.9 | | **149,353** |
+| Identidad gráfica en Claude Design (adelanto de un renglón de 2026) | declarado, estimado | 2.0 | — | 1,300 | 2,600 |
+| **Subtotal con IA** | | **97.2** | 91.5–102.9 | | **126,377** |
+| **Total** | | **143.3** | 136.1–167.9 | | **165,553** |
 
-Los subtotales se sumaron sin redondear; los renglones están redondeados a una décima.
+Los subtotales se sumaron sin redondear; los renglones están redondeados a una décima. Los tres renglones declarados del 25 de septiembre (reuniones sin grabación, análisis de la base y Claude Design) viven en [[2026-09-25-reuniones-sin-grabacion]], [[2026-09-25-analisis-y-construccion-de-la-base]] y [[2026-09-25-identidad-grafica-en-claude-design]], con su `offline_minutes`.
 
 Las horas de bitácora van netas de lo no facturable (sección «Qué no se factura»): 67.8 h asignadas − 5.5 h = 62.4 h. En la época de Windows (abril–junio) son 20.4 h brutas menos 3.4 de dos sesiones personales = 16.9 h. En Fedora (julio–septiembre) son 47.5 h brutas menos 2.1 no facturables = 45.4 h, más 0.18 h de la sesión `803fabce` (abajo) y menos 0.29 h de sesiones que corrieron durante reuniones grabadas (abajo) = 45.3 h.
 
-**Rango del total**: de 140,656 (git por racimos de commits, historial por ventana diaria) a 172,851 (git a 4.3 h por día activo, que es lo que midió OCSA para trabajo a mano; historial por prompt). En cualquier punto del rango el costo queda entre 1.63 y 2.01 veces lo cobrado.
+**Rango del total**: de 156,856 (git por racimos de commits, historial por ventana diaria) a 189,051 (git a 4.3 h por día activo, que es lo que midió OCSA para trabajo a mano; historial por prompt). Sin el adelanto de identidad, en cualquier punto del rango el costo queda entre 1.79 y 2.16 veces lo cobrado.
 
 ## Cómo se midió
 
@@ -125,20 +134,22 @@ Harness, sesiones ajenas al proyecto y trabajo administrativo con el cliente, cl
 
 Criterio del skill: la preparación de reuniones y el trabajo de cobro son admin-cliente y no se facturan; convertir una reunión en tareas y decisiones es proyecto. Las fracciones de las sesiones mixtas son estimaciones de lectura. La suscripción de Claude no aparece en ningún lado: los 1,300 por hora ya la absorben.
 
-**Deploys, incidentes y puentes de infraestructura** (⚠️ decisión de Ricardo). Hoy están dentro del renglón pagado. Ambas cotizaciones traen, bajo «Instalación y Soporte a mediano plazo», 18 meses de «soporte técnico para resolver dudas, capacitar al personal operativo… resolver bugs» después de pedir la máquina virtual a Cómputo: se lee como soporte posterior a la instalación, no como los deploys de la construcción. Opciones: (a) los deploys e incidentes durante la construcción son trabajo del proyecto y los puentes (archivos privados en S3, 2.5 h; proxy nginx hacia Netlify, 0.5 h) son un extra por «necesario para operar»; (b) todo queda dentro de lo cotizado; (c) el puente nginx, que deja el sitio viejo junto a las rutas nuevas, se asigna al renglón «Modificación de versión 1 para compatibilidad» (3,000).
+**Deploys, incidentes y puentes de infraestructura.** Ricardo los clasificó la noche del 25 de septiembre junto con las transcripciones: «más que "por cobrar" serán costos adicionales que yo no planee bien, igual que lo de los deploys». Eso es suyo: los deploys son costo no planeado, que se registra y se factura prorrateado ([[adr-0022]]). Lo que **no** dijo es cómo queda la cláusula de 18 meses frente a Rubén: leer su frase como «la cláusula no los absorbe» es interpretación de esta estimación, pendiente de que él la confirme en [[task-179]], junto con las opciones de abajo (incluida la c, el puente nginx). El planteamiento original, para contexto: ambas cotizaciones traen, bajo «Instalación y Soporte a mediano plazo», 18 meses de «soporte técnico para resolver dudas, capacitar al personal operativo… resolver bugs» después de pedir la máquina virtual a Cómputo: se lee como soporte posterior a la instalación, no como los deploys de la construcción. Opciones: (a) los deploys e incidentes durante la construcción son trabajo del proyecto y los puentes (archivos privados en S3, 2.5 h; proxy nginx hacia Netlify, 0.5 h) son un extra por «necesario para operar»; (b) todo queda dentro de lo cotizado; (c) el puente nginx, que deja el sitio viejo junto a las rutas nuevas, se asigna al renglón «Modificación de versión 1 para compatibilidad» (3,000).
 
 ## Síntesis por renglón de la cotización
 
-La columna «% entregado» es un **supuesto** de esta estimación, no un dato: ⚠️ Ricardo la confirma renglón por renglón en [[task-179]].
+Esta tabla es la vista contractual (la regla del skill); la vista para entender y negociar es la de «Brecha por concepto y sus causas». Ricardo confirmó el avance de los renglones pagados la noche del 25 de septiembre (cp 85 %, flujo 95 %, el resto como estaba); el bloque se toma como ~100 % para la regla porque lo que falta de cp y del flujo es poco.
 
-| Renglón | Cotizado | % entregado (supuesto) | h antes de IA | h con IA | Costo real | Δ (costo − cotizado) | Por cobrar |
+| Renglón | Cotizado | % entregado | h antes de IA | h con IA | Costo real | Δ (costo − cotizado) | Por cobrar |
 |---|--:|--:|--:|--:|--:|--:|--:|
-| Pagado en 2025: dashboard + diseño de BD + soporte de BP | 88,000 | ~100 % | 30.1 | 85.0 | 136,024 | +48,024 | 1,793 |
-| Plataforma pública | 43,000 | 0 % | — | — | — | — | — |
+| Pagado en 2025: dashboard + diseño de BD + soporte de BP | 88,000 | ~100 % | 46.1 | 85.1 | 149,774 | +61,774 | 1,793 |
+| Plataforma pública | 43,000 | identidad diseñada, sin implementar | — | 2.0 | 2,600 | — | — |
 | Base de datos (Excel e indicadores) | 17,000 | ~0 % | — | — | — | — | — |
 | Visualizaciones | 92,000 | 0 % | — | — | — | — | — |
 | Automatización de informes | 81,000 | 0 % | — | — | — | — | — |
-| Extras fuera de cotización (tabla siguiente) | — | — | — | 10.3 | 13,325 | +13,325 | a negociar |
+| Editor del cuestionario y exportación a Word (pedidos, tabla siguiente) | — | — | — | 10.1 | 13,179 | +13,179 | se cobran ([[adr-0022]]) |
+
+El renglón pagado incluye aquí todo lo que no es editor ni Word: también las invitaciones, la institución de prueba y el excedente de buenas prácticas, que la tabla de la brecha separa como pedidos, y los costos no planeados.
 
 «Por cobrar» sigue la regla del skill: cotizado × % entregado − cobrado. Con 88,000 × 100 % − 86,206.90 salen 1,793.10: por la regla estricta casi no hay nada pendiente, **porque la cotización del dashboard era baja**, no porque el trabajo esté pagado. El Δ es lo que la cotización no previó.
 
@@ -146,68 +157,99 @@ Las horas con IA no se repartieron entre los seis sub-renglones del dashboard (p
 
 ## Extras entregados fuera de la cotización
 
-Hipótesis a confirmar por Ricardo: la clasificación sale de los títulos y los prompts de las sesiones, no de una revisión renglón por renglón. **Solo los dos primeros renglones están sumados** en las 10.3 h de la síntesis; los otros dos se quedan dentro del renglón pagado, por las razones de su fila.
+Ricardo confirmó la noche del 25 de septiembre cuáles de estos se cobran: **todo lo que le pidieron y se excedió** —el excedente de buenas prácticas, el editor del cuestionario, las invitaciones de las IES, la institución de prueba y la exportación a Word—. Lo demás que se hizo fuera de renglón es costo no planeado ([[adr-0022]]). Las horas de cada fila vienen de la tabla de la brecha.
 
-| Extra | Horas (netas, asignadas) | ¿Sumado? | Causa |
-|---|--:|---|---|
-| Herramienta para que Rubén edite el cuestionario: estandarización de `QuestionType` (`8e146f37`, 3.42), revisión del cuestionario v2 (`d5ef9c1e`, 2.94), reseed (`03f1e4b9`, 0.44), documento integrado y prototipo del 4 de septiembre (`0d557873`, 1.63) | 8.44 | sí | Pedido por el cliente: la metodología siguió cambiando durante la construcción |
-| Exportación del cuestionario a Word: estrategia de Pandoc (`503b55da`, 0.30) y la sesión del 11 y 22 de septiembre (`b055612f`, 1.51 netas) | 1.81 | sí | Pedido por el cliente |
-| Crecimiento del módulo de buenas prácticas («le fuimos aumentando más cositas y variaciones», Ricardo, 2026-09-04) | 3.2 medidas en bitácora | no | Pedido por el cliente. Lo cotizado de BP son 12,000 (5,000 público + 7,000 dashboard). Las bitácoras solo ven 3.2 h de BP (medido al final, sobre el resultado completo, por la proporción de archivos de BP que tocó cada sesión); el grueso se hizo en enero (git: «Buenas prácticas en modo alfa», «Buenas prácticas completo») y en junio (días ciegos), donde no se puede separar por módulo. Sin medir el total, no se puede decir cuánto excedió lo cotizado |
-| Puente de archivos privados en S3 (`4328191a`, 2.49) y proxy nginx hacia Netlify (`f94b34b0`, 0.52) | 3.01 | no | Depende de la decisión sobre deploys y puentes (sección anterior) |
+| Extra | Horas | MXN a hoy | Categoría | Causa y evidencia |
+|---|--:|--:|---|---|
+| Excedente de buenas prácticas sobre sus 12,000 | 19.2 en total | 9,914 (≈15,400 al terminar, con 80 % de avance) | por cobrar | Pedido: creció por la prueba con usuarias del 16 de abril, por los acuerdos del 26 de junio y, en palabras de Ricardo del 4 de septiembre, porque «le fuimos aumentando más cositas y variaciones» |
+| Herramienta para que Rubén edite el cuestionario: estandarización de `QuestionType` (`8e146f37`), revisión del cuestionario v2 (`d5ef9c1e`), reseed (`03f1e4b9`), documento integrado y prototipo del 4 de septiembre (`0d557873`) | 8.3 | 10,825 | por cobrar | Pedido por Rubí el 28 de julio, `[37:32]` «No sólo la integración, sino la visualización para que se puedan editar» ([[task-42]]) |
+| Invitaciones de las IES | 5.1 (rango 4–7.5) | 5,782 | por cobrar | Pedido así por el cliente, según Ricardo; ninguna reunión grabada lo registra, porque las anteriores a junio no se grabaron. Ver el argumento abajo |
+| Institución de prueba («De prueba») | 0.7 | 910 | por cobrar | Pedida en la reunión del 28 de julio, `[26:22]` ([[task-53]]) |
+| Exportación del cuestionario a Word: estrategia de Pandoc (`503b55da`) y la sesión del 11 y 22 de septiembre (`b055612f`) | 1.8 | 2,354 | por cobrar | Pedido por el cliente |
+| **Subtotal por cobrar** | | **29,785** (≈35,300 con buenas prácticas terminada) | | |
+| Puente de archivos privados en S3 (`4328191a`, 2.49) y proxy nginx hacia Netlify (`f94b34b0`, 0.52) | 3.0 | dentro de los 10,272 de infraestructura | no planeado | Necesario para operar mientras no hay servidor UNAM |
+
+**El argumento de las invitaciones, por si Rubén lo discute.** La cotización de 2026 promete, en «Otras mejoras», «la posibilidad de enviar un link con un token para que sean las IES las que gestionen por su cuenta sus contraseñas». Eso es recuperación de contraseña, y está hecha dentro de la base del dashboard. Lo que se construyó para las invitaciones es otra cosa: el modelo `InvitationToken`, el listado de invitaciones con su estado y su reenvío (`sent_at`), el alta de personas usuarias staff y el envío desde la cuenta institucional de correo. Es un sistema de alta de instituciones, no un link de contraseña. Las horas: 0.5 en git (26 de enero, «avanzo en tokenInvitation»), 2.5 del historial de febrero–marzo y 2.1 de sesiones de mayo, sobre todo el 20–22 («gestionar mejor invitaciones y personas usuarias staff»). Después hubo ajustes pedidos por Fernanda el 6 de agosto ([[task-63]], [[task-64]]).
 
 ## Brecha por concepto y sus causas
 
-Esta sección responde otra pregunta que las anteriores: no cuánto falta cobrar, sino **en qué conceptos el trabajo real se separó de lo cotizado, por qué, y qué hacer para que no se repita** en los 233,000 pendientes. Parte de las mismas 125.3 h, repartidas entre los renglones de la cotización de septiembre de 2025 con `lines.py` (misma carpeta de scripts): cada sesión según sus prompts y los archivos que tocó, cada día del historial según lo que dicen sus prompts, cada día de git según los archivos de sus commits, y lo declarado (reuniones, Miró) a coordinación. La suma da 149,363 MXN; los 10 de diferencia con el total del record son redondeo del cociente de git.
+Esta sección responde otra pregunta que las anteriores: no cuánto falta cobrar, sino **en qué conceptos el trabajo real se separó de lo cotizado, por qué, y qué hacer para que no se repita** en los 233,000 pendientes. Parte de las mismas horas del record, sin el adelanto de identidad gráfica (141.3 h, 162,953 MXN), repartidas entre los renglones de la cotización de septiembre de 2025 con `lines.py` (misma carpeta de scripts): cada sesión según sus prompts y los archivos que tocó, cada día del historial según lo que dicen sus prompts, cada día de git según los archivos de sus commits, y lo declarado según a qué sirvió. La suma da 162,965 MXN; los 12 de diferencia con el record son redondeo del cociente de git.
 
-Las columnas: **Cotizado** es el monto del renglón. **Costo a tarifa** son las horas atribuidas por 850 (antes del 2 de marzo) o 1,300. **Diferencia** es costo menos cotizado: positiva quiere decir que trabajaste más de lo que el renglón pagaba. **% de avance** es un supuesto de esta estimación (⚠️ tuyo de confirmar, en [[task-179]]) y **Proyectado al 100 %** divide el costo entre ese avance, así que hereda el supuesto.
+**Ajustes de Ricardo de la noche del 25 de septiembre**, ya aplicados: la conceptualización en Miró va al flujo de validación, no a coordinación; el cuestionario por observable está al 85 % y el flujo al 95 %; las invitaciones y la institución de prueba salen de la base del dashboard como pedidos; entran sus 8 h de reuniones sin grabación y sus 8 h de análisis y construcción de la base de datos.
 
-| Concepto | Cotizado | Horas | Costo a tarifa | Diferencia | % de avance (supuesto) | Proyectado al 100 % | Confianza de la atribución |
-|---|--:|--:|--:|--:|--:|--:|---|
-| Diseño de nueva base de datos | 8,000 | 6.3 | 5,395 | −2,605 | 100 % | 5,400 | media: días de git de diciembre y enero |
-| Poblaciones (la sección de información base, `gen`) | 16,000 | 11.4 | 14,830 | −1,170 | ~95 % | 15,600 | alta: sesiones de agosto |
-| Preguntas de institucionalización, transversalización y complementarias (el cuestionario por observable, `cp`: 5,000 + 14,000 + 8,000) | 27,000 | 9.5 | 12,375 | −14,625 | ~50 %: la captura se publicó el 25 de septiembre; falta la revisión y el cálculo | 24,800 | media |
-| Flujo de validación con estatus y comentarios | 25,000 | 14.3 | 18,629 | −6,371 | ~90 % | 20,700 | media: la primera versión (StatusControl) quedó mezclada en los días de git |
-| Buenas prácticas (subir y aprobar, 7,000; subir y mostrar, 5,000) | 12,000 | 19.2 | 21,914 | +9,914 | ~80 %: falta la parte pública | 27,400 | media |
-| Base del dashboard: acceso, registro, recuperación de contraseña, invitaciones, usuarios staff, catálogos, colecciones, diseño | sin renglón | 27.3 | 30,507 | +30,507 | ~100 % | 30,500 | media |
-| **Subtotal de lo pagado en 2025** | **88,000** | **88.0** | **103,650** | **+15,650** | | **124,400** | |
-| Editor y estandarización del cuestionario para Rubén | — | 8.3 | 10,825 | +10,825 | 100 % | 10,800 | alta |
-| Exportación del cuestionario a Word | — | 1.8 | 2,354 | +2,354 | 100 % | 2,400 | alta |
-| Infraestructura: deploys, puentes S3 y nginx, Netlify, correo en producción | — | 7.9 | 10,272 | +10,272 | continuo | — | media |
-| Coordinación: reuniones grabadas, Miró, transcripciones, planeación de sesiones | — | 19.2 | 22,264 | +22,264 | continuo | — | alta en reuniones y Miró; media en planeación |
-| **Subtotal fuera de renglón** | **—** | **37.3** | **45,715** | **+45,715** | | | |
-| **Total** | **88,000** | **125.3** | **149,363** | **+61,363** | | | |
+Las columnas: **Cotizado** es el monto del renglón. **Costo a tarifa** son las horas atribuidas por 850 (antes del 2 de marzo) o 1,300. **Diferencia** es costo menos cotizado: positiva quiere decir que trabajaste más de lo que el renglón pagaba. **% de avance** lo fijó Ricardo, y **Al 100 %** divide el costo entre ese avance. **Categoría** es la de [[adr-0022]]: *por cobrar* es lo pedido que se excedió; *no planeado* se registra y se factura prorrateado.
+
+| Concepto | Cotizado | Horas | Costo a tarifa | Diferencia | Avance | Al 100 % | Categoría | Confianza de la atribución |
+|---|--:|--:|--:|--:|--:|--:|---|---|
+| Diseño de nueva base de datos (con las 8 h de análisis declaradas) | 8,000 | 14.3 | 12,195 | +4,195 | 100 % | 12,200 | exceso no planeado | media: días de git de diciembre y enero, más lo declarado |
+| Poblaciones (la sección de información base, `gen`) | 16,000 | 11.4 | 14,830 | −1,170 | ~95 % | 15,600 | | alta: sesiones de agosto |
+| Preguntas de institucionalización, transversalización y complementarias (el cuestionario por observable, `cp`: 5,000 + 14,000 + 8,000) | 27,000 | 9.5 | 12,375 | −14,625 | 85 % | 14,600 | | media |
+| Flujo de validación con estatus y comentarios (con Miró) | 25,000 | 20.3 | 23,729 | −1,271 | 95 % | 25,000 | | media: la primera versión (StatusControl) quedó mezclada en los días de git |
+| Buenas prácticas (subir y aprobar, 7,000; subir y mostrar, 5,000) | 12,000 | 19.2 | 21,914 | +9,914 | ~80 %: falta la parte pública | 27,400 | excedente por cobrar | media |
+| Base del dashboard: acceso, registro, recuperación de contraseña, usuarios staff, catálogos, colecciones, diseño | sin renglón | 21.5 | 23,815 | +23,815 | ~100 % | 23,800 | no planeado | media |
+| **Subtotal de lo pagado en 2025** | **88,000** | **96.2** | **108,858** | **+20,858** | | **118,600** | | |
+| Invitaciones de las IES | — | 5.1 | 5,782 | +5,782 | 100 % | 5,800 | por cobrar | media: febrero–marzo por proporción de prompts; mayo por herramientas |
+| Institución de prueba | — | 0.7 | 910 | +910 | 100 % | 900 | por cobrar | media: no se volvió a medir |
+| Editor y estandarización del cuestionario para Rubén | — | 8.3 | 10,825 | +10,825 | 100 % | 10,800 | por cobrar | alta |
+| Exportación del cuestionario a Word | — | 1.8 | 2,354 | +2,354 | 100 % | 2,400 | por cobrar | alta |
+| Infraestructura: deploys, puentes S3 y nginx, Netlify, correo en producción | — | 7.9 | 10,272 | +10,272 | continuo | — | no planeado | media |
+| Reuniones grabadas (seis, junio–septiembre) | — | 6.0 | 7,843 | +7,843 | continuo | — | no planeado | alta |
+| Reuniones sin grabación (antes de marzo) | — | 8.0 | 6,800 | +6,800 | — | — | no planeado | declarado |
+| Transcripciones y planeación de sesiones | — | 7.2 | 9,321 | +9,321 | continuo | — | no planeado | media |
+| **Subtotal fuera de renglón** | **—** | **45.0** | **54,107** | **+54,107** | | | | |
+| **Total** | **88,000** | **141.2** | **162,965** | **+74,965** | | | | |
+
+### El desborde, en las dos categorías de Ricardo
+
+| Componente | MXN |
+|---|--:|
+| **Por cobrar**: excedente de buenas prácticas 9,914, editor 10,825, invitaciones 5,782, Word 2,354, institución de prueba 910 | **+29,785** |
+| Base del dashboard sin renglón | +23,815 |
+| Infraestructura y deploys | +10,272 |
+| Reuniones grabadas | +7,843 |
+| Reuniones sin grabación | +6,800 |
+| Transcripciones y planeación | +9,321 |
+| Exceso del diseño de la base de datos | +4,195 |
+| **Costos no planeados** | **+62,246** |
+| Renglones por debajo de su precio: cuestionario −14,625, flujo −1,271, poblaciones −1,170 | −17,066 |
+| **Desborde neto a hoy** | **+74,965** |
+
+Al terminar, el cuestionario deja un margen de unos 12,400 (no 14,600), el flujo cierra en su precio y buenas prácticas sube su excedente a unos 15,400. Lo por cobrar queda en unos 35,300.
 
 ### Lo que dice la tabla
 
-**1. Los módulos con nombre se estimaron bien.** Los cinco renglones con precio, llevados al 100 % con los supuestos de avance, costarían unos 93,900 contra 88,000 cotizados: 7 % arriba. Poblaciones, flujo y base de datos caben en su precio; el cuestionario por observable va en camino de caber. El único renglón con nombre que se desborda es buenas prácticas: 19.2 h contra un precio que a 1,300 la hora alcanza para 9.2.
+**1. Los módulos con nombre se estimaron bien.** Los cinco renglones con precio, llevados al 100 %, costarían unos 94,800 contra 88,000 cotizados: 8 % arriba. Poblaciones, flujo y el cuestionario caben en su precio (el cuestionario con holgura); la base de datos se pasa por el análisis que no dejó huella. El único renglón con nombre que se desborda de verdad es buenas prácticas: 19.2 h contra un precio que a 1,300 la hora alcanza para 9.2, y es por pedidos.
 
-**2. La brecha está en lo que no tiene renglón.** Base del dashboard (30,500), coordinación (22,300) e infraestructura (10,300) suman unos 63,000: **el 42 % de todo el costo**. La cotización sí promete parte de eso en su texto —«enviar un link con un token para que sean las IES las que gestionen por su cuenta sus contraseñas», «la nueva plataforma deberá ser fácilmente editable», la instalación en una máquina virtual de Cómputo— pero ningún renglón lo tiene con precio, y las reuniones no aparecen en ninguna parte. Ese es el error de estimación principal: no faltó precio en los módulos, faltaron renglones.
+**2. La brecha está en lo que no tiene renglón.** Base del dashboard (23,800), coordinación (reuniones grabadas y no grabadas, transcripciones y planeación: 24,000) e infraestructura (10,300) suman unos 58,000: **el 36 % de todo el costo**. La cotización sí promete parte de eso en su texto —«la nueva plataforma deberá ser fácilmente editable», la instalación en una máquina virtual de Cómputo— pero ningún renglón lo tiene con precio, y las reuniones no aparecen en ninguna parte. Ese es el error de estimación principal: no faltó precio en los módulos, faltaron renglones.
 
-**3. Lo pedido durante la construcción suma unas 18 h.** El editor del cuestionario lo pidió Rubí en la reunión del 28 de julio, `[37:32]` «No sólo la integración, sino la visualización para que se puedan editar» ([[task-42]]); la institución de prueba, en la misma reunión, `[26:22]` ([[task-53]]); la exportación a Word, después. Buenas prácticas creció por la prueba con usuarias del 16 de abril ([[2026-04-16-prueba-con-usuarias-reales]]), por los acuerdos del 26 de junio ([[2026-06-26-seguimiento-pendientes-ruben]]) y, en tus palabras del 4 de septiembre, porque «le fuimos aumentando más cositas y variaciones».
+**3. Lo pedido durante la construcción suma unas 23.5 h y 29,800.** El editor del cuestionario lo pidió Rubí en la reunión del 28 de julio, `[37:32]` «No sólo la integración, sino la visualización para que se puedan editar» ([[task-42]]); la institución de prueba, en la misma reunión, `[26:22]` ([[task-53]]); las invitaciones, en palabras de Ricardo, «me lo pidieron así»; la exportación a Word, después. Buenas prácticas creció por la prueba con usuarias del 16 de abril ([[2026-04-16-prueba-con-usuarias-reales]]), por los acuerdos del 26 de junio ([[2026-06-26-seguimiento-pendientes-ruben]]) y, en tus palabras del 4 de septiembre, porque «le fuimos aumentando más cositas y variaciones».
 
-**4. El retrabajo propio es chico.** El incidente del 12 de agosto ([[2026-08-12-incidente-migrate-flow-data]]) y la reparación de `sent_at` suman 2.2 h, y caen dentro del renglón del flujo sin desbordarlo. Traer de OCSA la lógica de colecciones y `ps_schema` (enero y junio) y preparar Fedora suman 5.3 h.
+**4. El retrabajo propio es chico.** El incidente del 12 de agosto ([[2026-08-12-incidente-migrate-flow-data]]: una segunda corrida en producción de la migración de estatus aplastó 179 estatus, que se restauraron) y la reparación de `sent_at` suman 2.2 h, y caen dentro del renglón del flujo sin desbordarlo. Traer de OCSA la lógica de colecciones y `ps_schema` (enero y junio) y preparar Fedora suman 5.3 h.
 
 ### Horas por causa
 
+Aproximado: la base del dashboard y la inversión propia se partieron en proporción a sus horas.
+
 | Causa | Horas | MXN aprox. | Qué incluye |
 |---|--:|--:|---|
-| (a) La cotización no tenía renglón para eso | 41.4 | 47,200 | Base del dashboard sin los puertos de OCSA (22.2 h) y toda la coordinación (19.2 h) |
-| (b) Pedido por el cliente durante la construcción | 18.4 | 24,000 | Editor del cuestionario (8.3), Word (1.8), institución de prueba (0.7), lo que buenas prácticas excede su renglón (~7.6) |
+| (a) La cotización no tenía renglón para eso | 37.6 | 42,100 | Base del dashboard sin los puertos de OCSA (16.4 h) y la coordinación: reuniones grabadas y sin grabar, transcripciones y planeación (21.2 h) |
+| (b) Pedido por el cliente durante la construcción | 23.5 | 29,800 | Editor (8.3), invitaciones (5.1), Word (1.8), institución de prueba (0.7), lo que buenas prácticas excede su renglón (~7.6) |
 | (c) Necesidad de operar o falla externa | 7.0 | 9,200 | Puentes S3 y nginx mientras no hay servidor UNAM, Netlify en monorepo, deploys, correo en producción |
 | (d) Retrabajo propio | 2.2 | 2,900 | Incidente del 12 de agosto y `sent_at`; dentro del renglón del flujo, no agranda la diferencia |
 | (e) Inversión propia | 5.3 | 5,800 | Puertos de OCSA (colecciones, `ps_schema`, catálogos) y preparación de Fedora |
+| (f) Subestimación de un renglón con nombre | 8.0 | 6,800 | El análisis de la base de datos fuera de sesiones |
 
-Las causas (a), (b), (c) y (e) suman unos 86,000; la diferencia total es de 61,400 porque los otros cuatro renglones con nombre (base de datos, poblaciones, cuestionario y flujo) van unos 24,800 por debajo de su precio, casi todo porque el cuestionario y el flujo no están terminados. ⚠️ Tu decisión, en [[task-179]]: si (e) es inversión propia, el skill dice que no se factura y el costo baja unos 5,800.
+⚠️ Tu decisión, en [[task-179]]: si (e) es inversión propia, el skill dice que no se factura y el costo baja unos 5,800.
 
 ### Cómo cerrar la brecha en lo pendiente
 
-Lo que falta cotizado, traducido a horas a 1,300: plataforma pública 43,000 = **33 h**; Excel e indicadores 17,000 = **13 h**; visualizaciones 92,000 = **71 h**; informes 81,000 = **62 h**. Son 179 h en total.
+La estimación de lo que falta, con las cifras de Ricardo, está en la sección siguiente. Las palancas:
 
 1. **Poner precio a lo invisible.** En este proyecto, de cada 100 horas, 15 fueron coordinación y 6 infraestructura. En la próxima cotización (o en la adenda de lo pendiente) van como renglón propio o como una reserva de un 20 % sobre cada módulo; las reuniones también pueden cobrarse por hora. La plataforma pública tendrá su propia «base» (el sitio sin sesión, su despliegue en el servidor de la UNAM, [[task-100]]), que hoy tampoco tiene renglón.
-2. **Cada pedido nuevo, con su estimación antes de construirlo.** Las 18 h pedidas no las absorbió ningún renglón. Basta una línea en la task donde nace el pedido —ya citan el minuto de la reunión— con «cambio pedido: N h, M MXN», y avisar a Rubén en el momento. Él mismo lo abrió el 4 de septiembre, `[29:01]` «Tratemos de que no trabajes más de lo que ya cotizaste».
+2. **Cada pedido nuevo, con su estimación antes de construirlo.** Las 23.5 h pedidas no las absorbió ningún renglón. Basta una línea en la task donde nace el pedido —ya citan el minuto de la reunión— con «cambio pedido: N h, M MXN», y avisar a Rubén en el momento. Él mismo lo abrió el 4 de septiembre, `[29:01]` «Tratemos de que no trabajes más de lo que ya cotizaste».
 3. **Medir mientras se construye.** Con `credit.py` y `lines.py` se puede ver cada mes cuánto lleva cada módulo contra sus horas de presupuesto, y levantar la mano al llegar a la mitad, no al final.
-4. **La velocidad con IA ya está en los precios.** Los módulos construidos con IA (poblaciones, 11.4 h; el flujo reescrito, 14.3 h) cupieron en su precio cobrando 1,300 la hora. Los datos no dicen que los renglones estén caros o baratos; dicen que alrededor de cada módulo hay trabajo que nadie cotizó. Que las visualizaciones ahora sean «súper rápidas» todavía no se puede medir: llevan 0 h.
-5. **Decidir qué es el soporte de 18 meses** (⚠️ tuyo, ya en [[task-179]]). Si los deploys y puentes cuentan como soporte, la infraestructura se vuelve otra fila sin precio que la cláusula absorbe entera.
+4. **La velocidad con IA ya está en los precios.** Los módulos construidos con IA (poblaciones, 11.4 h; el flujo reescrito) cupieron en su precio cobrando 1,300 la hora. Los datos no dicen que los renglones estén caros o baratos; dicen que alrededor de cada módulo hay trabajo que nadie cotizó. Que las visualizaciones ahora sean «súper rápidas» todavía no se puede medir (llevan 0 h); Ricardo les pone un tope de 40 h contra las 71 que pagan a 1,300.
+5. **La infraestructura de la construcción es costo no planeado** (Ricardo, [[adr-0022]]). Si la cláusula de soporte de 18 meses la cubre o no frente a Rubén sigue abierto en [[task-179]]; en lo pendiente, la máquina virtual y sus trámites llevan su propio renglón.
 
 ### Lo más débil de esta atribución
 
@@ -215,13 +257,41 @@ Lo que falta cotizado, traducido a horas a 1,300: plataforma pública 43,000 = *
 - Los 24.5 h del historial de junio–julio se reparten leyendo los prompts de cada día, y junio mezcla flujo y buenas prácticas casi en cada prompt.
 - La frontera entre el editor y el cuestionario por observable: la estandarización de `QuestionType` y la resiembra cuentan como editor; si parte era estructura del cuestionario, `cp` sube y el editor baja.
 - La coordinación incluye sesiones de planeación que podrían repartirse entre los módulos que planeaban.
-- Los porcentajes de avance son supuestos, y la columna proyectada depende de ellos.
+- Los porcentajes de avance los fijó Ricardo de memoria, no con una revisión por funcionalidad; la columna «Al 100 %» depende de ellos.
+- Las invitaciones de febrero–marzo salen del historial repartido por proporción de prompts (rango 4–7.5 h); las de mayo mezclan invitaciones con la gestión de personas usuarias staff.
+- Las 8 + 8 h declaradas las dio Ricardo de memoria: las reuniones sin grabación como piso («al menos 8 horas»), el análisis de la base como cifra aproximada.
+
+## Lo que falta: estimación con IA y el harness
+
+Estimación del 25 de septiembre, construida en diálogo: el coordinador propuso rangos y Ricardo los corrigió con lo que ya sabe de su propia velocidad. Las cifras de Ricardo mandan sobre las del modelo. Todas a 1,300 MXN/h.
+
+| Renglón | Cotizado | Horas | Costo | Supuesto clave |
+|---|--:|--:|--:|---|
+| Diseño de nueva identidad gráfica | 16,000 | 3–6 de implementación, estimación del asistente (más las 2 ya hechas) | 4–8k (más 2,600 ya hechos) | Ya existe, hecha con Claude Design, y gustó mucho ([[2026-09-25-identidad-grafica-en-claude-design]]) |
+| Configuración base de vistas del sitio público | 17,000 | 10–16 | 13–21k | Páginas por IES, contenidos editables, SEO |
+| Interactividad web y fichas intermedias | 7,000 | 4–6 | 5–8k | |
+| Modificación de la versión 1 para compatibilidad | 3,000 | 2–3 | 3–4k | Lo histórico se conecta por liga, no se integra ([[adr-0021]]) |
+| Exportaciones a Excel | 12,000 | 5 (tope de Ricardo) | 6.5k | Dos exportaciones con `xlsx_django_export`: la de cada IES con sus datos en cualquier estado y la pública solo con lo aprobado |
+| Cálculo de indicadores y ponderaciones | 5,000 | 2–3 | 3–4k | Lo hace el asistente en corto con las definiciones cerradas; la decisión metodológica (≈3 h de reunión con Rubén + ≈3 h de Ricardo, [[task-28]] y [[task-29]]) va a coordinación |
+| Visualizaciones (seis renglones) | 92,000 | 30–40 (tope de Ricardo: 40) | 39–52k | El índice llega cerrado antes de graficarlo |
+| Automatización de informes | 81,000 | 31–49 | 40–64k | Plantillas completas del cliente o un kit como el de OCSA; los multianuales hasta que existan varios años de datos (2027 o después) |
+| **Subtotal cotizado** | **233,000** | **87–128** | **113–166k** | |
+| Instalación y trámites de la máquina virtual de la UNAM *(sin renglón)* | — | 6–12 | 8–16k | El trámite no ha empezado ([[task-102]]); la espera ante Cómputo no se controla |
+| Coordinación, ~15 % *(sin renglón)* | — | 13–20 | 17–26k | Incluye las ≈6 h de la metodología del índice |
+| **Total** | **233,000** | **106–160** | **138–208k** | |
+
+**Por qué las visualizaciones pueden ser rápidas.** La gráfica misma, con d3, el skill de dataviz y el patrón de colecciones ya resuelto, es una sesión de unas 6 horas o menos. Lo único que podía volverla lenta era que el cálculo del índice no estuviera decidido, porque «Índices agregados» (40,000) grafica justo eso. Ricardo lo resuelve con una reunión de ≈3 horas con Rubén más ≈3 horas propias, que cubren la ecuación del índice y su agregación ([[task-28]]) y sus condiciones base ([[task-29]]). Con eso el índice llega cerrado a las visualizaciones.
+
+**Los informes, y por qué son la palanca.** El renglón promete PDFs terminados por institución, con diseño editorial, una vista editable en el dashboard y redacciones por nivel de avance. Ricardo ve dos caminos, y la recomendación es combinarlos: (1) exigir al cliente un par de plantillas completas y automatizarlas en corto —Opus 5.5, o lo que venga después, resuelve los informes uno a uno con mucha precisión, y la exportación a Word de septiembre ya trae la base (`python-docx` sobre el documento maquetado del cliente)—; (2) el modelo del kit que Ricardo le hizo a Paola en OCSA (una carpeta con un `CLAUDE.md` que hace preguntas aclaratorias, referencias del esquema y ejemplos, con la que ella misma exploró los datos y escribió su informe): dejarles la herramienta y que ellos la ajusten. Eso cambia lo que promete el renglón, y es la moneda de cambio con Rubén para compensar el desborde ([[task-180]]). Lo que ningún camino resuelve solo: las «descripciones de cada nivel de avance» que la cotización promete no tienen todavía ningún nodo. Rubén puso los informes en 2027, y Ricardo no quiere task del módulo hasta que se la pidan; lo que se abre ahora es la negociación, no la construcción.
+
+**La cuenta que importa para la negociación.** Lo pendiente deja un margen de **22,400 a 92,400** contra lo cotizado (25,000 a 95,000 menos los 2,600 de identidad gráfica ya gastados a cuenta de ese renglón). El desborde bruto a hoy es de **~92,000**: 29,800 pedidos más 62,200 no planeados (el neto de 75,000 ya descuenta lo que va por debajo). En el mejor escenario, el margen de lo pendiente compensa casi todo; en el peor, una cuarta parte. Por eso el argumento queda así: los extras pedidos se cobran aparte sí o sí; lo no planeado se prorratea contra el margen de visualizaciones e identidad (el del cuestionario es de 2025 y ya está descontado en el neto de 75,000); y los informes con plantillas o kit protegen ese margen.
+
 
 ## Lo que falta declarar (el costo real es mayor)
 
-- **Reuniones sin grabación**: las de metodología y seguimiento de octubre a diciembre de 2025 que lista el informe de actividades, y las anteriores al 26 de junio de 2026 (incluida la prueba con usuarias del 16 de abril, si Ricardo estuvo).
+Ya declarados el 25 de septiembre y sumados: las reuniones sin grabación (8 h, [[2026-09-25-reuniones-sin-grabacion]]), el análisis y construcción de la base de datos (8 h, [[2026-09-25-analisis-y-construccion-de-la-base]]) y la identidad gráfica en Claude Design (2 h, [[2026-09-25-identidad-grafica-en-claude-design]]). Siguen sin declarar:
+
 - **Preparación de las dos cotizaciones** y del informe de actividades de diciembre de 2025.
-- **Análisis de la base de datos** hecho fuera de las sesiones.
 - **Días sin commit en diciembre–febrero**, que el git no ve.
 - **Costos de terceros** (se suman al costo, no son horas): el servidor de Yeeko donde corre la API, el bucket S3 `onigies-v3-temporal` y Netlify. El repo no dice quién los paga ni cuánto cuestan (⚠️ en [[task-179]]).
 

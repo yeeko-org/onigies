@@ -4,7 +4,7 @@ id: estado-administrativo-y-de-pagos
 title: Estado administrativo y de pagos de ONIGIES
 state: current
 date: 2026-09-11
-related: ["[[2026-09-04-reunion-con-ruben]]", "[[2025-09-11-cotizacion-plataforma-v3]]", "[[2026-01-07-cotizacion-plataforma-v3]]", "[[2025-12-31-informe-de-actividades-octubre-diciembre-2025]]"]
+related: ["[[2026-09-04-reunion-con-ruben]]", "[[2025-09-11-cotizacion-plataforma-v3]]", "[[2026-01-07-cotizacion-plataforma-v3]]", "[[2025-12-31-informe-de-actividades-octubre-diciembre-2025]]", "[[2026-09-25-estimacion-costos-onigies]]", "[[adr-0022]]", "[[task-180]]"]
 ---
 
 # Estado administrativo y de pagos de ONIGIES
@@ -52,6 +52,8 @@ Suman **86,206.90** de subtotal; con IVA al 16 %, exactamente **100,000.00**. *(
 
 **Discrepancia sin resolver, para que Ricardo la mire.** Los conceptos que la cotización de 2026 retira suman **88,000**, pero los dos pagos de 2025 suman **86,206.90** de subtotal: una diferencia de **1,793.10** antes de IVA. Es decir, la cotización de 2026 da por cubiertos 1,793.10 más de lo que efectivamente se pagó. No se resolvió aquí: puede ser un redondeo deliberado al cerrar el año, puede ser que los pagos no mapeen uno a uno contra los renglones retirados. Lo que sí encaja sospechosamente bien es que los dos pagos den 100,000 exactos con IVA, lo que sugiere que la cifra la fijó el presupuesto disponible y no la suma de conceptos.
 
+**Una tercera cifra, de Rubén.** En la reunión del 23 de septiembre de 2026 dijo que lo pagado en 2025 fue **89,727** ([[2026-09-23-reunion-ruben]] `[00:56]`, recogido en [[task-154]]). No cuadra con ninguna de las otras dos. La base que usa la estimación de costos es la de Ricardo (86,206.90 de subtotal, 100,000 con IVA), por decisión suya del 25 de septiembre; la de Rubén queda como nota para el cuadre de octubre.
+
 ## Lo comprometido para 2026
 
 **80,000 en dos pagos: 32,000 y luego 48,000.** Rubén, [[2026-09-04-reunion-con-ruben]] `[03:48]`: «te van a dar primero 32 y luego 48». Es **lo que la CIGU puede pagarle este año**, con el compromiso de que el resto se pague entre lo que consigan en 2026 y 2027 *(dictado por Ricardo, 2026-09-11)*.
@@ -68,6 +70,10 @@ Cómo llegó ese dinero y qué significa, en palabras de Rubén en esa reunión:
 ## El cuadre de octubre
 
 Compromiso de Rubén en la misma reunión, `[05:34]`: «un día en octubre, cuando te paguen el segundo pago, nos sentamos nada más para ver qué has hecho, qué se te ha pagado y cuánto falta». Vive como [[task-154]].
+
+## Costo real y criterios de cobro
+
+La estimación de costos del 25 de septiembre de 2026 ([[2026-09-25-estimacion-costos-onigies]]) mide lo que el trabajo ha costado a las tarifas de Ricardo: unos **163,000** por lo hecho contra los **88,000** de los renglones pagados en 2025, más 2,600 de adelanto de la identidad gráfica de 2026. Los criterios con que eso se cobra están en [[adr-0022]]: lo que el cliente pidió y se excedió (~29,800) se cobra como extra; lo no planeado (~62,200: la base común del dashboard, infraestructura y deploys, reuniones y su procesamiento) se registra y se factura prorrateado entre los demás renglones cuando sea posible; las reuniones se cuentan ahí, como costo no planeado. Lo pendiente de 2026 se estima en 138,000–208,000 contra los 233,000 cotizados: un margen de 22,400 a 92,400, ya descontados los 2,600 de identidad gastados a cuenta. La conversación con Rubén se prepara en [[task-180]]. Cuando esto cambie, se corrige aquí y en el record.
 
 ## La restricción de alcance
 

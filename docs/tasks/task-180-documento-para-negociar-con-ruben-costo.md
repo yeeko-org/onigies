@@ -40,3 +40,7 @@ El precedente de OCSA: el kit de Paola fue una carpeta con un `CLAUDE.md` que ha
 - [ ] Proponer los informes con plantillas completas del cliente o con un kit como el de OCSA, como moneda de cambio para compensar el desborde
 - [ ] Poner precio a la instalación y los trámites de la máquina virtual de la UNAM y a una reserva de coordinación
 - [ ] Decidir qué parte llega a Rubén y en qué forma, y adaptar el documento
+
+## 2026-09-28
+
+Ricardo, al leer el panorama ([[2026-09-28-panorama-onigies]]): «Después». Va detrás de la cotización ([[task-181]]) y de la estimación ([[task-179]]).

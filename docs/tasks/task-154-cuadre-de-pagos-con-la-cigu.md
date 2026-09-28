@@ -28,7 +28,7 @@ El cuadre depende del segundo pago, que depende del registro como proveedor ([[t
 
 ## Criterios de aceptación
 
-- [ ] La reunión de cuadre ocurrió en octubre de 2026
+- [ ] La reunión de cuadre ocurrió en octubre de 2026, con la línea 2026 = 80,000 + IVA (92,800) ya asentada
 - [ ] Quedó acordado, por escrito, qué está pagado y cuánto falta contra la cotización vigente
 - [ ] La reference [[estado-administrativo-y-de-pagos]] quedó actualizada con el resultado
 
@@ -38,7 +38,7 @@ Fuente: [[2026-09-23-reunion-ruben]]. Rubén abrió la reunión con el presupues
 
 **Las cifras dichas.** Rubén, `[00:56]`: «El año pasado esto fue lo que se te pagó: 89 mil 727, y ahorita me dicen que ya están disponibles 80 más». `[02:12]`: aclarar «qué van a cubrir estos 80 más que se van a pagar ahora y qué quedaría para 2027, o sea, en enero. La idea es que yo tramite estos 156 que faltan». Ricardo, `[05:15]`–`[05:28]`: «la cotización que envié, ya quitando lo que me pagaron en 2025, fue de 233 en total». Rubén, `[05:34]`: «Se hizo un 89, luego 80…»; Ricardo, `[05:38]`: «Sí, y luego 156. Me parece bien».
 
-**¿Los 80 son con o sin IVA? Pendiente, sin confirmar.** Ricardo, `[01:36]`–`[01:39]`: «¿80 en total? Porque casi siempre tú me dices la cantidad ya con IVA». Rubén, `[01:46]`–`[01:49]`: «Incluido; yo siempre me equivoco con eso. Me dijeron netos». Ricardo, `[01:49]`: «son 80 mil entre 1.16»; Rubén, `[01:57]`: «92, pero bueno, hay que…»; Ricardo, `[01:58]`–`[02:01]`: «OK, netos, ya»; Rubén, `[02:03]`: «Eso me dijeron, pero cualquier cosa lo aclaramos». Ricardo respondió en el triage que no se sabe. Aritmética, sin interpretación: 92 coincide con 80 × 1.16 (92.8), no con 80 ÷ 1.16 (68.97).
+**¿Los 80 son con o sin IVA? Resuelto el 2026-09-28: 80,000 + IVA (92,800); lo pagado en 2025 fueron 100,000 con IVA incluido, y Ricardo señala que ya lo había aclarado antes.** Lo que sigue es lo dicho en la reunión: Ricardo, `[01:36]`–`[01:39]`: «¿80 en total? Porque casi siempre tú me dices la cantidad ya con IVA». Rubén, `[01:46]`–`[01:49]`: «Incluido; yo siempre me equivoco con eso. Me dijeron netos». Ricardo, `[01:49]`: «son 80 mil entre 1.16»; Rubén, `[01:57]`: «92, pero bueno, hay que…»; Ricardo, `[01:58]`–`[02:01]`: «OK, netos, ya»; Rubén, `[02:03]`: «Eso me dijeron, pero cualquier cosa lo aclaramos». ~~Ricardo respondió en el triage que no se sabe.~~ Superado: el 2026-09-28 Ricardo aclaró que ya lo había dicho antes, 80,000 netos más IVA. Aritmética, sin interpretación: 92 coincide con 80 × 1.16 (92.8), no con 80 ÷ 1.16 (68.97).
 
 **Datos por cuadrar**, lo dicho contra lo escrito en la reference:
 
@@ -52,3 +52,7 @@ Fuente: [[2026-09-23-reunion-ruben]]. Rubén abrió la reunión con el presupues
 **Pendiente de Ricardo**, `[05:57]`–`[05:59]`: «lo del dashboard ha llevado muchísimo más tiempo, pero por fortuna las visualizaciones ahora son súper ultra rapidísimas, entonces vamos a poder compensar. Yo tengo ese pendiente, porque ahora puedo medir cuánto trabajo lleva cada cosa».
 
 **El documento ya salió.** Rubén lo mandó durante la reunión (`[07:34]`–`[07:59]`: «ya le di aceptar, estoy mandando el documento»). Al final, `[1:25:25]`–`[1:25:48]`, Ricardo pensaba revisarlo antes; Rubén: «Ya lo mandé. […] No, me dijiste que estaba bien. Y te dije "ya lo voy a mandar", y me dijiste que sí»; Ricardo: «Bueno, está bien, lo mandaste; ni modo». Rubén, `[1:25:52]`: «si no lo mandaba no me dejaba hacer la solicitud de pago para que se liberen los 80». El del año siguiente, `[1:26:01]`: «Todavía no»; `[1:26:05]`: «dice lo mismo nada más. Esa es la parte que faltaría pagar en enero» (quién dice «dice lo restante» en `[1:26:01]` es dudoso, duda 5). Ricardo, `[1:26:11]`: «Ah, bueno, está bien».
+
+## 2026-09-28
+
+Registro como proveedor concluido ([[task-155]], cerrada); lo que la administración pide ahora —cotización y cronograma octubre–diciembre de 2026 con la tabla de conceptos que Rubén entregó— es [[task-181]]. El cuadre sigue en octubre, como lo comprometió Rubén; lo que Ricardo dejó «con calma, cuando vea a Rubén próximamente» es la estimación de costos ([[task-179]]) y «después» el documento de negociación ([[task-180]]). Panorama en [[2026-09-28-panorama-onigies]].

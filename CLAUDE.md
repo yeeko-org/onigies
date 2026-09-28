@@ -28,6 +28,7 @@ The new dashboard owns six routes (`/dashboard`, `/respuestas`, `/login`, `/regi
 - **«sexo-género»** (hyphenated, standardized by Rubén on 2026-09-04), never «sexo y género» nor just «sexo», in base/general questions and legends.
 - **Column order: Mujeres before Hombres**, everywhere (tables, forms, exports).
 - **UI wording: «De prueba»**, never «test», for test institutions and related labels.
+- **Operational matters between Rubén and the IES** (review pace, per-section deadlines) stay outside the platform and are not recorded in the graph.
 
 ## Skill and command prefixes
 

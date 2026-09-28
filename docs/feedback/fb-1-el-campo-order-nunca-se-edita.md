@@ -2,7 +2,8 @@
 type: feedback
 id: fb-1
 title: "El campo order nunca se edita en un formulario del dashboard: para eso existe el switch Reordenar"
-state: pending
+state: promoted
+outcome_ref: ".claude/skills/dashboard-collections/SKILL.md"
 date: 2026-09-10
 created: "2026-09-10T18:59:24-06:00"
 scope: local

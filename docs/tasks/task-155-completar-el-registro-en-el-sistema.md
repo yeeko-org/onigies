@@ -2,7 +2,7 @@
 type: task
 id: task-155
 title: Completar el registro en el sistema de proveedores de la UNAM
-state: open
+state: closed
 date: 2026-09-11
 owner: ricardo
 source: ["[[2026-09-04-reunion-con-ruben]]"]
@@ -25,9 +25,13 @@ Rubén ofreció empujarlo por su lado y Ricardo lo dejó en el aire: `[01:37]` �
 
 ## Criterios de aceptación
 
-- [ ] El registro como proveedor de la UNAM está validado y concluido
-- [ ] La primera factura se pudo emitir contra esa alta
+- [x] El registro como proveedor de la UNAM está validado y concluido (Ricardo, 2026-09-28: «Ya me registré, eso ya está»)
+- [ ] ~~La primera factura se pudo emitir contra esa alta~~ Pasa a [[task-181]]: antes de la factura la administración pide cotización y cronograma
 
 ## Reunión con Rubén, 2026-09-23
 
 Fuente: [[2026-09-23-reunion-ruben]]. La ruta del pago de los 80, Rubén, `[07:34]`–`[07:59]`: «te mando esto y se lo voy a mandar a Angelito, para que Dana te contacte y te hagan ese pago. De todos modos, esto me lo pidieron justamente para eso: yo ya lo pedí también en suficiencia presupuestal, para que se tenga tan pronto como sea posible y se te pague». Al despedirse, `[1:25:24]`: «espero que te busquen pronto para el pago». La reunión no dice si el registro como proveedor ya quedó validado.
+
+## Cierre, 2026-09-28
+
+Registro concluido. Lo que la administración pide ahora está en [[mail-admin-cotizacion]] y se trabaja en [[task-181]].

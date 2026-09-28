@@ -15,7 +15,7 @@ class ObservableResponse(FlowParticipant, models.Model):
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name='observable_responses')
     observable = models.ForeignKey(
-        Observable, on_delete=models.CASCADE, related_name='responses')
+        Observable, on_delete=models.PROTECT, related_name='responses')
     axis_value = models.ForeignKey(
         'survey.AxisValue', on_delete=models.CASCADE,
         related_name='observable_responses')
@@ -63,7 +63,7 @@ class GroupResponse(FlowParticipant, models.Model):
         ObservableResponse, on_delete=models.CASCADE,
         related_name='statuses')
     question_type = models.ForeignKey(
-        QuestionType, on_delete=models.CASCADE,
+        QuestionType, on_delete=models.PROTECT,
         related_name='group_responses')
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
@@ -183,9 +183,9 @@ class AResponse(models.Model):
         GroupResponse, on_delete=models.CASCADE,
         related_name='a_responses')
     question = models.ForeignKey(
-        AQuestion, on_delete=models.CASCADE, related_name='responses')
+        AQuestion, on_delete=models.PROTECT, related_name='responses')
     selected_option = models.ForeignKey(
-        AOption, on_delete=models.CASCADE,
+        AOption, on_delete=models.PROTECT,
         related_name='a_responses')
 
     def __str__(self):
@@ -201,7 +201,7 @@ class ReachResponse(models.Model):
         GroupResponse, on_delete=models.CASCADE,
         related_name='reach_responses')
     question = models.ForeignKey(
-        ReachQuestion, on_delete=models.CASCADE, related_name='responses')
+        ReachQuestion, on_delete=models.PROTECT, related_name='responses')
     not_focalized = models.BooleanField(
         verbose_name='No focalizado en sectores específicos',
         default=False)
@@ -220,7 +220,7 @@ class PlanResponse(models.Model):
     group_response = models.ForeignKey(
         GroupResponse, on_delete=models.CASCADE,
         related_name='plan_responses')
-    question = models.ForeignKey(PlanQuestion, on_delete=models.CASCADE)
+    question = models.ForeignKey(PlanQuestion, on_delete=models.PROTECT)
     media_plans = models.IntegerField(
         blank=True, null=True, verbose_name='Planes de nivel medio superior')
     superior_plans = models.IntegerField(
@@ -244,7 +244,7 @@ class BResponse(models.Model):
         GroupResponse, on_delete=models.CASCADE,
         related_name='b_responses')
     question = models.ForeignKey(
-        BQuestion, on_delete=models.CASCADE, related_name='responses')
+        BQuestion, on_delete=models.PROTECT, related_name='responses')
     academic_instances_complying = models.IntegerField(blank=True, null=True)
     admin_instances_complying = models.IntegerField(blank=True, null=True)
     percentage = models.DecimalField(
@@ -264,7 +264,7 @@ class SpecialResponse(models.Model):
         GroupResponse, on_delete=models.CASCADE,
         related_name='special_responses')
     question = models.ForeignKey(
-        SpecialQuestion, on_delete=models.CASCADE,
+        SpecialQuestion, on_delete=models.PROTECT,
         related_name='responses')
     total = models.IntegerField(blank=True, null=True)
     complying = models.IntegerField(blank=True, null=True)

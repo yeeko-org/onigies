@@ -2,7 +2,7 @@
 type: task
 id: task-164
 title: Análisis de la brecha entre la pregunta inicial de cada observable y sus preguntas A
-state: open
+state: closed
 date: 2026-09-22
 owner: ricardo
 parent: "[[task-2]]"
@@ -27,8 +27,8 @@ Material: los 41 observables con `init_question`, `a_main_question`, `a_main_sub
 - [x] Record con la tabla de los 41 observables y las brechas encontradas
 - [x] Lista de mejoras propuestas, ordenadas por impacto, lista para llevar a Rubén
 - [x] Lista de AQuestion candidatas a «No aplica», o constancia de que no hay
-- [ ] ⚠️ Ricardo le mandó a Rubén la lista de candidatas a «no aplica» en preguntas iniciales (`[32:00]`) — va dentro del documento, apartado 5
-- [ ] ⚠️ Ricardo le mandó a Rubén el análisis de «no aplica» de las 280 A y el documento de la brecha (el 24 de septiembre, `[59:35]`) — el documento está listo desde la madrugada del 25: Word y PDF en `~/respaldos/onigies-ruben/ONIGIES-2026-brecha-y-no-aplica.docx` y `.pdf` (copiados ahí desde `/tmp`, que es tmpfs y se borra al reiniciar; se regeneran del record con `~/respaldos/onigies-ruben/build.py <md> <docx>` y `soffice --headless --convert-to pdf`); lo envía Ricardo la mañana del 25 junto con el aviso del deploy
+- [x] Ricardo le mandó a Rubén la lista de candidatas a «no aplica» en preguntas iniciales (`[32:00]`) — va dentro del documento, apartado 5; enviado (Ricardo, 2026-09-28)
+- [x] Ricardo le mandó a Rubén el análisis de «no aplica» de las 280 A y el documento de la brecha — enviado (Ricardo, 2026-09-28: «ya se lo mandé, ya no está de nuestro lado»). Detalle previo: (el 24 de septiembre, `[59:35]`) — el documento está listo desde la madrugada del 25: Word y PDF en `~/respaldos/onigies-ruben/ONIGIES-2026-brecha-y-no-aplica.docx` y `.pdf` (copiados ahí desde `/tmp`, que es tmpfs y se borra al reiniciar; se regeneran del record con `~/respaldos/onigies-ruben/build.py <md> <docx>` y `soffice --headless --convert-to pdf`); lo envía Ricardo la mañana del 25 junto con el aviso del deploy
 
 ## Reunión con Rubén, 2026-09-23
 
@@ -54,7 +54,7 @@ De la reunión del 23 de septiembre:
 
 - **P4.** El 1.6 A5: ¿«No aplica», como lo leyó Ricardo en vivo (`[1:00:33]`), o candidata débil que se resuelve como «No», como la clasificó el record? Si se habilita, el control de esa A deja de ser `YesNoRadio` (ampliación del 23, arriba).
 
-La task sigue abierta; su cierre espera el envío.
+Cerrada el 2026-09-28 con el envío: Ricardo dijo «ya se lo mandé». El documento generado llevaba P1, P2 y P4 con la recomendación del coordinador (bloques 1–5 como propuesta, 6 informativo, 7 agenda; las tres A editadas a Sí/No; ambas lecturas del 1.6 A5 para que Rubén decida); si Ricardo editó esas decisiones o las tres frases marcadas antes de enviarlo, no consta. P3 (quién corrige las erratas en el dashboard) queda con Rubén. Lo que Rubén conteste se recoge en la reunión siguiente ([[task-173]], [[task-175]] e).
 
 ## Documento para Rubén, 2026-09-24 y 25
 

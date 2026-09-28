@@ -40,6 +40,7 @@ Dos sondas más de la captura cp, contra la base local, desde `api/`:
 | `answer/tests.py` · `GroupValidationTests` | reglas de completitud por tipo (A, B, alcance, planes, especial) |
 | `answer/tests.py` · `CaptureGateTests` | compuerta de respuesta (fecha + generales validadas), solo cierra a la IES |
 | `answer/tests.py` · `CaptureApiTests` | endpoints `/axis_value/`, `/observable_response/`, `/group_response/`: cerco por institución, revisora solo lee, upsert y promoción, `completion` embebido |
+| `answer/tests.py` · `InstrumentProtectionTests` | regresión: `confirm-delete` de una pregunta con respuestas da 409 (manejador global de `ProtectedError`/`RestrictedError` en `api/exception_handler.py`) y la respuesta sobrevive |
 | `survey/tests.py` · `GeneralValidationTests` | reglas de completitud de las generales: qué cuenta como respuesta y cuándo exime «No aplica» |
 | `survey/tests.py` · `GeneralReviewTurnTests` | la revisión no transiciona un grupo `gen_completed` con el paquete en `gen_draft`; sí con `gen_sent` |
 | `example/tests.py` · `PracticeReviewTurnTests` | lo mismo en bp: práctica `bp_completed` con el paquete en `bp_draft` contra `bp_sent` |

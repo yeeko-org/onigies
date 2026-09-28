@@ -29,7 +29,7 @@ Ricardo, en diálogo con el coordinador:
 - [ ] Declarar la preparación de las dos cotizaciones y del informe de actividades de diciembre de 2025, si Ricardo quiere sumarla
 - [ ] Confirmar la fecha de Miró (hoy tarificada a 850, suponiendo que fue antes de marzo; después, sube 2,700)
 - [ ] Decidir si el 2026-06-30 y el 07-02 (~1 h, un puente SSH a la UNAM con la llave de soporte de STIG) fueron de ONIGIES
-- [ ] Confirmar si los 80,000 comprometidos para 2026 incluyen IVA
+- [x] Confirmar si los 80,000 comprometidos para 2026 incluyen IVA — no: son 80,000 + IVA = 92,800; lo pagado en 2025 fueron 100,000 con IVA incluido (Ricardo, 2026-09-28, «esto ya lo había aclarado antes»)
 - [ ] Confirmar la lectura de la cláusula de soporte de 18 meses: ¿«igual que lo de los deploys» significa que la cláusula no cubre los deploys ni los puentes de la construcción? Opciones del record: (a) extra por «necesario para operar», (b) dentro de lo cotizado, (c) el puente nginx a «Modificación de versión 1»
 - [ ] Decidir si el trabajo de pesos de `QuestionType` pertenece a «Cálculo de indicadores y ponderaciones» (5,000) en vez de al editor del cuestionario
 - [ ] Decidir si el puente nginx hacia Netlify se asigna al renglón «Modificación de versión 1 para compatibilidad» (3,000) en vez de a infraestructura
@@ -38,3 +38,7 @@ Ricardo, en diálogo con el coordinador:
 - [ ] Decidir si los puertos de OCSA (colecciones, `ps_schema`, catálogos) y la preparación de Fedora, 5.3 h y unos 5,800 MXN, son inversión propia y salen del costo
 - [ ] Revisar las fracciones facturables de las sesiones mixtas, que son estimaciones de lectura: `803fabce` 40 %, `b6c8a4f0` 80 %, `6635e96d` 50 %, `b055612f` 90 %
 - [ ] Revisar las cuatro tarjetas de memoria de Windows (email-smtp-microsoft365, feedback_docstrings_es, feedback_minimal_queryset, email.md): fase 3 de migrate-session-logs
+
+## 2026-09-28
+
+Ricardo, al leer el panorama ([[2026-09-28-panorama-onigies]]): «Luego, con calma, cuando vea a Rubén próximamente». La estimación se completa con esa reunión; sin fecha.

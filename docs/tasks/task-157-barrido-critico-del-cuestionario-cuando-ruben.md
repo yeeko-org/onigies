@@ -2,7 +2,7 @@
 type: task
 id: task-157
 title: Barrido crítico del cuestionario cuando Rubén avise que terminó sus correcciones
-state: open
+state: closed
 date: 2026-09-11
 owner: ai
 parent: "[[task-2]]"
@@ -27,10 +27,14 @@ Pendientes ya conocidos que no van en esa lista y que este barrido debe comproba
 
 ## Criterios de aceptación
 
-- [ ] Rubén avisó que terminó sus correcciones
+- [x] ~~Rubén avisó que terminó sus correcciones~~ — sin marcar; la task se cerró por instrucción de Ricardo (2026-09-28) sin resolver si `[11:34]` cuenta como aviso
 - [ ] El barrido corrió sobre el contenido de producción, no sobre el seed
 - [ ] Los hallazgos nuevos quedaron en un documento que Rubén pueda recorrer, o se cerró declarando que no hubo ninguno
 
 ## Reunión con Rubén, 2026-09-23
 
 Fuente: [[2026-09-23-reunion-ruben]]. Rubén dijo que ya terminó sus correcciones y las mandó a las IES, `[11:34]`: «no lo revisé a detalle, porque además ya había terminado los cambios; ya los mandé a las IES». La task sigue abierta. Si esto cuenta como el aviso del primer criterio es lectura: Rubén habla de los cambios que mandó a las IES, sin decir que terminó de corregir en el dashboard; no se marcó.
+
+## Cierre, 2026-09-28
+
+Ricardo, al leer el panorama ([[2026-09-28-panorama-onigies]]): «Ya se cierra porfa». Rubén mandó los cambios a las IES el 23 de septiembre y el cuestionario principal está en producción desde el 25 con las IES dentro; el barrido crítico ya no procede. Lo que se detecte de aquí en adelante se corrige como errata desde el dashboard.

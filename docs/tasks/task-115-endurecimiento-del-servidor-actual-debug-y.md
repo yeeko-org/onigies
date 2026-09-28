@@ -27,3 +27,7 @@ Al apagar el modo de depuración conviene verificar que los archivos subidos se 
 - [ ] CORS usa una lista explícita de orígenes permitidos, no el comodín
 - [ ] La lista de hosts permitidos está revisada para el host de producción
 - [ ] Los archivos subidos se siguen sirviendo tras el cambio
+
+## 2026-09-28
+
+Contradicción documental detectada en el panorama ([[2026-09-28-panorama-onigies]]): [[task-4]] marca hecho «el API en producción corre sin `DEBUG` ni CORS abierto», mientras esta task y la skill `deployment` («Production currently runs DEBUG=True») dicen lo contrario. El código lee `DJANGO_DEBUG` con default False; falta leer el `.env` del servidor para saber cuál de las dos es cierta. Hasta entonces esta task manda; la lectura del `.env` va con el pase del roadmap, [[task-185]].

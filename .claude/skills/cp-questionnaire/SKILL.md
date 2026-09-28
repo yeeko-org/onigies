@@ -48,8 +48,11 @@ instrument's texts** (`adr-0014`): observable `name`, `description`,
 (`order`, flags, sectors, bridge rows) is re-asserted every run.
 `--overwrite-texts` restores the old behaviour for observables and
 questions — never for `Axis`/`Component`, which have been edited by
-users. Re-running still prunes stale AQuestion/PlanQuestion rows with
-CASCADE to answers (`task-133`).
+users. Re-running still prunes stale AQuestion/PlanQuestion/GeneralQuestion
+rows with `stale.delete()` (`task-133`); their answers hold those FKs as
+`PROTECT`, so a stale question that already has answers raises
+`ProtectedError` and, since the whole load runs in one
+`transaction.atomic()`, the entire seed rolls back.
 
 **The seed is retired** (`adr-0015`). `load_questionnaire` already ran for the last time on production (2026-09-10): `QuestionnaireSettings.seeded_at` is set, every invocation aborts unless `--force`, and the dashboard is the only source of the instrument's structure. `--force` is a data-loss decision, not a flag: it re-asserts seed structure over whatever the client built. Details and the backfills that replace `--sync-institutions`: `deploy-api` and `gen-general-info`.
 
@@ -82,9 +85,10 @@ reserved for the score) → typed responses below. The first two are
 (`provision_cp_responses`, 41 observables and ~120 groups per survey;
 `resave_institutions` is the backfill), guarded by unique constraints
 `(survey, observable)` and `(observable_response, question_type)`. Typed
-responses are **lazy**, created by the first save of their group. FKs are
-CASCADE: deleting a question row deletes its answers (the seed warns
-when it prunes stale AQuestion/PlanQuestion rows).
+responses are **lazy**, created by the first save of their group. The FKs
+from responses to the instrument (observable, question type, question,
+AOption) are `PROTECT`: a question row with answers cannot be deleted;
+the FKs up the response chain stay CASCADE.
 
 `ObservableResponse.value` governs the flow, not only the content: `False`
 («Sin la medida») moves the observable and its groups to

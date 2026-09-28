@@ -25,7 +25,7 @@ La reunión del 11 de septiembre ([[task-135]]) no ocurrió; su agenda pasa aqu�
 - [x] Respuesta de Rubén sobre el 1.14 registrada
 - [ ] Unidad de análisis en IES no autónomas decidida y registrada
 - [ ] Alcance obligatorio, 1.12 y simulación de calificaciones acordados o agendados
-- [ ] Ritmo de aprobación de generales acordado de cara a la apertura del 25
+- [x] ~~Ritmo de aprobación de generales acordado de cara a la apertura del 25~~ Fuera del alcance del grafo (Ricardo, 2026-09-28: «eso no se registra acá, eso es operativo»); dónde guardar esa regla es [[task-183]]
 
 ## Reunión con Rubén, 2026-09-23
 

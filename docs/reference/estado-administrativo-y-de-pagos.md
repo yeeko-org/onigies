@@ -56,7 +56,7 @@ Suman **86,206.90** de subtotal; con IVA al 16 %, exactamente **100,000.00**. *(
 
 ## Lo comprometido para 2026
 
-**80,000 en dos pagos: 32,000 y luego 48,000.** Rubén, [[2026-09-04-reunion-con-ruben]] `[03:48]`: «te van a dar primero 32 y luego 48». Es **lo que la CIGU puede pagarle este año**, con el compromiso de que el resto se pague entre lo que consigan en 2026 y 2027 *(dictado por Ricardo, 2026-09-11)*.
+**80,000 en dos pagos: 32,000 y luego 48,000. Son netos: 80,000 + IVA = 92,800** (aclarado por Ricardo el 2026-09-28; la tabla de conceptos 2026 que Rubén entregó suma exactamente eso, ver [[task-181]]). Rubén, [[2026-09-04-reunion-con-ruben]] `[03:48]`: «te van a dar primero 32 y luego 48». Es **lo que la CIGU puede pagarle este año**, con el compromiso de que el resto se pague entre lo que consigan en 2026 y 2027 *(dictado por Ricardo, 2026-09-11)*.
 
 Cómo llegó ese dinero y qué significa, en palabras de Rubén en esa reunión:
 
@@ -83,7 +83,7 @@ Ricardo la acepta y la matiza: lo que se salió de cotización hasta ahora es el
 
 ## El registro como proveedor de la UNAM
 
-Requisito de pago: la partida asignada exige que Ricardo esté dado de alta como proveedor, con factura. El trámite está **en proceso** y es la condición de la que cuelgan los dos pagos de 2026. Detalle y estado, en [[task-155]].
+Requisito de pago: la partida asignada exige que Ricardo esté dado de alta como proveedor, con factura. El registro **quedó concluido** (Ricardo, 2026-09-28; [[task-155]] cerrada). Lo que la administración pide ahora es la cotización con concepto «Servicio de actualización de plataforma ONIGIES» y un cronograma octubre–diciembre de 2026: [[task-181]].
 
 En la reunión del 4 de septiembre el trámite ya se había atorado una vez, `[00:24]`: «ya mandé mis documentos. No me han respondido todavía […] El primero de septiembre me dijeron: "Informamos que su registro quedará concluido una vez que se haya verificado su información"»; y `[01:37]`: «Ya pasamos el tiempo que ellos mismos ponen y no me ha llegado nada».
 

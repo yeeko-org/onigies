@@ -190,7 +190,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
-
+    'EXCEPTION_HANDLER': 'api.exception_handler.api_exception_handler',
 }
 
 

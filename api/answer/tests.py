@@ -33,7 +33,7 @@ from indicator.models import (
 from question.initial_data import InitQuestionTypes
 from question.models import (
     AOption, AQuestion, BQuestion, GeneralQuestion, ObservableQuestionType,
-    PlanQuestion, ReachQuestion, SpecialQuestion)
+    PlanQuestion, QuestionnaireSettings, ReachQuestion, SpecialQuestion)
 from survey.models import GeneralQuestionResponse
 
 
@@ -797,3 +797,20 @@ class CaptureApiTests(CpCatalogTestCase):
             'conteo no se pudo contrastar.',
             groups[self.group_b.pk]['warnings'])
         self.assertTrue(groups[self.group_reach.pk]['errors'])
+
+
+class InstrumentProtectionTests(CpCatalogTestCase):
+    """Las respuestas protegen su pieza del instrumento (PROTECT): borrarla
+    desde el dashboard es 409, no 500, y la respuesta sobrevive."""
+
+    def test_confirm_delete_of_answered_question_is_409(self):
+        self.answer_a_complete()
+        QuestionnaireSettings.objects.update_or_create(
+            pk=1, defaults={'content_open': True})
+        self.client.force_authenticate(self.reviewer)
+        url = f'/api/catalogs/a_question/{self.aq1.pk}/confirm-delete/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 409)
+        self.assertIn('Respuestas a preguntas A', response.json()['detail'])
+        self.assertTrue(
+            AResponse.objects.filter(question=self.aq1).exists())

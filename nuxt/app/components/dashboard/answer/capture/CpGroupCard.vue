@@ -87,7 +87,7 @@ const body = computed(() => BODIES[group.value.question_type] || null)
 const disabled = computed(
   () => !props.review && (props.preview || !props.captureOpen))
 const editable = computed(() => !props.review && !disabled.value
-  && !authStore.is_staff
+  && !authStore.is_reviewer
   && flowStore.canEditContent(group.value, props.axis))
 const showActions = computed(
   () => (props.review ? !props.preview : !disabled.value))

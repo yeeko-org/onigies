@@ -15,12 +15,12 @@ import {
   yearRules, hasAxis, hasDescription, hasResults, vigenciaOk, hasFeature,
 } from "~/composables/good_practice_validation.js"
 import FlowStatusActions from "~/components/dashboard/flow/FlowStatusActions.vue";
+import { useAuthStore } from '~/store/auth.js'
 const mainStore = useMainStore()
 const dashStore = useDashboardStore()
 const { rules } = useRules()
 
 const props = defineProps({
-  isStaff: { type: Boolean, default: true },
   editable: {
     type: Boolean,
     default: true
@@ -29,6 +29,8 @@ const props = defineProps({
   // Sin él no hay candado previo y el motor responde 400 al transicionar.
   root: { type: Object, default: null },
 })
+
+const isReviewer = computed(() => useAuthStore().is_reviewer)
 
 const full_main = defineModel({type: Object, required: true})
 
@@ -77,7 +79,7 @@ const scrollToFirstError = () => {
 // Persiste el contenido. Devuelve true si guardó, SIN cerrar el diálogo, para
 // que el split-button pueda guardar y luego transicionar sin cerrar antes.
 const persist = async () => {
-  if (!props.isStaff) {
+  if (!isReviewer.value) {
     const { valid } = await formRef.value.validate()
     if (!valid) {
       showErrorSummary.value = true
@@ -118,7 +120,7 @@ const saveAndTransition = async (t) => {
 }
 
 // Sin nada que ver ni que subir, la sección de evidencia no se pinta.
-const attachmentsEditable = computed(() => !props.isStaff && props.editable)
+const attachmentsEditable = computed(() => !isReviewer.value && props.editable)
 const showEvidence = computed(() => isEditing.value
   && (attachmentsEditable.value
     || (full_main.value.flow_attachments || []).length > 0))
@@ -169,8 +171,8 @@ const remove = async () => {
           v-model="full_main.name"
           :rules="[rules.required]"
           label="Nombre de la buena práctica *"
-          :variant="isStaff ? 'solo' : 'outlined'"
-          :readonly="isStaff"
+          :variant="isReviewer ? 'solo' : 'outlined'"
+          :readonly="isReviewer"
         />
         <div class="d-flex align-center">
 
@@ -182,7 +184,7 @@ const remove = async () => {
             :required="mustBeComplete"
             :width="380"
           />
-          <div v-if="!isStaff" class="ml-4">
+          <div v-if="!isReviewer" class="ml-4">
             <div class="text-subtitle-1">
               Periodo de vigencia
             </div>
@@ -199,7 +201,7 @@ const remove = async () => {
                   variant="outlined"
                   v-model="full_main.start_year"
                   :rules="yearRules(full_main, 'start')"
-                  :readonly="isStaff"
+                  :readonly="isReviewer"
                   class="mr-4"
                   width="160"
                   density="compact"
@@ -210,7 +212,7 @@ const remove = async () => {
                   variant="outlined"
                   v-model="full_main.end_year"
                   :rules="yearRules(full_main, 'end')"
-                  :readonly="isStaff"
+                  :readonly="isReviewer"
                   width="160"
                   density="compact"
                 />
@@ -226,11 +228,11 @@ const remove = async () => {
         <v-textarea
           v-model="full_main.description"
           label="Descripción"
-          :variant="isStaff ? 'solo' : 'outlined'"
+          :variant="isReviewer ? 'solo' : 'outlined'"
           rows="3"
           auto-grow
           max-rows="20"
-          :readonly="isStaff"
+          :readonly="isReviewer"
           :counter="5000"
           :rules="completeRules(hasDescription, 'La descripción es obligatoria')"
         />
@@ -238,11 +240,11 @@ const remove = async () => {
         <v-textarea
           v-model="full_main.results"
           label="Resultados obtenidos"
-          :variant="isStaff ? 'solo' : 'outlined'"
+          :variant="isReviewer ? 'solo' : 'outlined'"
           rows="3"
           auto-grow
           max-rows="20"
-          :readonly="isStaff"
+          :readonly="isReviewer"
           :counter="5000"
           :rules="completeRules(hasResults, 'Los resultados son obligatorios')"
         />
@@ -267,7 +269,6 @@ const remove = async () => {
         <FeatureList
           :good-practice-id="full_main.id"
           v-model:feature-values="full_main.feature_values"
-          :is-staff="isStaff"
           :editable="editable"
           class="mt-4 mb-4 w-100"
         />
@@ -276,7 +277,7 @@ const remove = async () => {
 
     <v-expand-transition>
       <v-alert
-        v-if="showErrorSummary && !isStaff"
+        v-if="showErrorSummary && !isReviewer"
         type="error"
         variant="tonal"
         density="compact"
@@ -288,7 +289,7 @@ const remove = async () => {
 
     <v-card-actions class="mb-3 mx-3">
       <v-btn
-        v-if="isEditing && !isStaff"
+        v-if="isEditing && !isReviewer"
         color="error"
         variant="text"
         @click="confirmDelete = true"

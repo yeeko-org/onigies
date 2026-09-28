@@ -49,7 +49,7 @@ const dashStore = useDashboardStore()
 const flowStore = useFlowStore()
 const { formatDate, formatLongDate } = useDates()
 
-const isStaff = computed(() => authStore.is_staff)
+const isReviewer = computed(() => authStore.is_reviewer)
 
 const surveyData = ref(null)
 const generalPackage = ref({})
@@ -95,7 +95,7 @@ const submissionDeadline = computed(
 // Editabilidad de contenido por grupo: el motor combina el turno de la RAÍZ
 // (el envío) con el content_editable del status propio del grupo. Con el
 // periodo cerrado la IES no edita nada.
-const canEdit = (group) => !isStaff.value && periodOpen.value
+const canEdit = (group) => !isReviewer.value && periodOpen.value
   && flowStore.canEditContent(group, generalPackage.value)
 
 // Kernel de flujo del envío: la compuerta de hijos (valid_child_statuses)
@@ -115,7 +115,7 @@ const sendTransitions = computed(() => flowStore.getAvailableTransitions(
 // (borrador, regresados con ajustes) y cerrados los completados o terminales.
 // La revisión los ve todos abiertos: solo lee.
 function resetPanels() {
-  panels.value = isStaff.value
+  panels.value = isReviewer.value
     ? groups.value.map((g) => g.id)
     : groups.value.filter((g) => canEdit(g)).map((g) => g.id)
 }
@@ -204,7 +204,7 @@ function onSendSelect(transition) {
         <!-- La revisión dictamina el envío desde aquí; la IES lo envía con el
              botón de abajo y aquí solo lee su estado. -->
         <FlowStatusActions
-          v-if="isStaff"
+          v-if="isReviewer"
           v-model="generalPackage"
           app-label="survey"
           model-name="generalpackage"
@@ -232,7 +232,7 @@ function onSendSelect(transition) {
     <!-- Institución y periodo ya están en el renglón colapsado del Survey;
          aquí solo falta cuándo llegó el envío. -->
     <v-card-text
-      v-if="isStaff && generalPackage.sent_at"
+      v-if="isReviewer && generalPackage.sent_at"
       class="py-1 text-body-2 text-grey-darken-1"
     >
       <v-icon size="small" start>send</v-icon>
@@ -240,7 +240,7 @@ function onSendSelect(transition) {
     </v-card-text>
 
     <v-alert
-      v-if="!isStaff && packageStatus?.role === 'reviewer'"
+      v-if="!isReviewer && packageStatus?.role === 'reviewer'"
       type="success"
       variant="tonal"
       class="mx-3 my-2"
@@ -268,7 +268,6 @@ function onSendSelect(transition) {
           :key="group.id"
           v-model:group="groups[index]"
           v-model:survey="surveyData"
-          :is-staff="isStaff"
           :editable="canEdit(group)"
           :saving="saving"
           :persist="persist"
@@ -280,7 +279,7 @@ function onSendSelect(transition) {
     <!-- Recordatorio de la fecha límite mientras es el turno de la IES y el
          periodo sigue abierto (solo si hay fecha configurada). -->
     <v-alert
-      v-if="!isStaff && periodOpen && submissionDeadline
+      v-if="!isReviewer && periodOpen && submissionDeadline
         && packageStatus?.role === 'ies'"
       type="info"
       variant="tonal"
@@ -294,7 +293,7 @@ function onSendSelect(transition) {
     <!-- Periodo cerrado con la IES aún en turno: perdió la ventana de envío.
          El candado real vive en el backend; esto solo lo comunica. -->
     <v-alert
-      v-if="!isStaff && !periodOpen && packageStatus?.role === 'ies'"
+      v-if="!isReviewer && !periodOpen && packageStatus?.role === 'ies'"
       type="warning"
       variant="tonal"
       class="my-3 mx-3"
@@ -303,7 +302,7 @@ function onSendSelect(transition) {
     </v-alert>
 
     <v-card-actions
-      v-if="!isStaff && periodOpen && sendTransitions.length"
+      v-if="!isReviewer && periodOpen && sendTransitions.length"
       class="mb-3 mx-3"
     >
       <v-spacer />

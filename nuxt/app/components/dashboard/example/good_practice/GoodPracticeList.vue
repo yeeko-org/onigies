@@ -30,7 +30,7 @@ const flowStore = useFlowStore()
 const dashStore = useDashboardStore()
 const { formatLongDate } = useDates()
 
-const isStaff = computed(() => authStore.is_staff)
+const isReviewer = computed(() => authStore.is_reviewer)
 const goodPracticePackage = ref({
   has_good_practices: null,
 })
@@ -72,7 +72,7 @@ const discardStatus = computed(() => flowStore.getStatus('bp_discarded'))
 // no edita nada: el backend no lo bloquea en /good_practice/, así que el
 // candado de periodo vive aquí.
 const canEdit = (obj) =>
-  !isStaff.value && periodOpen.value
+  !isReviewer.value && periodOpen.value
     && flowStore.canEditContent(obj, goodPracticePackage.value)
 
 const packageEditable = computed(() => canEdit(goodPracticePackage.value))
@@ -93,7 +93,7 @@ const submissionDeadline = computed(() =>
 // periodo siga abierto: bp_draft (respondió "Sí") o bp_discarded ("No"),
 // ambos con role 'ies'.
 const canEditResponse = computed(() => {
-  if (isStaff.value)
+  if (isReviewer.value)
     return false
   if (!periodOpen.value)
     return false
@@ -113,7 +113,7 @@ function onRespond(value) {
 }
 
 const canAddMore = computed(() => {
-  if (isStaff.value)
+  if (isReviewer.value)
     return false
   if (!packageEditable.value)
     return false
@@ -273,7 +273,7 @@ function reopenPackage() {
       </GoodPracticeIntro>
     </v-card-title>
     <v-alert
-      v-if="!isStaff && packageStatus?.role === 'reviewer'"
+      v-if="!isReviewer && packageStatus?.role === 'reviewer'"
       type="success"
     >
       Las buenas prácticas han sido enviadas y están en revisión.
@@ -363,7 +363,6 @@ function reopenPackage() {
 
           <GoodPracticeCard
             :practice="practice"
-            :is-staff="isStaff"
             :sent-at="goodPracticePackage.sent_at"
             :editable="canEdit(practice)"
             :loading="loadingId === practice.id"
@@ -376,7 +375,7 @@ function reopenPackage() {
     <!-- Recordatorio de la fecha límite mientras es el turno de la IES y
          el periodo sigue abierto (solo si hay fecha configurada). -->
     <v-alert
-      v-if="!isStaff && hasResponse && periodOpen && submissionDeadline
+      v-if="!isReviewer && hasResponse && periodOpen && submissionDeadline
         && packageStatus?.role === 'ies'"
       type="info"
       variant="tonal"
@@ -389,7 +388,7 @@ function reopenPackage() {
     <!-- Periodo cerrado con la IES aún en turno: perdió la ventana de
          envío. El candado real vive en el backend; esto solo lo comunica. -->
     <v-alert
-      v-if="!isStaff && hasResponse && !periodOpen
+      v-if="!isReviewer && hasResponse && !periodOpen
         && packageStatus?.role === 'ies'"
       type="warning"
       variant="tonal"
@@ -443,14 +442,12 @@ function reopenPackage() {
     >
       <NewGoodPractice
         :package-id="package_id"
-        :is-staff="true"
         @close="create_dialog = false"
         @created="onCreated"
       />
     </v-dialog>
     <GoodPracticeEditDialog
       v-model="editingPractice"
-      :is-staff="isStaff"
       :editable="editingEditable"
       @saved="onSaved"
       @deleted="onDeleted"

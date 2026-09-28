@@ -9,7 +9,6 @@ import GoodPracticeIntro from "~/components/dashboard/example/good_practice/Good
 const practice = defineModel({ default: null })
 
 defineProps({
-  isStaff: { type: Boolean, default: false },
   editable: { type: Boolean, default: false },
   title: { type: String, default: 'Editar Buena Práctica' },
 })
@@ -31,7 +30,6 @@ function close() {
     <GoodPracticeEditSimple
       v-if="practice"
       v-model="practice"
-      :is-staff="isStaff"
       :editable="editable"
       class="mt-3"
       @saved="emit('saved', $event)"

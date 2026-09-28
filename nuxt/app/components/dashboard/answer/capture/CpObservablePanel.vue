@@ -87,7 +87,7 @@ const titleColor = computed(
 
 // La respuesta inicial la da la IES en el turno del eje; el backend
 // decide lo demás (revisión activa) y responde 400 con el motivo.
-const canAnswer = computed(() => props.captureOpen && !authStore.is_staff
+const canAnswer = computed(() => props.captureOpen && !authStore.is_reviewer
   && flowStore.getStatus(props.axis.status)?.role === authStore.flow_role)
 
 // Atención por regla, no por nombre: el grupo en turno de quien mira con

@@ -5,15 +5,17 @@ import FlowCommentIcon from "~/components/dashboard/flow/FlowCommentIcon.vue";
 import {useMainStore} from "~/store/index.js";
 import TitleCommon from "~/components/dashboard/common/utils/TitleCommon.vue";
 import DisplayGroup from "~/components/dashboard/common/select/DisplayGroup.vue";
+import { useAuthStore } from '~/store/auth.js'
 const mainStore = useMainStore()
 
-const { practice, isStaff, editable, loading } = defineProps({
+const { practice, editable, loading } = defineProps({
   practice: { type: Object, required: true },
-  isStaff: { type: Boolean, default: false },
   sentAt: String,
   editable: Boolean,
   loading: { type: Boolean, default: false },
 })
+
+const isReviewer = computed(() => useAuthStore().is_reviewer)
 
 const emit = defineEmits(['open'])
 
@@ -36,7 +38,7 @@ const features_dict = computed(() => {
 })
 
 function openEdit(){
-  if (!editable && !isStaff) return
+  if (!editable && !isReviewer.value) return
   emit('open', practice.id)
 }
 
@@ -48,8 +50,8 @@ function openEdit(){
     rounded="lg"
   >
     <v-card
-      :hover="editable || isStaff"
-      :class="{'cursor-pointer': editable || isStaff}"
+      :hover="editable || isReviewer"
+      :class="{'cursor-pointer': editable || isReviewer}"
       :loading="loading"
       variant="tonal"
       color="blue"
@@ -93,7 +95,7 @@ function openEdit(){
             {{practice.flow_attachments.length}} archivos de evidencia
           </v-chip>
           <v-chip
-            v-if="isStaff"
+            v-if="isReviewer"
             size="small"
             variant="tonal"
             :color="evaluatedCount === active_features.length
@@ -139,7 +141,7 @@ function openEdit(){
 
       </v-card-text>
       <v-card-actions
-        v-if="editable || isStaff"
+        v-if="editable || isReviewer"
       >
         <v-spacer/>
         <v-btn
@@ -148,7 +150,7 @@ function openEdit(){
           :loading="loading"
           @click.stop="openEdit"
         >
-          {{ isStaff
+          {{ isReviewer
             ? 'Evaluar'
             : (editable ? 'Editar' : 'Ver detalles') }}
         </v-btn>

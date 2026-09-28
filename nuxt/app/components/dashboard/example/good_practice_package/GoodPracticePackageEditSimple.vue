@@ -155,7 +155,6 @@ async function refetchPackage() {
         >
           <GoodPracticeCard
             :practice="practice"
-            :is-staff="true"
             :sent-at="pkg.sent_at"
             :editable="canReview"
             @open="openPractice"
@@ -201,7 +200,6 @@ async function refetchPackage() {
       <GoodPracticeEditSimple
         v-if="editingPractice"
         v-model="editingPractice"
-        :is-staff="true"
         :editable="canReview"
         :root="pkg"
         class="mt-3"

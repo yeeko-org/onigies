@@ -1,14 +1,16 @@
 <script setup>
 import FlowAttachments from "~/components/dashboard/flow/FlowAttachments.vue";
 import Comments from "~/components/dashboard/common/utils/Comments.vue";
+import { useAuthStore } from '~/store/auth.js'
 
 const props = defineProps({
   feature: { type: Object, required: true },
   value: { type: Object, default: null },
-  isStaff: { type: Boolean, default: false },
   // Solo el turno del usuario habilita la edición; en false, todo es read-only.
   editable: { type: Boolean, default: true }
 })
+
+const isReviewer = computed(() => useAuthStore().is_reviewer)
 
 const emit = defineEmits(['update'])
 
@@ -47,7 +49,7 @@ const isRated = computed(() => localValue.value.final_option != null)
 
 const panelColor = computed(() => {
   if (!localValue.value.has_attribute) return ''
-  if (props.isStaff) {
+  if (isReviewer.value) {
     return localValue.value.final_option ? 'green-lighten-5' : 'orange-lighten-5'
   }
   return 'blue-lighten-5'
@@ -102,7 +104,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
     <v-card-title style="min-height: 76px">
       <div class="d-flex align-center w-100">
         <v-checkbox
-          v-if="!isStaff"
+          v-if="!isReviewer"
           v-model="hasAttribute"
           :disabled="!editable"
           hide-details
@@ -123,13 +125,13 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
             {{ feature.data.name }}
           </span>
           <span
-            v-if="feature.data.description && !isStaff"
+            v-if="feature.data.description && !isReviewer"
             class="text-medium-emphasis ml-1 text-subtitle-1"
           >
             ({{ feature.data.description }})
           </span>
         </div>
-        <template v-if="isStaff">
+        <template v-if="isReviewer">
           <v-chip
             v-if="isRated"
             size="small"
@@ -167,7 +169,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
 <!--      </v-alert>-->
 
       <!-- Para IES: Justificación -->
-      <template v-if="localValue.has_attribute && !isStaff">
+      <template v-if="localValue.has_attribute && !isReviewer">
         <p
           v-if="feature.data.reason_text && false"
           class="text-subtitle-1 mb-2"
@@ -206,7 +208,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
       </template>
 
       <!-- Para Staff: Evaluación -->
-      <template v-if="isStaff && localValue.has_attribute">
+      <template v-if="isReviewer && localValue.has_attribute">
         <div v-if="localValue.justification" class="mb-4">
           <div class="text-caption text-medium-emphasis mb-1">
             Justificación de la IES

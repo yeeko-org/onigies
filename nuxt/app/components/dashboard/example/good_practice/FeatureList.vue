@@ -3,16 +3,18 @@ import { computed } from 'vue'
 import FeatureItem from "~/components/dashboard/example/good_practice/FeatureItem.vue";
 
 import { useMainStore } from '~/store/index.js'
+import { useAuthStore } from '~/store/auth.js'
 const mainStore = useMainStore()
 const { cats, cats_ready, all_nodes } = mainStore
 
 const props = defineProps({
   goodPracticeId: { type: Number, required: true },
-  isStaff: { type: Boolean, default: false },
   // Edición habilitada solo cuando es turno del usuario (IES o revisora). En
   // false, la calificación queda en solo lectura.
   editable: { type: Boolean, default: true }
 })
+
+const isReviewer = computed(() => useAuthStore().is_reviewer)
 
 const featureValues = defineModel('featureValues', {
   type: Array,
@@ -63,7 +65,7 @@ const handleUpdate = async (featureId, data) => {
 <template>
   <div v-if="cats_ready">
     <v-alert
-      v-if="isStaff && !activeFeatures.length"
+      v-if="isReviewer && !activeFeatures.length"
       type="info"
       variant="tonal"
       class="mb-4"
@@ -71,7 +73,7 @@ const handleUpdate = async (featureId, data) => {
       La IES no ha marcado ninguna característica como cumplida.
     </v-alert>
     <div
-      v-if="!isStaff"
+      v-if="!isReviewer"
       class="mb-4 mt-4 text-h6"
     >
       Marca las características que crees que cumple tu buena práctica.
@@ -83,10 +85,9 @@ const handleUpdate = async (featureId, data) => {
       :key="feature.id"
     >
       <FeatureItem
-        v-if="!isStaff || getFeatureValue(feature.data.id)?.has_attribute"
+        v-if="!isReviewer || getFeatureValue(feature.data.id)?.has_attribute"
         :feature="feature"
         :value="getFeatureValue(feature.data.id)"
-        :is-staff="isStaff"
         :editable="editable"
         @update="(data) => handleUpdate(feature.data.id, data)"
       />

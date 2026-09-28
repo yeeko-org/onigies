@@ -214,6 +214,11 @@ export const useAuthStore = defineStore("auth", {
     // Rol del usuario autenticado en el motor de flujo (ver flowRoleOf).
     flow_role(state) {
       return flowRoleOf(state.user_onigies)
+    },
+    // Las revisoras reales tienen `reviewer` sin `is_staff`: la UI de
+    // doble audiencia se decide con esto, nunca con `is_staff`.
+    is_reviewer(state) {
+      return flowRoleOf(state.user_onigies) === 'reviewer'
     }
   }
 

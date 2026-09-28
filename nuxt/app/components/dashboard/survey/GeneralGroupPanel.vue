@@ -2,7 +2,7 @@
 /**
  * Un grupo de la sección «Información base» como panel expandible.
  *
- * Componente de doble audiencia (`isStaff` / `editable`, igual que
+ * Componente de doble audiencia (rol del store / `editable`, igual que
  * GoodPracticeEditSimple): la IES captura desde /respuestas y la revisión lo
  * reutiliza tal cual en solo lectura, sin bifurcar la presentación de las
  * preguntas.
@@ -28,6 +28,7 @@ import {
 } from '~/composables/useGeneralSurvey.js'
 import { useGeneralValidation } from '~/composables/useGeneralValidation.js'
 import { useMainStore } from '~/store/index.js'
+import { useAuthStore } from '~/store/auth.js'
 
 // Qué hijo pinta cada grupo. Mapa constante a nivel de módulo: no es
 // reactivo y los grupos sin entrada propia son preguntas numéricas.
@@ -56,12 +57,13 @@ const POPULATION_TYPE = 'population'
 const MAX_LISTED_ISSUES = 8
 
 const props = defineProps({
-  isStaff: { type: Boolean, default: false },
   editable: { type: Boolean, default: false },
   saving: { type: Boolean, default: false },
   // Guarda el Survey completo y resuelve a true si persistió.
   persist: { type: Function, required: true },
 })
+
+const isReviewer = computed(() => useAuthStore().is_reviewer)
 
 const survey = defineModel('survey', { type: Object, required: true })
 const group = defineModel('group', { type: Object, required: true })
@@ -218,7 +220,7 @@ const saveAndTransition = async (transition) => {
     <v-expansion-panel-text>
       <div class="d-flex align-center justify-end ga-2 mb-3">
         <FlowStatusActions
-          v-if="isStaff"
+          v-if="isReviewer"
           v-model="group"
           app-label="survey"
           model-name="generalgroupresponse"

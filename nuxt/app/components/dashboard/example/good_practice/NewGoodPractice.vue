@@ -3,8 +3,7 @@ import {useMainStore} from "~/store/index.js";
 const mainStore = useMainStore()
 
 const props = defineProps({
-  packageId: { type: Number, required: true },
-  isStaff: { type: Boolean, default: false }
+  packageId: { type: Number, required: true }
 })
 
 const createForm = ref(null)

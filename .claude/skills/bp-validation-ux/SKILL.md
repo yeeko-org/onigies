@@ -31,7 +31,7 @@ Models, the status catalog, transitions, propagation and the per-practice
 audience split**.
 
 The cp equivalent does not follow this layout: one component tree serves both
-audiences through a `review` prop instead of `isStaff`/`editable`, the reviewer
+audiences through a `review` prop instead of reading the role, the reviewer
 opens it from `AxisValueEditSimple` or from `CpSurveyAxes` in the survey detail,
 and there is no scoring yet — see `flow`, «cp: the live surfaces».
 
@@ -39,17 +39,18 @@ and there is no scoring yet — see `flow`, «cp: the live surfaces».
 
 | Component | Role | Audience knob |
 |---|---|---|
-| `example/good_practice/GoodPracticeCard.vue` | compact summary of one práctica (axes, evidence count, status chip) | `isStaff` → reviewer adds "X/Y evaluados"; clickable/"Evaluar" when `isStaff` even off-turn |
-| `example/good_practice/GoodPracticeEditSimple.vue` | the práctica detail opened in a **dialog** (content + features + status + comments) | `isStaff` → reviewer sees content read-only + scoring; `editable` → may edit now |
-| `example/good_practice/FeatureList.vue` + `FeatureItem.vue` | the características: IES marks (`has_attribute`/justification/`flow_attachments`), reviewer scores (`final_option` slider) | `isStaff` chooses mode; `editable` gates editing by turn |
+| `example/good_practice/GoodPracticeCard.vue` | compact summary of one práctica (axes, evidence count, status chip) | reviewer adds "X/Y evaluados"; clickable/"Evaluar" for the reviewer even off-turn |
+| `example/good_practice/GoodPracticeEditSimple.vue` | the práctica detail opened in a **dialog** (content + features + status + comments) | reviewer sees content read-only + scoring; `editable` → may edit now |
+| `example/good_practice/FeatureList.vue` + `FeatureItem.vue` | the características: IES marks (`has_attribute`/justification/`flow_attachments`), reviewer scores (`final_option` slider) | the role chooses mode; `editable` gates editing by turn |
 
 Two distinct knobs, do not conflate them:
 
-- **`isStaff`** = *which audience* → IES marking mode vs reviewer scoring mode.
+- **Audience** = *who is looking* → IES marking mode vs reviewer scoring mode.
+  Not a prop: each component reads `authStore.is_reviewer` (see `flow`).
 - **`editable`** = *may this user edit now* → read-only when false. One prop name
   across `GoodPracticeCard`, `GoodPracticeEditSimple` and `FeatureList`, but each
   surface computes it differently:
-  - **IES** (`GoodPracticeList`): `canEdit(obj) = !isStaff &&
+  - **IES** (`GoodPracticeList`): `canEdit(obj) = !isReviewer &&
     flowStore.canEditContent(obj, goodPracticePackage)` — **root-aware, per
     práctica**. Editing depends on the **envío (root)** being in the IES's turn
     *plus* the práctica's own `content_editable` (the two-permissions model — see
@@ -65,7 +66,7 @@ Two distinct knobs, do not conflate them:
 - Owns the IES-only question `has_good_practices` (orthogonal to the flow — a
   boolean, not a status). The Sí/No radio, "Cambiar respuesta", send/discard/
   reopen all live here; see [`flow`](../flow/SKILL.md) for `discard`/`reopen`.
-- Renders a grid of `GoodPracticeCard` (`isStaff=false`); clicking opens
+- Renders a grid of `GoodPracticeCard`; clicking opens
   `GoodPracticeEditSimple` in a `v-dialog` to edit content and mark features.
 - "Enviar a revisión" runs the package transition `bp_sent` via `useFlow`; the
   motor blocks it until every práctica is `bp_completed` (children rule).
@@ -87,10 +88,10 @@ dashboard auto-loads it inline for the `GoodPracticePackage` collection with
    scoring and the "Evaluar" button are live only on the reviewer's turn;
    otherwise everything is read-only (the reviewer can still open a práctica to
    look).
-3. **Grid** of `GoodPracticeCard` (`isStaff=true`, `:editable="canReview"`)
+3. **Grid** of `GoodPracticeCard` (`:editable="canReview"`)
    over `pkg.good_practices`.
 4. **Dialog** — clicking a card opens `GoodPracticeEditSimple`
-   (`isStaff=true`, `:editable="canReview"`) where the reviewer scores
+   (`:editable="canReview"`) where the reviewer scores
    (`FeatureList`) and runs the práctica's own `FlowStatusActions`.
 
 ### Open the dialog with the nested object directly (no extra fetch)
@@ -125,9 +126,9 @@ The calificación is **reviewer-only**: `FeatureGoodPractice.final_option`
 Enforced at two layers — keep both:
 
 1. **UI** — in `FeatureItem.vue` the scoring block (slider, "Evaluado" chip,
-   reviewer Comments) is behind `v-if="isStaff"`; in `GoodPracticeCard.vue` the
-   "X/Y evaluados" chip is `v-if="isStaff"`. The IES passes `isStaff=false`, so
-   it is not rendered.
+   reviewer Comments) is behind `v-if="isReviewer"`; in `GoodPracticeCard.vue`
+   the "X/Y evaluados" chip is `v-if="isReviewer"`. For the IES the store says
+   false, so it is not rendered.
 2. **Payload** — UI hiding alone still ships the fields over the wire. The
    serializer drops them in `to_representation` via the helper
    `hide_review_fields(serializer, data, names)` in

@@ -51,6 +51,7 @@ Los e2e son mockeados; para ejercitar la app contra Django de verdad (`:8018` + 
 
 - **Staff**: `smoke-staff@test.local`, contraseña `SmokeStaff2026!` (id 87, `is_staff`). Existe en la base local de hoy; si se restaura otro dump de producción hay que crearla de nuevo.
 - **IES de prueba con datos cp**: **FP** («Ferprueba», institución 76, `is_test=True`), persona usuaria `rickrebel+fp@gmail.com` (id 80), contraseña desconocida. Se entra con su token DRF: la cookie `auth_onigies` con el valor de `Token.objects.get(user_id=80).key`, o `Authorization: Token …` contra la API. Sus ejes del periodo 2025 son los AxisValue 293 a 296.
+- **Revisora sin `is_staff`**: id 15 (`reviewer=True`, `is_staff=False`), como las 9 revisoras reales de producción; se entra por el mismo token DRF (`Token.objects.get(user_id=15).key`). Es la que ejercita la UI de doble audiencia (`authStore.is_reviewer`); el staff de arriba no la distingue.
 - **No existen** en la base restaurada: `rickrebel+ciad@gmail.com` / `SmokeGen2026!` (la IES CIAD sí existe, pero no es de prueba y no tiene esa persona usuaria). Para probar «Información base» con una IES con contraseña conocida hay que crearla.
 
 Ninguna de estas credenciales existe en algún servidor.

@@ -20,6 +20,7 @@ Fuera de la suite, desde la raíz del monorepo: `api/venv/bin/pytest -c api/pyte
 Dos sondas más de la captura cp, contra la base local, desde `api/`:
 
 - `venv/bin/python manage.py shell -c "exec(open('.claude/smoke_cp_capture.py').read())"` — recorre el contrato real con una IES y una revisora (compuerta cerrada por fecha y por generales, lectura del eje, «Sí», PATCH por tipo, transición con faltantes, «No» con revisión activa y vuelta a «Sí», la revisora solo lee) e imprime los JSON; corre en una transacción que se revierte.
+- `venv/bin/python manage.py shell -c "exec(open('.claude/gen_reviewer_transitions.py').read())"` — una revisora sin `is_staff` (como las reales) transiciona grupos y paquetes de generales por HTTP: aprobar y solicitar ajustes con el paquete enviado (201), aprobar con el paquete en borrador (400); corre en una transacción que se revierte.
 - `venv/bin/python .claude/measure_axis_queries.py [axis_value_id] [user_id] [-v]` — consultas y tiempo de `GET /axis_value/<id>/`; los ids por defecto (293, 80) son de la base local.
 
 ## Qué cubre cada clase

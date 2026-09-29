@@ -150,7 +150,9 @@ confirmation texts, `entry_rules`, `next_statuses`, `valid_child_statuses`,
 - `flowStore.getChildrenNotReady(record, target, modelName)` → the children rule read client-side (`CHILD_REGISTRY` says where the children hang — for cp, `observable_responses` on the axis and `group_responses` on the observable, the field names of the Full serializers), as reasons in Spanish for the blocked dialog. UX only; the motor still enforces it on POST.
 - `flowStore.getRootNotInTurn(root)` → mirror of `root_turn_errors` (above).
 - `auth.flow_role` → `'reviewer'` if `is_superuser || is_staff || reviewer`, else
-  `'ies'` (mirrors backend `User.is_reviewer`).
+  `'ies'` (mirrors backend `User.is_reviewer`). `auth.is_reviewer` is its
+  boolean: dual-audience UI reads it in each component, never `is_staff` (real
+  reviewers carry `reviewer` without `is_staff`) and never through a prop.
 
 ## Frontend (`nuxt/app/components/dashboard/flow/`)
 
@@ -241,7 +243,7 @@ a status). Two `GoodPracticePackageViewSet` actions
 
 Both return 400 with the motor's error list when invalid. `GoodPracticeList.vue`
 shows "Respuesta registrada" + a "Cambiar respuesta" button (→ `reopen`) whenever
-`has_good_practices != null`, gated by `canEditResponse` (`!isStaff &&
+`has_good_practices != null`, gated by `canEditResponse` (`!isReviewer &&
 periodOpen && packageStatus.role === 'ies'`).
 
 `sent_at` is set automatically by the package's `save()` (`GoodPracticePackage`,

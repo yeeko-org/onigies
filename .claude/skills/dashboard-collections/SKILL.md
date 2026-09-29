@@ -125,9 +125,10 @@ In `PanelCommon.vue`:
   name, comments, icon/color, description, help_text) + your
   `{Model}Edit` inside the `#edit` slot, with the Guardar/Eliminar buttons.
 
-> Gotcha: `EditSimple` receives **only** `v-model`. It does **not** get `isStaff`
-> or other props — if the component declares such a prop with a default, that
-> default wins in the dashboard.
+> Gotcha: `EditSimple` receives **only** `v-model`. It does **not** get other
+> props — if the component declares one with a default, that default wins in
+> the dashboard. Who is looking comes from the store (`authStore.is_reviewer`),
+> not from a prop.
 
 **Read-only data inside an editor** is a field of the same kind with
 `readonly` (`v-text-field`, `v-checkbox`, `v-switch`), never a chip:

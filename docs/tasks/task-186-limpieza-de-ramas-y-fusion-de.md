@@ -14,9 +14,12 @@ Estado de git al 2026-09-28, verificado en la sesión del panorama. `main`, `pro
 
 Actualización del 2026-09-28 por la noche ([[2026-09-28-revisoras-sin-is-staff-en-generales]]): `main` y `production` avanzaron a `a6cd4cd`, el arreglo de frontend de las revisoras, copiado por cherry-pick sobre `de32e72` para desplegarlo sin arrastrar la migración `answer 0007`. `cp-backend` (`6a08f0c`) **no contiene el arreglo**: su árbol sigue con la UI vieja (`isStaff` = `is_staff`) hasta que se rebase sobre `main`, que es lo que lo trae; no hay nada que omitir. La otra copia del arreglo, `37f202a`, vive solo en `reviewer-role-naming` (cp-backend más ese commit). Se suman dos ramas locales sin nada propio que conservar una vez rebasada `cp-backend`: `reviewer-role-naming` y `reviewer-role-naming-prod` (ya fusionada en `main`).
 
+Actualización del 2026-10-02: `cp-backend` ya está rebasada sobre `main` (`a6cd4cd`), sin conflictos; era local, sin upstream. Sus siete commits quedaron encima del arreglo de las revisoras, así que el árbol ya trae `is_reviewer`. La fusión a `main` sigue atada al deploy de [[task-178]].
+
 ## Criterios de aceptación
 
 - [ ] `cp-backend` fusionada a `main` en el mismo acto que el deploy de task-178 (migrate `answer 0007`)
 - [ ] Verificado si los cuatro arreglos de `claude/gallant-jemison` existen en `main` por otra vía; la rama se borra o se rescata
 - [ ] Ricardo decide sobre las siete ramas locales sin commits propios
-- [ ] `cp-backend` rebasada sobre `main` (`a6cd4cd`); borradas `reviewer-role-naming` y `reviewer-role-naming-prod`
+- [x] `cp-backend` rebasada sobre `main` (`a6cd4cd`) (2026-10-02)
+- [ ] Borradas `reviewer-role-naming` y `reviewer-role-naming-prod`

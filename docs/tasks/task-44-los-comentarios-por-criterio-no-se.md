@@ -7,6 +7,7 @@ date: 2026-08-03
 owner: ai
 parent: "[[task-6]]"
 source: ["[[2026-07-28-reunion-flujo-bp-e-informacion-base]]"]
+related: ["[[task-70]]"]
 ---
 
 # Los comentarios por criterio no se bloquean cuando la práctica está del lado de la IES
@@ -22,6 +23,10 @@ El arreglo es propagar `editable` al bloque de comentarios, igual que a los dem�
 La revisión del 6 de agosto ([[2026-08-06-temas-reunion-fer]], §10 `[17:20]`–`[24:33]`) mostró que el hueco no es solo el criterio de una buena práctica. Fernanda confirmó el comportamiento esperado —una vez que el envío ya no está de tu lado, no deberías poder seguir comentando— y Ricardo confirmó que la regla debe propagarse hacia abajo, no quedarse en la raíz.
 
 **Ricardo amplió el alcance de esta task a hijos y nietos, en los tres flujos: `cp`, `gen` y `bp`.** O sea: el bloqueo por turno debe recorrer toda la jerarquía de cada grupo de flujo, no solo el par paquete→buena práctica→criterio de `bp`. El motor es el mismo en los tres (ver skill `flow`), así que la mecánica del arreglo también debería serlo: el gate de turno que hoy vive en la raíz tiene que llegar a cada nivel anidado que monte comentarios.
+
+## Nota del 2026-10-02
+
+Ricardo decidió que el campo `comments` de los criterios sigue la misma regla de turno por raíz que los comentarios del timeline: editable por cualquier revisora mientras el envío de bp esté en rol `reviewer`, congelado cuando regresa a la IES ([[2026-10-02-comentarios-editables-y-valvula-de-admin]], P11). El candado del criterio se construye dentro de [[task-70]]; aquí queda lo que esa task no cubre: que el bloqueo por turno recorra hijos y nietos en `cp` y `gen` para los comentarios del timeline, que hoy se gatean por el status propio del objeto y no por la raíz.
 
 ## Criterios de aceptación
 

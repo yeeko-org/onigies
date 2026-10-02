@@ -49,3 +49,5 @@ Ricardo (2026-10-02, tras revisar el .md): sin RFC ni domicilio fiscal en el doc
 - [x] Revisado por Dana, si Ricardo lo quiere, y entregado a Rubén para la solicitud formal de contratación
 
 Ricardo (2026-10-02, cierre): la cotización quedó en [[2026-10-02-cotizacion-servicio-actualizacion-onigies-2026]] (.md y .docx) y la está enviando él mismo; dio la task por hecha sin pasar por la revisión de Dana.
+
+Ricardo (2026-10-02, tarde): Dana sí la revisó por chat y pidió cuatro cambios —a nombre de Rubén, el concepto exacto de la factura en la descripción, monto general con IVA sin tabla por concepto, cronograma aparte en el orden del cuadro—; se aplicaron en el record y el .docx. Bajo el nombre de Rubén va «Dirección de Políticas de Igualdad y No Discriminación» (Ricardo).

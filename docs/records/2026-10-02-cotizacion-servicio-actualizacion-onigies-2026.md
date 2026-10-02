@@ -7,20 +7,21 @@ file: docs/records/assets/2026-10-02-cotizacion-servicio-actualizacion-onigies-2
 related: ["[[task-181]]", "[[mail-admin-cotizacion]]", "[[2026-01-07-cotizacion-plataforma-v3]]"]
 ---
 
-Cotización formal que Dana, de la administración de la CIGU, pidió por correo ([[mail-admin-cotizacion]]) para que Rubén Hernández solicite a la Dra. Norma Blazquez la contratación de Ricardo como proveedor ([[task-181]]); va dirigida solo a la Titular, cubre los 14 requisitos del lineamiento (3.1.1–3.1.14) con los conceptos y montos que Rubén le entregó, y la descripción de cada concepto sigue el molde y las frases de [[2026-01-07-cotizacion-plataforma-v3]]. Lo que sigue al separador es el texto íntegro de la cotización, tal como irá al .docx.
+Cotización formal que Dana, de la administración de la CIGU, pidió por correo ([[mail-admin-cotizacion]]) para que Rubén Hernández solicite a la Dra. Norma Blazquez la contratación de Ricardo como proveedor ([[task-181]]); va dirigida a Rubén (versión corregida el 2026-10-02 con las observaciones de Dana: a nombre de Rubén, el concepto exacto de la factura en la descripción, monto general con IVA sin tabla por concepto, y cronograma aparte en el orden del cuadro), cubre los 14 requisitos del lineamiento (3.1.1–3.1.14) con los conceptos y montos que Rubén le entregó, y la descripción de cada concepto sigue el molde y las frases de [[2026-01-07-cotizacion-plataforma-v3]]. Lo que sigue al separador es el texto íntegro de la cotización, tal como irá al .docx.
 
 ---
 
 # Cotización
 
-**Servicio de actualización de plataforma ONIGIES**
+**Servicio de actualización de plataforma ONIGIES.**
 
 **Fecha:** Ciudad de México, 2 de octubre de 2026
 
 **Núm. de folio:** ONIGIES-2026-01
 
-Dra. Norma Blazquez\
-Titular de la Coordinación para la Igualdad de Género de la UNAM\
+Rubén Hernández\
+Dirección de Políticas de Igualdad y No Discriminación\
+Coordinación para la Igualdad de Género de la UNAM\
 Presente
 
 ## Datos de quien cotiza
@@ -33,23 +34,9 @@ Presente
 
 ## Descripción del bien o servicio
 
-El Observatorio Nacional para la Igualdad de Género en las Instituciones de Educación Superior (ONIGIES) renueva su plataforma para registrar, validar y dar a conocer los resultados de las instituciones de educación superior (IES) conforme a la nueva metodología. El servicio comprende los siguientes módulos:
+**Concepto:** Servicio de actualización de plataforma ONIGIES.
 
-| Módulos | Costo (MXN) |
-|---|---|
-| **Plataforma pública** | **43,000** |
-| Diseño de nueva identidad gráfica del sitio web | 16,000 |
-| Configuración base de vistas web de sitio público | 17,000 |
-| Interactividad web y fichas intermedias | 7,000 |
-| Modificación de versión 1 para compatibilidad | 3,000 |
-| **Base de datos** | **17,000** |
-| Exportaciones a Excel | 12,000 |
-| Cálculo de indicadores y ponderaciones | 5,000 |
-| **Diseño de visualizaciones de población** | **20,000** |
-| Diseño de visualizaciones de población | 20,000 |
-| **Subtotal** | **80,000** |
-| IVA (16 %) | 12,800 |
-| **Total** | **92,800** |
+El Observatorio Nacional para la Igualdad de Género en las Instituciones de Educación Superior (ONIGIES) renueva su plataforma para registrar, validar y dar a conocer los resultados de las instituciones de educación superior (IES) conforme a la nueva metodología. El servicio comprende los módulos y actividades siguientes, calendarizados en el cronograma anexo:
 
 ### Diseño de nueva identidad gráfica del sitio web
 
@@ -107,14 +94,17 @@ Consultor en desarrollo de plataformas
 
 ## Anexo. Cronograma de actividades, octubre a diciembre de 2026
 
-Semanas de trabajo; la entrega final está prevista para la segunda semana de diciembre.
+Módulos y actividades en el orden del cuadro de conceptos entregado a la Titular; semanas de trabajo sombreadas. La entrega final está prevista para la segunda semana de diciembre.
 
 | Actividad | 1.ª oct | 2.ª oct | 3.ª oct | 4.ª oct | 5.ª oct | 1.ª nov | 2.ª nov | 3.ª nov | 4.ª nov | 1.ª dic | 2.ª dic |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Plataforma pública** | | | | | | | | | | | |
 | Diseño de nueva identidad gráfica del sitio web | ■ | ■ | ■ | | | | | | | | |
 | Configuración base de vistas web de sitio público | | | | | | ■ | ■ | ■ | ■ | | |
 | Interactividad web y fichas intermedias | | | | | | | | ■ | ■ | ■ | ■ |
 | Modificación de versión 1 para compatibilidad | | ■ | ■ | | | | | | | | |
+| **Base de datos** | | | | | | | | | | | |
 | Exportaciones a Excel | | | | | | | ■ | ■ | | | |
 | Cálculo de indicadores y ponderaciones | | | ■ | ■ | ■ | | | | | | |
+| **Diseño de visualizaciones de población** | | | | | | | | | | | |
 | Diseño de visualizaciones de población | | | | | | | ■ | ■ | ■ | ■ | ■ |

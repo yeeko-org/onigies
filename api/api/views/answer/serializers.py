@@ -73,7 +73,8 @@ class ReachQuestionReadSerializer(serializers.ModelSerializer):
         rows = list(obj.others_sectors.all())
         if obj.has_main_sectors:
             rows = list(self.context['main_sectors']) + rows
-        # La IES ya dijo que no tiene esa población; nulo no se oculta.
+        # La IES ya dijo que no tiene esa población o marcó «No aplica»
+        # (autoridades); nulo no se oculta.
         absent = self.context.get('absent_sector_ids', set())
         rows = [s for s in rows if s.id not in absent]
         rows.sort(key=lambda s: (s.order, s.id))

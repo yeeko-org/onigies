@@ -761,11 +761,23 @@ class CaptureApiTests(CpCatalogTestCase):
         for sector, is_present in presence.items():
             self.survey_a.population_quantities.update_or_create(
                 sector=sector, defaults={'is_present': is_present})
+        # Las autoridades no declaran presencia: su escape es «No aplica».
+        authority = {'is_main': False, 'is_authority': True}
+        no_apply = Sector.objects.create(
+            name='Titular', order=4, **authority)
+        applies = Sector.objects.create(
+            name='Cuerpo colegiado', order=5, **authority)
+        self.rq.others_sectors.add(no_apply, applies)
+        for sector in (no_apply, applies):
+            self.survey_a.population_quantities.update_or_create(
+                sector=sector, defaults={'no_apply': sector == no_apply})
         # Una respuesta guardada con el sector ya oculto no estorba.
         ReachResponse.objects.create(
             group_response=self.group_reach,
             question=self.rq).sectors.add(absent)
-        expected = {self.main_sector.pk, present.pk, self.extra_sector.pk}
+        expected = {
+            self.main_sector.pk, present.pk, self.extra_sector.pk,
+            applies.pk}
         urls = (
             reverse('axis_value-detail', args=[self.axis_value.pk]),
             reverse('observable_response-detail',

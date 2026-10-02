@@ -19,7 +19,7 @@ contenido: la IES dueña, con el status propio editable, la raíz en su
 turno y la compuerta de respuesta abierta (`user_can_edit_flow_content`
 + `survey.cp_gate`); la revisión solo lee, como con los adjuntos.
 """
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django_filters import CharFilter, FilterSet, NumberFilter
 from rest_framework import mixins, status
 from rest_framework.exceptions import PermissionDenied
@@ -45,13 +45,14 @@ FLOW_PREFETCH = ('flow_events__user', 'flow_events__attachments')
 
 
 def absent_sector_ids(**survey_lookup) -> set:
-    """Sectores que la IES declaró ausentes (`is_present=False`) en
+    """Sectores que la IES declaró ausentes (`is_present=False`) o que
+    marcó «No aplica» (`no_apply`, el escape de las autoridades) en
     generales; vacío fuera de un detalle (sin `pk` no hay encuesta)."""
     if any(value is None for value in survey_lookup.values()):
         return set()
     return set(PopulationQuantity.objects.filter(
-        is_present=False, **survey_lookup).values_list(
-            'sector_id', flat=True))
+        Q(is_present=False) | Q(no_apply=True),
+        **survey_lookup).values_list('sector_id', flat=True))
 
 
 def group_responses_prefetch(prefix: str = '') -> Prefetch:

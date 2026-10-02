@@ -31,7 +31,7 @@ Las preguntas de transversalidad sectorial (alcance) del cuestionario principal 
 
 ## Resultado
 
-Se filtra en el backend: `get_sectors` excluye los sectores cuya `PopulationQuantity.is_present` de esa encuesta es `False`. El nulo (nadie lo contestó) y el `True` siguen visibles. `ReachResponse.sectors` ya guardados no se tocan. El cuestionario en blanco que exporta a Word no pasa por este serializer y sigue completo. La validación de completitud sigue leyendo lo guardado.
+Se filtra en el backend: `get_sectors` excluye los sectores cuya `PopulationQuantity.is_present` de esa encuesta es `False`, y también las autoridades marcadas «No aplica» (`no_apply=True`), que no declaran presencia (ampliación del mismo día, a petición de Ricardo). El nulo (nadie lo contestó) y el `True` siguen visibles. `ReachResponse.sectors` ya guardados no se tocan. El cuestionario en blanco que exporta a Word no pasa por este serializer y sigue completo. La validación de completitud sigue leyendo lo guardado.
 
 ### Consecuencias
 

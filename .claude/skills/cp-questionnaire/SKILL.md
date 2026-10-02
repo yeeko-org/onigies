@@ -161,7 +161,8 @@ Frontend surfaces and the review mode: skill `flow`, «cp: the live surfaces».
   (6 populations), 1.16 (4 student levels, TSU since 2026-10-02).
 - Per IES, the capture API (`ReachQuestionReadSerializer.get_sectors`)
   drops from the offered list every sector the IES declared absent in
-  generales (`PopulationQuantity.is_present=False`); null stays visible,
+  generales (`PopulationQuantity.is_present=False`) or marked «No
+  aplica» (`no_apply=True`, the authorities' escape); null stays visible,
   and already-saved `ReachResponse.sectors` are never stripped.
 - `has_general_planning` (only 1.4 and 1.9) is an **escape option**
   («covered by general planning»), not a population; the answer lands

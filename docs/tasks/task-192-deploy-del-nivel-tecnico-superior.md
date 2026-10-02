@@ -30,9 +30,9 @@ En el servidor del API (Yeeko), venv de `apionigies`:
 
 **Cuidado:** `ensure_question` fuerza el orden 1–4 de las cuatro preguntas de planes de Generales (`PLANS_ORDER`); si Rubén reordenó esas preguntas a mano en el catálogo, el comando lo pisa. Revisar el orden vivo antes de correrlo.
 
-## Abierto (decisión de Ricardo)
+## Resuelto (Ricardo, 2026-10-02)
 
-Las 3 IES con TSU hoy quedan en «No». Si una de ellas ya capturó el 1.12 en el cp y después su Generales pasa de «No aplica» a un número de planes TSU, su grupo de planes del cp deja de pasar la compuerta («Falta el conteo de nivel técnico superior») hasta que capture ese nivel. Opciones: voltear a las 3 IES a «Sí» en el mismo deploy (con sus planes), o aceptar la devolución en revisión. No se resuelve aquí.
+Ninguna de las 3 IES con TSU tiene Generales aprobadas, así que el caso del grupo de planes del cp no ocurre: lo cambian ellas en Generales antes de llegar al cp. Ricardo lo cuida con Rubén fuera de la plataforma; no hace falta voltearlas en el deploy.
 
 ## Criterios de aceptación
 

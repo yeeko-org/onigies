@@ -21,3 +21,7 @@ source: ["[[2026-09-07-rediseno-edicion-observables-pesos-y-nomenclatura]]"]
 ## Nota del 10 de septiembre de 2026
 
 `load_questionnaire` ya no vuelve a correr después del deploy de [[task-139]] ([[adr-0015]]); `load_sectors` sigue sin candado ni pre-flight y el catálogo de sectores quedó fuera del interruptor del cuestionario, así que el riesgo de este bug es solo el de una corrida manual de `load_sectors`.
+
+## Nota del 2 de octubre de 2026
+
+El seed ya incluye «Alumnado de nivel técnico superior» ([[adr-0024]]); en producción el sector lo creó Rubén desde el catálogo y el comando `add_tsu_sector` le fijó `order=6`, mientras `load_sectors` le daría 7 y renumeraría los demás. El riesgo sigue siendo el mismo: la llave por nombre, editable, y una corrida manual del seed.

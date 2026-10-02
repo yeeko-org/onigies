@@ -1,7 +1,7 @@
 <script setup>
 /**
- * Grupo `poblaciones`: una sola tabla con las ~12 poblaciones del catálogo
- * (los 10 sectores principales más los 2 extra de POB-ESTÁNDAR).
+ * Grupo `poblaciones`: una sola tabla con las ~13 poblaciones del catálogo
+ * (los 11 sectores principales más los 2 extra de POB-ESTÁNDAR).
  *
  * Dos respuestas distintas conviven en cada renglón, y las dos viven en la
  * misma fila de PopulationQuantity: «Está presente» es el tri-estado

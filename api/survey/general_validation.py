@@ -43,7 +43,7 @@ def _count_issues(sector, row, measures_non_binary: bool,
 
 
 def _population_issues(survey, rows: dict, sectors: list) -> list[str]:
-    """Las 12 poblaciones declaran presencia; solo las 10 principales
+    """Las 13 poblaciones declaran presencia; solo las 11 principales
     esperan conteo (las 2 extra son estructurales y nunca se cuentan)."""
     issues: list[str] = []
     if survey.measures_non_binary is None:

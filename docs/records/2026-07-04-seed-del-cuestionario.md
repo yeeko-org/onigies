@@ -40,7 +40,7 @@ Orden de ejecución tras migrar: `load_sectors` → `migrate_initial_data`
    cada opción numerada → fila `AQuestion` (con nuevo campo `order`);
    `AOption` = escala global Sí=1/No=0 (ajustable en
    `seed_data/catalogs.py`).
-2. **POB-ESTÁNDAR** (12 poblaciones) = 10 sectores `is_main=True` +
+2. **POB-ESTÁNDAR** (12 poblaciones; 13 desde el 2026-10-02, ver [[adr-0024]]) = 10 sectores `is_main=True` +
    «Población externa» y «Público en general» (`is_main=False`). El caso
    estándar se codifica `has_main_sectors=True` + esos 2 en
    `others_sectors`. Ligado al pendiente §4 de
@@ -104,6 +104,7 @@ Resuelven los antes «pendientes diferidos» 1–4, 6 y 7.
 9. **`Sector.is_main` queda como está** (cerrado): el argumento de
    carga de captura lo absorbió `STANDARD_EXTRA_SECTORS`, y los 10
    `is_main=True` son justo la lista de composición de 1.7.
+   Enmienda 2026-10-02: son 11 con el TSU ([[adr-0024]]).
 10. **`load_main_axis` se conserva** como dueño de
     `icon`/`color`/`short_name`; corregir su help (ya no está
     obsoleto).

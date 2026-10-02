@@ -43,10 +43,12 @@ export const CP_TYPES = {
     questions: 'plan_questions',
     responses: 'plan_responses',
     empty: () => ({
-      media_plans: null, superior_plans: null, postgraduate_plans: null,
+      media_plans: null, technical_plans: null,
+      superior_plans: null, postgraduate_plans: null,
     }),
     fromResponse: (r) => ({
       media_plans: r.media_plans ?? null,
+      technical_plans: r.technical_plans ?? null,
       superior_plans: r.superior_plans ?? null,
       postgraduate_plans: r.postgraduate_plans ?? null,
     }),
@@ -66,6 +68,7 @@ export const CP_TYPES = {
 // la vez la columna de PlanResponse y la pregunta general que la acota.
 export const PLAN_LEVELS = [
   { field: 'media_plans', label: 'Nivel medio superior' },
+  { field: 'technical_plans', label: 'Nivel técnico superior' },
   { field: 'superior_plans', label: 'Licenciatura' },
   { field: 'postgraduate_plans', label: 'Posgrado' },
 ]

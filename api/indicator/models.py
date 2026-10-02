@@ -129,7 +129,7 @@ class Sector(models.Model):
         default=True, verbose_name="Es sector principal")
     is_authority = models.BooleanField(
         default=False, verbose_name="Es autoridad")
-    # Las 2 poblaciones que completan POB-ESTÁNDAR junto a las 10
+    # Las 2 poblaciones que completan POB-ESTÁNDAR junto a las 11
     # `is_main`; quedan fuera de la composición del observable 1.7.
     is_standard_extra = models.BooleanField(
         default=False, verbose_name="Es población extra del estándar")

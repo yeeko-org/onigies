@@ -9,6 +9,7 @@ El catálogo se construye a mano (un eje, tres observables) en vez de
 """
 from datetime import timedelta
 from io import StringIO
+from itertools import product
 
 from django.core.management import call_command
 from django.db import connection
@@ -109,6 +110,9 @@ class CpCatalogTestCase(APITestCase):
             name='planes_estudio', public_name='P')
         cls.gq_media = GeneralQuestion.objects.create(
             general_group=plans, name='media_plans', text='Media',
+            addl_config={'allow_no_apply': True})
+        cls.gq_technical = GeneralQuestion.objects.create(
+            general_group=plans, name='technical_plans', text='TSU',
             addl_config={'allow_no_apply': True})
         cls.gq_superior = GeneralQuestion.objects.create(
             general_group=plans, name='superior_plans', text='Superior',
@@ -552,8 +556,9 @@ class GroupValidationTests(CpCatalogTestCase):
         # Sin gen: no bloquea, advierte por nivel.
         completion = group_completion(group)
         self.assertEqual(completion.errors, [])
-        self.assertEqual(len(completion.warnings), 3)
+        self.assertEqual(len(completion.warnings), 4)
         self.gen_answer(self.gq_media, no_apply=True)
+        self.gen_answer(self.gq_technical, no_apply=True)
         self.gen_answer(self.gq_superior, 10)
         self.gen_answer(self.gq_postgraduate, 4)
         self.assertEqual(len(self.errors(group)), 2)
@@ -748,6 +753,33 @@ class CaptureApiTests(CpCatalogTestCase):
         self.assertEqual(
             response.json()['reach_responses'][0]['sectors'],
             [self.main_sector.pk])
+
+    def test_reach_hides_sectors_declared_absent(self):
+        absent = Sector.objects.create(name='Ausente', order=2)
+        present = Sector.objects.create(name='Presente', order=3)
+        presence = {absent: False, present: True, self.main_sector: None}
+        for sector, is_present in presence.items():
+            self.survey_a.population_quantities.update_or_create(
+                sector=sector, defaults={'is_present': is_present})
+        # Una respuesta guardada con el sector ya oculto no estorba.
+        ReachResponse.objects.create(
+            group_response=self.group_reach,
+            question=self.rq).sectors.add(absent)
+        expected = {self.main_sector.pk, present.pk, self.extra_sector.pk}
+        urls = (
+            reverse('axis_value-detail', args=[self.axis_value.pk]),
+            reverse('observable_response-detail',
+                    args=[self.obs_response.pk]))
+        for user, url in product((self.ies_a, self.reviewer), urls):
+            self.client.force_authenticate(user)
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            data = response.json()
+            observable = data['observable_responses'][0] \
+                if 'observable_responses' in data else data
+            reach = observable['observable_full']['reach_questions'][0]
+            self.assertEqual(
+                {s['id'] for s in reach['sectors']}, expected, url)
 
     def test_group_not_editable_once_sent(self):
         force(self.axis_value, 'cp_sent')

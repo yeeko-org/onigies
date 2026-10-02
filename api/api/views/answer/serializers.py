@@ -60,7 +60,8 @@ class BQuestionReadSerializer(serializers.ModelSerializer):
 
 class ReachQuestionReadSerializer(serializers.ModelSerializer):
     """`sectors` es la lista efectiva de poblaciones a marcar: las
-    principales (si `has_main_sectors`) más las propias, en su orden."""
+    principales (si `has_main_sectors`) más las propias, en su orden,
+    sin las que la IES declaró ausentes en generales."""
     sectors = serializers.SerializerMethodField()
 
     class Meta:
@@ -72,6 +73,9 @@ class ReachQuestionReadSerializer(serializers.ModelSerializer):
         rows = list(obj.others_sectors.all())
         if obj.has_main_sectors:
             rows = list(self.context['main_sectors']) + rows
+        # La IES ya dijo que no tiene esa población; nulo no se oculta.
+        absent = self.context.get('absent_sector_ids', set())
+        rows = [s for s in rows if s.id not in absent]
         rows.sort(key=lambda s: (s.order, s.id))
         return SectorReadSerializer(rows, many=True).data
 
@@ -157,6 +161,9 @@ class PlanResponseSerializer(serializers.ModelSerializer):
     media_plans = serializers.IntegerField(
         required=False, allow_null=True,
         validators=[MinValueValidator(0)])
+    technical_plans = serializers.IntegerField(
+        required=False, allow_null=True,
+        validators=[MinValueValidator(0)])
     superior_plans = serializers.IntegerField(
         required=False, allow_null=True,
         validators=[MinValueValidator(0)])
@@ -166,8 +173,8 @@ class PlanResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PlanResponse
-        fields = ['id', 'question', 'media_plans', 'superior_plans',
-                  'postgraduate_plans']
+        fields = ['id', 'question', 'media_plans', 'technical_plans',
+                  'superior_plans', 'postgraduate_plans']
 
 
 class SpecialResponseSerializer(serializers.ModelSerializer):
@@ -351,7 +358,7 @@ class AxisValueSerializer(serializers.ModelSerializer):
 
 
 GEN_DENOMINATORS = ('academic_instances', 'admin_instances', 'media_plans',
-                    'superior_plans', 'postgraduate_plans')
+                    'technical_plans', 'superior_plans', 'postgraduate_plans')
 
 
 class AxisValueFullSerializer(AxisValueSerializer):

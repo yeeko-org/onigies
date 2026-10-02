@@ -893,7 +893,7 @@ AXIS = {
                     "has_general_planning": False,
                     "reach_instances_question": None,
                     # Se mide por nivel de plan de estudios (PlanResponse ya
-                    # trae los 3 niveles), con 4 sub-preguntas independientes.
+                    # trae los 4 niveles), con 4 sub-preguntas independientes.
                     "plan_questions": [
                         {
                             "order": 1,
@@ -901,7 +901,7 @@ AXIS = {
                                 "¿En cuántos planes de estudio se establece "
                                 "como un enfoque transversal la perspectiva "
                                 "de género? — nivel medio superior / "
-                                "licenciatura / posgrado"
+                                "técnico superior / licenciatura / posgrado"
                             ),
                         },
                         {
@@ -911,7 +911,7 @@ AXIS = {
                                 "al menos una asignatura obligatoria "
                                 "específica en nombre y contenidos para la "
                                 "igualdad de género? — nivel medio superior "
-                                "/ licenciatura / posgrado"
+                                "/ técnico superior / licenciatura / posgrado"
                             ),
                         },
                         {
@@ -921,7 +921,7 @@ AXIS = {
                                 "al menos una asignatura optativa específica "
                                 "en nombre y contenidos para la igualdad de "
                                 "género? — nivel medio superior / "
-                                "licenciatura / posgrado"
+                                "técnico superior / licenciatura / posgrado"
                             ),
                         },
                         {
@@ -930,8 +930,8 @@ AXIS = {
                                 "¿En cuántos planes de estudio se incorporan "
                                 "asignaturas con al menos un 50% de "
                                 "contenidos con perspectiva de género? — "
-                                "nivel medio superior / licenciatura / "
-                                "posgrado"
+                                "nivel medio superior / técnico superior / "
+                                "licenciatura / posgrado"
                             ),
                         },
                     ],
@@ -1239,6 +1239,7 @@ AXIS = {
                         ),
                         "populations": [
                             "Alumnado de nivel medio superior",
+                            "Alumnado de nivel técnico superior",
                             "Alumnado de nivel licenciatura",
                             "Alumnado de nivel posgrado",
                         ],

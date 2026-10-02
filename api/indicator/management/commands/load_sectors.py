@@ -15,6 +15,7 @@ from indicator.models import Sector
 
 
 # Alumnado de nivel medio superior
+# Alumnado de nivel técnico superior
 # Alumnado de nivel licenciatura
 # Alumnado de nivel posgrado
 # Alumnado externo (de otras IES, intercambio o movilidad, servicio social, prácticas profesionales, voluntariado, etcétera)
@@ -69,6 +70,12 @@ class Command(BaseCommand):
             },
             {
                 "name": "Alumnado de nivel medio superior",
+                "description": "",
+                "needs_name": False,
+                "is_main": True,
+            },
+            {
+                "name": "Alumnado de nivel técnico superior",
                 "description": "",
                 "needs_name": False,
                 "is_main": True,

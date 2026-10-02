@@ -39,9 +39,19 @@ from flow.permissions import (
 from flow.services import assign_auto_status
 from indicator.models import Sector
 from survey.cp_gate import check_capture_open
-from survey.models import AxisValue
+from survey.models import AxisValue, PopulationQuantity
 
 FLOW_PREFETCH = ('flow_events__user', 'flow_events__attachments')
+
+
+def absent_sector_ids(**survey_lookup) -> set:
+    """Sectores que la IES declaró ausentes (`is_present=False`) en
+    generales; vacío fuera de un detalle (sin `pk` no hay encuesta)."""
+    if any(value is None for value in survey_lookup.values()):
+        return set()
+    return set(PopulationQuantity.objects.filter(
+        is_present=False, **survey_lookup).values_list(
+            'sector_id', flat=True))
 
 
 def group_responses_prefetch(prefix: str = '') -> Prefetch:
@@ -153,6 +163,8 @@ class AxisValueViewSet(InstitutionScopedMixin, BaseGenericViewSet):
         # Una consulta para todas las ReachQuestion estándar del eje.
         context['main_sectors'] = list(
             Sector.objects.filter(is_main=True).order_by('order', 'id'))
+        context['absent_sector_ids'] = absent_sector_ids(
+            survey__axis_values__pk=self.kwargs.get('pk'))
         return context
 
 
@@ -191,6 +203,8 @@ class ObservableResponseViewSet(InstitutionScopedMixin, ContentWriteMixin,
         context = super().get_serializer_context()
         context['main_sectors'] = list(
             Sector.objects.filter(is_main=True).order_by('order', 'id'))
+        context['absent_sector_ids'] = absent_sector_ids(
+            survey__observable_responses__pk=self.kwargs.get('pk'))
         return context
 
     def update(self, request, *args, **kwargs):

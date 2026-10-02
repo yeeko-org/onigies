@@ -7,7 +7,7 @@ import { useMainStore } from '~/store/index.js'
  * filas de PopulationQuantity.
  *
  * Las cuatro banderas del catálogo Sector bastan para armar la sección:
- * `is_main` (las 10 poblaciones núcleo), `is_standard_extra` (las 2 extra de
+ * `is_main` (las 11 poblaciones núcleo), `is_standard_extra` (las 2 extra de
  * POB-ESTÁNDAR), `is_authority` (las 4 autoridades) e `is_ies_head` (la
  * titular unipersonal). Los sectores sin ninguna —p. ej. «Autoridades y alto
  * funcionariado», de la lista custom del observable 1.13— no se capturan aquí.

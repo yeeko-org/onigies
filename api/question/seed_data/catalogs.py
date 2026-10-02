@@ -12,7 +12,7 @@ A_OPTIONS = [
     {"text": "No", "value": 0},
 ]
 
-# POB-ESTÁNDAR (12 poblaciones) = los 10 sectores is_main=True más estos
+# POB-ESTÁNDAR (13 poblaciones) = los 11 sectores is_main=True más estos
 # dos, que van en others_sectors cuando el alcance es estándar.
 STANDARD_EXTRA_SECTORS = ["Población externa", "Público en general"]
 
@@ -145,7 +145,7 @@ GENERAL_GROUPS = [
         "subtitle": "",
         "instruction": "",
         "is_population": False,
-        # Las tres ofrecen «No aplica»: una IES puede no impartir un
+        # Las cuatro ofrecen «No aplica»: una IES puede no impartir un
         # nivel, y sin la casilla su cero no se distinguiría de «no
         # ofrecemos ese nivel».
         "questions": [
@@ -158,11 +158,19 @@ GENERAL_GROUPS = [
                 "addl_config": {"allow_no_apply": True},
             },
             {
+                "name": "technical_plans",
+                "text": "Planes de estudio vigentes de nivel técnico "
+                        "superior (TSU, profesional asociado)",
+                "unit": "planes",
+                "order": 2,
+                "addl_config": {"allow_no_apply": True},
+            },
+            {
                 "name": "superior_plans",
                 "text": "Planes de estudio vigentes de nivel superior "
                         "(licenciatura)",
                 "unit": "planes",
-                "order": 2,
+                "order": 3,
                 "addl_config": {"allow_no_apply": True},
             },
             {
@@ -170,7 +178,7 @@ GENERAL_GROUPS = [
                 "text": "Planes de estudio vigentes de nivel posgrado "
                         "(especialidad, maestría y doctorado)",
                 "unit": "planes",
-                "order": 3,
+                "order": 4,
                 "addl_config": {"allow_no_apply": True},
             },
         ],

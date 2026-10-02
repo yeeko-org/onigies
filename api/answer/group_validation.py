@@ -33,6 +33,7 @@ B_DENOMINATORS = {
 }
 PLAN_LEVELS = {
     'media_plans': ('media_plans', 'nivel medio superior'),
+    'technical_plans': ('technical_plans', 'nivel técnico superior'),
     'superior_plans': ('superior_plans', 'nivel superior'),
     'postgraduate_plans': ('postgraduate_plans', 'posgrado'),
 }

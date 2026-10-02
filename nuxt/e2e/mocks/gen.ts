@@ -2,7 +2,7 @@
 // Reflejan `SurveyFullSerializer` con su `general_package` anidado y el
 // catálogo Sector tal como viaja en `/catalogs/all/`.
 //
-// El catálogo real trae 12 poblaciones y 4 autoridades; aquí se reduce a
+// El catálogo real trae 13 poblaciones y 4 autoridades; aquí se reduce a
 // las que ejercitan cada bandera (`is_main`, `is_standard_extra`,
 // `is_authority`, `is_ies_head`), para que las listas de faltantes de la
 // compuerta quepan en una aserción legible.

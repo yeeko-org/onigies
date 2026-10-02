@@ -34,9 +34,9 @@ themselves are NOT stored on the group response:
 | Group | fields | Values stored in |
 |---|---|---|
 | `estructuras` | `academic_instances`, `admin_instances` (integer) | `GeneralQuestionResponse` rows (`value_integer`) |
-| `poblaciones` | `[]` — checklist from Sector catalog (POB-ESTÁNDAR: 10 `is_main` + «Población externa», «Público en general») | Selection → `Survey.sectors` M2M; men/women counts → `PopulationQuantity` |
+| `poblaciones` | `[]` — checklist from Sector catalog (POB-ESTÁNDAR: 11 `is_main` + «Población externa», «Público en general») | Selection → `Survey.sectors` M2M; men/women counts → `PopulationQuantity` |
 | `autoridades` | `[]` — checklist from Sectors with `is_authority=True` | `PopulationQuantity` |
-| `planes_estudio` | `media_plans`, `superior_plans`, `postgraduate_plans` (integer) | `GeneralQuestionResponse` rows (`value_integer`), each with per-row «No aplica» |
+| `planes_estudio` | `media_plans`, `technical_plans`, `superior_plans`, `postgraduate_plans` (integer; TSU added 2026-10-02, `adr-0024`) | `GeneralQuestionResponse` rows (`value_integer`), each with per-row «No aplica» |
 | `forma_gobierno` | `decentralized`, `centralized` (boolean) | **Gotcha:** a single question `name=is_centralized` — the two UI options map to one `value_boolean` row; the frontend must translate |
 
 ### GeneralQuestionResponse: where scalar answers live (task-117)
@@ -69,11 +69,11 @@ transitions once the period closed (`validate_flow_transition`).
 Four booleans (`indicator/models.py`) are enough to build the whole
 section; a sector with none of them is not captured here:
 
-- `is_main=True` — the 10 core populations.
+- `is_main=True` — the 11 core populations (TSU added 2026-10-02, `adr-0024`).
 - `is_standard_extra=True` — «Población externa», «Público en general»,
   the 2 that complete POB-ESTÁNDAR (`is_main=False`), appended to every
   standard ReachQuestion. Kept as explicit extras on purpose (decision
-  closed 2026-07-04): the 10 `is_main` sectors are exactly the
+  closed 2026-07-04): the `is_main` sectors (11 since 2026-10-02) are exactly the
   composition list of 1.7.
 - `is_authority=True` — the 4 authorities: «Titular de la IES»,
   «Máximo cuerpo colegiado de toda la IES», «Titulares de instancias
@@ -99,7 +99,7 @@ section; a sector with none of them is not captured here:
    (autoridades + poblaciones groups); the observable keeps only its
    part A.
 
-Details: 1.7's composition uses **only the 10 `is_main` sectors** (not
+Details: 1.7's composition uses **only the 11 `is_main` sectors** (not
 the 2 extras). «Titular de la IES» is captured as total 1 with
 `number_women` 0/1 (the «Mujer: sí/no» answer); percentages for the
 other authorities derive from men/women.

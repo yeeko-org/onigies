@@ -106,7 +106,7 @@ client (tasks 15, 28, 29, 111). Do not derive one from the weights below.
 | `AQuestion` — one row per checklist option, key `(observable, order)`; stem in `Observable.a_main_question`, instruction line («Mencione/Marque todas las características…») in `Observable.a_main_subtitle` (40 of 41; 2.1 has none) | `AResponse` → global `AOption` scale (Sí=1 / No=0) | «Armonización e institucionalización»: which options apply |
 | `BQuestion` — one per observable (order=1); `text` is the only home of that question (seed key `reach_instances_question`, no longer a model field); flags `includes_academic` / `includes_admin` | `BResponse` — `academic_instances_complying`, `admin_instances_complying`, `percentage` | «Transversalidad orgánica»: in how many instances it holds |
 | `ReachQuestion` — `has_main_sectors`, `others_sectors` M2M, `has_general_planning` | `ReachResponse` — `not_focalized` + M2M `sectors` | «Transversalidad sectorial»: population reach |
-| `PlanQuestion` — key `(observable, order)` | `PlanResponse` — `media_plans`, `superior_plans`, `postgraduate_plans`, `percentage` | Counts per study-plan level |
+| `PlanQuestion` — key `(observable, order)` | `PlanResponse` — `media_plans`, `technical_plans`, `superior_plans`, `postgraduate_plans`, `percentage` | Counts per study-plan level |
 | `SpecialQuestion` — one per observable | `SpecialResponse` — `total`, `complying`, `compliance_percentage` | Ad-hoc proportions |
 
 ## Capture (API)
@@ -153,12 +153,16 @@ Frontend surfaces and the review mode: skill `flow`, «cp: the live surfaces».
 
 ## Reach: POB-ESTÁNDAR and variants
 
-- Standard reach (33 of 35 ReachQuestions): `has_main_sectors=True` +
+- Standard reach (32 of 35 ReachQuestions): `has_main_sectors=True` +
   `others_sectors` = `STANDARD_EXTRA_SECTORS` («Población externa»,
-  «Público en general») → 12 populations = 10 `is_main` sectors + 2.
+  «Público en general») → 13 populations = 11 `is_main` sectors + 2 (TSU added 2026-10-02, `adr-0024`).
 - Custom lists: `has_main_sectors=False` + full list in
   `others_sectors` — 1.6 (Titular / Máximo cuerpo colegiado), 1.13
-  (6 populations), 1.16 (3 student levels).
+  (6 populations), 1.16 (4 student levels, TSU since 2026-10-02).
+- Per IES, the capture API (`ReachQuestionReadSerializer.get_sectors`)
+  drops from the offered list every sector the IES declared absent in
+  generales (`PopulationQuantity.is_present=False`); null stays visible,
+  and already-saved `ReachResponse.sectors` are never stripped.
 - `has_general_planning` (only 1.4 and 1.9) is an **escape option**
   («covered by general planning»), not a population; the answer lands
   in `ReachResponse.not_focalized`.

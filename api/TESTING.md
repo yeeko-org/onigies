@@ -40,13 +40,14 @@ Dos sondas más de la captura cp, contra la base local, desde `api/`:
 | `answer/tests.py` · `ObservableFlowRulesTests` | ganchos del observable y del grupo: pregunta inicial sin responder, `cp_not_present` como hijo válido, pospuesta con grupos resueltos, la revisión espera a que la IES envíe el eje, el grupo sin captura aprobado no frena `cp_completed` y rechaza el reajuste voluntario |
 | `answer/tests.py` · `GroupValidationTests` | reglas de completitud por tipo (A, B, alcance, planes, especial) |
 | `answer/tests.py` · `CaptureGateTests` | compuerta de respuesta (fecha + generales validadas), solo cierra a la IES |
-| `answer/tests.py` · `CaptureApiTests` | endpoints `/axis_value/`, `/observable_response/`, `/group_response/`: cerco por institución, revisora solo lee, upsert y promoción, `completion` embebido |
+| `answer/tests.py` · `CaptureApiTests` | endpoints `/axis_value/`, `/observable_response/`, `/group_response/`: cerco por institución, revisora solo lee, upsert y promoción, `completion` embebido; el alcance no ofrece los sectores que la IES declaró ausentes en generales (`is_present=False`), sí los nulos |
 | `answer/tests.py` · `InstrumentProtectionTests` | regresión: `confirm-delete` de una pregunta con respuestas da 409 (manejador global de `ProtectedError`/`RestrictedError` en `api/exception_handler.py`) y la respuesta sobrevive |
 | `survey/tests.py` · `GeneralValidationTests` | reglas de completitud de las generales: qué cuenta como respuesta y cuándo exime «No aplica» |
 | `survey/tests.py` · `GeneralReviewTurnTests` | la revisión no transiciona un grupo `gen_completed` con el paquete en `gen_draft`; sí con `gen_sent` |
 | `example/tests.py` · `PracticeReviewTurnTests` | lo mismo en bp: práctica `bp_completed` con el paquete en `bp_draft` contra `bp_sent` |
 | `survey/tests.py` · `GeneralQuestionResponseSyncTests` | upsert de `question_responses` anidado: columna por `q_type`, normalización del `''`, sin duplicar |
 | `survey/tests.py` · `PreloadCentralizedTests` | precarga de la forma de gobierno desde el catálogo de instituciones |
+| `indicator/test_add_tsu_sector.py` · `AddTsuSectorTests` | `add_tsu_sector` idempotente: la segunda corrida no duplica sector, presencia, pregunta ni respuesta; no pisa lo que la IES ya capturó y pasa a «No» la presencia nula |
 | `question/tests.py` · `SeedTextOwnershipTests` | de los textos manda el dashboard; `--overwrite-texts` los repone, salvo `Axis.name` |
 | `question/tests.py` · `TypeWeightSyncTests` | el re-seed repone la fila puente borrada, no pisa un `weight` capturado, y deja los conteos 2026 (41/41/35/1/1/1) |
 | `question/tests.py` · `FinalWeightTests` | ponderación efectiva: la propia; la del tipo solo cuando el observable tiene exactamente el trío estándar (A + orgánica + sectorial); `None` sin fila puente |

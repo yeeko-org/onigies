@@ -63,7 +63,7 @@ const total_count = computed(() => others_count.value
   + (full_main.value.has_main_sectors ? main_sectors.value.length : 0))
 
 // Es el número que espeja el chip de la fila colapsada y el que se
-// razona del instrumento (el POB-ESTÁNDAR de 12).
+// razona del instrumento (el POB-ESTÁNDAR de 13).
 const total_hint = computed(() => {
   if (!full_main.value.has_main_sectors)
     return `${total_count.value} ${

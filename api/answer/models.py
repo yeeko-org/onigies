@@ -223,6 +223,9 @@ class PlanResponse(models.Model):
     question = models.ForeignKey(PlanQuestion, on_delete=models.PROTECT)
     media_plans = models.IntegerField(
         blank=True, null=True, verbose_name='Planes de nivel medio superior')
+    technical_plans = models.IntegerField(
+        blank=True, null=True,
+        verbose_name='Planes de nivel técnico superior')
     superior_plans = models.IntegerField(
         blank=True, null=True, verbose_name='Planes de nivel superior')
     postgraduate_plans = models.IntegerField(

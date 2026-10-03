@@ -142,8 +142,8 @@ its groups are born in `cp_approved` and get neither PATCH nor review
 opened answers (`Period.cp_open_at` reached, set in the admin) and its gen
 section is closed (`GeneralPackage` in `gen_finished`). Until then it sees the
 questionnaire but writes nothing — answers, initial boolean, transitions,
-attachments — through the `AxisValue.content_lock_errors` and
-`validate_flow_transition` hooks; direct writes get 403 with `code`
+attachments (the hooks that enforce it and the `cp_capture` payload: skill
+`flow` → permissions); direct writes get 403 with `code`
 `cp_not_open` / `gen_not_approved`. Test institutions skip the date, not the
 validated gen. The
 reviewer never captures (403 `reviewer_read_only`) and the gate does not stop

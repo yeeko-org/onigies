@@ -10,6 +10,8 @@ const practice = defineModel({ default: null })
 
 defineProps({
   editable: { type: Boolean, default: false },
+  // Envío de la práctica (raíz del flujo): da el turno de los comentarios.
+  root: { type: Object, default: null },
   title: { type: String, default: 'Editar Buena Práctica' },
 })
 
@@ -31,6 +33,7 @@ function close() {
       v-if="practice"
       v-model="practice"
       :editable="editable"
+      :root="root"
       class="mt-3"
       @saved="emit('saved', $event)"
       @deleted="emit('deleted', $event)"

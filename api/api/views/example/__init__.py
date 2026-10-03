@@ -1,9 +1,15 @@
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters import FilterSet, NumberFilter
 from api.views.common_views import BaseGenericViewSet
-from flow.permissions import IsFlowInstitutionOwnerOrReviewer
+from api.views.answer import InstitutionScopedMixin
+from flow.permissions import (
+    IsFlowInstitutionOwnerOrReviewer, content_lock_errors,
+    resolve_flow_root, user_can_act_on_flow_object,
+    user_can_edit_flow_content)
+from flow.registry import resolve_flow_owner
 from api.views.example.serializers import GoodPracticeFullSerializer, GoodPracticeSerializer, \
     FeatureSerializer, FeatureFullSerializer, FeatureOptionSerializer, FeatureGoodPracticeSerializer, \
     GoodPracticePackageFullSerializer, GoodPracticePackageSerializer
@@ -12,13 +18,109 @@ from flow.models import Status
 from flow.services import execute_transition
 
 
-class GoodPracticeViewSet(BaseGenericViewSet):
+class PracticeContentWriteMixin:
+    """La IES escribe el contenido de bp solo cuando la práctica es
+    editable hoy (`user_can_edit_flow_content`: status propio editable y
+    el envío en su turno); los criterios delegan en su práctica
+    (`flow_delegate`).
 
+    Hermano de `ContentWriteMixin` del cuestionario, que no se reusa: allá
+    la revisión no escribe nada y manda la compuerta de respuesta de cp;
+    aquí la revisión califica (los campos de revisión los filtra el
+    serializer) y queda exenta del candado de contenido.
+
+    El admin (`is_admin`) queda fuera de las tres reglas de la revisión:
+    crea, borra y escribe contenido sin candado de turno.
+    """
+    not_editable_message = (
+        'No puedes modificar esta buena práctica en su estado actual.')
+
+    def check_content_write(self, obj) -> None:
+        user = self.request.user
+        if user.is_reviewer:
+            return
+        owner = resolve_flow_owner(obj)
+        if user_can_edit_flow_content(user, owner):
+            return
+        errors = content_lock_errors(user, resolve_flow_root(owner))
+        detail = errors[0] if len(errors) == 1 else (
+            errors or self.not_editable_message)
+        raise PermissionDenied({'detail': detail, 'code': 'not_editable'})
+
+    def perform_update(self, serializer):
+        self.check_content_write(serializer.instance)
+        super().perform_update(serializer)
+
+    def check_delete(self, obj) -> None:
+        # La revisión está exenta del candado de contenido para calificar,
+        # pero borrar no es calificar.
+        user = self.request.user
+        if user.is_reviewer and not user.is_admin:
+            raise PermissionDenied(
+                'La revisión no elimina buenas prácticas ni criterios; '
+                'solo los califica.')
+        self.check_content_write(obj)
+
+    def perform_destroy(self, instance):
+        self.check_delete(instance)
+        super().perform_destroy(instance)
+
+    @action(detail=True, methods=['delete'], url_path='confirm-delete')
+    def confirm_delete(self, request, pk=None):
+        # La acción de CustomDeleteMixin borra sin pasar por
+        # perform_destroy; sin esto sería la puerta trasera del candado.
+        self.check_delete(self.get_object())
+        return super().confirm_delete(request, pk=pk)
+
+
+class GoodPracticeViewSet(InstitutionScopedMixin, PracticeContentWriteMixin,
+                          BaseGenericViewSet):
+    permission_classes = [IsAuthenticated, IsFlowInstitutionOwnerOrReviewer]
+    survey_path = 'package__survey'
     queryset = GoodPractice.objects.all().prefetch_related(
         'flow_events__user', 'flow_events__attachments',
         'flow_attachments', 'feature_values__flow_attachments')
     serializer_class = GoodPracticeFullSerializer
+    # Cada práctica nace con sus criterios (GoodPractice.save), así que el
+    # borrado protegido siempre respondería 400 con el reporte de
+    # relacionados; la IES borra la práctica con sus criterios en cascada.
     disable_protection = True
+
+    def _check_package(self, serializer) -> None:
+        """El paquete viene en el cuerpo: sin esto una IES crearía o
+        movería una práctica al envío de otra institución, o a un envío
+        que ya no está en su turno de edición."""
+        user = self.request.user
+        package = serializer.validated_data.get('package')
+        if package is None:
+            return
+        if not user_can_act_on_flow_object(user, package):
+            raise PermissionDenied(
+                'Solo puedes registrar prácticas en el envío de tu '
+                'institución.')
+        # Una práctica nueva nace en el default del grupo, que es de la
+        # IES aun con el envío descartado; por eso se mira el envío.
+        if not user.is_reviewer and not user_can_edit_flow_content(
+                user, package):
+            raise PermissionDenied({
+                'detail': 'El envío no está en tu turno de edición; no '
+                          'puedes agregarle buenas prácticas.',
+                'code': 'not_editable'})
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.is_reviewer and not user.is_admin:
+            raise PermissionDenied(
+                'La revisión no registra buenas prácticas; solo califica '
+                'las de la institución.')
+        self._check_package(serializer)
+        serializer.save()
+
+    def perform_update(self, serializer):
+        package = serializer.validated_data.get('package')
+        if package is not None and package != serializer.instance.package:
+            self._check_package(serializer)
+        super().perform_update(serializer)
 
     def get_serializer_class(self):
         action_serializer = {
@@ -46,10 +148,31 @@ class FeatureOptionViewSet(BaseGenericViewSet):
     serializer_class = FeatureOptionSerializer
 
 
-class FeatureGoodPracticeViewSet(BaseGenericViewSet):
+class FeatureGoodPracticeViewSet(InstitutionScopedMixin,
+                                 PracticeContentWriteMixin,
+                                 BaseGenericViewSet):
+    permission_classes = [IsAuthenticated, IsFlowInstitutionOwnerOrReviewer]
+    survey_path = 'good_practice__package__survey'
     queryset = FeatureGoodPractice.objects.all().prefetch_related(
         'flow_attachments')
     serializer_class = FeatureGoodPracticeSerializer
+
+    def perform_create(self, serializer):
+        """Los criterios nacen con la práctica (GoodPractice.save); el
+        alta suelta solo cubre el respaldo de `FeatureList` para un
+        criterio agregado al catálogo después. Solo la IES (sobre una
+        práctica de su institución) o el admin."""
+        user = self.request.user
+        # A la revisión el serializer ya le descartó `good_practice`.
+        good_practice = serializer.validated_data.get('good_practice')
+        reviewer_only = user.is_reviewer and not user.is_admin
+        if reviewer_only or not user_can_act_on_flow_object(
+                user, good_practice):
+            raise PermissionDenied(
+                'Solo la institución dueña de la práctica puede agregarle '
+                'criterios.')
+        self.check_content_write(good_practice)
+        serializer.save()
 
 
 class PackageFilter(FilterSet):

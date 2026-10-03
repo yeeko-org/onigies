@@ -59,7 +59,6 @@ class GoodPracticePackage(FlowParticipant, models.Model):
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+')
     sent_at = models.DateTimeField(blank=True, null=True)
-    comments = models.TextField(blank=True, null=True)
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 
@@ -115,7 +114,6 @@ class GoodPractice(FlowParticipant, models.Model):
     status = models.ForeignKey(
         'flow.Status', on_delete=models.PROTECT, blank=True, null=True,
         related_name='+', default='bp_draft')
-    comments = models.TextField(blank=True, null=True)
     flow_events = GenericRelation('flow.FlowEvent')
     flow_attachments = GenericRelation('flow.Attachment')
 

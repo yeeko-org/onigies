@@ -121,7 +121,13 @@ export function useFlowActions(record, appLabel, modelName, options = {}) {
     comment.value = ''
   }
 
+  // Expuestos para que FlowStatusActions monte la válvula de admin con la
+  // misma raíz y el mismo refresco que el consumidor configuró.
+  const root = () => (options.root ? toValue(options.root) : null)
+  const afterTransition = (ev) => options.onTransitioned?.(ev)
+
   return {
+    root, afterTransition,
     sending, transitions, hasActions, currentStatus, events,
     actionDialog, pendingTransition, comment,
     blockedDialog, blockedTitle, blockedReasons, block,

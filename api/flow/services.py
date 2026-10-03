@@ -5,12 +5,15 @@ API pública:
 - get_available_transitions(user, obj) → QuerySet[Status]
 - validate_transition(user, obj, target, comment) → list[str]
 - execute_transition(user, obj, target, comment) → FlowEvent
+- admin_target_names(group) → list[str]
+- validate_admin_transition(user, obj, target, comment) → list[str]
+- execute_admin_transition(user, obj, target, comment) → FlowEvent
 - assign_auto_status(user, obj) → FlowEvent | None
 - assign_status_tree(user, obj, status) → list[FlowEvent]
 """
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 
 from flow.models import FlowEvent, Status
 from flow.registry import get_children, get_parent, is_flow_participant
@@ -145,7 +148,13 @@ def execute_transition(
     errors = validate_transition(user, locked, target, comment)
     if errors:
         raise ValueError(errors)
+    return _apply_transition(user, obj, locked, target, comment)
 
+
+def _apply_transition(user, obj, locked, target: Status,
+                      comment: str | None) -> FlowEvent:
+    """Efectos de una transición ya validada, compartidos por la normal y
+    la válvula de admin: evento, status, propagación y señal."""
     from_status = locked.status
     event = FlowEvent.objects.create(
         content_type=_ct(locked),
@@ -176,6 +185,116 @@ def execute_transition(
         from_status=from_status, target=target, comment=comment,
     )
     return event
+
+
+def admin_target_names(group: str) -> list[str]:
+    """Destinos de la válvula de admin en un grupo (adr-0023): lo que la
+    revisión establece —destinos de las transiciones que salen de un
+    status de rol reviewer— más los propios status de rol reviewer, que
+    sirven para deshacer y devolverle el turno a la revisión. Se deriva
+    del grafo sembrado; ningún nombre va escrito aquí. Orden del
+    catálogo (`group`, `order`).
+    """
+    reviewer = Status.objects.filter(group=group, role='reviewer')
+    return list(
+        Status.objects
+        .filter(group=group)
+        .filter(Q(role='reviewer') | Q(previous_statuses__in=reviewer))
+        .distinct()
+        .order_by('order', 'name')
+        .values_list('name', flat=True)
+    )
+
+
+def is_admin_event(event: FlowEvent) -> bool:
+    """True si el evento es un cambio administrativo (adr-0023): un
+    cambio de status fuera de `from_status.next_statuses` que lleva
+    comentario. No hay bandera en el evento; el comentario es lo que lo
+    separa de las escrituras fuera del grafo de `assign_status_tree` y
+    de las propagaciones, que nunca llevan uno. Espejo de
+    `flowStore.isAdminEvent`.
+    """
+    if not (event.from_status_id and event.to_status_id and event.comment):
+        return False
+    return not event.from_status.next_statuses.filter(
+        name=event.to_status_id).exists()
+
+
+def validate_admin_transition(
+    user,
+    obj,
+    target: Status,
+    comment: str | None = None,
+) -> list[str]:
+    """Valida la válvula de admin (adr-0023) sin ejecutarla.
+
+    Salta el rol del status propio y `next_statuses` —terminales
+    incluidos— y rechaza los destinos legales, que van por el menú;
+    conserva la regla de hijos, el comentario obligatorio y
+    el gancho del modelo. El permiso `is_admin` lo resuelve la vista. Los
+    `root_turn_errors` del gancho no pueden dispararse aquí: exigimos la
+    raíz en rol reviewer antes de llamarlo.
+    """
+    from flow.permissions import resolve_flow_root
+
+    current: Status | None = obj.status
+    if current is None:
+        return ["El objeto no tiene status asignado."]
+
+    root = resolve_flow_root(obj)
+    if root is obj:
+        return ["El cambio administrativo solo aplica a elementos dentro "
+                "de un envío, nunca al envío mismo."]
+    root_status = getattr(root, 'status', None)
+    if root_status is None or root_status.role != 'reviewer':
+        return ["El cambio administrativo solo es posible mientras el "
+                "envío esté del lado de la revisión."]
+
+    if (target.group != current.group
+            or target.name not in admin_target_names(current.group)):
+        return [f"'{target.public_name}' no es un destino válido para un "
+                "cambio administrativo."]
+    if target.name == current.name:
+        return [f"El objeto ya está en '{target.public_name}'."]
+    # Un destino legal hecho por la válvula quedaría en el timeline como
+    # transición normal (`is_admin_event` lo deriva de «fuera del grafo»).
+    if current.next_statuses.filter(name=target.name).exists():
+        return [f"'{target.public_name}' es una transición normal; usa el "
+                "menú de estatus."]
+
+    errors: list[str] = []
+    if not target.applicable_models.filter(id=_ct(obj).id).exists():
+        errors.append(
+            f"'{target.public_name}' no aplica a este tipo de objeto.")
+
+    child_error = _check_children_rule(obj, target)
+    if child_error:
+        errors.append(child_error)
+
+    if not (comment and comment.strip()):
+        errors.append("El cambio administrativo requiere un comentario.")
+
+    hook = getattr(obj, 'validate_flow_transition', None)
+    if callable(hook):
+        errors.extend(hook(user, target))
+    return errors
+
+
+@transaction.atomic
+def execute_admin_transition(
+    user,
+    obj,
+    target: Status,
+    comment: str | None = None,
+) -> FlowEvent:
+    """Válvula de admin (adr-0023): valida con
+    `validate_admin_transition` y aplica los mismos efectos que
+    `execute_transition`. Lanza ValueError con la lista de errores."""
+    locked = type(obj).objects.select_for_update().get(pk=obj.pk)
+    errors = validate_admin_transition(user, locked, target, comment)
+    if errors:
+        raise ValueError(errors)
+    return _apply_transition(user, obj, locked, target, comment)
 
 
 def _propagate_up(user, obj, status: Status) -> None:

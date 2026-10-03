@@ -2,15 +2,26 @@
 import FlowAttachments from "~/components/dashboard/flow/FlowAttachments.vue";
 import Comments from "~/components/dashboard/common/utils/Comments.vue";
 import { useAuthStore } from '~/store/auth.js'
+import { useFlowStore } from '~/store/flow.js'
 
 const props = defineProps({
   feature: { type: Object, required: true },
   value: { type: Object, default: null },
   // Solo el turno del usuario habilita la edición; en false, todo es read-only.
-  editable: { type: Boolean, default: true }
+  editable: { type: Boolean, default: true },
+  // Envío de la práctica (raíz del flujo).
+  root: { type: Object, default: null },
 })
 
 const isReviewer = computed(() => useAuthStore().is_reviewer)
+const flowStore = useFlowStore()
+
+// Las notas privadas de la revisión (`comments`) siguen la regla de los
+// comentarios del flujo (task-70): se escriben solo con el envío en
+// revisión y se congelan después. Espejo del candado del backend; sin raíz
+// conocida, quedan de solo lectura.
+const notesReadonly = computed(() => !(isReviewer.value
+  && flowStore.rootRole(props.root) === 'reviewer'))
 
 const emit = defineEmits(['update'])
 
@@ -152,6 +163,7 @@ watch(() => props.value, initValue, { immediate: true, deep: true })
           <Comments
             :main="localValue"
             collection_name="feature_good_practice"
+            :readonly="notesReadonly"
           />
         </template>
       </div>

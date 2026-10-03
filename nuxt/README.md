@@ -21,7 +21,7 @@ Requiere tener [mkcert](https://github.com/FiloSottile/mkcert) instalado.
 
 ## Configuración
 
-Crea `nuxt/.env` basándote en `nuxt/.env.template`:
+Crea el `.env` de `nuxt/` basándote en `nuxt/.env.template`:
 
 ```bash
 cp .env.template .env

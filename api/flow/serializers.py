@@ -16,6 +16,14 @@ class StatusSerializer(serializers.ModelSerializer):
     valid_child_statuses = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field='name')
     applicable_models = serializers.SerializerMethodField()
+    # Destinos de la válvula de admin del grupo del status: los mismos para
+    # todo el grupo, porque el conjunto del grupo no depende del origen; el
+    # cliente resta el actual y sus `next_statuses`. Viaja por status para
+    # leerse como `next_statuses`; el cliente lo cruza con
+    # `applicable_models` y solo recalcula la regla como respaldo ante un
+    # catálogo anterior a este campo (hasta que API y Netlify estén
+    # desplegados).
+    admin_targets = serializers.SerializerMethodField()
 
     class Meta:
         model = Status
@@ -24,6 +32,16 @@ class StatusSerializer(serializers.ModelSerializer):
     def get_applicable_models(self, obj) -> list[str]:
         return list(
             obj.applicable_models.values_list('app_label', 'model'))
+
+    def get_admin_targets(self, obj) -> list[str]:
+        from flow.services import admin_target_names
+
+        # Una consulta por grupo y no por status: la caché vive en el
+        # contexto, que comparten los hijos de un `many=True`.
+        cache = self.context.setdefault('_admin_targets', {})
+        if obj.group not in cache:
+            cache[obj.group] = admin_target_names(obj.group)
+        return cache[obj.group]
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -108,4 +126,9 @@ class TransitionRequestSerializer(serializers.Serializer):
 
 class CommentSerializer(serializers.Serializer):
     """Payload para agregar un comentario puro al timeline."""
+    comment = serializers.CharField(min_length=1)
+
+
+class AdminTransitionRequestSerializer(TransitionRequestSerializer):
+    """Payload de la válvula de admin: el comentario es obligatorio."""
     comment = serializers.CharField(min_length=1)

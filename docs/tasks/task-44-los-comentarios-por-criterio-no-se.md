@@ -2,7 +2,7 @@
 type: task
 id: task-44
 title: Los comentarios por criterio no se bloquean cuando la práctica está del lado de la IES
-state: open
+state: closed
 date: 2026-08-03
 owner: ai
 parent: "[[task-6]]"
@@ -28,10 +28,14 @@ La revisión del 6 de agosto ([[2026-08-06-temas-reunion-fer]], §10 `[17:20]`�
 
 Ricardo decidió que el campo `comments` de los criterios sigue la misma regla de turno por raíz que los comentarios del timeline: editable por cualquier revisora mientras el envío de bp esté en rol `reviewer`, congelado cuando regresa a la IES ([[2026-10-02-comentarios-editables-y-valvula-de-admin]], P11). El candado del criterio se construye dentro de [[task-70]]; aquí queda lo que esa task no cubre: que el bloqueo por turno recorra hijos y nietos en `cp` y `gen` para los comentarios del timeline, que hoy se gatean por el status propio del objeto y no por la raíz.
 
+## Cierre (2026-10-02)
+
+Lo que quedaba cerrado aquí lo cubrió el mismo diff de [[task-70]]: el POST de comentarios usa `user_holds_root_turn` (la raíz, no el status propio) en los tres flujos; `FlowComments` recibe `:root` desde `GeneralGroupPanel`, `CpGroupCard` y `GoodPracticeEditSimple`, así que el gate baja a hijos y nietos; la nota por criterio quedó bajo turno de raíz en `FeatureGoodPracticeSerializer.validate` y `FeatureItem` la muestra en solo lectura fuera del turno (visto en navegador: envío en borrador, sin lápiz ni «Comentar»). El historial sigue visible.
+
 ## Criterios de aceptación
 
-- [ ] Con la práctica del lado de la IES, la revisora no puede comentar a nivel de criterio
-- [ ] El historial de comentarios sigue visible en solo lectura
-- [ ] Los comentarios a nivel de buena práctica y de paquete siguen funcionando como hoy
-- [ ] El bloqueo por turno alcanza hijos y nietos, no solo el primer nivel
-- [ ] La regla aplica igual en los tres flujos: `cp`, `gen` y `bp`
+- [x] Con la práctica del lado de la IES, la revisora no puede comentar a nivel de criterio
+- [x] El historial de comentarios sigue visible en solo lectura
+- [x] Los comentarios a nivel de buena práctica y de paquete siguen funcionando como hoy
+- [x] El bloqueo por turno alcanza hijos y nietos, no solo el primer nivel
+- [x] La regla aplica igual en los tres flujos: `cp`, `gen` y `bp`

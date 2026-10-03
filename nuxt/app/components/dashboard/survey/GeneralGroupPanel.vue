@@ -231,6 +231,7 @@ const saveAndTransition = async (transition) => {
           v-model="group"
           app-label="survey"
           model-name="generalgroupresponse"
+          :root="flowActions.root"
           :width="220"
         />
       </div>

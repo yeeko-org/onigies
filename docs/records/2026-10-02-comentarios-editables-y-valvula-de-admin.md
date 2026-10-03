@@ -1,6 +1,7 @@
 ---
 type: record
 id: 2026-10-02-comentarios-editables-y-valvula-de-admin
+validate-paths: false
 date: 2026-10-02
 related: ["[[task-70]]", "[[task-99]]", "[[task-190]]", "[[adr-0023]]", "[[adr-0026]]", "[[task-44]]", "[[task-186]]"]
 ---

@@ -6,7 +6,7 @@ state: open
 date: 2026-09-25
 owner: ricardo
 parent: "[[task-2]]"
-related: ["[[adr-0015]]", "[[adr-0018]]", "[[task-163]]", "[[task-143]]", "[[task-184]]", "[[task-187]]", "[[task-188]]"]
+related: ["[[adr-0015]]", "[[adr-0018]]", "[[task-163]]", "[[task-143]]", "[[task-184]]", "[[task-187]]", "[[task-188]]", "[[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]"]
 ---
 
 # Que el instrumento abierto bloquee la visibilidad del cuestionario principal a las IES
@@ -26,7 +26,7 @@ Lectura alterna, de la crítica de cierre: «Eso debería ser un bloqueante de q
 - [x] Los borrados de observables y preguntas con respuestas quedan en `PROTECT` en `api/answer/models.py`, con su migración — hecho el 2026-09-28: ocho FKs, migración `answer 0007` (sin efecto en SQL)
 - [x] Un manejador global de `ProtectedError` en DRF responde 409 en lugar de 500 cuando un borrado choca con respuestas — hecho el 2026-09-28: `api/api/exception_handler.py`, registrado en `REST_FRAMEWORK`
 - [ ] Ricardo decide sobre el riesgo de las altas: reprovisionar tras cada alta estructural (observable o tipo nuevos con IES dentro). Hoy `provision_cp_responses` solo corre en `Institution.save` y como backfill; un observable o tipo creado desde el dashboard no tiene `ObservableResponse`/`GroupResponse` para las encuestas existentes. Opciones: automatizar al crear, correrlo a mano tras cada edición, o descartar
-- [ ] Desplegado en producción
+- [x] Desplegado en producción — 2026-10-03, `answer.0007` aplicada en la fusión `a32b48e` ([[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]); sigue abierta solo por la decisión de reprovisionar
 
 ## Decisión de Ricardo, 2026-09-28
 

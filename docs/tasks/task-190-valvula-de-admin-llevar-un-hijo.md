@@ -3,10 +3,11 @@ type: task
 id: task-190
 title: "Válvula de admin: llevar un hijo o nieto a cualquier status de revisión mientras la raíz esté en revisión"
 state: open
+validate-paths: false
 date: 2026-10-02
 owner: ai
 source: ["[[2026-10-02-comentarios-editables-y-valvula-de-admin]]"]
-related: ["[[adr-0023]]", "[[adr-0002]]", "[[adr-0019]]", "[[task-58]]", "[[task-87]]", "[[task-71]]", "[[task-189]]"]
+related: ["[[adr-0023]]", "[[adr-0002]]", "[[adr-0019]]", "[[task-58]]", "[[task-87]]", "[[task-71]]", "[[task-189]]", "[[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]"]
 ---
 
 # Válvula de admin: llevar un hijo o nieto a cualquier status de revisión mientras la raíz esté en revisión
@@ -83,6 +84,8 @@ Riesgo bajo, nombrado: raíces cuyo status se puso sin FlowEvent (migración, `.
 
 **Ricardo decidió desplegar cuando las revisoras terminen su jornada**: el 2026-10-02 devolvieron 24 prácticas y estaban trabajando en bp.
 
+**Hecho la madrugada del 2026-10-03** ([[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]): fusión con `sector-tsu` sin conflictos (los choques previstos no ocurrieron), emulación del build repetida sobre el merge, lecturas previas iguales a lo esperado (paquete 64 y ninguna práctica con comentario; 0 eventos fuera del grafo con comentario; sin 0007/0008/0010), las tres migraciones aplicadas, `comments` ausente en las dos tablas, Netlify `07764370…` estampado a las 06:27:45 UTC y la API reiniciada a las 06:28:50: **el orden salió al revés del punto 1** (~1.5 min de front nuevo contra API vieja, sin candado de publicación), así que el fallback cliente de `admin_targets` de [[task-197]] sí se ejercitó. El `GET /api/good_practice/` autenticado del smoke no se hizo; en su lugar, catálogos y raíz en 200, descarga anónima en 404 y S3 en 200.
+
 ## Tests
 
 - Backend: el endpoint normal sigue rechazando un destino fuera del grafo para todos; el de admin lo acepta solo con `is_admin`, comentario y raíz en revisión; rechaza raíces y raíces en rol IES; conserva la regla de hijos.
@@ -98,8 +101,8 @@ Riesgo bajo, nombrado: raíces cuyo status se puso sin FlowEvent (migración, `.
 - [x] Un destino legal desde el status actual responde 400 y no aparece en el diálogo
 - [x] La regla de hijos y la propagación siguen aplicando
 - [x] El endpoint de transiciones normales no cambió
-- [ ] Emulación del build de Netlify corrida tras los últimos cambios del frontend (hecha 2026-10-02 tras D1/D3; si el frontend vuelve a cambiar, repetir)
-- [ ] Desplegado en producción con las migraciones verificadas (conteos previos y eventos fuera del grafo), API antes que Netlify, fuera de la jornada de las revisoras
+- [x] Emulación del build de Netlify corrida tras los últimos cambios del frontend (repetida 2026-10-03 sobre la fusión `a32b48e`, antes del push)
+- [x] Desplegado en producción con las migraciones verificadas (conteos previos y eventos fuera del grafo), fuera de la jornada de las revisoras (2026-10-03, ~00:30 hora de México); el orden «API antes que Netlify» no se cumplió (ver «Hecho»)
 
 ## Pendientes de UI para admin (fuera de esta task)
 

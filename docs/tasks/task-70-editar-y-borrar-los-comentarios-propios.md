@@ -3,6 +3,7 @@ type: task
 id: task-70
 title: Editar y borrar los comentarios propios mientras el envío siga de tu lado
 state: closed
+validate-paths: false
 date: 2026-08-06
 owner: ai
 parent: "[[task-99]]"

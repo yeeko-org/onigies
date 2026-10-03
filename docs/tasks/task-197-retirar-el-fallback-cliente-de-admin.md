@@ -13,6 +13,8 @@ related: ["[[task-190]]", "[[adr-0023]]"]
 
 `getAdminTargets` en `store/flow.js` lee `admin_targets` de la fila de status del catálogo y, si falta (catálogo de una API anterior al campo), recalcula el conjunto del grafo. Existe solo porque la API (Yeeko) y el frontend (Netlify) se despliegan por separado; es la regla escrita dos veces (`admin_target_names` en el backend y el fallback en JS) y puede divergir. Con el orden de push de [[task-190]] (API primero, Netlify después) el fallback nunca se ejercita: el front nuevo siempre encuentra el campo. Una vez que ambos deploys estén en producción, borrar el fallback y el test de Vitest que lo cubre, y dejar `references/admin-override.md` de la skill `flow` con una sola fuente.
 
+Condición cumplida el 2026-10-03: ambos deploys en producción ([[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]). El orden de push no fue el previsto —Netlify salió ~1.5 min antes que la API—, así que el fallback sí se ejercitó esa vez; ya no hace falta.
+
 ## Criterios de aceptación
 
 - [ ] Fallback eliminado del store y de los tests

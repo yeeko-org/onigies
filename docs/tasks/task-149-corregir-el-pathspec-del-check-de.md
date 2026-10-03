@@ -19,6 +19,8 @@ Es edición a un skill del proyecto y Ricardo no la decidió en la sesión:
 
 Mientras tanto, quien corra el check debe usar `'*/migrations/*'` a mano.
 
+2026-10-03: el pathspec roto se esquivó por tercera vez en el deploy del TSU ([[fb-8]] lo registra).
+
 ## Criterios de aceptación
 
 - [ ] El skill prescribe `'*/migrations/*'` y explica en una línea por qué la diagonal final no sirve

@@ -5,7 +5,7 @@ title: Limpieza de ramas y fusión de cp-backend ligada al deploy
 state: open
 date: 2026-09-28
 owner: ricardo
-related: ["[[adr-0001]]", "[[task-178]]", "[[2026-09-28-panorama-onigies]]"]
+related: ["[[adr-0001]]", "[[task-178]]", "[[2026-09-28-panorama-onigies]]", "[[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]"]
 ---
 
 # Limpieza de ramas y fusión de cp-backend ligada al deploy
@@ -14,13 +14,17 @@ Estado de git al 2026-09-28, verificado en la sesión del panorama. `main`, `pro
 
 Actualización del 2026-09-28 por la noche ([[2026-09-28-revisoras-sin-is-staff-en-generales]]): `main` y `production` avanzaron a `a6cd4cd`, el arreglo de frontend de las revisoras, copiado por cherry-pick sobre `de32e72` para desplegarlo sin arrastrar la migración `answer 0007`. `cp-backend` (`6a08f0c`) **no contiene el arreglo**: su árbol sigue con la UI vieja (`isStaff` = `is_staff`) hasta que se rebase sobre `main`, que es lo que lo trae; no hay nada que omitir. La otra copia del arreglo, `37f202a`, vive solo en `reviewer-role-naming` (cp-backend más ese commit). Se suman dos ramas locales sin nada propio que conservar una vez rebasada `cp-backend`: `reviewer-role-naming` y `reviewer-role-naming-prod` (ya fusionada en `main`).
 
-Actualización del 2026-10-02: `cp-backend` ya está rebasada sobre `main` (`a6cd4cd`), sin conflictos; era local, sin upstream. Sus siete commits quedaron encima del arreglo de las revisoras, así que el árbol ya trae `is_reviewer`. La fusión a `main` sigue atada al deploy de [[task-178]]. Esa misma tarde otra sesión dejó `sector-tsu` como rama activa del checkout compartido, con las dos sesiones pisándose el árbol de trabajo; esta sesión siguió en el worktree `~/dev/unam/onigies-flow` (rama `cp-backend`) y commiteó los docs con un índice temporal sin mover el checkout. Regla práctica que salió de ahí: cuando dos sesiones trabajan el mismo repo, cada una en su `git worktree`. El worktree se retira (`git worktree remove`) una vez fusionada `cp-backend`, **después** de copiar lo que vive solo en su `.claude/scratch/` sin versionar y que [[task-190]] y el record citan: `browser-pass/` (46 capturas), `measure_criterion_notes_loss.py`, `2026-10-02-ux-valvula-admin-flow.md` y los scripts `browser_pass_*.py`, a `~/respaldos/onigies-flow-2026-10-02/`. En el checkout principal quedaron residuos que Ricardo decide: una copia vieja de la nota UX en `.claude/scratch/` (la vigente es la del worktree) y unos 6 MB de snapshots en `.playwright-mcp/` (ignorado por git).
+Actualización del 2026-10-02: `cp-backend` ya está rebasada sobre `main` (`a6cd4cd`), sin conflictos; era local, sin upstream. Sus siete commits quedaron encima del arreglo de las revisoras, así que el árbol ya trae `is_reviewer`. La fusión a `main` sigue atada al deploy de [[task-178]]. Esa misma tarde otra sesión dejó `sector-tsu` como rama activa del checkout compartido, con las dos sesiones pisándose el árbol de trabajo; esta sesión siguió en el worktree `~/dev/unam/onigies-flow` (rama `cp-backend`) y commiteó los docs con un índice temporal sin mover el checkout. Regla práctica que salió de ahí: cuando dos sesiones trabajan el mismo repo, cada una en su `git worktree`. El worktree se retira (`git worktree remove`) una vez fusionada `cp-backend`, **después** de copiar lo que vive solo en su `.claude/scratch/` sin versionar y que [[task-190]] y el record citan: `browser-pass/` (46 capturas), `measure_criterion_notes_loss.py`, `2026-10-02-ux-valvula-admin-flow.md` y los scripts `browser_pass_*.py`, a `~/respaldos/onigies-flow-2026-10-03/`. En el checkout principal quedaron residuos que Ricardo decide: una copia vieja de la nota UX en `.claude/scratch/` (la vigente es la del worktree) y unos 6 MB de snapshots en `.playwright-mcp/` (ignorado por git).
+
+Actualización del 2026-10-03: `cp-backend` (`310dd8a`) se fusionó en `sector-tsu` (`a32b48e`, sin conflictos) y `main` y `production` avanzaron a ese commit por fast-forward en el deploy ([[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]). `cp-backend` y `sector-tsu` ya no tienen nada propio. El worktree `onigies-flow` sigue montado con su scratch sin respaldar; el checkout principal volvió a `main` esa misma tarde. Tres nodos heredados de `cp-backend` (el record [[2026-10-02-comentarios-editables-y-valvula-de-admin]], [[task-190]] y [[task-70]]) citan rutas de ese scratch y llevan `validate-paths: false` mientras existan solo en el worktree.
 
 ## Criterios de aceptación
 
-- [ ] `cp-backend` fusionada a `main` en el mismo acto que el deploy de task-178 (migrate `answer 0007`)
+- [x] `cp-backend` fusionada a `main` en el mismo acto que el deploy de task-178 (migrate `answer 0007`) (2026-10-03)
 - [ ] Verificado si los cuatro arreglos de `claude/gallant-jemison` existen en `main` por otra vía; la rama se borra o se rescata
 - [ ] Ricardo decide sobre las siete ramas locales sin commits propios
 - [x] `cp-backend` rebasada sobre `main` (`a6cd4cd`) (2026-10-02)
 - [ ] Borradas `reviewer-role-naming` y `reviewer-role-naming-prod`
-- [ ] Scratch del worktree copiado a `~/respaldos/onigies-flow-2026-10-02/` antes de `git worktree remove`
+- [ ] Scratch del worktree copiado a `~/respaldos/onigies-flow-2026-10-03/` antes de `git worktree remove`
+- [ ] Tras el respaldo, las rutas del scratch citadas en el record del 2026-10-02 de comentarios, task-190 y task-70 reescritas a `~/respaldos/onigies-flow-2026-10-03/…` y `validate-paths: false` retirado de los tres
+- [ ] Ricardo decide si `cp-backend` y `sector-tsu`, ya fusionadas, se borran

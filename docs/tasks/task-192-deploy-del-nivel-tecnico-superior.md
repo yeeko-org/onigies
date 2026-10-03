@@ -2,12 +2,12 @@
 type: task
 id: task-192
 title: Deploy del nivel técnico superior
-state: open
+state: closed
 date: 2026-10-02
 owner: ai
 parent: "[[task-2]]"
 source: ["[[2026-10-02-alta-del-nivel-tecnico-superior]]"]
-related: ["[[adr-0024]]", "[[adr-0025]]", "[[task-178]]", "[[task-186]]", "[[task-190]]"]
+related: ["[[adr-0024]]", "[[adr-0025]]", "[[task-178]]", "[[task-186]]", "[[task-190]]", "[[task-200]]", "[[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]"]
 ---
 
 # Deploy del nivel técnico superior
@@ -34,8 +34,14 @@ En el servidor del API (Yeeko), venv de `apionigies`:
 
 Ninguna de las 3 IES con TSU tiene Generales aprobadas, así que el caso del grupo de planes del cp no ocurre: lo cambian ellas en Generales antes de llegar al cp. Ricardo lo cuida con Rubén fuera de la plataforma; no hace falta voltearlas en el deploy.
 
+## Deploy hecho, 2026-10-03
+
+Record: [[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]. Se desplegó fusionada con `cp-backend` (`a32b48e`), con `migrate` completo (las tres migraciones, no solo `answer`). El orden fue el contrario al que pedía [[task-190]]: el push a `production` publicó Netlify a las 06:27:45 UTC y la API se reinició a las 06:28:50; ~1.5 min de front nuevo contra API vieja, sin candado de Netlify. Orden vivo de planes leído antes del comando (media 1, superior 2, posgrado 3: Rubén no lo había tocado); `add_tsu_sector` salió como se esperaba: sector 18 existente con banderas aseguradas, 67 encuestas 2025, 67 presencias en False (0 nulas, 0 respondidas), `technical_plans` creada (id 8) con 2 preguntas reordenadas, 67 respuestas `no_apply`, sector agregado al 1.16. Netlify en `07764370…`.
+
+Los dos criterios que no cumple un deploy quedan sin marcar y pasan a [[task-200]], de Ricardo: los textos de las cuatro preguntas se editan en el dashboard, y las 3 IES con TSU quedan en «No» por lo resuelto arriba.
+
 ## Criterios de aceptación
 
-- [ ] Migración y comando corridos en producción con su salida en el record de deploy
-- [ ] Textos vivos de las cuatro preguntas de planes del 1.12 editados por Rubén o Ricardo con «técnico superior»
-- [ ] Las 3 IES con TSU puestas en «Sí»
+- [x] Migración y comando corridos en producción con su salida en el record de deploy (2026-10-03)
+- [ ] Textos vivos de las cuatro preguntas de planes del 1.12 editados por Rubén o Ricardo con «técnico superior» — no lo cumple el deploy; reasignado a [[task-200]] el 2026-10-03
+- [ ] Las 3 IES con TSU puestas en «Sí» — no se voltean en el deploy (sección «Resuelto»); el aviso a Rubén de que el TSU ya está vivo va en [[task-200]]

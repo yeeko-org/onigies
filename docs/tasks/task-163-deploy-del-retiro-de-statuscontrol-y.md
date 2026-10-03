@@ -60,6 +60,10 @@ Se hizo la madrugada del 25 de septiembre (record [[2026-09-25-deploy-del-cuesti
 
 Decisiones de Ricardo esa noche: publicar cp y abrir la fecha el mismo día (riesgo 3: la ventana «ver antes de responder» no existió; [[task-153]]); el riesgo 2 (instrumento editable) sigue vivo: Ricardo dijo que le avisaría a Rubén «ahora mismo», y el aviso y su resultado quedan pendientes mientras se decide [[task-178]]. El riesgo 1 sigue: ninguna IES real captura hasta que su paquete de generales esté en `gen_finished` ([[task-165]] punto 5, que desde el 2026-09-28 quedó fuera del grafo por ser operativo de Rubén); en producción a la 01:30 del 25, 0 de 66. Verificado en producción también que `Axis.order` es 1 a 4 con los mismos nombres que en local, de lo que depende el título «Eje N. Nombre». Riesgo no anotado antes: las pestañas abiertas desde antes del primer build (00:14 del 25) fallan hasta recargar, porque el store viejo caía sin `status_control`.
 
+## Avance del 2026-10-03
+
+Siguen abiertos los cuatro criterios marcados ⚠️: el smoke visual de Ricardo, el aviso a Rubén, que ninguna IES de prueba tenga generales en `gen_finished` antes del smoke, y verificar si el instrumento sigue abierto (`QuestionnaireSettings.content_open`, no se leyó en el deploy del 2026-10-03 aunque hubo acceso a producción). El deploy del TSU y de la válvula de admin ([[2026-10-03-deploy-del-nivel-tecnico-superior-y-la-valvula-de-admin]]) suma su propio aviso en [[task-200]]; si el de cp sigue sin darse, van juntos.
+
 ## Avance del 2026-09-28
 
 Ricardo hace el smoke visual hoy; el documento de la brecha ya se envió ([[task-164]], cerrada); los borrados van a `PROTECT` ([[task-178]]). El ritmo de aprobación de generales queda fuera del grafo por decisión suya ([[task-165]] punto 5). Panorama en [[2026-09-28-panorama-onigies]].

@@ -38,8 +38,8 @@ Se eligió la tercera. Es una válvula, no una transición: no se agrega a `NEXT
 
 - Solo usuarios con `User.is_admin` (`is_superuser or is_staff`); el frontend lo decide por un getter `is_admin` del store, nunca por `is_staff` en un componente ([[2026-09-28-revisoras-sin-is-staff-en-generales]]).
 - Solo hijos y nietos, nunca la raíz, y solo mientras la raíz tenga rol reviewer; en `cp` la raíz es el eje (`AxisValue`), no la encuesta.
-- Destinos: los que la revisión establece (destinos de sus transiciones en `NEXT_STATUSES`) más los status de rol `reviewer` del grupo, para deshacer y devolverle el turno; nunca un status que solo la IES establece. Salta el rol propio del hijo y `next_statuses`; conserva la regla de hijos y la propagación.
-- Comentario obligatorio, que queda en el timeline. No hay columna nueva: un evento cuyo destino no está entre los siguientes legales de su origen y que trae comentario es, por definición, un cambio administrativo, y así se pinta («Cambio administrativo»), visible por igual para la IES y la revisión.
+- Destinos: los que la revisión establece (destinos de sus transiciones en `NEXT_STATUSES`) más los status de rol `reviewer` del grupo, para deshacer y devolverle el turno; nunca un status de rol IES; y **nunca un destino legal desde el status actual** (ni el actual mismo): para eso está el menú normal, y así todo evento de la válvula queda fuera del grafo por construcción, que es lo que la marca necesita (añadido el 2026-10-02 tras la pasada en navegador). Salta el rol propio del hijo; conserva la regla de hijos y la propagación.
+- Comentario obligatorio, que queda en el timeline. No hay columna nueva: un evento cuyo destino no está entre los siguientes legales de su origen y que trae comentario es, por definición, un cambio administrativo, y así se pinta («Cambio administrativo»), visible por igual para la IES y la revisión. El motivo no se borra nunca y solo lo corrige `is_admin`: quien no pudo hacer el cambio no cambia su explicación.
 - Endpoint propio (`admin-transitions/`), para que el de transiciones normales no cambie.
 
 [[adr-0002]] no se reemplaza: sigue gobernando el flujo normal y la seed. Este ADR es su única excepción.
@@ -47,12 +47,12 @@ Se eligió la tercera. Es una válvula, no una transición: no se agrega a `NEXT
 ### Consecuencias
 
 - **Bueno:** el error de revisión tiene salida sin tocar la base, y queda en la bitácora con su razón.
-- **Malo:** reabrir un grupo gen aprobado puede invalidar lo que el cuestionario principal ya construyó sobre él; el diálogo de confirmación lo advierte y pide confirmación explícita, pero no lo impide. Es una decisión de quien aprieta el botón.
+- **Neutro:** la válvula no puede reabrir un grupo gen sobre el que el cuestionario principal ya construyó: cp abre solo con el paquete en `gen_finished`, terminal y de nadie, y la válvula exige la raíz en turno revisor. El diálogo lleva solo la advertencia general y el motivo obligatorio (D3, 2026-10-02; la línea específica para `gen` que se había añadido por P25 se retiró).
 - **Malo:** `is_staff` gana por primera vez un poder propio en el flujo; hay que mantener la distinción `is_reviewer` / `is_admin` limpia y probada ([[task-189]]).
 
 ### Cómo se comprueba
 
-En `api/flow/seed.py` ningún terminal aparece como origen en `NEXT_STATUSES` (igual que hoy). El endpoint de transiciones normales rechaza con 400 un destino fuera del grafo para cualquier usuario; `admin-transitions/` lo acepta solo con `is_admin`, comentario y raíz en rol reviewer.
+En `api/flow/seed.py` ningún terminal aparece como origen en `NEXT_STATUSES` (igual que hoy). El endpoint de transiciones normales rechaza con 400 un destino fuera del grafo para cualquier usuario; `admin-transitions/` lo acepta solo con `is_admin`, comentario y raíz en rol reviewer, y rechaza con 400 un destino que ya es legal desde el origen.
 
 ## Más información
 

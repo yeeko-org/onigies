@@ -242,6 +242,7 @@ const baseLink = computed(() => ({
         v-model="group"
         app-label="answer"
         model-name="groupresponse"
+        :root="axis"
         :width="220"
         :readonly="commentReadonly"
       />

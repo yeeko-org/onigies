@@ -78,9 +78,13 @@ async function refetchPackage() {
     ['good_practice_package', pkg.value.id])
   if (!res.data) return
   pkg.value = res.data
+  // De res.data y no de `practices`: con defineModel la asignación solo
+  // emite update:modelValue y pkg sigue devolviendo el objeto anterior
+  // hasta que el padre devuelva la prop, así que `practices` aún apunta a
+  // la carga previa. nextTick() dependería de que el padre enlace v-model.
   if (openId)
     editingPractice.value =
-      practices.value.find(p => p.id === openId) || null
+      (res.data.good_practices || []).find(p => p.id === openId) || null
 }
 </script>
 

@@ -4,7 +4,9 @@ from rest_framework.routers import DefaultRouter
 
 from flow.attachment_views import (
     FlowAttachmentDetailView, FlowAttachmentDownloadView, FlowAttachmentView)
-from flow.views import FlowEventView, FlowTransitionView, StatusViewSet
+from flow.views import (
+    FlowAdminTransitionView, FlowEventDetailView, FlowEventView,
+    FlowTransitionView, StatusViewSet)
 
 router = DefaultRouter()
 router.register(r'statuses', StatusViewSet, basename='flow-status')
@@ -21,6 +23,16 @@ urlpatterns = router.urls + [
         f'{_obj}/events/',
         FlowEventView.as_view(),
         name='flow-events',
+    ),
+    path(
+        f'{_obj}/events/<int:event_pk>/',
+        FlowEventDetailView.as_view(),
+        name='flow-event-detail',
+    ),
+    path(
+        f'{_obj}/admin-transitions/',
+        FlowAdminTransitionView.as_view(),
+        name='flow-admin-transitions',
     ),
     path(
         f'{_obj}/attachments/',

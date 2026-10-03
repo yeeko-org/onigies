@@ -19,6 +19,11 @@ const props = defineProps({
     type: Number,
     default: 280,
   },
+  // Muestra las notas sin lápiz ni «Comentar» (p. ej. fuera de turno).
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const want_edit_comment = ref(false)
@@ -73,6 +78,7 @@ function saveComment() {
     >
     </v-card-text>
     <v-btn
+      v-if="!readonly"
       icon
       class="mr-2 align-self-center"
       variant="tonal"
@@ -100,7 +106,7 @@ function saveComment() {
     </v-tooltip>
   </v-card>
   <v-btn
-    v-else
+    v-else-if="!readonly"
     class="ml-3"
     color="yellow-accent-4"
     variant="elevated"

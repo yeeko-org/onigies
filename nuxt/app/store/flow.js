@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useAuthStore } from '~/store/auth'
+import { useMainStore } from '~/store/index.js'
+import { flowRoleOf } from '~/composables/flowRules.js'
 import { devWarn } from '~/utils/log.js'
 
 /**
@@ -18,9 +20,13 @@ const CHILD_REGISTRY = {
   generalpackage: { field: 'general_group_responses', label: 'grupos' },
 }
 
-// Solo si el serializer de la raíz aún no trae su `not_sent_message`.
-const ROOT_NOT_SENT_FALLBACK = 'Aún no se ha enviado a revisión; la '
-  + 'revisión podrá actuar cuando la institución lo envíe.'
+// Solo si el serializer de la raíz aún no trae su `not_sent_message`; el
+// mismo texto que `ROOT_NOT_SENT_MESSAGE` del backend.
+const ROOT_NOT_SENT_FALLBACK = 'La institución aún no ha enviado esto a '
+  + 'revisión; la revisión podrá actuar sobre esta respuesta cuando lo envíe.'
+
+const ADMIN_ROOT_CLOSED = 'El envío ya está cerrado; no admite cambios '
+  + 'administrativos.'
 
 function childrenOf(record, modelName) {
   const field = CHILD_REGISTRY[modelName]?.field
@@ -129,6 +135,131 @@ export const useFlowStore = defineStore('flow', () => {
     return [root?.not_sent_message || ROOT_NOT_SENT_FALLBACK]
   }
 
-  return { byName, loaded, ensureStatuses, getStatus, canEditContent,
-    getAvailableTransitions, getChildrenNotReady, getRootNotInTurn }
+  function appliesTo(st, appLabel, modelName) {
+    return (st?.applicable_models || []).some(
+      ([a, m]) => a === appLabel && m === modelName)
+  }
+
+  // Rol de la raíz del flujo; para un objeto raíz, el suyo.
+  function rootRole(root) {
+    return byName.value[root?.status]?.role || null
+  }
+
+  /**
+   * Lado de un evento: el rol de quien lo escribió. El catálogo de personas
+   * usuarias de la IES solo trae a las suyas y a las revisoras, y el de la
+   * revisión a todas las de institución: una persona ausente del catálogo
+   * es staff sin institución, o sea del lado de la revisión.
+   */
+  function eventSide(ev) {
+    const user = useMainStore().users_by_id[ev?.user]
+    return flowRoleOf(user) || 'reviewer'
+  }
+
+  /**
+   * Un evento es un cambio administrativo (adr-0023) si su destino no está
+   * entre los siguientes legales del origen y trae comentario. El
+   * comentario descarta los cambios de dominio que el motor escribe fuera
+   * del grafo sin texto (respuesta inicial de un observable, cascada del
+   * descarte de bp). Es una derivación: no hay bandera en el evento.
+   */
+  function isAdminEvent(ev) {
+    if (!ev?.to_status || !ev.from_status || !ev.comment) return false
+    const from = byName.value[ev.from_status]
+    if (!from) return false
+    return !(from.next_statuses || []).includes(ev.to_status)
+  }
+
+  /**
+   * Inicio de la ronda en curso del lado `role`: el evento más reciente de
+   * la raíz que la metió a ese lado desde el otro (espejo de
+   * `round_started_at`). Los movimientos dentro del mismo lado no abren
+   * ronda. `null` = la raíz nunca cambió de lado; `undefined` = la raíz
+   * no trae `flow_events` y no se puede saber.
+   */
+  function roundStartedAt(root, role) {
+    const events = root?.flow_events
+    if (!Array.isArray(events)) return undefined
+    let start = null
+    for (const ev of events) {
+      if (byName.value[ev.to_status]?.role !== role) continue
+      if (ev.from_status && byName.value[ev.from_status]?.role === role)
+        continue
+      const at = Date.parse(ev.created_at)
+      if (start === null || at > start) start = at
+    }
+    return start
+  }
+
+  /**
+   * ¿La persona usuaria puede editar o borrar este comentario? Espejo de la
+   * guarda del backend: la raíz en su turno, el comentario de su lado (sin
+   * importar quién lo escribió) y de la ronda en curso. El motivo de un
+   * cambio administrativo solo lo corrige una cuenta de administración, y
+   * nadie lo borra (FlowTimeline esconde el bote).
+   */
+  function canEditComment(ev, root) {
+    if (!ev?.comment) return false
+    const auth = useAuthStore()
+    const role = auth.flow_role
+    if (rootRole(root) !== role || eventSide(ev) !== role) return false
+    if (isAdminEvent(ev) && !auth.is_admin) return false
+    const start = roundStartedAt(root, role)
+    // Una raíz sin `flow_events` no deja ver la ronda: se queda la regla de
+    // turno y lado, y el backend responde 403 si el comentario es viejo.
+    if (start == null) return true
+    return Date.parse(ev.created_at) > start
+  }
+
+  /**
+   * Destinos de la válvula de admin para un registro: lo que la revisión
+   * establece (destinos de las transiciones que salen de status de rol
+   * reviewer) más los status de rol reviewer, para devolverle el turno;
+   * aplicables al modelo y ordenados por prioridad. Se restan el actual y
+   * sus `next_statuses`: un destino legal hecho por la válvula quedaría en
+   * el timeline como transición normal (isAdminEvent no lo marcaría), así
+   * que esos van por el menú de estatus. Cada status del catálogo trae los
+   * de su grupo (`admin_targets`); el cálculo del grafo es solo respaldo
+   * para un catálogo anterior a ese campo.
+   */
+  function getAdminTargets(currentName, appLabel, modelName) {
+    const current = byName.value[currentName]
+    const group = current?.group
+    if (!group) return []
+    const all = Object.values(byName.value).filter((st) => st.group === group)
+    let names = Array.isArray(current.admin_targets)
+      ? current.admin_targets : null
+    if (!names) {
+      const set = new Set()
+      for (const st of all) {
+        if (st.role !== 'reviewer') continue
+        set.add(st.name)
+        for (const next of st.next_statuses || []) set.add(next)
+      }
+      names = [...set]
+    }
+    const legal = new Set([currentName, ...(current.next_statuses || [])])
+    return names
+      .map((name) => byName.value[name])
+      .filter((st) => st && st.group === group && !legal.has(st.name)
+        && appliesTo(st, appLabel, modelName))
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+  }
+
+  /**
+   * Compuerta de la válvula de admin: solo con la raíz del lado de la
+   * revisión. Devuelve el motivo para el tooltip del botón bloqueado.
+   */
+  function getAdminRootBlock(root) {
+    const role = rootRole(root)
+    if (role === 'reviewer') return []
+    if (role === 'ies')
+      return [root?.not_sent_message || ROOT_NOT_SENT_FALLBACK]
+    return [ADMIN_ROOT_CLOSED]
+  }
+
+  return { byName, loaded, ensureStatuses, getStatus,
+    canEditContent, getAvailableTransitions, getChildrenNotReady,
+    getRootNotInTurn, rootRole, eventSide, isAdminEvent, canEditComment,
+    getAdminTargets, getAdminRootBlock }
 })

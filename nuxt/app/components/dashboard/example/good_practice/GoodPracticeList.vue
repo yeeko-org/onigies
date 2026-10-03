@@ -449,6 +449,7 @@ function reopenPackage() {
     <GoodPracticeEditDialog
       v-model="editingPractice"
       :editable="editingEditable"
+      :root="goodPracticePackage"
       @saved="onSaved"
       @deleted="onDeleted"
       @transitioned="loadPractices"

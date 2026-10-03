@@ -68,8 +68,8 @@ Two distinct knobs, do not conflate them:
   reopen all live here; see [`flow`](../flow/SKILL.md) for `discard`/`reopen`.
 - Renders a grid of `GoodPracticeCard`; clicking opens
   `GoodPracticeEditSimple` in a `v-dialog` to edit content and mark features.
-- "Enviar a revisión" runs the package transition `bp_sent` via `useFlow`; the
-  motor blocks it until every práctica is `bp_completed` (children rule).
+- "Enviar a revisión" runs the package transition `bp_sent` through
+  `useFlowActions` (see `flow` → frontend); the motor blocks it until every práctica is `bp_completed` (children rule).
 - The IES **never** sees the calificación (see "Calificación privacy" below).
 
 ## Revisora surface — `GoodPracticePackageEditSimple.vue` (`/dashboard`)
@@ -140,8 +140,13 @@ Enforced at two layers — keep both:
    `feature_values` too — DRF propagates `context` to any depth, while a
    declared nested serializer's `__init__` runs at import time with no request.
 
-This is read-only protection. The fields stay writable server-side; the IES has
-no UI to set them, but if strict write-locking is needed, gate it separately.
+On write, `split_review_fields` gives each side only its own fields: the IES's review fields (`FEATURE_REVIEW_FIELDS`, `PRACTICE_REVIEW_FIELDS`) and the reviewer's content fields are dropped silently, and the IES's content writes also follow the turn server-side (`PracticeContentWriteMixin`, see `flow` → permissions), so `editable` in the UI is a mirror, not the only lock.
+
+The admin (`is_admin` = superuser ∨ staff) is exempt from these three reviewer rules: it creates and deletes practices and criteria and writes content as well as review fields, with no content-turn lock. In `GoodPracticeEditSimple` it gets the content fields writable (`contentReadonly`) and «Eliminar» regardless of `editable`. The criterion notes lock below still applies to it.
+
+### The reviewer notes lock with the envío
+
+The private `comments` of each criterion (`FeatureGoodPractice.comments`, the yellow note `Comments.vue` in `FeatureItem`) follow the root turn of the flow comments (one field, so no rounds): writable only while the user is a reviewer **and** the envío (root) has role `reviewer`, frozen once it returns to the IES or finishes. `FeatureItem` computes `notesReadonly` from `flowStore.rootRole(root)`; the envío travels `GoodPracticeEditSimple :root` → `FeatureList :root` → `FeatureItem :root`, and without a known root the notes stay read-only. `Comments.vue` has a `readonly` prop that hides the pencil and the «Comentar» button while still showing the note. It mirrors the backend lock on that field; it is not the scoring `editable`, which stays the reviewer surface's `canReview`.
 
 ## Key files
 

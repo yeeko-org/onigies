@@ -2,8 +2,9 @@ import { useApiError } from '~/composables/useApiError.js'
 
 /**
  * Centraliza el plumbing del motor de flujo para un objeto concreto: arma el
- * base URL `/flow/{app}/{model}/{pk}/` y expone las dos acciones de escritura
- * (transición y comentario) con su manejo de error vía notifyApiError. El
+ * base URL `/flow/{app}/{model}/{pk}/` y expone las acciones de escritura
+ * (transición, transición administrativa y alta, edición y borrado de
+ * comentarios) con su manejo de error vía notifyApiError. El
  * historial NO se pide aquí: llega embebido en el objeto (serializer
  * `flow_events`) y cada acción devuelve el evento creado para que el padre lo
  * agregue a ese array.
@@ -51,5 +52,55 @@ export function useFlow(appLabel, modelName, pk) {
     }
   }
 
-  return { sending, base, addComment, transition }
+  // Devuelve el FlowEvent con el texto nuevo, undefined en error.
+  async function editComment(eventId, text) {
+    const comment = (text || '').trim()
+    if (!comment) return
+    sending.value = true
+    try {
+      const url = `${base.value}/events/${eventId}/`
+      const res = await $api.patch(url, { comment })
+      return res.data
+    } catch (e) {
+      notifyApiError(e, 'No se pudo editar el comentario.')
+    } finally {
+      sending.value = false
+    }
+  }
+
+  // Un comentario puro se borra con su evento (204 → `{ removed: true }`);
+  // el de una transición deja el evento con `comment` vacío (200 →
+  // `{ event }`). undefined en error (ya notificado).
+  async function deleteComment(eventId) {
+    sending.value = true
+    try {
+      const res = await $api.delete(`${base.value}/events/${eventId}/`)
+      if (res.status === 204 || !res.data) return { removed: true }
+      return { event: res.data }
+    } catch (e) {
+      notifyApiError(e, 'No se pudo borrar el comentario.')
+    } finally {
+      sending.value = false
+    }
+  }
+
+  // Válvula de admin (adr-0023): endpoint propio, mismo cuerpo y respuesta
+  // que el de transiciones. Devuelve el FlowEvent, undefined en error.
+  async function adminTransition(targetStatus, comment) {
+    sending.value = true
+    try {
+      const res = await $api.post(`${base.value}/admin-transitions/`, {
+        target_status: targetStatus,
+        comment: (comment || '').trim(),
+      })
+      return res.data
+    } catch (e) {
+      notifyApiError(e, 'No se pudo aplicar el cambio administrativo.')
+    } finally {
+      sending.value = false
+    }
+  }
+
+  return { sending, base, addComment, transition, editComment,
+    deleteComment, adminTransition }
 }

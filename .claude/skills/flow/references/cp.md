@@ -1,6 +1,6 @@
 # cp in the flow engine
 
-Detail of the cp group (`AxisValue` → `ObservableResponse` → `GroupResponse`) behind the two cp sections of [SKILL.md](../SKILL.md): read it when touching cp statuses, child rules, the initial «No», or the capture/review components.
+Detail of the cp group (`AxisValue` → `ObservableResponse` → `GroupResponse`) of [SKILL.md](../SKILL.md): read it when touching cp statuses, child rules, the initial «No», or the capture/review components. The answer gate (`cp_capture`) and the content lock: [permissions.md](permissions.md).
 
 ## cp catalog
 

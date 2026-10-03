@@ -13,7 +13,7 @@ propia institución.
 """
 from rest_framework.permissions import BasePermission
 
-from flow.registry import get_parent
+from flow.registry import get_parent, resolve_flow_owner
 
 
 def resolve_flow_root(obj):
@@ -54,20 +54,51 @@ def user_can_edit_flow_content(user, obj) -> bool:
     (una vez enviado el paquete, ningún descendiente es editable aunque
     su propio status siga siendo de la IES).
     """
-    from flow.services import get_user_flow_role
-
     if not user_can_act_on_flow_object(user, obj):
         return False
     own_status = getattr(obj, 'status', None)
     if own_status is None or not own_status.content_editable:
         return False
-    root = resolve_flow_root(obj)
-    root_status = getattr(root, 'status', None)
-    if root_status is None:
+    if not user_holds_root_turn(user, obj):
         return False
-    if root_status.role != get_user_flow_role(user):
+    return not content_lock_errors(user, resolve_flow_root(obj))
+
+
+def user_holds_root_turn(user, obj) -> bool:
+    """True si la RAÍZ del objeto está del lado de la persona usuaria
+    (rol del status de la raíz == su rol de flujo).
+
+    Es el turno que gobierna lo que se escribe sobre todo el árbol:
+    contenido, comentarios del timeline (alta, edición y borrado) y el
+    campo privado de los criterios bp. Una raíz terminal (`role=None`)
+    no es de nadie.
+    """
+    from flow.services import get_user_flow_role
+
+    root_status = getattr(resolve_flow_root(obj), 'status', None)
+    if root_status is None or root_status.role is None:
         return False
-    return not content_lock_errors(user, root)
+    return root_status.role == get_user_flow_role(user)
+
+
+def round_started_at(root, role):
+    """Momento en que la raíz entró por última vez al lado `role`: el
+    evento más reciente de la raíz cuyo destino es de ese rol y cuyo
+    origen no lo era. Los movimientos dentro del mismo lado (la
+    propagación de `cp_filling` al eje, `cp_sent` → `cp_in_review`) no
+    abren ronda: si contaran, un comentario se congelaría en pleno
+    turno. None si la raíz nunca ha cambiado de lado (primera ronda).
+    """
+    from django.contrib.contenttypes.models import ContentType
+    from flow.models import FlowEvent
+
+    return (FlowEvent.objects
+            .filter(content_type=ContentType.objects.get_for_model(root),
+                    object_id=root.pk, to_status__role=role)
+            .exclude(from_status__role=role)
+            .order_by('-created_at')
+            .values_list('created_at', flat=True)
+            .first())
 
 
 def content_lock_errors(user, root) -> list[str]:
@@ -119,8 +150,11 @@ class IsFlowInstitutionOwnerOrReviewer(BasePermission):
     modelos participantes del flujo (p.ej. GoodPracticePackage).
 
     Las lecturas por lista se restringen en `get_queryset()` del ViewSet;
-    aquí se cubre el acceso por objeto (retrieve y acciones detail).
+    aquí se cubre el acceso por objeto (retrieve y acciones detail). Un
+    satélite (p.ej. FeatureGoodPractice) no tiene `flow_parent`: se
+    resuelve antes por su `flow_delegate`, o la IES no llegaría a la raíz.
     """
 
     def has_object_permission(self, request, view, obj) -> bool:
-        return user_can_act_on_flow_object(request.user, obj)
+        return user_can_act_on_flow_object(
+            request.user, resolve_flow_owner(obj))

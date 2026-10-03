@@ -11,7 +11,9 @@ const props = defineProps({
   goodPracticeId: { type: Number, required: true },
   // Edición habilitada solo cuando es turno del usuario (IES o revisora). En
   // false, la calificación queda en solo lectura.
-  editable: { type: Boolean, default: true }
+  editable: { type: Boolean, default: true },
+  // Envío (raíz del flujo): gobierna el candado de las notas de la revisión.
+  root: { type: Object, default: null },
 })
 
 const isReviewer = computed(() => useAuthStore().is_reviewer)
@@ -89,6 +91,7 @@ const handleUpdate = async (featureId, data) => {
         :feature="feature"
         :value="getFeatureValue(feature.data.id)"
         :editable="editable"
+        :root="root"
         @update="(data) => handleUpdate(feature.data.id, data)"
       />
     </template>

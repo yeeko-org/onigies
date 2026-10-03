@@ -5,13 +5,14 @@
  * completo (FlowTimeline: cambios de status + comentarios) y una caja para
  * agregar un comentario puro.
  *
- * El historial vive embebido en el registro (`flow_events`); al agregar un
- * comentario lo empuja a ese array. Sirve igual a IES y revisora, 
- * a nivel paquete y práctica.
+ * El historial vive embebido en el registro (`flow_events`); al agregar,
+ * editar o borrar un comentario se muta ese array en sitio. Sirve igual a
+ * IES y revisora, en la raíz y en sus descendientes.
  */
 import { useFlow } from '~/composables/useFlow.js'
 import { useFlowStore } from '~/store/flow.js'
 import { useAuthStore } from '~/store/auth.js'
+import { useDashboardStore } from '~/store/dash.js'
 import FlowTimeline from '~/components/dashboard/flow/FlowTimeline.vue'
 
 const props = defineProps({
@@ -22,22 +23,33 @@ const props = defineProps({
   // registro no basta cuando su contenido no se trabaja todavía (p. ej. un
   // grupo cp en consulta previa o con la compuerta de respuesta cerrada).
   readonly:  Boolean,
+  // Raíz del flujo (valor o getter) cuando el registro es descendiente: el
+  // turno de comentar, editar y borrar lo da ella, como en el backend.
+  root:      { type: [Object, Function], default: null },
 })
 
 // Registro completo (con flow_events). Lo mutamos en sitio al comentar.
 const record = defineModel({ type: Object, required: true })
 
-const { sending, addComment } = useFlow(
+const { sending, addComment, editComment, deleteComment } = useFlow(
   () => props.appLabel, () => props.modelName, () => record.value?.id)
 
 const flowStore = useFlowStore()
 const auth = useAuthStore()
+const dashStore = useDashboardStore()
 
-// Solo comenta quien tiene el turno del registro: la IES no comenta cuando el
-// objeto está del lado de la revisora y viceversa. El timeline sigue visible
-// para ambos; solo se oculta la caja de captura.
+const rootRecord = computed(() => toValue(props.root) || record.value)
+
+// Solo comenta quien tiene el turno de la RAÍZ: la IES no comenta
+// cuando el envío está del lado de la revisora y viceversa, aunque el hijo
+// esté en un status de su rol. El timeline sigue visible para ambos.
 const canComment = computed(() => !props.readonly
-  && flowStore.getStatus(record.value?.status)?.role === auth.flow_role)
+  && flowStore.rootRole(rootRecord.value) === auth.flow_role)
+
+// Editar y borrar: raíz en turno, comentario del propio lado y de la ronda
+// en curso (flowStore.canEditComment).
+const canEditComment = (ev) => !props.readonly
+  && flowStore.canEditComment(ev, rootRecord.value)
 
 const open = ref(false)
 const newComment = ref('')
@@ -47,10 +59,47 @@ const events = computed(() => record.value?.flow_events || [])
 const commentCount = computed(
   () => events.value.filter((e) => e.comment).length)
 
+// El más reciente por fecha, no el último del array: la API entrega los
+// eventos del más nuevo al más viejo y los agregados en sitio van al final.
 const lastComment = computed(() => {
-  const withText = events.value.filter((e) => e.comment)
-  return withText.length ? withText[withText.length - 1].comment : ''
+  let newest = null
+  for (const ev of events.value) {
+    if (!ev.comment) continue
+    if (!newest || isNewer(ev, newest)) newest = ev
+  }
+  return newest?.comment || ''
 })
+
+function isNewer(a, b) {
+  const diff = new Date(a.created_at) - new Date(b.created_at)
+  return diff ? diff > 0 : (a.id || 0) > (b.id || 0)
+}
+
+function replaceEvent(ev) {
+  const list = record.value.flow_events || []
+  const i = list.findIndex((e) => e.id === ev.id)
+  if (i >= 0) list.splice(i, 1, ev)
+}
+
+async function onEdit(ev, text) {
+  const updated = await editComment(ev.id, text)
+  if (!updated) return
+  replaceEvent(updated)
+  dashStore.showSnackbar('Comentario actualizado')
+}
+
+async function onDelete(ev) {
+  const res = await deleteComment(ev.id)
+  if (!res) return
+  if (res.removed) {
+    const list = record.value.flow_events || []
+    const i = list.findIndex((e) => e.id === ev.id)
+    if (i >= 0) list.splice(i, 1)
+  } else {
+    replaceEvent(res.event)
+  }
+  dashStore.showSnackbar('Comentario eliminado')
+}
 
 async function onAdd() {
   const ev = await addComment(newComment.value)
@@ -110,7 +159,13 @@ async function onAdd() {
           </v-btn>
         </v-card-title>
         <v-card-text>
-          <FlowTimeline :events="events" />
+          <FlowTimeline
+            :events="events"
+            :can-edit="canEditComment"
+            :busy="sending"
+            @edit="onEdit"
+            @delete="onDelete"
+          />
         </v-card-text>
         <v-divider v-if="canComment" />
         <v-card-actions v-if="canComment" class="d-flex align-end ga-2 pa-3">

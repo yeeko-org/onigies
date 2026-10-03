@@ -17,6 +17,8 @@ import { useFlowActions } from '~/composables/useFlowActions.js'
 import FlowStatusChip from '~/components/dashboard/flow/FlowStatusChip.vue'
 import FlowTransitionMenu from '~/components/dashboard/flow/FlowTransitionMenu.vue'
 import FlowTransitionDialogs from '~/components/dashboard/flow/FlowTransitionDialogs.vue'
+import FlowAdminOverride from
+  '~/components/dashboard/flow/FlowAdminOverride.vue'
 
 const props = defineProps({
   appLabel:  { type: String, required: true },
@@ -63,6 +65,12 @@ const inTooltip = computed(() => props.hint === 'tooltip'
 const actions = props.actions || useFlowActions(
   record, () => props.appLabel, () => props.modelName)
 const { sending, transitions, hasActions, onSelect } = actions
+
+// La válvula de admin solo existe sobre descendientes: el kernel expone la
+// raíz que le dio el consumidor.
+const hasRoot = computed(() => !!actions.root())
+const adminSize = computed(
+  () => (props.size === 'default' ? 'small' : 'x-small'))
 </script>
 
 <template>
@@ -127,6 +135,16 @@ const { sending, transitions, hasActions, onSelect } = actions
         <v-icon color="warning" size="18">flag</v-icon>
         <v-tooltip activator="parent" location="top">Te toca</v-tooltip>
       </span>
+
+      <FlowAdminOverride
+        v-if="hasRoot"
+        v-model="record"
+        :app-label="appLabel"
+        :model-name="modelName"
+        :root="actions.root"
+        :size="adminSize"
+        @transitioned="actions.afterTransition"
+      />
     </div>
 
     <!-- Hint persistente, sensible al turno: recuadro warning cuando te

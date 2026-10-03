@@ -219,7 +219,14 @@ export const useAuthStore = defineStore("auth", {
     // doble audiencia se decide con esto, nunca con `is_staff`.
     is_reviewer(state) {
       return flowRoleOf(state.user_onigies) === 'reviewer'
-    }
+    },
+    // Espejo de `User.is_admin` del backend (is_superuser || is_staff). Solo
+    // abre la válvula de admin del flujo (adr-0023); ningún componente lee
+    // `is_staff` para decidirlo.
+    is_admin(state) {
+      const u = state.user_onigies
+      return !!(u?.is_superuser || u?.is_staff)
+    },
   }
 
 });

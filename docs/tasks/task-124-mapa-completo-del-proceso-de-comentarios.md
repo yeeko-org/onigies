@@ -23,7 +23,7 @@ Esta task **no es de arreglo**: es el mapa previo. Es diagnóstico y diálogo co
 **1. Los dos mecanismos de comentario, que hoy coexisten y no son lo mismo.**
 
 - **Timeline de flujo** (`FlowEvent`): comentarios puros (`POST events/`) y comentarios asociados a una transición. Son **compartidos**: los ve cualquiera con acceso al objeto, IES incluida. Viven en tres niveles — envío/paquete, buena práctica y criterio ([[task-69]]).
-- **`TextField` `comments`, privado de revisora**, en `FeatureGoodPractice`, `GoodPractice` y `GoodPracticePackage`. Es parte de la calificación y **sigue vivo en la UI de calificación**: se oculta por `v-if="isStaff"` y se recorta en el payload con `hide_review_fields` (skill `bp-validation-ux`). Nunca fue pensado para llegar al timeline; el comando que lo espejaba ya no existe.
+- **`TextField` `comments`, privado de revisora**, en `FeatureGoodPractice` (los de `GoodPractice` y `GoodPracticePackage` se borraron el 2026-10-02, migración `example.0010`: no tenían escritor en la UI ni datos reales, y no estaban ocultos a la IES; ver [[2026-10-02-comentarios-editables-y-valvula-de-admin]]). Es parte de la calificación y **sigue vivo en la UI de calificación**: se oculta por `v-if="isStaff"` y se recorta en el payload con `hide_review_fields` (skill `bp-validation-ux`). Nunca fue pensado para llegar al timeline; el comando que lo espejaba ya no existe.
 
 Hay que dejar escrito, con precisión, qué se captura en cuál, desde qué pantalla y con qué destinatario.
 
@@ -45,8 +45,8 @@ Una `reference` con el mapa (mecanismos, matriz de visibilidad, reglas de turno 
 
 - [ ] Está escrito en reference/ el mapa de los dos mecanismos de comentario, con qué se captura en cada uno y desde qué pantalla
 - [ ] Existe una matriz explícita de quién ve qué (IES / revisora / staff) por mecanismo y por nivel, contrastada contra el código
-- [ ] Está documentado el guard de turno de FlowEventView.post y su contraste con lo que permite la UI en cada nivel
-- [ ] Ricardo decidió qué pasa con un comentario cuyo agrupador aún no se envía (editable, borrable, visible o no)
+- [x] Está documentado el guard de turno de FlowEventView.post y su contraste con lo que permite la UI en cada nivel (superado: [[task-70]] alineó el POST a la raíz el 2026-10-02 y la regla vive en la skill `flow`, references/comments.md)
+- [x] Ricardo decidió qué pasa con un comentario cuyo agrupador aún no se envía: editable y borrable por su lado mientras la raíz siga de ese lado y dentro de la ronda; visible para la contraparte desde que existe ([[task-70]], 2026-10-02)
 - [ ] Ricardo decidió si el TextField privado de calificación debe seguir sin ningún puente al timeline, o si necesita uno deliberado
 - [ ] Está verificado si FlowEventView.get necesita filtro por rol, o si basta con no volver a inyectar contenido privado
 - [ ] Quedó revisado el destino de [[task-97]] a la luz del retiro de migrate_flow_data (decidido en su lugar, no aquí)

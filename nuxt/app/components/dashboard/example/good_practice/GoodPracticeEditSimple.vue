@@ -31,6 +31,10 @@ const props = defineProps({
 })
 
 const isReviewer = computed(() => useAuthStore().is_reviewer)
+const isAdmin = computed(() => useAuthStore().is_admin)
+// El admin queda fuera de las reglas de la revisión en bp: escribe el
+// contenido de la IES (espejo de `split_review_fields` del backend).
+const contentReadonly = computed(() => isReviewer.value && !isAdmin.value)
 
 const full_main = defineModel({type: Object, required: true})
 
@@ -160,6 +164,7 @@ const remove = async () => {
         v-model="full_main"
         app-label="example"
         model-name="goodpractice"
+        :root="root"
       />
     </div>
     <v-divider class="mb-3"></v-divider>
@@ -171,8 +176,8 @@ const remove = async () => {
           v-model="full_main.name"
           :rules="[rules.required]"
           label="Nombre de la buena práctica *"
-          :variant="isReviewer ? 'solo' : 'outlined'"
-          :readonly="isReviewer"
+          :variant="contentReadonly ? 'solo' : 'outlined'"
+          :readonly="contentReadonly"
         />
         <div class="d-flex align-center">
 
@@ -184,7 +189,7 @@ const remove = async () => {
             :required="mustBeComplete"
             :width="380"
           />
-          <div v-if="!isReviewer" class="ml-4">
+          <div v-if="!contentReadonly" class="ml-4">
             <div class="text-subtitle-1">
               Periodo de vigencia
             </div>
@@ -201,7 +206,7 @@ const remove = async () => {
                   variant="outlined"
                   v-model="full_main.start_year"
                   :rules="yearRules(full_main, 'start')"
-                  :readonly="isReviewer"
+                  :readonly="contentReadonly"
                   class="mr-4"
                   width="160"
                   density="compact"
@@ -212,7 +217,7 @@ const remove = async () => {
                   variant="outlined"
                   v-model="full_main.end_year"
                   :rules="yearRules(full_main, 'end')"
-                  :readonly="isReviewer"
+                  :readonly="contentReadonly"
                   width="160"
                   density="compact"
                 />
@@ -228,11 +233,11 @@ const remove = async () => {
         <v-textarea
           v-model="full_main.description"
           label="Descripción"
-          :variant="isReviewer ? 'solo' : 'outlined'"
+          :variant="contentReadonly ? 'solo' : 'outlined'"
           rows="3"
           auto-grow
           max-rows="20"
-          :readonly="isReviewer"
+          :readonly="contentReadonly"
           :counter="5000"
           :rules="completeRules(hasDescription, 'La descripción es obligatoria')"
         />
@@ -240,11 +245,11 @@ const remove = async () => {
         <v-textarea
           v-model="full_main.results"
           label="Resultados obtenidos"
-          :variant="isReviewer ? 'solo' : 'outlined'"
+          :variant="contentReadonly ? 'solo' : 'outlined'"
           rows="3"
           auto-grow
           max-rows="20"
-          :readonly="isReviewer"
+          :readonly="contentReadonly"
           :counter="5000"
           :rules="completeRules(hasResults, 'Los resultados son obligatorios')"
         />
@@ -270,6 +275,7 @@ const remove = async () => {
           :good-practice-id="full_main.id"
           v-model:feature-values="full_main.feature_values"
           :editable="editable"
+          :root="root"
           class="mt-4 mb-4 w-100"
         />
       </v-input>
@@ -289,7 +295,7 @@ const remove = async () => {
 
     <v-card-actions class="mb-3 mx-3">
       <v-btn
-        v-if="isEditing && !isReviewer"
+        v-if="isEditing && (isAdmin || (!isReviewer && editable))"
         color="error"
         variant="text"
         @click="confirmDelete = true"
@@ -307,8 +313,10 @@ const remove = async () => {
       </v-btn>
       <!-- Sin transiciones (status terminal o no es turno) guarda y cierra
            directo; con ellas, guardar y luego transicionar. -->
+      <!-- El admin guarda contenido en cualquier momento (D1, adr-0026);
+           el backend ya lo permite. -->
       <FlowSaveMenu
-        v-if="editable"
+        v-if="editable || isAdmin"
         :transitions="transitions"
         :current-status="currentStatus"
         :loading="loading || sending"

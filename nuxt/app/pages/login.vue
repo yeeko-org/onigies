@@ -5,6 +5,12 @@ import LoginMail from '~/components/login/LoginMail.vue'
 definePageMeta({ layout: 'login' })
 
 const card = ref(null)
+const route = useRoute()
+
+onMounted(() => {
+  if (route.query.expired)
+    card.value.setAlert('Tu sesión expiró; inicia sesión de nuevo.')
+})
 </script>
 
 <template>

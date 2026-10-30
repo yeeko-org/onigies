@@ -16,6 +16,8 @@ Hallazgo colateral de [[task-178]] (2026-09-28), al poner en `PROTECT` las FKs d
 
 **Qué hay que decidir.** Si la fila puente debe quedar protegida cuando existe algún `GroupResponse` con captura para ese (observable, tipo), o si el huérfano se conserva a propósito —por si el tipo vuelve— y se oculta del cálculo y de las pantallas. Antes de decidir, contar los huérfanos que ya existan en producción.
 
+**Precedente (2026-10-30).** El caso inverso ocurrió en producción con el 1.12: fila puente de orgánica sin preguntas, y 67 GroupResponse vacíos que atoraban a las IES. Se borraron a mano la puente y los grupos, reasignando antes un adjunto y un comentario al grupo de planes ([[2026-10-30-hotfix-en-produccion-organica-retirada-del]]). Muestra que el huérfano con contenido de flow (adjuntos, comentarios) necesita destino antes de borrarse.
+
 ## Criterios de aceptación
 
 - [ ] Contados en producción los GroupResponse cuyo (observable, question_type) no tiene fila ObservableQuestionType, distinguiendo los que tienen respuestas tipadas

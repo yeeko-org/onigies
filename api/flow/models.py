@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 
-from flow.upload_paths import resolve_upload_path
+from flow.upload_paths import MAX_PATH_LENGTH, resolve_upload_path
 
 GROUP_CHOICES = [
     ("bp", "Buenas prácticas"),
@@ -202,7 +202,8 @@ class Attachment(models.Model):
     object_id = models.PositiveIntegerField()
     target = GenericForeignKey('content_type', 'object_id')
     file = models.FileField(
-        upload_to=resolve_upload_path, verbose_name="Archivo")
+        upload_to=resolve_upload_path, max_length=MAX_PATH_LENGTH,
+        verbose_name="Archivo")
     event = models.ForeignKey(
         FlowEvent, on_delete=models.SET_NULL, blank=True, null=True,
         related_name='attachments',
